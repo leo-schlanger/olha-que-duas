@@ -1,5 +1,17 @@
 import { useState } from "react";
-import { Mail, Phone, Instagram, Facebook, Send } from "lucide-react";
+import { Mail, Phone, Instagram, Facebook, Send, ArrowRight } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const Contacto = () => {
   const [formData, setFormData] = useState({
@@ -11,194 +23,194 @@ const Contacto = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
     console.log("Form submitted:", formData);
     alert("Mensagem enviada com sucesso! Entraremos em contacto em breve.");
     setFormData({ nome: "", email: "", assunto: "", mensagem: "" });
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
-    <section id="contacto" className="py-24 bg-warm-gradient">
+    <section id="contacto" className="section-padding bg-background">
       <div className="container mx-auto px-4">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-primary font-semibold text-sm uppercase tracking-wider">
-            Contacto
-          </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground mt-4">
+        <div className="max-w-3xl mx-auto text-center mb-16 md:mb-20">
+          <span className="label-sm text-primary mb-4 block">Contacto</span>
+          <h2 className="heading-lg text-foreground mb-6">
             Fala <span className="text-gradient-brand">Conosco</span>
           </h2>
-          <p className="text-muted-foreground text-lg mt-6">
+          <p className="body-lg max-w-2xl mx-auto">
             Queres trabalhar connosco ou tens uma ideia para partilhar? Estamos aqui para ouvir!
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+        <div className="grid lg:grid-cols-5 gap-10 lg:gap-12 max-w-6xl mx-auto">
           {/* Contact Form */}
-          <div className="bg-card rounded-3xl p-8 md:p-10 shadow-lg">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="nome" className="block text-sm font-medium text-foreground mb-2">
-                  Nome
-                </label>
-                <input
-                  type="text"
-                  id="nome"
-                  name="nome"
-                  value={formData.nome}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
-                  placeholder="O teu nome"
-                />
-              </div>
+          <div className="lg:col-span-3">
+            <Card className="border-border shadow-soft">
+              <CardContent className="p-8">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid sm:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="nome">Nome</Label>
+                      <Input
+                        id="nome"
+                        name="nome"
+                        value={formData.nome}
+                        onChange={handleChange}
+                        placeholder="O teu nome"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email</Label>
+                      <Input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="o.teu@email.com"
+                        required
+                      />
+                    </div>
+                  </div>
 
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
-                  placeholder="o.teu@email.com"
-                />
-              </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="assunto">Assunto</Label>
+                    <Select
+                      value={formData.assunto}
+                      onValueChange={(value) => setFormData({ ...formData, assunto: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleciona um assunto" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="podcast">Participar no Podcast</SelectItem>
+                        <SelectItem value="assessoria">Assessoria de Imprensa</SelectItem>
+                        <SelectItem value="marcas">Representação de Marcas</SelectItem>
+                        <SelectItem value="negocios">Promoção de Negócios</SelectItem>
+                        <SelectItem value="outro">Outro Assunto</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-              <div>
-                <label htmlFor="assunto" className="block text-sm font-medium text-foreground mb-2">
-                  Assunto
-                </label>
-                <select
-                  id="assunto"
-                  name="assunto"
-                  value={formData.assunto}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
-                >
-                  <option value="">Seleciona um assunto</option>
-                  <option value="podcast">Participar no Podcast</option>
-                  <option value="assessoria">Assessoria de Imprensa</option>
-                  <option value="marcas">Representação de Marcas</option>
-                  <option value="negocios">Promoção de Negócios</option>
-                  <option value="outro">Outro Assunto</option>
-                </select>
-              </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="mensagem">Mensagem</Label>
+                    <Textarea
+                      id="mensagem"
+                      name="mensagem"
+                      value={formData.mensagem}
+                      onChange={handleChange}
+                      placeholder="Conta-nos mais sobre o teu projeto ou ideia..."
+                      rows={5}
+                      required
+                    />
+                  </div>
 
-              <div>
-                <label htmlFor="mensagem" className="block text-sm font-medium text-foreground mb-2">
-                  Mensagem
-                </label>
-                <textarea
-                  id="mensagem"
-                  name="mensagem"
-                  value={formData.mensagem}
-                  onChange={handleChange}
-                  required
-                  rows={5}
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all resize-none"
-                  placeholder="Conta-nos mais sobre o teu projeto ou ideia..."
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-primary text-primary-foreground px-8 py-4 rounded-full font-bold text-lg hover:shadow-vermelho transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2"
-              >
-                <Send className="w-5 h-5" />
-                Enviar Mensagem
-              </button>
-            </form>
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="w-full bg-primary hover:bg-primary/90 h-12 font-medium shadow-primary"
+                  >
+                    <Send className="w-4 h-4 mr-2" />
+                    Enviar Mensagem
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Contact Info */}
-          <div className="space-y-8">
-            {/* Info Cards */}
-            <div className="bg-primary rounded-3xl p-8 text-primary-foreground">
-              <h3 className="text-xl font-display font-bold mb-6">Informações de Contacto</h3>
-              <div className="space-y-4">
-                <a
-                  href="mailto:olhaqueduas@email.com"
-                  className="flex items-center gap-4 hover:text-amarelo transition-colors"
-                >
-                  <div className="w-12 h-12 bg-primary-foreground/10 rounded-xl flex items-center justify-center">
-                    <Mail className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-primary-foreground/70">Email</p>
-                    <p className="font-medium">olhaqueduas@email.com</p>
-                  </div>
-                </a>
-                <a
-                  href="tel:+351000000000"
-                  className="flex items-center gap-4 hover:text-amarelo transition-colors"
-                >
-                  <div className="w-12 h-12 bg-primary-foreground/10 rounded-xl flex items-center justify-center">
-                    <Phone className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-primary-foreground/70">Telefone</p>
-                    <p className="font-medium">+351 000 000 000</p>
-                  </div>
-                </a>
-              </div>
-            </div>
+          <div className="lg:col-span-2 space-y-6">
+            {/* Info Card */}
+            <Card className="bg-charcoal text-white border-0">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-display font-semibold mb-6">Informações</h3>
+                <div className="space-y-4">
+                  <a
+                    href="mailto:olhaqueduas@email.com"
+                    className="flex items-center gap-4 text-white/80 hover:text-amarelo transition-colors"
+                  >
+                    <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
+                      <Mail className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-white/50">Email</p>
+                      <p className="text-sm font-medium">olhaqueduas@email.com</p>
+                    </div>
+                  </a>
+                  <a
+                    href="tel:+351000000000"
+                    className="flex items-center gap-4 text-white/80 hover:text-amarelo transition-colors"
+                  >
+                    <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
+                      <Phone className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-white/50">Telefone</p>
+                      <p className="text-sm font-medium">+351 000 000 000</p>
+                    </div>
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Social Media */}
-            <div className="bg-card rounded-3xl p-8 shadow-lg">
-              <h3 className="text-xl font-display font-bold text-foreground mb-6">
-                Segue-nos nas Redes
-              </h3>
-              <div className="flex gap-4">
-              <a
-                href="https://www.instagram.com/olhaqueduas2025"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center text-primary-foreground hover:scale-110 transition-transform"
-              >
-                <Instagram className="w-6 h-6" />
-              </a>
-              <a
-                href="https://www.facebook.com/share/17npXT7nNb/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center text-primary-foreground hover:scale-110 transition-transform"
-              >
-                  <Facebook className="w-6 h-6" />
-                </a>
-              </div>
-            </div>
+            <Card className="border-border">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-display font-semibold text-foreground mb-4">
+                  Segue-nos
+                </h3>
+                <div className="flex gap-3">
+                  <a
+                    href="https://www.instagram.com/olhaqueduas2025"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-12 h-12 bg-gradient-to-br from-pink-500 to-orange-500 rounded-xl flex items-center justify-center text-white hover:scale-110 transition-transform"
+                  >
+                    <Instagram className="w-5 h-5" />
+                  </a>
+                  <a
+                    href="https://www.facebook.com/share/17npXT7nNb/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-12 h-12 bg-[#1877F2] rounded-xl flex items-center justify-center text-white hover:scale-110 transition-transform"
+                  >
+                    <Facebook className="w-5 h-5" />
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Newsletter */}
-            <div className="bg-amarelo rounded-3xl p-8">
-              <h3 className="text-xl font-display font-bold text-foreground mb-2">
-                Recebe Novidades e Convites
-              </h3>
-              <p className="text-foreground/70 mb-4">
-                Inscreve-te na nossa newsletter para não perderes nada!
-              </p>
-              <div className="flex gap-2">
-                <input
-                  type="email"
-                  placeholder="O teu email"
-                  className="flex-1 px-4 py-3 rounded-xl border-2 border-foreground/10 bg-background focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-                />
-                <button className="bg-foreground text-background px-6 py-3 rounded-xl font-bold hover:bg-foreground/90 transition-colors">
-                  Subscrever
-                </button>
-              </div>
-            </div>
+            <Card className="bg-amarelo border-0">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-display font-semibold text-charcoal mb-2">
+                  Newsletter
+                </h3>
+                <p className="text-charcoal/70 text-sm mb-4">
+                  Recebe novidades e convites exclusivos.
+                </p>
+                <div className="flex gap-2">
+                  <Input
+                    type="email"
+                    placeholder="O teu email"
+                    className="bg-white border-0"
+                  />
+                  <Button 
+                    size="icon"
+                    className="bg-charcoal text-white hover:bg-charcoal/90 shrink-0"
+                  >
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

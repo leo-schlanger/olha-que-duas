@@ -1,69 +1,88 @@
-import { ArrowDown } from "lucide-react";
+import { ArrowDown, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import fotoJuntas from "@/assets/olha-que-duas-foto.jpg";
 
 const Hero = () => {
   return (
-    <section id="inicio" className="min-h-screen bg-hero-gradient relative overflow-hidden">
-      {/* Decorative Elements */}
-      <div className="absolute top-20 right-10 w-72 h-72 bg-amarelo/20 rounded-full blur-3xl" />
-      <div className="absolute bottom-20 left-10 w-96 h-96 bg-amarelo/10 rounded-full blur-3xl" />
+    <section id="inicio" className="relative min-h-screen bg-hero-gradient overflow-hidden">
+      {/* Subtle grain texture overlay */}
+      <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")' }} />
       
-      <div className="container mx-auto px-4 pt-32 pb-16 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[calc(100vh-8rem)]">
+      {/* Decorative gradient orbs */}
+      <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-gradient-to-br from-vermelho/20 to-transparent rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-amarelo/10 to-transparent rounded-full blur-3xl" />
+
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center min-h-screen pt-28 pb-16">
           {/* Content */}
-          <div className="text-primary-foreground space-y-8 animate-fade-up">
-            <div className="inline-block bg-amarelo text-foreground px-4 py-2 rounded-full text-sm font-semibold">
+          <div className="text-white space-y-8 animate-fade-up">
+            <span className="label-sm text-white/60">
               Comunicação • Voz • Negócios
-            </div>
+            </span>
             
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-tight">
-              Olha que Duas:
-              <span className="block text-amarelo mt-2">
-                Comunicação, Voz e Negócios com Propósito
-              </span>
+            <h1 className="heading-xl text-white leading-[1.1]">
+              Onde o feminino é força, a comunicação é ponte e o afeto é{" "}
+              <span className="text-amarelo">estratégia</span>
             </h1>
             
-            <p className="text-lg md:text-xl text-primary-foreground/90 max-w-xl leading-relaxed">
-              Somos comunicadoras com propósito, estrategas com coração e empreendedoras com visão. 
-              O feminino é força, a comunicação é ponte e o afeto é estratégia.
+            <p className="text-lg text-white/70 max-w-xl leading-relaxed font-light">
+              Somos comunicadoras com propósito, estrategas com coração e 
+              empreendedoras com visão. O Olha que Duas é um espaço de escuta, 
+              criação e ação.
             </p>
             
-            <div className="flex flex-wrap gap-4">
-              <a
-                href="#servicos"
-                className="bg-amarelo text-foreground px-8 py-4 rounded-full font-bold text-lg hover:shadow-amarelo transition-all duration-300 hover:scale-105"
+            <div className="flex flex-wrap gap-4 pt-4">
+              <Button
+                asChild
+                size="lg"
+                className="bg-white text-charcoal hover:bg-white/90 font-medium text-base h-12 px-8"
               >
-                Conhecer Serviços
-              </a>
-              <a
-                href="#podcast"
-                className="border-2 border-primary-foreground text-primary-foreground px-8 py-4 rounded-full font-bold text-lg hover:bg-primary-foreground hover:text-primary transition-all duration-300"
+                <a href="#servicos" className="inline-flex items-center gap-2">
+                  Conhecer Serviços
+                  <ArrowRight className="w-4 h-4" />
+                </a>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="border-white/30 text-white hover:bg-white/10 hover:text-white font-medium text-base h-12 px-8"
               >
-                Ouvir Podcast
-              </a>
+                <a href="#podcast">Ouvir Podcast</a>
+              </Button>
             </div>
           </div>
 
           {/* Image */}
-          <div className="relative flex justify-center lg:justify-end">
-            <div className="relative">
-              <div className="absolute -inset-4 bg-amarelo/30 rounded-3xl blur-2xl" />
-              <img
-                src={fotoJuntas}
-                alt="Alexandra e Marluce - Olha que Duas"
-                className="relative w-full max-w-md rounded-3xl shadow-2xl object-cover aspect-[3/4]"
-              />
-              <div className="absolute -bottom-4 -right-4 bg-amarelo text-foreground px-6 py-3 rounded-2xl font-bold shadow-lg">
+          <div className="relative flex justify-center lg:justify-end animate-fade-up" style={{ animationDelay: '0.2s' }}>
+            <div className="relative max-w-md w-full">
+              {/* Image frame */}
+              <div className="relative rounded-2xl overflow-hidden shadow-elegant">
+                <img
+                  src={fotoJuntas}
+                  alt="Alexandra e Marluce - Olha que Duas"
+                  className="w-full aspect-[4/5] object-cover"
+                />
+                {/* Overlay gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-charcoal/40 via-transparent to-transparent" />
+              </div>
+              
+              {/* Floating badge */}
+              <div className="absolute -bottom-4 -left-4 bg-amarelo text-charcoal px-5 py-3 rounded-xl font-display text-lg font-semibold shadow-elegant">
                 Olha bem. 👀
               </div>
             </div>
           </div>
         </div>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <a href="#sobre" className="text-primary-foreground/60 hover:text-primary-foreground transition-colors">
-            <ArrowDown size={32} />
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
+          <a 
+            href="#sobre" 
+            className="flex flex-col items-center gap-2 text-white/40 hover:text-white/70 transition-colors"
+          >
+            <span className="text-xs uppercase tracking-widest">Explorar</span>
+            <ArrowDown className="w-5 h-5 animate-bounce" />
           </a>
         </div>
       </div>
