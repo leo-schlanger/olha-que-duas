@@ -1,89 +1,112 @@
-import { Mic, Megaphone, ShoppingBag, Rocket } from "lucide-react";
+import { Mic, Megaphone, ShoppingBag, Rocket, ArrowRight } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 const services = [
   {
     icon: Mic,
     title: "Podcast",
     description:
-      "Um canal de conversa profunda, provocadora e empática sobre temas que importam — justiça, saúde mental, maternidade, empreendedorismo feminino, cultura e muito mais.",
+      "Conversas profundas e empáticas sobre temas que importam — justiça, saúde mental, maternidade, empreendedorismo feminino e cultura.",
     highlight: "Damos voz a quem precisa ser ouvido",
+    color: "vermelho" as const,
   },
   {
     icon: Megaphone,
     title: "Assessoria de Imprensa",
     description:
-      "Ajudamos marcas, projetos e pessoas a contarem as suas histórias com verdade, estratégia e impacto. Da criação de narrativas à gestão de imprensa.",
+      "Ajudamos marcas e pessoas a contarem as suas histórias com verdade, estratégia e impacto. Da criação de narrativas à gestão de imprensa.",
     highlight: "Comunicação que respeita a essência",
+    color: "amarelo" as const,
   },
   {
     icon: ShoppingBag,
     title: "Representação de Marcas",
     description:
-      "Atuamos como embaixadoras e vendedoras de marcas internacionais que partilham os nossos valores. Promovemos produtos com alma.",
-    highlight: "Experiências autênticas e eventos criativos",
+      "Atuamos como embaixadoras de marcas internacionais que partilham os nossos valores. Promovemos produtos com alma através de experiências autênticas.",
+    highlight: "Eventos e conteúdos criativos",
+    color: "vermelho" as const,
   },
   {
     icon: Rocket,
     title: "Promoção de Negócios",
     description:
-      "Apoiamos ideias que merecem nascer. Seja através de mentoria, divulgação ou colaboração estratégica, estamos ao lado de quem quer empreender.",
+      "Apoiamos ideias que merecem nascer. Através de mentoria, divulgação e colaboração estratégica, estamos ao lado de quem quer empreender.",
     highlight: "Propósito e coragem",
+    color: "amarelo" as const,
   },
 ];
 
 const Servicos = () => {
   return (
-    <section id="servicos" className="py-24 bg-muted/30">
+    <section id="servicos" className="section-padding bg-section-alt">
       <div className="container mx-auto px-4">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-primary font-semibold text-sm uppercase tracking-wider">
-            O Que Fazemos
-          </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground mt-4">
+        <div className="max-w-3xl mx-auto text-center mb-16 md:mb-20">
+          <span className="label-sm text-primary mb-4 block">O Que Fazemos</span>
+          <h2 className="heading-lg text-foreground mb-6">
             Múltiplas frentes,{" "}
             <span className="text-gradient-brand">um só propósito</span>
           </h2>
-          <p className="text-muted-foreground text-lg mt-6">
+          <p className="body-lg max-w-2xl mx-auto">
             Acreditamos no poder da palavra, da escuta e da estética como ferramentas de transformação.
           </p>
         </div>
 
         {/* Services Grid */}
-        <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto mb-12">
           {services.map((service, index) => (
-            <div
+            <Card
               key={service.title}
-              className="group bg-card rounded-3xl p-8 shadow-md hover:shadow-xl transition-all duration-300 border border-border hover:border-primary/30"
+              className="group border-border hover:border-primary/30 bg-card hover:shadow-elegant transition-all duration-300"
             >
-              <div className="flex items-start gap-5">
-                <div className="flex-shrink-0 w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
-                  <service.icon className="w-7 h-7 text-primary group-hover:text-primary-foreground transition-colors" />
+              <CardContent className="p-8">
+                <div className="flex items-start gap-5">
+                  <div 
+                    className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                      service.color === 'vermelho' 
+                        ? 'bg-primary/10 group-hover:bg-primary' 
+                        : 'bg-secondary/20 group-hover:bg-secondary'
+                    }`}
+                  >
+                    <service.icon 
+                      className={`w-6 h-6 transition-colors duration-300 ${
+                        service.color === 'vermelho'
+                          ? 'text-primary group-hover:text-white'
+                          : 'text-secondary-foreground group-hover:text-charcoal'
+                      }`} 
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-display font-semibold text-foreground mb-3">
+                      {service.title}
+                    </h3>
+                    <p className="text-muted-foreground leading-relaxed mb-4">
+                      {service.description}
+                    </p>
+                    <span className="inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:gap-2 transition-all">
+                      {service.highlight}
+                      <ArrowRight className="w-4 h-4" />
+                    </span>
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-display font-bold text-foreground mb-2">
-                    {service.title}
-                  </h3>
-                  <p className="text-muted-foreground leading-relaxed mb-3">
-                    {service.description}
-                  </p>
-                  <span className="inline-block text-sm font-semibold text-primary">
-                    {service.highlight} →
-                  </span>
-                </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
 
         {/* CTA */}
-        <div className="text-center mt-12">
-          <a
-            href="#contacto"
-            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full font-bold text-lg hover:shadow-vermelho transition-all duration-300 hover:scale-105"
+        <div className="text-center">
+          <Button
+            asChild
+            size="lg"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground h-12 px-8 font-medium shadow-primary"
           >
-            Transforma a tua comunicação connosco
-          </a>
+            <a href="#contacto" className="inline-flex items-center gap-2">
+              Transforma a tua comunicação
+              <ArrowRight className="w-4 h-4" />
+            </a>
+          </Button>
         </div>
       </div>
     </section>

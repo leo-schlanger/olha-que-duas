@@ -1,3 +1,5 @@
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import alexandraImg from "@/assets/alexandra.jpg";
 import marluceImg from "@/assets/marluce.jpg";
 
@@ -5,63 +7,61 @@ const founders = [
   {
     name: "Alexandra Serra",
     image: alexandraImg,
-    role: "Co-Fundadora",
+    role: "Jornalista & Comunicadora",
     description:
-      "Jornalista e comunicadora luso-brasileira com vasta experiência em assessoria de imprensa e estratégias de comunicação. Apaixonada por dar voz a histórias que precisam ser contadas.",
+      "Luso-brasileira com vasta experiência em assessoria de imprensa e estratégias de comunicação. Apaixonada por dar voz a histórias que precisam ser contadas.",
+    initials: "AS",
   },
   {
     name: "Marluce",
     image: marluceImg,
-    role: "Co-Fundadora",
+    role: "Empreendedora & Criativa",
     description:
-      "Empreendedora e criativa com background em moda e negócios. Especialista em representação de marcas e promoção de novos negócios com propósito e autenticidade.",
+      "Background em moda e negócios. Especialista em representação de marcas e promoção de novos negócios com propósito e autenticidade.",
+    initials: "M",
   },
 ];
 
 const SobreNos = () => {
   return (
-    <section id="sobre" className="py-24 bg-warm-gradient">
+    <section id="sobre" className="section-padding bg-background">
       <div className="container mx-auto px-4">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-primary font-semibold text-sm uppercase tracking-wider">
-            Quem Somos
-          </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground mt-4">
+        <div className="max-w-3xl mx-auto text-center mb-16 md:mb-20">
+          <span className="label-sm text-primary mb-4 block">Quem Somos</span>
+          <h2 className="heading-lg text-foreground mb-6">
             Somos duas, mas{" "}
-            <span className="text-gradient-brand">multiplicamos ideias</span> e impacto
+            <span className="text-gradient-brand">multiplicamos</span> ideias e impacto
           </h2>
-          <p className="text-muted-foreground text-lg mt-6 leading-relaxed">
-            Nascido da união entre duas mulheres luso-brasileiras com trajetórias distintas 
-            mas complementares, o Olha que Duas reúne jornalismo, criatividade, moda, 
-            justiça social e empreendedorismo num só lugar.
+          <p className="body-lg max-w-2xl mx-auto">
+            Nascido da união entre duas mulheres luso-brasileiras com trajetórias 
+            distintas mas complementares, o Olha que Duas reúne jornalismo, 
+            criatividade, moda, justiça social e empreendedorismo.
           </p>
         </div>
 
-        {/* Founders Grid */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        {/* Founders */}
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16 md:mb-20">
           {founders.map((founder, index) => (
             <div
               key={founder.name}
-              className="bg-card rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group"
-              style={{ animationDelay: `${index * 0.2}s` }}
+              className="group bg-card p-8 rounded-xl border border-border hover:border-primary/20 hover:shadow-elegant transition-all duration-300"
+              style={{ animationDelay: `${index * 0.15}s` }}
             >
-              <div className="relative mb-6">
-                <div className="absolute -inset-2 bg-gradient-to-br from-primary/20 to-amarelo/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                <img
-                  src={founder.image}
-                  alt={founder.name}
-                  className="relative w-32 h-32 rounded-2xl object-cover mx-auto ring-4 ring-primary/10"
-                />
-              </div>
-              <div className="text-center">
-                <h3 className="text-2xl font-display font-bold text-foreground">
+              <div className="flex flex-col items-center text-center">
+                <Avatar className="w-28 h-28 mb-6 ring-4 ring-muted">
+                  <AvatarImage src={founder.image} alt={founder.name} className="object-cover" />
+                  <AvatarFallback className="text-2xl font-display bg-primary/10 text-primary">
+                    {founder.initials}
+                  </AvatarFallback>
+                </Avatar>
+                <h3 className="text-2xl font-display font-semibold text-foreground mb-2">
                   {founder.name}
                 </h3>
-                <span className="inline-block bg-primary/10 text-primary px-4 py-1 rounded-full text-sm font-medium mt-2">
+                <Badge variant="secondary" className="mb-4 font-normal">
                   {founder.role}
-                </span>
-                <p className="text-muted-foreground mt-4 leading-relaxed">
+                </Badge>
+                <p className="text-muted-foreground leading-relaxed">
                   {founder.description}
                 </p>
               </div>
@@ -70,13 +70,19 @@ const SobreNos = () => {
         </div>
 
         {/* Mission Statement */}
-        <div className="mt-16 bg-primary rounded-3xl p-8 md:p-12 text-center max-w-4xl mx-auto">
-          <blockquote className="text-primary-foreground text-xl md:text-2xl font-display italic leading-relaxed">
-            "No centro de tudo, está a nossa amizade, a nossa voz e a nossa vontade de fazer diferente. 
-            O Olha que Duas é um espaço de escuta, criação e ação."
-          </blockquote>
-          <div className="mt-6 text-amarelo font-bold text-lg">
-            Olha que Duas. Olha bem. Porque estamos aqui para ficar.
+        <div className="max-w-3xl mx-auto">
+          <div className="relative bg-charcoal rounded-2xl p-10 md:p-14 text-center overflow-hidden">
+            {/* Decorative elements */}
+            <div className="absolute top-0 right-0 w-40 h-40 bg-vermelho/20 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-amarelo/10 rounded-full blur-2xl" />
+            
+            <blockquote className="relative z-10 text-xl md:text-2xl text-white/90 font-display italic leading-relaxed">
+              "No centro de tudo, está a nossa amizade, a nossa voz e a nossa vontade 
+              de fazer diferente. O Olha que Duas é um espaço de escuta, criação e ação."
+            </blockquote>
+            <div className="relative z-10 mt-8 text-amarelo font-semibold text-lg">
+              Olha que Duas. Olha bem.
+            </div>
           </div>
         </div>
       </div>

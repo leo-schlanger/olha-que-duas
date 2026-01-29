@@ -1,4 +1,7 @@
-import { Headphones, Play, MessageCircle } from "lucide-react";
+import { Headphones, Play, MessageCircle, ExternalLink } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 const episodes = [
   {
@@ -20,107 +23,125 @@ const episodes = [
 
 const categories = ["Justiça", "Saúde Mental", "Maternidade", "Empreendedorismo", "Moda", "Cultura"];
 
+const platforms = [
+  { name: "Spotify", url: "https://open.spotify.com" },
+  { name: "Apple Podcasts", url: "https://podcasts.apple.com" },
+  { name: "YouTube", url: "https://youtube.com" },
+];
+
 const Podcast = () => {
   return (
-    <section id="podcast" className="py-24 bg-foreground text-primary-foreground relative overflow-hidden">
-      {/* Decorative Elements */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-72 h-72 bg-amarelo/10 rounded-full blur-3xl" />
+    <section id="podcast" className="section-padding bg-charcoal text-white relative overflow-hidden">
+      {/* Decorative elements */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-vermelho/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-amarelo/5 rounded-full blur-3xl" />
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-amarelo font-semibold text-sm uppercase tracking-wider">
-            Podcast
-          </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mt-4">
+        <div className="max-w-3xl mx-auto text-center mb-16 md:mb-20">
+          <span className="label-sm text-amarelo mb-4 block">Podcast</span>
+          <h2 className="heading-lg text-white mb-6">
             Conversas que{" "}
             <span className="text-amarelo">importam</span>
           </h2>
-          <p className="text-primary-foreground/70 text-lg mt-6">
+          <p className="body-lg text-white/60 max-w-2xl mx-auto">
             Damos voz a quem precisa ser ouvido e criamos pontes entre experiências que merecem ser partilhadas.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-          {/* Episodes List */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-              <Headphones className="text-amarelo" />
-              Episódios Recentes
-            </h3>
-            {episodes.map((episode, index) => (
-              <div
-                key={episode.title}
-                className="bg-primary-foreground/5 backdrop-blur-sm rounded-2xl p-5 hover:bg-primary-foreground/10 transition-all duration-300 cursor-pointer group"
-              >
-                <div className="flex items-center gap-4">
-                  <button className="flex-shrink-0 w-12 h-12 bg-amarelo rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Play className="w-5 h-5 text-foreground ml-1" fill="currentColor" />
-                  </button>
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-primary-foreground group-hover:text-amarelo transition-colors">
-                      {episode.title}
-                    </h4>
-                    <div className="flex items-center gap-3 text-sm text-primary-foreground/60 mt-1">
-                      <span className="bg-primary/30 px-2 py-0.5 rounded-full text-xs">
-                        {episode.category}
-                      </span>
-                      <span>{episode.duration}</span>
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 max-w-6xl mx-auto">
+          {/* Episodes */}
+          <div>
+            <div className="flex items-center gap-3 mb-6">
+              <Headphones className="w-5 h-5 text-amarelo" />
+              <h3 className="text-lg font-semibold">Episódios Recentes</h3>
+            </div>
+
+            <div className="space-y-4">
+              {episodes.map((episode) => (
+                <Card
+                  key={episode.title}
+                  className="bg-white/5 border-white/10 hover:bg-white/10 transition-all duration-300 cursor-pointer group"
+                >
+                  <CardContent className="p-5">
+                    <div className="flex items-center gap-4">
+                      <button className="flex-shrink-0 w-12 h-12 bg-amarelo rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Play className="w-5 h-5 text-charcoal ml-0.5" fill="currentColor" />
+                      </button>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium text-white group-hover:text-amarelo transition-colors truncate">
+                          {episode.title}
+                        </h4>
+                        <div className="flex items-center gap-3 mt-1.5">
+                          <Badge variant="secondary" className="bg-white/10 text-white/70 hover:bg-white/10 font-normal text-xs">
+                            {episode.category}
+                          </Badge>
+                          <span className="text-sm text-white/50">{episode.duration}</span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
 
             {/* Categories */}
-            <div className="pt-6">
-              <h4 className="text-sm font-semibold text-primary-foreground/60 mb-3">Temas:</h4>
+            <div className="mt-8">
+              <p className="text-sm text-white/50 mb-3">Temas:</p>
               <div className="flex flex-wrap gap-2">
                 {categories.map((cat) => (
-                  <span
+                  <Badge
                     key={cat}
-                    className="bg-primary/20 text-primary-foreground/80 px-3 py-1 rounded-full text-sm hover:bg-amarelo hover:text-foreground transition-colors cursor-pointer"
+                    variant="outline"
+                    className="border-white/20 text-white/70 hover:bg-amarelo hover:text-charcoal hover:border-amarelo transition-colors cursor-pointer font-normal"
                   >
                     {cat}
-                  </span>
+                  </Badge>
                 ))}
               </div>
             </div>
           </div>
 
           {/* Participate CTA */}
-          <div className="bg-gradient-to-br from-primary to-vermelho rounded-3xl p-8 md:p-10">
-            <div className="flex items-center gap-3 mb-4">
-              <MessageCircle className="w-8 h-8 text-amarelo" />
-              <h3 className="text-2xl font-display font-bold">Participa!</h3>
-            </div>
-            <p className="text-primary-foreground/90 mb-6 leading-relaxed">
-              Tens uma história para contar? Queres partilhar a tua experiência no nosso podcast? 
-              Envia-nos a tua história e poderás ser o nosso próximo convidado!
-            </p>
-            <a
-              href="#contacto"
-              className="inline-flex items-center gap-2 bg-amarelo text-foreground px-6 py-3 rounded-full font-bold hover:shadow-amarelo transition-all duration-300 hover:scale-105"
-            >
-              Enviar a Minha História
-            </a>
+          <div>
+            <Card className="bg-gradient-to-br from-vermelho to-vermelho-soft border-0 text-white overflow-hidden">
+              <CardContent className="p-8 md:p-10">
+                <div className="flex items-center gap-3 mb-4">
+                  <MessageCircle className="w-7 h-7 text-amarelo" />
+                  <h3 className="text-2xl font-display font-semibold">Participa!</h3>
+                </div>
+                <p className="text-white/85 mb-6 leading-relaxed">
+                  Tens uma história para contar? Queres partilhar a tua experiência no nosso podcast? 
+                  Envia-nos a tua história e poderás ser o nosso próximo convidado!
+                </p>
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-amarelo text-charcoal hover:bg-amarelo/90 font-medium"
+                >
+                  <a href="#contacto">Enviar a Minha História</a>
+                </Button>
 
-            {/* Platforms */}
-            <div className="mt-8 pt-6 border-t border-primary-foreground/20">
-              <p className="text-sm text-primary-foreground/60 mb-3">Ouve-nos em:</p>
-              <div className="flex gap-4">
-                <a href="https://open.spotify.com" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/70 hover:text-amarelo transition-colors font-medium">
-                  Spotify
-                </a>
-                <a href="https://podcasts.apple.com" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/70 hover:text-amarelo transition-colors font-medium">
-                  Apple Podcasts
-                </a>
-                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/70 hover:text-amarelo transition-colors font-medium">
-                  YouTube
-                </a>
-              </div>
-            </div>
+                {/* Platforms */}
+                <div className="mt-10 pt-6 border-t border-white/20">
+                  <p className="text-sm text-white/60 mb-4">Ouve-nos em:</p>
+                  <div className="flex flex-wrap gap-3">
+                    {platforms.map((platform) => (
+                      <a
+                        key={platform.name}
+                        href={platform.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-white/70 hover:text-amarelo transition-colors text-sm font-medium"
+                      >
+                        {platform.name}
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
