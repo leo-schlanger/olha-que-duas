@@ -19,23 +19,11 @@ const navLinks = [
 ];
 
 const Header = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-          ? "bg-background/95 backdrop-blur-md shadow-sm py-2 md:py-3"
-          : "bg-transparent py-3 md:py-4"
-        }`}
+      className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md shadow-sm py-2 md:py-3 transition-all duration-300"
     >
       <div className="container mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between">
@@ -44,7 +32,7 @@ const Header = () => {
             <img
               src={logo}
               alt="Olha que Duas"
-              className="h-12 md:h-16 w-auto rounded-lg shadow-sm hover:opacity-90 transition-opacity"
+              className="h-14 md:h-20 w-auto rounded-lg shadow-sm hover:opacity-90 transition-opacity"
             />
           </a>
 
@@ -54,10 +42,7 @@ const Header = () => {
               <a
                 key={link.href}
                 href={link.href}
-                className={`px-3 lg:px-4 py-2 text-sm font-medium transition-colors rounded-md ${isScrolled
-                    ? "text-foreground/70 hover:text-foreground hover:bg-muted"
-                    : "text-cream/80 hover:text-cream hover:bg-cream/10"
-                  }`}
+                className="px-3 lg:px-4 py-2 text-sm font-medium transition-colors rounded-md text-foreground/70 hover:text-foreground hover:bg-muted"
               >
                 {link.label}
               </a>
@@ -77,7 +62,7 @@ const Header = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className={`h-9 w-9 ${isScrolled ? "text-foreground" : "text-cream"}`}
+                className="h-9 w-9 text-foreground"
               >
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Menu</span>
@@ -86,7 +71,7 @@ const Header = () => {
             <SheetContent side="right" className="w-72 sm:w-80 p-0">
               <SheetHeader className="p-6 pb-4 border-b">
                 <SheetTitle className="text-left">
-                  <img src={logo} alt="Olha que Duas" className="h-12 rounded-lg" />
+                  <img src={logo} alt="Olha que Duas" className="h-14 rounded-lg" />
                 </SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col p-4">
