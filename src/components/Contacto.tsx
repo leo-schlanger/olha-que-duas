@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Mail, Instagram, Facebook, Send, ArrowRight } from "lucide-react";
+import { toast } from "sonner";
 
 const TikTokIcon = ({ className }: { className?: string }) => (
   <svg
@@ -30,12 +31,41 @@ const Contacto = () => {
     assunto: "",
     mensagem: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    alert("Mensagem enviada com sucesso! Entraremos em contacto em breve.");
-    setFormData({ nome: "", email: "", assunto: "", mensagem: "" });
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/olhaqueduas.assessoria@gmail.com", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          ...formData,
+          _subject: `Novo contacto: ${formData.assunto || "Geral"} - ${formData.nome}`,
+          _template: "table"
+        })
+      });
+
+      if (!response.ok) throw new Error("Falha no envio");
+
+      toast.success("Mensagem enviada com sucesso!", {
+        description: "Entraremos em contacto brevemente.",
+      });
+
+      setFormData({ nome: "", email: "", assunto: "", mensagem: "" });
+    } catch (error) {
+      console.error("Erro ao enviar:", error);
+      toast.error("Erro ao enviar mensagem", {
+        description: "Por favor tenta novamente ou envia email direto.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (
@@ -77,6 +107,7 @@ const Contacto = () => {
                         placeholder="O teu nome"
                         required
                         className="h-10"
+                        disabled={isSubmitting}
                       />
                     </div>
                     <div className="space-y-1.5">
@@ -92,6 +123,7 @@ const Contacto = () => {
                         placeholder="o.teu@email.com"
                         required
                         className="h-10"
+                        disabled={isSubmitting}
                       />
                     </div>
                   </div>
@@ -105,6 +137,7 @@ const Contacto = () => {
                       onValueChange={(value) =>
                         setFormData({ ...formData, assunto: value })
                       }
+                      disabled={isSubmitting}
                     >
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder="Seleciona um assunto" />
@@ -132,15 +165,17 @@ const Contacto = () => {
                       rows={4}
                       required
                       className="resize-none"
+                      disabled={isSubmitting}
                     />
                   </div>
 
                   <Button
                     type="submit"
                     className="w-full bg-primary hover:bg-primary/90 h-10 font-medium"
+                    disabled={isSubmitting}
                   >
                     <Send className="w-4 h-4 mr-2" />
-                    Enviar Mensagem
+                    {isSubmitting ? "Enviando..." : "Enviar Mensagem"}
                   </Button>
                 </form>
               </CardContent>
