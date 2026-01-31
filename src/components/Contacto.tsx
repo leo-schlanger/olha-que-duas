@@ -143,7 +143,7 @@ const Contacto = () => {
             <Card className="bg-charcoal text-white border-0">
               <CardContent className="p-4 md:p-5">
                 <a
-                  href="mailto:olhaqueduas@email.com"
+                  href="mailto:olhaqueduas.assessoria@gmail.com"
                   className="flex items-center gap-3 text-white/80 hover:text-amarelo transition-colors"
                 >
                   <div className="w-9 h-9 bg-white/10 rounded-lg flex items-center justify-center">
@@ -153,7 +153,7 @@ const Contacto = () => {
                     <p className="text-[10px] text-white/40 uppercase tracking-wider">
                       Email
                     </p>
-                    <p className="text-sm font-medium">olhaqueduas@email.com</p>
+                    <p className="text-sm font-medium">olhaqueduas.assessoria@gmail.com</p>
                   </div>
                 </a>
               </CardContent>
