@@ -32,7 +32,7 @@ const Footer = () => {
               alt="Olha que Duas"
               className="h-10 md:h-12 w-auto rounded-lg mb-3"
             />
-            <p className="text-cream/50 text-xs md:text-sm text-center md:text-left max-w-xs leading-relaxed">
+            <p className="text-cream/70 text-xs md:text-sm text-center md:text-left max-w-xs leading-relaxed">
               Comunicação, Voz e Negócios com Propósito.
             </p>
           </div>
@@ -43,7 +43,7 @@ const Footer = () => {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-cream/50 hover:text-amarelo transition-colors text-xs md:text-sm"
+                className="text-cream/70 hover:text-amarelo transition-colors text-xs md:text-sm"
               >
                 {link.label}
               </a>
@@ -82,10 +82,10 @@ const Footer = () => {
         {/* Divider */}
         <div className="border-t border-white/10 pt-6">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-2">
-            <p className="text-cream/30 text-xs">
+            <p className="text-cream/40 text-xs">
               © {new Date().getFullYear()} Olha que Duas
             </p>
-            <p className="text-cream/30 text-xs flex items-center gap-1">
+            <p className="text-cream/40 text-xs flex items-center gap-1">
               Feito com{" "}
               <Heart className="w-3 h-3 text-vermelho fill-current" /> em
               Portugal

@@ -18,7 +18,7 @@ const founders = [
     image: marluceImg,
     role: "Fundadora Olha que Duas | Diretora Executiva",
     description:
-      "Background em moda e negócios. Especialista em representação de marcas com propósito e autenticidade.",
+      "Empresária de relações públicas com uma carreira marcada por parcerias com alguns dos nomes mais influentes da publicidade em Portugal. Com forte ligação aos meios de comunicação social, construiu uma reputação sólida na gestão de imagem, networking estratégico e comunicação de alto impacto. Com experiência no universo da moda como fashion advisor, destacou-se também na produção de eventos e no lançamento de novos talentos através da Marluce Produções, onde impulsiona carreiras e cria projetos que unem criatividade, visibilidade e estratégia.",
     initials: "M",
     imagePosition: "object-cover",
   },

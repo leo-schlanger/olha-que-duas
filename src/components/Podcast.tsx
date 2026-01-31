@@ -38,7 +38,7 @@ const Podcast = () => {
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-semibold text-cream mb-4">
             Conversas que <span className="text-amarelo">importam</span>
           </h2>
-          <p className="text-base md:text-lg text-cream/50">
+          <p className="text-base md:text-lg text-cream/70">
             Damos voz a quem precisa ser ouvido.
           </p>
         </div>
@@ -55,7 +55,7 @@ const Podcast = () => {
               {episodes.map((episode) => (
                 <Card
                   key={episode.title}
-                  className="bg-cream/5 border-cream/10 hover:bg-cream/8 transition-colors cursor-pointer group"
+                  className="bg-cream/5 border-cream/10 cursor-pointer group card-hover-effect"
                 >
                   <CardContent className="p-4">
                     <div className="flex items-center gap-3">
@@ -70,11 +70,11 @@ const Podcast = () => {
                           {episode.title}
                         </h4>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-xs text-cream/40">
+                          <span className="text-xs text-cream/60">
                             {episode.category}
                           </span>
                           <span className="text-xs text-cream/30">•</span>
-                          <span className="text-xs text-cream/40">
+                          <span className="text-xs text-cream/60">
                             {episode.duration}
                           </span>
                         </div>
@@ -87,13 +87,13 @@ const Podcast = () => {
 
             {/* Categories */}
             <div className="mt-6">
-              <p className="text-xs text-cream/40 mb-2">Temas:</p>
+              <p className="text-xs text-cream/60 mb-2">Temas:</p>
               <div className="flex flex-wrap gap-1.5">
                 {categories.map((cat) => (
                   <Badge
                     key={cat}
                     variant="outline"
-                    className="border-cream/15 text-cream/60 hover:bg-cream/10 text-xs font-normal px-2 py-0.5"
+                    className="border-cream/15 text-cream/70 hover:bg-cream/10 text-xs font-normal px-2 py-0.5"
                   >
                     {cat}
                   </Badge>
@@ -112,20 +112,20 @@ const Podcast = () => {
                     Participa!
                   </h3>
                 </div>
-                <p className="text-sm md:text-base text-cream/80 mb-5 leading-relaxed">
+                <p className="text-sm md:text-base text-cream/90 mb-5 leading-relaxed">
                   Tens uma história para contar? Envia-nos e poderás ser o nosso
                   próximo convidado!
                 </p>
                 <Button
                   asChild
-                  className="bg-amarelo text-charcoal hover:bg-amarelo/90 font-medium h-10"
+                  className="bg-amarelo text-charcoal hover:bg-amarelo-soft transition-colors font-medium h-10 shadow-lg shadow-black/5"
                 >
                   <a href="#contacto">Enviar História</a>
                 </Button>
 
                 {/* Platforms */}
                 <div className="mt-6 pt-5 border-t border-cream/15">
-                  <p className="text-xs text-cream/50 mb-3">Ouve-nos em:</p>
+                  <p className="text-xs text-cream/70 mb-3">Ouve-nos em:</p>
                   <div className="flex flex-wrap gap-x-4 gap-y-2">
                     {platforms.map((platform) => (
                       <a
@@ -133,7 +133,7 @@ const Podcast = () => {
                         href={platform.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-cream/60 hover:text-amarelo transition-colors text-xs font-medium"
+                        className="inline-flex items-center gap-1 text-cream/70 hover:text-amarelo transition-colors text-xs font-medium"
                       >
                         {platform.name}
                         <ExternalLink className="w-3 h-3" />

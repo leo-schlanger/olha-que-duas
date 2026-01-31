@@ -12,7 +12,7 @@ const Hero = () => {
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-screen pt-24 pb-20 md:pt-28 md:pb-16">
           {/* Content - Mobile first, stacks on top */}
           <div className="text-cream space-y-6 md:space-y-8 text-center lg:text-left order-2 lg:order-1">
-            <span className="label-sm text-cream/50 block">
+            <span className="label-sm text-cream/70 block">
               Comunicação • Voz • Negócios
             </span>
 
@@ -21,7 +21,7 @@ const Hero = () => {
               <span className="text-amarelo">estratégia</span>
             </h1>
 
-            <p className="text-base md:text-lg text-cream/60 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+            <p className="text-base md:text-lg text-cream/80 max-w-xl mx-auto lg:mx-0 leading-relaxed">
               Somos comunicadoras com propósito, estrategas com coração e
               empreendedoras com visão.
             </p>
@@ -30,7 +30,7 @@ const Hero = () => {
               <Button
                 asChild
                 size="lg"
-                className="bg-cream text-charcoal hover:bg-cream/90 font-medium h-11 md:h-12 px-6 md:px-8"
+                className="btn-primary-glow font-medium h-11 md:h-12 px-6 md:px-8 border-none"
               >
                 <a href="#servicos" className="inline-flex items-center gap-2">
                   Conhecer Serviços
@@ -61,7 +61,7 @@ const Hero = () => {
               </div>
 
               {/* Floating badge */}
-              <div className="absolute -bottom-3 left-4 sm:-bottom-4 sm:-left-4 bg-amarelo text-charcoal px-4 py-2 sm:px-5 sm:py-3 rounded-xl font-display text-base sm:text-lg font-semibold shadow-lg">
+              <div className="absolute -bottom-3 left-4 sm:-bottom-4 sm:-left-4 bg-amarelo text-charcoal px-4 py-2 sm:px-5 sm:py-3 rounded-xl font-display text-base sm:text-lg font-semibold shadow-lg shadow-amarelo/20">
                 Olha bem.
               </div>
             </div>

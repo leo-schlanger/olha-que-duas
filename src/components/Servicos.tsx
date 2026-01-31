@@ -55,20 +55,20 @@ const Servicos = () => {
           {services.map((service) => (
             <Card
               key={service.title}
-              className="group border-border/50 bg-card hover:border-border hover:shadow-md transition-all duration-200"
+              className="group border-border/50 bg-card hover:border-border transition-all duration-200 card-hover-effect"
             >
               <CardContent className="p-5 md:p-6">
                 <div className="flex items-start gap-4">
                   <div
                     className={`flex-shrink-0 w-10 h-10 md:w-11 md:h-11 rounded-lg flex items-center justify-center transition-colors ${service.color === "vermelho"
-                        ? "bg-primary/10 group-hover:bg-primary/15"
-                        : "bg-secondary/20 group-hover:bg-secondary/30"
+                      ? "bg-primary/10 group-hover:bg-primary/15"
+                      : "bg-secondary/20 group-hover:bg-secondary/30"
                       }`}
                   >
                     <service.icon
                       className={`w-5 h-5 ${service.color === "vermelho"
-                          ? "text-primary"
-                          : "text-secondary-foreground"
+                        ? "text-primary"
+                        : "text-secondary-foreground"
                         }`}
                     />
                   </div>
@@ -90,7 +90,7 @@ const Servicos = () => {
         <div className="text-center">
           <Button
             asChild
-            className="bg-primary hover:bg-primary/90 h-10 md:h-11 px-6 md:px-8 font-medium"
+            className="btn-primary-glow h-10 md:h-11 px-6 md:px-8 font-medium border-none"
           >
             <a href="#contacto" className="inline-flex items-center gap-2">
               Fala Conosco

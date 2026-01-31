@@ -11,8 +11,9 @@
     /* Core Brand Colors - Softer, more sophisticated */
     --vermelho: 8 72% 50%;
     --vermelho-soft: 8 65% 58%;
-    --amarelo: 42 92% 56%;
-    --amarelo-soft: 42 80% 65%;
+    /* Refined Gold/Amarelo */
+    --amarelo: 45 80% 60%;
+    --amarelo-soft: 45 70% 70%;
 
     /* Warm Beige Palette - Fluid & Light */
     --beige-light: 38 40% 96%;
@@ -37,7 +38,7 @@
     --primary: 8 72% 50%;
     --primary-foreground: 40 45% 97%;
 
-    --secondary: 42 92% 56%;
+    --secondary: 45 80% 60%;
     --secondary-foreground: 30 20% 35%;
 
     --muted: 36 30% 90%;
@@ -114,6 +115,15 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+  
+  /* New UI Effects */
+  .btn-primary-glow {
+    @apply bg-vermelho text-cream transition-all duration-300 hover:bg-vermelho-soft hover:-translate-y-0.5 shadow-lg shadow-vermelho/20;
+  }
+
+  .card-hover-effect {
+    @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-amarelo/10 border-cream/10;
   }
 }
 
