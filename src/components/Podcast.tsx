@@ -10,28 +10,21 @@ const episodes = [
     duration: "45 min",
   },
   {
-    title: "Saúde Mental na Vida Moderna",
+    title: "Saúde na Vida Moderna",
     category: "Sociedade",
     duration: "38 min",
-  },
-  {
-    title: "Maternidade Real: Sem Filtros",
-    category: "Maternidade",
-    duration: "52 min",
   },
 ];
 
 const categories = [
   "Justiça",
-  "Saúde Mental",
-  "Maternidade",
+  "Saúde",
   "Empreendedorismo",
   "Cultura",
 ];
 
 const platforms = [
   { name: "Spotify", url: "https://open.spotify.com" },
-  { name: "Apple Podcasts", url: "https://podcasts.apple.com" },
   { name: "YouTube", url: "https://youtube.com" },
 ];
 

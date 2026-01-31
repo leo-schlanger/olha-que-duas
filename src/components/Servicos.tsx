@@ -7,7 +7,7 @@ const services = [
     icon: Mic,
     title: "Podcast",
     description:
-      "Conversas profundas sobre temas que importam — justiça, saúde mental, maternidade e empreendedorismo.",
+      "Conversas profundas sobre temas que importam — justiça, saúde, empreendedorismo, atualidades e muito mais.",
     color: "vermelho" as const,
   },
   {
@@ -60,18 +60,16 @@ const Servicos = () => {
               <CardContent className="p-5 md:p-6">
                 <div className="flex items-start gap-4">
                   <div
-                    className={`flex-shrink-0 w-10 h-10 md:w-11 md:h-11 rounded-lg flex items-center justify-center transition-colors ${
-                      service.color === "vermelho"
+                    className={`flex-shrink-0 w-10 h-10 md:w-11 md:h-11 rounded-lg flex items-center justify-center transition-colors ${service.color === "vermelho"
                         ? "bg-primary/10 group-hover:bg-primary/15"
                         : "bg-secondary/20 group-hover:bg-secondary/30"
-                    }`}
+                      }`}
                   >
                     <service.icon
-                      className={`w-5 h-5 ${
-                        service.color === "vermelho"
+                      className={`w-5 h-5 ${service.color === "vermelho"
                           ? "text-primary"
                           : "text-secondary-foreground"
-                      }`}
+                        }`}
                     />
                   </div>
                   <div className="flex-1 min-w-0">
