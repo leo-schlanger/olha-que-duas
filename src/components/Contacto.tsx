@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Mail, Phone, Instagram, Facebook, Send, ArrowRight } from "lucide-react";
+import { Mail, Instagram, Facebook, Send, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,28 +35,30 @@ const Contacto = () => {
   };
 
   return (
-    <section id="contacto" className="section-padding bg-background">
-      <div className="container mx-auto px-4">
+    <section id="contacto" className="py-16 md:py-24 lg:py-32 bg-background">
+      <div className="container mx-auto px-4 sm:px-6">
         {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center mb-16 md:mb-20">
-          <span className="label-sm text-primary mb-4 block">Contacto</span>
-          <h2 className="heading-lg text-foreground mb-6">
+        <div className="max-w-2xl mx-auto text-center mb-10 md:mb-14">
+          <span className="label-sm text-primary mb-3 block">Contacto</span>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-semibold text-foreground mb-4">
             Fala <span className="text-gradient-brand">Conosco</span>
           </h2>
-          <p className="body-lg max-w-2xl mx-auto">
-            Queres trabalhar connosco ou tens uma ideia para partilhar? Estamos aqui para ouvir!
+          <p className="text-base md:text-lg text-muted-foreground">
+            Queres trabalhar connosco? Estamos aqui para ouvir!
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-5 gap-10 lg:gap-12 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
           {/* Contact Form */}
-          <div className="lg:col-span-3">
-            <Card className="border-border shadow-soft">
-              <CardContent className="p-8">
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid sm:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="nome">Nome</Label>
+          <div className="lg:col-span-2">
+            <Card className="border-border/50">
+              <CardContent className="p-5 md:p-6">
+                <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="nome" className="text-sm">
+                        Nome
+                      </Label>
                       <Input
                         id="nome"
                         name="nome"
@@ -64,10 +66,13 @@ const Contacto = () => {
                         onChange={handleChange}
                         placeholder="O teu nome"
                         required
+                        className="h-10"
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="email" className="text-sm">
+                        Email
+                      </Label>
                       <Input
                         type="email"
                         id="email"
@@ -76,17 +81,22 @@ const Contacto = () => {
                         onChange={handleChange}
                         placeholder="o.teu@email.com"
                         required
+                        className="h-10"
                       />
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="assunto">Assunto</Label>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="assunto" className="text-sm">
+                      Assunto
+                    </Label>
                     <Select
                       value={formData.assunto}
-                      onValueChange={(value) => setFormData({ ...formData, assunto: value })}
+                      onValueChange={(value) =>
+                        setFormData({ ...formData, assunto: value })
+                      }
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="h-10">
                         <SelectValue placeholder="Seleciona um assunto" />
                       </SelectTrigger>
                       <SelectContent>
@@ -99,23 +109,25 @@ const Contacto = () => {
                     </Select>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="mensagem">Mensagem</Label>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="mensagem" className="text-sm">
+                      Mensagem
+                    </Label>
                     <Textarea
                       id="mensagem"
                       name="mensagem"
                       value={formData.mensagem}
                       onChange={handleChange}
-                      placeholder="Conta-nos mais sobre o teu projeto ou ideia..."
-                      rows={5}
+                      placeholder="Conta-nos mais sobre o teu projeto..."
+                      rows={4}
                       required
+                      className="resize-none"
                     />
                   </div>
 
                   <Button
                     type="submit"
-                    size="lg"
-                    className="w-full bg-primary hover:bg-primary/90 h-12 font-medium shadow-primary"
+                    className="w-full bg-primary hover:bg-primary/90 h-10 font-medium"
                   >
                     <Send className="w-4 h-4 mr-2" />
                     Enviar Mensagem
@@ -125,63 +137,50 @@ const Contacto = () => {
             </Card>
           </div>
 
-          {/* Contact Info */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Info Card */}
+          {/* Contact Info - Sidebar */}
+          <div className="space-y-4">
+            {/* Email Card */}
             <Card className="bg-charcoal text-white border-0">
-              <CardContent className="p-6">
-                <h3 className="text-lg font-display font-semibold mb-6">Informações</h3>
-                <div className="space-y-4">
-                  <a
-                    href="mailto:olhaqueduas@email.com"
-                    className="flex items-center gap-4 text-white/80 hover:text-amarelo transition-colors"
-                  >
-                    <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
-                      <Mail className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-white/50">Email</p>
-                      <p className="text-sm font-medium">olhaqueduas@email.com</p>
-                    </div>
-                  </a>
-                  <a
-                    href="tel:+351000000000"
-                    className="flex items-center gap-4 text-white/80 hover:text-amarelo transition-colors"
-                  >
-                    <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
-                      <Phone className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-white/50">Telefone</p>
-                      <p className="text-sm font-medium">+351 000 000 000</p>
-                    </div>
-                  </a>
-                </div>
+              <CardContent className="p-4 md:p-5">
+                <a
+                  href="mailto:olhaqueduas@email.com"
+                  className="flex items-center gap-3 text-white/80 hover:text-amarelo transition-colors"
+                >
+                  <div className="w-9 h-9 bg-white/10 rounded-lg flex items-center justify-center">
+                    <Mail className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-white/40 uppercase tracking-wider">
+                      Email
+                    </p>
+                    <p className="text-sm font-medium">olhaqueduas@email.com</p>
+                  </div>
+                </a>
               </CardContent>
             </Card>
 
             {/* Social Media */}
-            <Card className="border-border">
-              <CardContent className="p-6">
-                <h3 className="text-lg font-display font-semibold text-foreground mb-4">
+            <Card className="border-border/50">
+              <CardContent className="p-4 md:p-5">
+                <h3 className="text-sm font-semibold text-foreground mb-3">
                   Segue-nos
                 </h3>
-                <div className="flex gap-3">
+                <div className="flex gap-2">
                   <a
                     href="https://www.instagram.com/olhaqueduas2025"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-12 h-12 bg-gradient-to-br from-pink-500 to-orange-500 rounded-xl flex items-center justify-center text-white hover:scale-110 transition-transform"
+                    className="w-10 h-10 bg-gradient-to-br from-pink-500 to-orange-500 rounded-lg flex items-center justify-center text-white hover:opacity-90 transition-opacity"
                   >
-                    <Instagram className="w-5 h-5" />
+                    <Instagram className="w-4 h-4" />
                   </a>
                   <a
                     href="https://www.facebook.com/share/17npXT7nNb/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-12 h-12 bg-[#1877F2] rounded-xl flex items-center justify-center text-white hover:scale-110 transition-transform"
+                    className="w-10 h-10 bg-[#1877F2] rounded-lg flex items-center justify-center text-white hover:opacity-90 transition-opacity"
                   >
-                    <Facebook className="w-5 h-5" />
+                    <Facebook className="w-4 h-4" />
                   </a>
                 </div>
               </CardContent>
@@ -189,22 +188,22 @@ const Contacto = () => {
 
             {/* Newsletter */}
             <Card className="bg-amarelo border-0">
-              <CardContent className="p-6">
-                <h3 className="text-lg font-display font-semibold text-charcoal mb-2">
+              <CardContent className="p-4 md:p-5">
+                <h3 className="text-sm font-semibold text-charcoal mb-1">
                   Newsletter
                 </h3>
-                <p className="text-charcoal/70 text-sm mb-4">
+                <p className="text-charcoal/60 text-xs mb-3">
                   Recebe novidades e convites exclusivos.
                 </p>
                 <div className="flex gap-2">
                   <Input
                     type="email"
                     placeholder="O teu email"
-                    className="bg-white border-0"
+                    className="bg-white border-0 h-9 text-sm"
                   />
-                  <Button 
+                  <Button
                     size="icon"
-                    className="bg-charcoal text-white hover:bg-charcoal/90 shrink-0"
+                    className="bg-charcoal text-white hover:bg-charcoal/90 shrink-0 h-9 w-9"
                   >
                     <ArrowRight className="w-4 h-4" />
                   </Button>
