@@ -1,5 +1,5 @@
 import { Instagram, Facebook, Heart } from "lucide-react";
-import logo from "@/assets/logo-olha-que-duas.jpg";
+import logo from "@/assets/logo-olha-que-duas.png";
 
 const TikTokIcon = ({ className }: { className?: string }) => (
   <svg

@@ -8,7 +8,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import logo from "@/assets/logo-olha-que-duas.jpg";
+import logo from "@/assets/logo-olha-que-duas.png";
 
 const navLinks = [
   { href: "#inicio", label: "Início" },
@@ -32,7 +32,7 @@ const Header = () => {
             <img
               src={logo}
               alt="Olha que Duas"
-              className="h-14 md:h-20 w-auto rounded-lg shadow-sm hover:opacity-90 transition-opacity"
+              className="h-20 md:h-28 w-auto rounded-full shadow-sm hover:opacity-90 transition-opacity"
             />
           </a>
 
@@ -71,7 +71,7 @@ const Header = () => {
             <SheetContent side="right" className="w-72 sm:w-80 p-0">
               <SheetHeader className="p-6 pb-4 border-b">
                 <SheetTitle className="text-left">
-                  <img src={logo} alt="Olha que Duas" className="h-14 rounded-lg" />
+                  <img src={logo} alt="Olha que Duas" className="h-20 rounded-full" />
                 </SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col p-4">
