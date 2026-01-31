@@ -11,8 +11,8 @@ const Hero = () => {
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-screen pt-24 pb-20 md:pt-28 md:pb-16">
           {/* Content - Mobile first, stacks on top */}
-          <div className="text-white space-y-6 md:space-y-8 text-center lg:text-left order-2 lg:order-1">
-            <span className="label-sm text-white/50 block">
+          <div className="text-cream space-y-6 md:space-y-8 text-center lg:text-left order-2 lg:order-1">
+            <span className="label-sm text-cream/50 block">
               Comunicação • Voz • Negócios
             </span>
 
@@ -21,7 +21,7 @@ const Hero = () => {
               <span className="text-amarelo">estratégia</span>
             </h1>
 
-            <p className="text-base md:text-lg text-white/60 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+            <p className="text-base md:text-lg text-cream/60 max-w-xl mx-auto lg:mx-0 leading-relaxed">
               Somos comunicadoras com propósito, estrategas com coração e
               empreendedoras com visão.
             </p>
@@ -30,7 +30,7 @@ const Hero = () => {
               <Button
                 asChild
                 size="lg"
-                className="bg-white text-charcoal hover:bg-white/90 font-medium h-11 md:h-12 px-6 md:px-8"
+                className="bg-cream text-charcoal hover:bg-cream/90 font-medium h-11 md:h-12 px-6 md:px-8"
               >
                 <a href="#servicos" className="inline-flex items-center gap-2">
                   Conhecer Serviços
@@ -41,7 +41,7 @@ const Hero = () => {
                 asChild
                 variant="outline"
                 size="lg"
-                className="border-white/20 text-white hover:bg-white/10 hover:text-white font-medium h-11 md:h-12 px-6 md:px-8"
+                className="border-cream/60 bg-cream/10 text-cream hover:bg-cream/20 hover:border-cream font-medium h-11 md:h-12 px-6 md:px-8"
               >
                 <a href="#podcast">Ouvir Podcast</a>
               </Button>
@@ -72,7 +72,7 @@ const Hero = () => {
         <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2">
           <a
             href="#sobre"
-            className="flex flex-col items-center gap-1 text-white/30 hover:text-white/60 transition-colors"
+            className="flex flex-col items-center gap-1 text-cream/30 hover:text-cream/60 transition-colors"
           >
             <span className="text-[10px] uppercase tracking-widest">Explorar</span>
             <ChevronDown className="w-5 h-5 animate-bounce" />

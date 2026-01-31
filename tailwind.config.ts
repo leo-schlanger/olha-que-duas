@@ -29,6 +29,13 @@ export default {
         },
         cream: "hsl(var(--cream))",
         charcoal: "hsl(var(--charcoal))",
+        beige: {
+          light: "hsl(var(--beige-light))",
+          DEFAULT: "hsl(var(--beige))",
+          medium: "hsl(var(--beige-medium))",
+          warm: "hsl(var(--beige-warm))",
+          dark: "hsl(var(--beige-dark))",
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",

@@ -58,7 +58,7 @@ const Header = () => {
                 className={`px-3 lg:px-4 py-2 text-sm font-medium transition-colors rounded-md ${
                   isScrolled
                     ? "text-foreground/70 hover:text-foreground hover:bg-muted"
-                    : "text-white/80 hover:text-white hover:bg-white/10"
+                    : "text-cream/80 hover:text-cream hover:bg-cream/10"
                 }`}
               >
                 {link.label}
@@ -79,7 +79,7 @@ const Header = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className={`h-9 w-9 ${isScrolled ? "text-foreground" : "text-white"}`}
+                className={`h-9 w-9 ${isScrolled ? "text-foreground" : "text-cream"}`}
               >
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Menu</span>

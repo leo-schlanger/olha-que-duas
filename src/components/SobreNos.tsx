@@ -77,8 +77,8 @@ const SobreNos = () => {
 
         {/* Mission Statement */}
         <div className="max-w-2xl mx-auto">
-          <div className="relative bg-charcoal rounded-xl md:rounded-2xl p-6 md:p-10 text-center overflow-hidden">
-            <blockquote className="relative z-10 text-lg md:text-xl text-white/90 font-display italic leading-relaxed">
+          <div className="relative bg-beige-dark rounded-xl md:rounded-2xl p-6 md:p-10 text-center overflow-hidden">
+            <blockquote className="relative z-10 text-lg md:text-xl text-cream/90 font-display italic leading-relaxed">
               "No centro de tudo, está a nossa amizade, a nossa voz e a nossa
               vontade de fazer diferente."
             </blockquote>

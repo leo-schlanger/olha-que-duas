@@ -13,33 +13,38 @@
     --vermelho-soft: 8 65% 58%;
     --amarelo: 42 92% 56%;
     --amarelo-soft: 42 80% 65%;
-    
-    /* Warm Neutrals */
-    --cream: 40 33% 98%;
-    --warm-gray: 30 10% 45%;
-    --charcoal: 20 15% 15%;
-    
+
+    /* Warm Beige Palette - Fluid & Light */
+    --beige-light: 38 40% 96%;
+    --beige: 36 35% 92%;
+    --beige-medium: 34 30% 85%;
+    --beige-warm: 32 25% 75%;
+    --beige-dark: 30 20% 35%;
+    --cream: 40 45% 97%;
+    --warm-gray: 32 15% 55%;
+    --charcoal: 30 20% 35%;
+
     /* Semantic Tokens */
-    --background: 40 33% 98%;
-    --foreground: 20 15% 15%;
+    --background: 38 40% 96%;
+    --foreground: 30 20% 35%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 20 15% 15%;
+    --card: 40 45% 97%;
+    --card-foreground: 30 20% 35%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 20 15% 15%;
+    --popover: 40 45% 97%;
+    --popover-foreground: 30 20% 35%;
 
     --primary: 8 72% 50%;
-    --primary-foreground: 0 0% 100%;
+    --primary-foreground: 40 45% 97%;
 
     --secondary: 42 92% 56%;
-    --secondary-foreground: 20 15% 15%;
+    --secondary-foreground: 30 20% 35%;
 
-    --muted: 30 15% 94%;
-    --muted-foreground: 30 10% 45%;
+    --muted: 36 30% 90%;
+    --muted-foreground: 32 15% 55%;
 
-    --accent: 42 40% 95%;
-    --accent-foreground: 20 15% 15%;
+    --accent: 38 35% 93%;
+    --accent-foreground: 30 20% 35%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
@@ -89,7 +94,7 @@
   }
 
   .bg-hero-gradient {
-    background: linear-gradient(180deg, hsl(var(--charcoal)) 0%, hsl(20 18% 20%) 100%);
+    background: linear-gradient(180deg, hsl(var(--beige-dark)) 0%, hsl(28 25% 45%) 100%);
   }
 
   .label-sm {
