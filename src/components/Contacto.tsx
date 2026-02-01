@@ -38,17 +38,23 @@ const Contacto = () => {
     setIsSubmitting(true);
 
     try {
+      const payload = {
+        // Only include the message in the "body" of the email to keep it clean
+        Mensagem: formData.mensagem,
+
+        // Metadata fields for FormSubmit
+        _subject: `Novo contacto de ${formData.nome} - ${formData.assunto || "Geral"}`,
+        _replyto: formData.email, // Allows replying directly to the sender
+        _template: "box", // "box" is usually cleaner than "table"
+      };
+
       const response = await fetch("https://formsubmit.co/ajax/olhaqueduas.assessoria@gmail.com", {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify({
-          ...formData,
-          _subject: `Novo contacto: ${formData.assunto || "Geral"} - ${formData.nome}`,
-          _template: "table"
-        })
+        body: JSON.stringify(payload)
       });
 
       if (!response.ok) throw new Error("Falha no envio");
