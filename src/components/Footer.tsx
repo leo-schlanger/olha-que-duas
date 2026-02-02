@@ -89,6 +89,15 @@ const Footer = () => {
               Feito com{" "}
               <Heart className="w-3 h-3 text-vermelho fill-current" /> em
               Portugal
+              <span className="mx-2 opacity-50">•</span>
+              <a
+                href="https://leoschlanger.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-amarelo transition-colors"
+              >
+                Por Leo Schlanger *(Clique aqui para ver o meu trabalho)
+              </a>
             </p>
           </div>
         </div>
