@@ -2,6 +2,7 @@ import { Headphones, Play, MessageCircle, ExternalLink } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { siteConfig } from "@/config/site";
 
 const episodes = [
   {
@@ -24,8 +25,8 @@ const categories = [
 ];
 
 const platforms = [
-  { name: "Spotify", url: "https://open.spotify.com" },
-  { name: "YouTube", url: "https://youtube.com/@olhaqueduas-l9m?si=hKFnzKpluIODLFFk" },
+  { name: "Spotify", url: siteConfig.social.spotify },
+  { name: "YouTube", url: siteConfig.social.youtube },
 ];
 
 const Podcast = () => {

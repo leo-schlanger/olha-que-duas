@@ -1,5 +1,6 @@
-import { Instagram, Facebook, Heart } from "lucide-react";
+import { Instagram, Facebook, Heart, Youtube } from "lucide-react";
 import logo from "@/assets/logo-olha-que-duas.png";
+import { siteConfig } from "@/config/site";
 
 const TikTokIcon = ({ className }: { className?: string }) => (
   <svg
@@ -11,14 +12,6 @@ const TikTokIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const quickLinks = [
-  { href: "#inicio", label: "Início" },
-  { href: "#sobre", label: "Sobre" },
-  { href: "#servicos", label: "Serviços" },
-  { href: "#podcast", label: "Podcast" },
-  { href: "#contacto", label: "Contacto" },
-];
-
 const Footer = () => {
   return (
     <footer className="bg-beige-dark text-cream">
@@ -29,17 +22,17 @@ const Footer = () => {
           <div className="flex flex-col items-center md:items-start">
             <img
               src={logo}
-              alt="Olha que Duas"
+              alt={siteConfig.info.name}
               className="h-10 md:h-12 w-auto rounded-lg mb-3"
             />
             <p className="text-cream/70 text-xs md:text-sm text-center md:text-left max-w-xs leading-relaxed">
-              Comunicação, Voz e Negócios com Propósito.
+              {siteConfig.info.tagline}
             </p>
           </div>
 
           {/* Quick Links - Horizontal on mobile */}
           <nav className="flex flex-wrap justify-center md:justify-start gap-x-4 gap-y-2">
-            {quickLinks.map((link) => (
+            {siteConfig.navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
@@ -53,7 +46,7 @@ const Footer = () => {
           {/* Social */}
           <div className="flex justify-center md:justify-start gap-2">
             <a
-              href="https://www.instagram.com/olhaqueduas2025"
+              href={siteConfig.social.instagram}
               target="_blank"
               rel="noopener noreferrer"
               className="w-9 h-9 bg-cream/10 rounded-lg flex items-center justify-center hover:bg-amarelo hover:text-charcoal transition-all"
@@ -61,7 +54,15 @@ const Footer = () => {
               <Instagram className="w-4 h-4" />
             </a>
             <a
-              href="https://www.facebook.com/share/17npXT7nNb/"
+              href={siteConfig.social.youtube}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-9 h-9 bg-cream/10 rounded-lg flex items-center justify-center hover:bg-amarelo hover:text-charcoal transition-all"
+            >
+              <Youtube className="w-4 h-4" />
+            </a>
+            <a
+              href={siteConfig.social.facebook}
               target="_blank"
               rel="noopener noreferrer"
               className="w-9 h-9 bg-cream/10 rounded-lg flex items-center justify-center hover:bg-amarelo hover:text-charcoal transition-all"
@@ -69,7 +70,7 @@ const Footer = () => {
               <Facebook className="w-4 h-4" />
             </a>
             <a
-              href="https://www.tiktok.com/@olha.que.duas_?_r=1&_t=ZG-93XRaLNGROL"
+              href={siteConfig.social.tiktok}
               target="_blank"
               rel="noopener noreferrer"
               className="w-9 h-9 bg-cream/10 rounded-lg flex items-center justify-center hover:bg-amarelo hover:text-charcoal transition-all"
@@ -83,7 +84,7 @@ const Footer = () => {
         <div className="border-t border-white/10 pt-6">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-2">
             <p className="text-cream/40 text-xs">
-              © {new Date().getFullYear()} Olha que Duas
+              © {new Date().getFullYear()} {siteConfig.info.name}
             </p>
             <p className="text-cream/40 text-xs flex items-center gap-1">
               Feito com{" "}
@@ -91,12 +92,12 @@ const Footer = () => {
               Portugal
               <span className="mx-2 opacity-50">•</span>
               <a
-                href="https://leoschlanger.com"
+                href={siteConfig.info.developerUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-amarelo transition-colors"
               >
-                Por Leo Schlanger *(Clique aqui para ver o meu trabalho)
+                Por {siteConfig.info.developerName} *(Clique aqui para ver o meu trabalho)
               </a>
             </p>
           </div>

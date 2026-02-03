@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu } from "lucide-react";
+import { Menu, Youtube } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -9,14 +9,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import logo from "@/assets/logo-olha-que-duas.png";
-
-const navLinks = [
-  { href: "#inicio", label: "Início" },
-  { href: "#sobre", label: "Sobre" },
-  { href: "#servicos", label: "Serviços" },
-  { href: "#podcast", label: "Podcast" },
-  { href: "#contacto", label: "Contacto" },
-];
+import { siteConfig } from "@/config/site";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,7 +31,7 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
+            {siteConfig.navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
@@ -49,8 +42,24 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* CTA Button - Desktop */}
-          <div className="hidden md:block">
+          {/* CTA Buttons - Desktop */}
+          <div className="hidden md:flex items-center gap-2">
+            <Button
+              asChild
+              size="sm"
+              variant="outline"
+              className="border-primary text-primary hover:bg-primary hover:text-white"
+            >
+              <a
+                href={siteConfig.social.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5"
+              >
+                <Youtube className="w-4 h-4" />
+                YouTube
+              </a>
+            </Button>
             <Button asChild size="sm" className="bg-primary hover:bg-primary/90">
               <a href="#contacto">Fala Conosco</a>
             </Button>
@@ -75,7 +84,7 @@ const Header = () => {
                 </SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col p-4">
-                {navLinks.map((link) => (
+                {siteConfig.navLinks.map((link) => (
                   <a
                     key={link.href}
                     href={link.href}
@@ -85,7 +94,23 @@ const Header = () => {
                     {link.label}
                   </a>
                 ))}
-                <div className="mt-4 pt-4 border-t">
+                <div className="mt-4 pt-4 border-t space-y-2">
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="w-full border-primary text-primary hover:bg-primary hover:text-white"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <a
+                      href={siteConfig.social.youtube}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2"
+                    >
+                      <Youtube className="w-4 h-4" />
+                      YouTube
+                    </a>
+                  </Button>
                   <Button
                     asChild
                     className="w-full bg-primary hover:bg-primary/90"

@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Mail, Instagram, Facebook, Send, ArrowRight } from "lucide-react";
+import { Mail, Instagram, Facebook, Youtube, Send, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
+import { siteConfig } from "@/config/site";
 
 const TikTokIcon = ({ className }: { className?: string }) => (
   <svg
@@ -48,7 +49,7 @@ const Contacto = () => {
         _template: "box", // "box" is usually cleaner than "table"
       };
 
-      const response = await fetch("https://formsubmit.co/ajax/olhaqueduas.assessoria@gmail.com", {
+      const response = await fetch(`https://formsubmit.co/ajax/${siteConfig.contact.email}`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
@@ -194,7 +195,7 @@ const Contacto = () => {
             <Card className="bg-beige-dark text-cream border-0">
               <CardContent className="p-4 md:p-5">
                 <a
-                  href="mailto:olhaqueduas.assessoria@gmail.com"
+                  href={`mailto:${siteConfig.contact.email}`}
                   className="flex items-center gap-3 text-cream/80 hover:text-amarelo transition-colors"
                 >
                   <div className="w-9 h-9 bg-cream/10 rounded-lg flex items-center justify-center">
@@ -204,7 +205,7 @@ const Contacto = () => {
                     <p className="text-[10px] text-cream/40 uppercase tracking-wider">
                       Email
                     </p>
-                    <p className="text-sm font-medium">olhaqueduas.assessoria@gmail.com</p>
+                    <p className="text-sm font-medium">{siteConfig.contact.email}</p>
                   </div>
                 </a>
               </CardContent>
@@ -218,7 +219,7 @@ const Contacto = () => {
                 </h3>
                 <div className="flex gap-2">
                   <a
-                    href="https://www.instagram.com/olhaqueduas2025"
+                    href={siteConfig.social.instagram}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-10 h-10 bg-gradient-to-br from-pink-500 to-orange-500 rounded-lg flex items-center justify-center text-white hover:opacity-90 transition-opacity"
@@ -226,7 +227,15 @@ const Contacto = () => {
                     <Instagram className="w-4 h-4" />
                   </a>
                   <a
-                    href="https://www.facebook.com/share/17npXT7nNb/"
+                    href={siteConfig.social.youtube}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-[#FF0000] rounded-lg flex items-center justify-center text-white hover:opacity-90 transition-opacity"
+                  >
+                    <Youtube className="w-4 h-4" />
+                  </a>
+                  <a
+                    href={siteConfig.social.facebook}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-10 h-10 bg-[#1877F2] rounded-lg flex items-center justify-center text-white hover:opacity-90 transition-opacity"
@@ -234,7 +243,7 @@ const Contacto = () => {
                     <Facebook className="w-4 h-4" />
                   </a>
                   <a
-                    href="https://www.tiktok.com/@olha.que.duas_?_r=1&_t=ZG-93XRaLNGROL"
+                    href={siteConfig.social.tiktok}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-10 h-10 bg-black rounded-lg flex items-center justify-center text-white hover:opacity-90 transition-opacity"
