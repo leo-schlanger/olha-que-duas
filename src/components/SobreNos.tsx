@@ -2,6 +2,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import alexandraImg from "@/assets/alexandra.jpg";
 import marluceImg from "@/assets/marluce.jpg";
+import leoImg from "@/assets/leo.png";
 
 const founders = [
   {
@@ -14,12 +15,24 @@ const founders = [
     imagePosition: "object-cover object-top", // Ajusta para mostrar mais o rosto
   },
   {
-    name: "Marluce",
+    name: "Marluce Revoredo",
     image: marluceImg,
     role: "Fundadora Olha que Duas | Diretora Executiva",
     description:
       "Empresária de relações públicas com uma carreira marcada por parcerias com alguns dos nomes mais influentes da publicidade em Portugal. Com forte ligação aos meios de comunicação social, construiu uma reputação sólida na gestão de imagem, networking estratégico e comunicação de alto impacto. Com experiência no universo da moda como fashion advisor, destacou-se também na produção de eventos e no lançamento de novos talentos através da Marluce Produções, onde impulsiona carreiras e cria projetos que unem criatividade, visibilidade e estratégia.",
     initials: "M",
+    imagePosition: "object-cover",
+  },
+];
+
+const team = [
+  {
+    name: "Leo Schlanger",
+    image: leoImg,
+    role: "Desenvolvimento & TI",
+    description:
+      "Desenvolvedor de software sénior com expertise em cibersegurança e infraestrutura. Apaixonado por automações e tecnologias Web3, é o responsável por toda a vertente tecnológica do projeto, garantindo soluções robustas, seguras e inovadoras que sustentam a presença digital do Olha que Duas.",
+    initials: "LS",
     imagePosition: "object-cover",
   },
 ];
@@ -68,6 +81,47 @@ const SobreNos = () => {
                   </span>
                   <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
                     {founder.description}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Team */}
+        <div className="max-w-2xl mx-auto text-center mb-8 md:mb-10">
+          <span className="label-sm text-primary mb-3 block">A Nossa Equipa</span>
+          <h3 className="text-xl sm:text-2xl md:text-3xl font-display font-semibold text-foreground mb-4">
+            Quem nos <span className="text-gradient-brand">apoia</span>
+          </h3>
+        </div>
+
+        <div className="flex justify-center mb-12 md:mb-16">
+          {team.map((member) => (
+            <Card
+              key={member.name}
+              className="border-border/50 hover:border-border hover:shadow-md transition-all duration-300 max-w-sm"
+            >
+              <CardContent className="p-5 md:p-6">
+                <div className="flex flex-col items-center text-center">
+                  <Avatar className="w-20 h-20 md:w-24 md:h-24 mb-4 ring-2 ring-muted">
+                    <AvatarImage
+                      src={member.image}
+                      alt={member.name}
+                      className={member.imagePosition}
+                    />
+                    <AvatarFallback className="text-xl font-display bg-primary/10 text-primary">
+                      {member.initials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <h3 className="text-lg md:text-xl font-display font-semibold text-foreground mb-1">
+                    {member.name}
+                  </h3>
+                  <span className="text-[10px] md:text-xs text-primary font-medium mb-3 leading-tight">
+                    {member.role}
+                  </span>
+                  <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
+                    {member.description}
                   </p>
                 </div>
               </CardContent>

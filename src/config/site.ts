@@ -41,4 +41,13 @@ export const siteConfig = {
     url: "https://www.youtube.com/watch?v=Lfl2DttvXK0",
     title: "Conheça Olha que Duas",
   },
+
+  // Parceiros
+  partners: [
+    {
+      name: "Oriflame",
+      logo: "/partners/oriflame.jpg",
+      url: "https://shop.oriflame.com/PT-alexandraserra/bGOLVwKh5",
+    },
+  ],
 } as const;
