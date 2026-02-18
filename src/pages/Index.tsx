@@ -4,6 +4,7 @@ import VideoShowcase from "@/components/VideoShowcase";
 import SobreNos from "@/components/SobreNos";
 import Servicos from "@/components/Servicos";
 import Podcast from "@/components/Podcast";
+import RadioPlayer from "@/components/RadioPlayer";
 import Parceiros from "@/components/Parceiros";
 import Contacto from "@/components/Contacto";
 import Footer from "@/components/Footer";
@@ -18,6 +19,7 @@ const Index = () => {
         <SobreNos />
         <Servicos />
         <Podcast />
+        <RadioPlayer />
         <Parceiros />
         <Contacto />
       </main>

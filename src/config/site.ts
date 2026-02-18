@@ -24,6 +24,7 @@ export const siteConfig = {
     { href: "#sobre", label: "Sobre" },
     { href: "#servicos", label: "Serviços" },
     { href: "#podcast", label: "Podcast" },
+    { href: "#radio", label: "Rádio" },
     { href: "#contacto", label: "Contacto" },
   ],
 
@@ -40,6 +41,15 @@ export const siteConfig = {
     youtubeId: "Lfl2DttvXK0",
     url: "https://www.youtube.com/watch?v=Lfl2DttvXK0",
     title: "Conheça Olha que Duas",
+  },
+
+  // Rádio / Stream
+  radio: {
+    name: "Rádio Olha que Duas",
+    // URL do stream Icecast - substitua pela URL real quando a VPS estiver configurada
+    streamUrl: "", // Exemplo: "https://stream.olhaqueduas.com:8000/live"
+    isLive: false, // Altere para true quando o stream estiver ativo
+    tagline: "A sua voz, 24 horas por dia",
   },
 
   // Parceiros
