@@ -25,7 +25,7 @@ const Header = () => {
             <img
               src={logo}
               alt="Olha que Duas"
-              className="h-20 md:h-28 w-auto rounded-full shadow-sm hover:opacity-90 transition-opacity"
+              className="h-28 md:h-36 w-auto rounded-full shadow-sm hover:opacity-90 transition-opacity"
             />
           </a>
 
@@ -80,7 +80,7 @@ const Header = () => {
             <SheetContent side="right" className="w-72 sm:w-80 p-0">
               <SheetHeader className="p-6 pb-4 border-b">
                 <SheetTitle className="text-left">
-                  <img src={logo} alt="Olha que Duas" className="h-20 rounded-full" />
+                  <img src={logo} alt="Olha que Duas" className="h-28 rounded-full" />
                 </SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col p-4">
