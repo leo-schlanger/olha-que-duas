@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { Radio, Play, Pause, Volume2, VolumeX, Headphones, Music2 } from "lucide-react";
+import { Radio, Play, Pause, Volume2, VolumeX, Headphones, Music } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { Card, CardContent } from "@/components/ui/card";
 import { siteConfig } from "@/config/site";
 
 const RadioPlayer = () => {
@@ -43,153 +44,179 @@ const RadioPlayer = () => {
   };
 
   return (
-    <section id="radio" className="py-16 md:py-24 lg:py-32 bg-gradient-to-br from-charcoal via-charcoal to-beige-dark overflow-hidden relative">
-      {/* Decorative elements */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 -left-20 w-64 h-64 bg-vermelho/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-amarelo/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
-      </div>
-
-      <div className="container mx-auto px-4 sm:px-6 relative z-10">
-        {/* Header */}
-        <div className="text-center mb-12 md:mb-16">
-          <span className="label-sm text-amarelo mb-3 block">Ouve-nos agora</span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-cream mb-4">
-            {radio.name}
+    <section id="radio" className="py-16 md:py-24 lg:py-32 bg-beige-dark text-cream">
+      <div className="container mx-auto px-4 sm:px-6">
+        {/* Section Header */}
+        <div className="max-w-2xl mx-auto text-center mb-10 md:mb-14">
+          <span className="label-sm text-amarelo mb-3 block">Radio</span>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-semibold text-cream mb-4">
+            Ouve-nos <span className="text-amarelo">agora</span>
           </h2>
-          <p className="text-base md:text-lg text-cream/70 max-w-2xl mx-auto">
+          <p className="text-base md:text-lg text-cream/70">
             {radio.tagline}
           </p>
         </div>
 
-        {/* Main Player Card */}
-        <div className="max-w-3xl mx-auto">
-          <div className="relative bg-gradient-to-br from-vermelho/90 via-vermelho to-vermelho-soft rounded-3xl p-8 md:p-12 shadow-2xl shadow-vermelho/30 overflow-hidden">
-            {/* Animated background pattern */}
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_50%)]" />
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(255,255,255,0.15),transparent_40%)]" />
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 max-w-5xl mx-auto">
+          {/* Player Card */}
+          <div>
+            <Card className="bg-gradient-to-br from-vermelho to-vermelho-soft border-0 text-cream overflow-hidden">
+              <CardContent className="p-5 md:p-6 lg:p-8">
+                {/* Audio Element (hidden) */}
+                {radio.streamUrl && (
+                  <audio ref={audioRef} src={radio.streamUrl} preload="none" />
+                )}
 
-            {/* Audio Element (hidden) */}
-            {radio.streamUrl && (
-              <audio ref={audioRef} src={radio.streamUrl} preload="none" />
-            )}
-
-            <div className="relative z-10">
-              {/* Player Content */}
-              <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
-                {/* Play Button with Animation */}
-                <div className="flex-shrink-0">
-                  <div className="relative">
-                    {/* Pulse rings when playing */}
-                    {isPlaying && (
-                      <>
-                        <div className="absolute inset-0 rounded-full border-2 border-amarelo/50 animate-ping" style={{ animationDuration: "2s" }} />
-                        <div className="absolute inset-0 rounded-full border-2 border-amarelo/30 animate-ping" style={{ animationDuration: "2s", animationDelay: "0.5s" }} />
-                      </>
-                    )}
-                    <Button
-                      onClick={togglePlay}
-                      className={`w-28 h-28 md:w-36 md:h-36 rounded-full transition-all duration-300 ${
-                        isPlaying
-                          ? "bg-amarelo hover:bg-amarelo-soft text-charcoal shadow-xl shadow-amarelo/40 scale-100"
-                          : "bg-amarelo hover:bg-amarelo-soft text-charcoal shadow-lg shadow-amarelo/30 hover:scale-105"
-                      }`}
-                    >
-                      {isPlaying ? (
-                        <Pause className="w-12 h-12 md:w-14 md:h-14" fill="currentColor" />
-                      ) : (
-                        <Play className="w-12 h-12 md:w-14 md:h-14 ml-2" fill="currentColor" />
-                      )}
-                    </Button>
+                {/* Header with Live Status */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <Radio className="w-5 h-5 text-amarelo" />
+                    <h3 className="text-lg md:text-xl font-display font-semibold">
+                      {radio.name}
+                    </h3>
                   </div>
-                </div>
-
-                {/* Info & Controls */}
-                <div className="flex-1 w-full text-center md:text-left">
-                  {/* Live Status */}
-                  <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
-                    <span className="relative flex h-3 w-3">
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex h-2.5 w-2.5">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
                     </span>
-                    <span className="text-green-400 font-semibold text-sm uppercase tracking-wider">
+                    <span className="text-green-400 font-medium text-xs uppercase tracking-wider">
                       No ar
                     </span>
                   </div>
+                </div>
 
-                  {/* Now Playing Info */}
-                  <div className="mb-6">
-                    <p className="text-cream/80 text-lg md:text-xl font-medium mb-1">
+                {/* Player Controls */}
+                <div className="flex items-center gap-4 mb-6">
+                  <button
+                    onClick={togglePlay}
+                    className={`flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-200 ${
+                      isPlaying
+                        ? "bg-amarelo text-charcoal scale-105 shadow-lg shadow-amarelo/30"
+                        : "bg-amarelo text-charcoal hover:scale-105 hover:shadow-lg hover:shadow-amarelo/30"
+                    }`}
+                  >
+                    {isPlaying ? (
+                      <Pause className="w-6 h-6" fill="currentColor" />
+                    ) : (
+                      <Play className="w-6 h-6 ml-0.5" fill="currentColor" />
+                    )}
+                  </button>
+
+                  <div className="flex-1">
+                    <p className="text-cream font-medium mb-1">
                       {isPlaying ? "A tocar agora" : "Clica para ouvir"}
                     </p>
-                    <p className="text-cream/50 text-sm">
-                      Streaming 24 horas por dia
+                    <p className="text-cream/60 text-sm">
+                      Streaming 24/7
                     </p>
                   </div>
-
-                  {/* Audio Visualizer (when playing) */}
-                  {isPlaying && (
-                    <div className="flex items-end justify-center md:justify-start gap-1 h-10 mb-6">
-                      {[...Array(16)].map((_, i) => (
-                        <div
-                          key={i}
-                          className="w-1.5 md:w-2 bg-amarelo rounded-full"
-                          style={{
-                            height: `${20 + Math.random() * 80}%`,
-                            animation: `pulse 0.5s ease-in-out infinite`,
-                            animationDelay: `${i * 0.05}s`,
-                          }}
-                        />
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Volume Control */}
-                  <div className="flex items-center gap-3 max-w-xs mx-auto md:mx-0">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={toggleMute}
-                      className="text-cream/70 hover:text-cream hover:bg-cream/10 h-10 w-10"
-                    >
-                      {isMuted || volume === 0 ? (
-                        <VolumeX className="w-5 h-5" />
-                      ) : (
-                        <Volume2 className="w-5 h-5" />
-                      )}
-                    </Button>
-                    <Slider
-                      value={[isMuted ? 0 : volume]}
-                      onValueChange={handleVolumeChange}
-                      max={100}
-                      step={1}
-                      className="flex-1"
-                    />
-                    <span className="text-sm text-cream/60 w-10 text-right">
-                      {isMuted ? 0 : volume}%
-                    </span>
-                  </div>
                 </div>
-              </div>
-            </div>
+
+                {/* Audio Visualizer (when playing) */}
+                {isPlaying && (
+                  <div className="flex items-end justify-start gap-0.5 h-8 mb-6">
+                    {[...Array(24)].map((_, i) => (
+                      <div
+                        key={i}
+                        className="w-1 bg-amarelo/80 rounded-full"
+                        style={{
+                          height: `${20 + Math.random() * 80}%`,
+                          animation: `pulse 0.4s ease-in-out infinite`,
+                          animationDelay: `${i * 0.03}s`,
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {/* Volume Control */}
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={toggleMute}
+                    className="text-cream/70 hover:text-cream hover:bg-cream/10 h-9 w-9"
+                  >
+                    {isMuted || volume === 0 ? (
+                      <VolumeX className="w-4 h-4" />
+                    ) : (
+                      <Volume2 className="w-4 h-4" />
+                    )}
+                  </Button>
+                  <Slider
+                    value={[isMuted ? 0 : volume]}
+                    onValueChange={handleVolumeChange}
+                    max={100}
+                    step={1}
+                    className="flex-1"
+                  />
+                  <span className="text-xs text-cream/60 w-8 text-right">
+                    {isMuted ? 0 : volume}%
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
-          {/* Features */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
-            <div className="flex items-center justify-center gap-3 bg-cream/5 backdrop-blur-sm border border-cream/10 rounded-xl p-4">
-              <Headphones className="w-5 h-5 text-amarelo" />
-              <span className="text-cream/70 text-sm">Streaming de alta qualidade</span>
-            </div>
-            <div className="flex items-center justify-center gap-3 bg-cream/5 backdrop-blur-sm border border-cream/10 rounded-xl p-4">
-              <Radio className="w-5 h-5 text-amarelo" />
-              <span className="text-cream/70 text-sm">24 horas no ar</span>
-            </div>
-            <div className="flex items-center justify-center gap-3 bg-cream/5 backdrop-blur-sm border border-cream/10 rounded-xl p-4">
-              <Music2 className="w-5 h-5 text-amarelo" />
-              <span className="text-cream/70 text-sm">Conteudo exclusivo</span>
-            </div>
+          {/* Info Cards */}
+          <div className="space-y-4">
+            {/* Quality Card */}
+            <Card className="bg-cream/5 border-cream/10">
+              <CardContent className="p-4 md:p-5">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-10 h-10 bg-amarelo/10 rounded-lg flex items-center justify-center">
+                    <Headphones className="w-5 h-5 text-amarelo" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-cream mb-1">
+                      Alta Qualidade
+                    </h4>
+                    <p className="text-xs text-cream/60 leading-relaxed">
+                      Streaming em 192kbps para uma experiencia de audio cristalina.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 24/7 Card */}
+            <Card className="bg-cream/5 border-cream/10">
+              <CardContent className="p-4 md:p-5">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-10 h-10 bg-amarelo/10 rounded-lg flex items-center justify-center">
+                    <Radio className="w-5 h-5 text-amarelo" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-cream mb-1">
+                      Sempre no Ar
+                    </h4>
+                    <p className="text-xs text-cream/60 leading-relaxed">
+                      24 horas por dia, 7 dias por semana. A tua companhia a qualquer momento.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Content Card */}
+            <Card className="bg-cream/5 border-cream/10">
+              <CardContent className="p-4 md:p-5">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-10 h-10 bg-amarelo/10 rounded-lg flex items-center justify-center">
+                    <Music className="w-5 h-5 text-amarelo" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-cream mb-1">
+                      Conteudo Exclusivo
+                    </h4>
+                    <p className="text-xs text-cream/60 leading-relaxed">
+                      Musica, conversas inspiradoras e muito mais, tudo no mesmo lugar.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
