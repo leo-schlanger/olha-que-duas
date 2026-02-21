@@ -43,13 +43,16 @@ export const siteConfig = {
     title: "Conheça Olha que Duas",
   },
 
-  // Rádio / Stream
+  // Rádio / Stream - AzuraCast
   radio: {
     name: "Rádio Olha que Duas",
-    // URL do stream Icecast - substitua pela URL real quando a VPS estiver configurada
-    streamUrl: "", // Exemplo: "https://stream.olhaqueduas.com:8000/live"
-    isLive: false, // Altere para true quando o stream estiver ativo
+    // URL do stream AzuraCast (formato: /listen/{station_shortname}/radio.mp3)
+    streamUrl: "https://radio.olhaqueduas.com/listen/olhaqueduas/radio.mp3",
+    isLive: true, // Rádio ativa
     tagline: "A sua voz, 24 horas por dia",
+    // URLs alternativas (caso precise):
+    // - HLS: https://radio.olhaqueduas.com/hls/olhaqueduas/live.m3u8
+    // - Porta direta: https://radio.olhaqueduas.com:8000/radio.mp3
   },
 
   // Parceiros
