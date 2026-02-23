@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Menu, Youtube } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,15 +32,25 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
-            {siteConfig.navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="px-3 lg:px-4 py-2 text-sm font-medium transition-colors rounded-md text-foreground/70 hover:text-foreground hover:bg-muted"
-              >
-                {link.label}
-              </a>
-            ))}
+            {siteConfig.navLinks.map((link) =>
+              'isRoute' in link && link.isRoute ? (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className="px-3 lg:px-4 py-2 text-sm font-medium transition-colors rounded-md text-foreground/70 hover:text-foreground hover:bg-muted"
+                >
+                  {link.label}
+                </Link>
+              ) : (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="px-3 lg:px-4 py-2 text-sm font-medium transition-colors rounded-md text-foreground/70 hover:text-foreground hover:bg-muted"
+                >
+                  {link.label}
+                </a>
+              )
+            )}
           </nav>
 
           {/* CTA Buttons - Desktop */}
@@ -84,16 +95,27 @@ const Header = () => {
                 </SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col p-4">
-                {siteConfig.navLinks.map((link) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setIsOpen(false)}
-                    className="px-4 py-3 text-base font-medium text-foreground/80 hover:text-foreground hover:bg-muted rounded-lg transition-colors"
-                  >
-                    {link.label}
-                  </a>
-                ))}
+                {siteConfig.navLinks.map((link) =>
+                  'isRoute' in link && link.isRoute ? (
+                    <Link
+                      key={link.href}
+                      to={link.href}
+                      onClick={() => setIsOpen(false)}
+                      className="px-4 py-3 text-base font-medium text-foreground/80 hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setIsOpen(false)}
+                      className="px-4 py-3 text-base font-medium text-foreground/80 hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  )
+                )}
                 <div className="mt-4 pt-4 border-t space-y-2">
                   <Button
                     asChild
