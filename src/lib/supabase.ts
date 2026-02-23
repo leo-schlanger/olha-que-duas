@@ -1,14 +1,32 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Supabase credentials not configured. Blog features will be disabled.');
+let supabaseInstance: SupabaseClient | null = null;
+
+function isValidUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
 }
 
-export const supabase = supabaseUrl && supabaseAnonKey
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : null;
+export function getSupabase(): SupabaseClient | null {
+  if (supabaseInstance) return supabaseInstance;
 
-export const isSupabaseConfigured = () => !!supabase;
+  if (!supabaseUrl || !supabaseAnonKey || !isValidUrl(supabaseUrl)) {
+    return null;
+  }
+
+  supabaseInstance = createClient(supabaseUrl, supabaseAnonKey);
+  return supabaseInstance;
+}
+
+export const supabase = getSupabase();
+
+export const isSupabaseConfigured = () => {
+  return !!(supabaseUrl && supabaseAnonKey && isValidUrl(supabaseUrl));
+};

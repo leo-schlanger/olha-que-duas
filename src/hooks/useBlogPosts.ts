@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
 import type { BlogPost, BlogFilters } from '@/types/blog';
 
 export function useBlogPosts(filters: BlogFilters = {}, limit = 20) {
   return useQuery({
     queryKey: ['blog-posts', filters, limit],
     queryFn: async (): Promise<BlogPost[]> => {
+      const supabase = getSupabase();
       if (!isSupabaseConfigured() || !supabase) {
         return [];
       }
@@ -47,6 +48,7 @@ export function useBlogPost(slug: string) {
   return useQuery({
     queryKey: ['blog-post', slug],
     queryFn: async (): Promise<BlogPost | null> => {
+      const supabase = getSupabase();
       if (!isSupabaseConfigured() || !supabase) {
         return null;
       }
@@ -77,6 +79,7 @@ export function useBlogCategories() {
   return useQuery({
     queryKey: ['blog-categories'],
     queryFn: async (): Promise<string[]> => {
+      const supabase = getSupabase();
       if (!isSupabaseConfigured() || !supabase) {
         return [];
       }
@@ -103,6 +106,7 @@ export function useBlogRegions() {
   return useQuery({
     queryKey: ['blog-regions'],
     queryFn: async (): Promise<string[]> => {
+      const supabase = getSupabase();
       if (!isSupabaseConfigured() || !supabase) {
         return [];
       }

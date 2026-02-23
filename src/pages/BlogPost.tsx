@@ -43,7 +43,7 @@ export default function BlogPost() {
     return (
       <div className="min-h-screen flex flex-col bg-beige-light">
         <Header />
-        <main className="flex-1 flex items-center justify-center">
+        <main className="flex-1 pt-32 md:pt-40 flex items-center justify-center">
           <div className="text-center py-16">
             <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-charcoal mb-2">
@@ -60,7 +60,7 @@ export default function BlogPost() {
     return (
       <div className="min-h-screen flex flex-col bg-beige-light">
         <Header />
-        <main className="flex-1 flex items-center justify-center">
+        <main className="flex-1 pt-32 md:pt-40 flex items-center justify-center">
           <Loader2 className="w-8 h-8 animate-spin text-vermelho" />
         </main>
         <Footer />
@@ -72,7 +72,7 @@ export default function BlogPost() {
     return (
       <div className="min-h-screen flex flex-col bg-beige-light">
         <Header />
-        <main className="flex-1 flex items-center justify-center">
+        <main className="flex-1 pt-32 md:pt-40 flex items-center justify-center">
           <div className="text-center py-16">
             <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-charcoal mb-2">
@@ -106,7 +106,7 @@ export default function BlogPost() {
     <div className="min-h-screen flex flex-col bg-beige-light">
       <Header />
 
-      <main className="flex-1">
+      <main className="flex-1 pt-32 md:pt-40">
         {/* Hero with Image */}
         {post.image_url && (
           <div className="relative h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden">

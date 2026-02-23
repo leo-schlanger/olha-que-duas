@@ -10,7 +10,7 @@ export default function Blog() {
     <div className="min-h-screen flex flex-col bg-beige-light">
       <Header />
 
-      <main className="flex-1">
+      <main className="flex-1 pt-32 md:pt-40">
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-charcoal to-charcoal/90 py-16 md:py-24">
           <div className="container mx-auto px-4 sm:px-6">
