@@ -8,8 +8,12 @@ import RadioPlayer from "@/components/RadioPlayer";
 import Parceiros from "@/components/Parceiros";
 import Contacto from "@/components/Contacto";
 import Footer from "@/components/Footer";
+import { useHashScroll } from "@/hooks/useHashScroll";
 
 const Index = () => {
+  // Scroll automático para secções quando URL tem hash (ex: /#sobre)
+  useHashScroll();
+
   return (
     <div className="min-h-screen">
       <Header />
