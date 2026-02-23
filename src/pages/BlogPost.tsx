@@ -10,6 +10,7 @@ import {
   Share2,
   Loader2,
   AlertCircle,
+  Newspaper,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -114,16 +115,33 @@ export default function BlogPost() {
 
       <main className="flex-1 pt-32 md:pt-40">
         {/* Hero with Image */}
-        {post.image_url && (
-          <div className="relative h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden">
-            <img
-              src={post.image_url}
-              alt={post.title}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 to-transparent" />
-          </div>
-        )}
+        <div className="relative h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden">
+          {post.image_url ? (
+            <>
+              <img
+                src={post.image_url}
+                alt={post.title}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  const placeholder = target.parentElement?.querySelector('.image-placeholder');
+                  if (placeholder) {
+                    (placeholder as HTMLElement).style.display = 'flex';
+                  }
+                }}
+              />
+              <div className="image-placeholder hidden w-full h-full bg-gradient-to-br from-beige-warm to-beige-medium items-center justify-center absolute inset-0">
+                <Newspaper className="w-24 h-24 text-charcoal/30" />
+              </div>
+            </>
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-beige-warm to-beige-medium flex items-center justify-center">
+              <Newspaper className="w-24 h-24 text-charcoal/30" />
+            </div>
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 to-transparent" />
+        </div>
 
         {/* Article Content */}
         <article className="container mx-auto px-4 sm:px-6 py-8 md:py-12">

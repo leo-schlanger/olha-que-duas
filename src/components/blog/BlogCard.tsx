@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { pt } from 'date-fns/locale';
-import { Calendar, MapPin, ExternalLink } from 'lucide-react';
+import { Calendar, MapPin, ExternalLink, Newspaper } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import type { BlogPost } from '@/types/blog';
@@ -22,18 +22,28 @@ export function BlogCard({ post }: BlogCardProps) {
   return (
     <Link to={`/noticias/${post.slug}`}>
       <Card className="h-full overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 bg-white border-beige-medium">
-        {post.image_url && (
-          <div className="aspect-video w-full overflow-hidden">
+        <div className="aspect-video w-full overflow-hidden">
+          {post.image_url ? (
             <img
               src={post.image_url}
               alt={post.title}
               className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
               onError={(e) => {
-                (e.target as HTMLImageElement).style.display = 'none';
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
+                target.parentElement?.classList.add('bg-gradient-to-br', 'from-beige-warm', 'to-beige-medium');
+                const placeholder = document.createElement('div');
+                placeholder.className = 'w-full h-full flex items-center justify-center';
+                placeholder.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-charcoal/30"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>';
+                target.parentElement?.appendChild(placeholder);
               }}
             />
-          </div>
-        )}
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-beige-warm to-beige-medium flex items-center justify-center">
+              <Newspaper className="w-12 h-12 text-charcoal/30" />
+            </div>
+          )}
+        </div>
         <CardContent className="p-4 sm:p-5">
           <div className="flex flex-wrap items-center gap-2 mb-3">
             <Badge className={`${categoryColor} text-white text-xs`}>
