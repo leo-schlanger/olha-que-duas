@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Newspaper } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,11 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export default function Blog() {
+  // Scroll para o topo quando a página carrega
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col bg-beige-light">
       <Header />
