@@ -21,7 +21,7 @@ export function useBlogPosts(filters: BlogFilters = {}, page = 1, limit = 12) {
         countQuery = countQuery.eq('category', filters.category);
       }
       if (filters.region) {
-        countQuery = countQuery.eq('region', filters.region);
+        countQuery = countQuery.ilike('region', filters.region);
       }
       if (filters.search) {
         countQuery = countQuery.or(`title.ilike.%${filters.search}%,summary.ilike.%${filters.search}%`);
@@ -54,7 +54,7 @@ export function useBlogPosts(filters: BlogFilters = {}, page = 1, limit = 12) {
       }
 
       if (filters.region) {
-        query = query.eq('region', filters.region);
+        query = query.ilike('region', filters.region);
       }
 
       if (filters.search) {
@@ -155,8 +155,19 @@ export function useBlogRegions() {
         throw error;
       }
 
-      const regions = [...new Set(data?.map(d => d.region) || [])];
-      return regions.filter(Boolean);
+      const rawRegions = data?.map(d => d.region?.trim()).filter(Boolean) || [];
+      const normalizedMap = new Map<string, string>();
+
+      rawRegions.forEach(region => {
+        const lower = region.toLowerCase();
+        if (!normalizedMap.has(lower)) {
+          // Capitalize first letter for display
+          const display = region.charAt(0).toUpperCase() + lower.slice(1);
+          normalizedMap.set(lower, display);
+        }
+      });
+
+      return Array.from(normalizedMap.values()).sort();
     },
     enabled: isSupabaseConfigured(),
     staleTime: 1000 * 60 * 10, // 10 minutes
