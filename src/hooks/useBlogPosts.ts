@@ -2,21 +2,52 @@ import { useQuery } from '@tanstack/react-query';
 import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
 import type { BlogPost, BlogFilters } from '@/types/blog';
 
-export function useBlogPosts(filters: BlogFilters = {}, limit = 20) {
+export function useBlogPosts(filters: BlogFilters = {}, page = 1, limit = 12) {
   return useQuery({
-    queryKey: ['blog-posts', filters, limit],
-    queryFn: async (): Promise<BlogPost[]> => {
+    queryKey: ['blog-posts', filters, page, limit],
+    queryFn: async (): Promise<{ posts: BlogPost[], totalPages: number }> => {
       const supabase = getSupabase();
       if (!isSupabaseConfigured() || !supabase) {
-        return [];
+        return { posts: [], totalPages: 0 };
       }
 
+      // Obter o count total para a paginação
+      let countQuery = supabase
+        .from('blog_posts')
+        .select('*', { count: 'exact', head: true })
+        .eq('is_published', true);
+
+      if (filters.category) {
+        countQuery = countQuery.eq('category', filters.category);
+      }
+      if (filters.region) {
+        countQuery = countQuery.eq('region', filters.region);
+      }
+      if (filters.search) {
+        countQuery = countQuery.or(`title.ilike.%${filters.search}%,summary.ilike.%${filters.search}%`);
+      }
+
+      const { count, error: countError } = await countQuery;
+
+      if (countError) {
+        console.error('Error fetching count:', countError);
+        throw countError;
+      }
+
+      const totalItems = count || 0;
+      const totalPages = Math.ceil(totalItems / limit);
+
+      // Calcular o range
+      const from = (page - 1) * limit;
+      const to = from + limit - 1;
+
+      // Obter os dados paginados
       let query = supabase
         .from('blog_posts')
         .select('*')
         .eq('is_published', true)
         .order('published_at', { ascending: false })
-        .limit(limit);
+        .range(from, to);
 
       if (filters.category) {
         query = query.eq('category', filters.category);
@@ -37,7 +68,10 @@ export function useBlogPosts(filters: BlogFilters = {}, limit = 20) {
         throw error;
       }
 
-      return data || [];
+      return {
+        posts: data as BlogPost[],
+        totalPages,
+      };
     },
     enabled: isSupabaseConfigured(),
     staleTime: 1000 * 60 * 5, // 5 minutes
