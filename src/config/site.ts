@@ -26,6 +26,7 @@ export const siteConfig = {
     { href: "#podcast", label: "Podcast" },
     { href: "#radio", label: "Rádio" },
     { href: "/noticias", label: "Notícias", isRoute: true },
+    { href: "/loja", label: "Loja", isRoute: true },
     { href: "#contacto", label: "Contacto" },
   ],
 
