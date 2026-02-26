@@ -114,8 +114,7 @@ const Podcast = () => {
                   </h3>
                 </div>
                 <p className="text-sm md:text-base text-cream/90 mb-5 leading-relaxed">
-                  Tens uma história para contar? Envia-nos e poderás ser o nosso
-                  próximo convidado!
+                  Tem uma história para contar ou um projeto para destacar? Junte-se a nós e dê mais visibilidade à sua empresa ou evento com os nossos serviços.
                 </p>
                 <Button
                   asChild
