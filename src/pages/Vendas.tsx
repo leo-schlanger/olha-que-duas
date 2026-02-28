@@ -1,27 +1,51 @@
 import { useEffect, useState } from "react";
 import { Bell, Heart, ShoppingBag, Sparkles, Instagram, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { siteConfig } from "@/config/site";
 
-// Importar imagens
+// Imagem destaque
 import canecaDestaque from "@/assets/merch/caneca-cenario-destaque.jpg";
+
+// Canecas principais - visibilidade importante
 import caneca01 from "@/assets/merch/caneca-olha-que-duas-01.jpg";
 import caneca02 from "@/assets/merch/caneca-olha-que-duas-02.jpg";
 import caneca03 from "@/assets/merch/caneca-olha-que-duas-03.jpg";
 import caneca04 from "@/assets/merch/caneca-olha-que-duas-04.jpg";
-import canecaPerfil01 from "@/assets/merch/caneca-perfil-01.jpg";
-import canecaPerfil02 from "@/assets/merch/caneca-perfil-02.jpg";
 
+// Preview da loja - imagens temporárias (serão substituídas no lançamento)
+import preview1 from "@/assets/merch/preview-1.jpg";
+import preview2 from "@/assets/merch/preview-2.jpg";
+import preview3 from "@/assets/merch/preview-3.jpg";
+import preview4 from "@/assets/merch/preview-4.jpg";
+import preview5 from "@/assets/merch/preview-5.jpg";
+import preview6 from "@/assets/merch/preview-6.jpg";
+import preview7 from "@/assets/merch/preview-7.jpg";
+import preview8 from "@/assets/merch/preview-8.jpg";
+import preview9 from "@/assets/merch/preview-9.jpg";
+import preview10 from "@/assets/merch/preview-10.jpg";
+import preview11 from "@/assets/merch/preview-11.jpg";
+
+// Galeria de produtos - temporário até lançamento da loja
 const produtos = [
-  { id: 1, img: caneca01, nome: "Caneca Olha que Duas - Modelo 1" },
-  { id: 2, img: caneca02, nome: "Caneca Olha que Duas - Modelo 2" },
-  { id: 3, img: caneca03, nome: "Caneca Olha que Duas - Modelo 3" },
-  { id: 4, img: caneca04, nome: "Caneca Olha que Duas - Modelo 4" },
-  { id: 5, img: canecaPerfil01, nome: "Caneca Olha que Duas - Perfil" },
-  { id: 6, img: canecaPerfil02, nome: "Caneca Olha que Duas - Especial" },
+  // Canecas principais (destaque)
+  { id: 1, img: caneca01 },
+  { id: 2, img: caneca02 },
+  { id: 3, img: caneca03 },
+  { id: 4, img: caneca04 },
+  // Preview adicional
+  { id: 5, img: preview1 },
+  { id: 6, img: preview2 },
+  { id: 7, img: preview3 },
+  { id: 8, img: preview4 },
+  { id: 9, img: preview5 },
+  { id: 10, img: preview6 },
+  { id: 11, img: preview7 },
+  { id: 12, img: preview8 },
+  { id: 13, img: preview9 },
+  { id: 14, img: preview10 },
+  { id: 15, img: preview11 },
 ];
 
 const Vendas = () => {
@@ -145,40 +169,38 @@ const Vendas = () => {
               </p>
             </div>
 
-            {/* Product Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
-              {produtos.map((produto, index) => (
+            {/* Product Grid - Responsivo */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
+              {produtos.map((produto) => (
                 <div
                   key={produto.id}
-                  className="group relative rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 cursor-pointer"
-                  style={{ animationDelay: `${index * 100}ms` }}
+                  className="group relative rounded-xl sm:rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 cursor-pointer bg-white"
                   onClick={() => setSelectedImage(produto.img)}
                 >
                   {/* Image */}
                   <div className="aspect-square overflow-hidden">
                     <img
                       src={produto.img}
-                      alt={produto.nome}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      alt={`Produto ${produto.id}`}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
                     />
                   </div>
 
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-charcoal/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <div className="bg-amarelo/90 text-charcoal text-center py-2 px-3 rounded-lg font-medium text-sm">
-                        Em Breve
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Coming soon badge */}
-                  <div className="absolute top-3 right-3 bg-vermelho text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                    NOVO
+                  {/* Overlay - apenas no hover */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-charcoal/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
+                    <span className="bg-amarelo text-charcoal text-xs sm:text-sm font-semibold px-4 py-2 rounded-full shadow-lg">
+                      Ver mais
+                    </span>
                   </div>
                 </div>
               ))}
             </div>
+
+            {/* Info adicional */}
+            <p className="text-center text-muted-foreground text-sm mt-8">
+              Clica nas imagens para ver em tamanho maior
+            </p>
           </div>
         </section>
 
@@ -260,24 +282,24 @@ const Vendas = () => {
       {/* Lightbox Modal */}
       {selectedImage && (
         <div
-          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 cursor-pointer"
+          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4 cursor-pointer"
           onClick={() => setSelectedImage(null)}
         >
-          <div className="relative max-w-4xl max-h-[90vh]">
+          <div className="relative w-full max-w-3xl">
             <img
               src={selectedImage}
-              alt="Produto em destaque"
-              className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+              alt="Produto"
+              className="w-full max-h-[85vh] object-contain rounded-lg"
             />
             <button
-              className="absolute -top-4 -right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center text-charcoal hover:bg-amarelo transition-colors shadow-lg"
-              onClick={() => setSelectedImage(null)}
+              className="absolute -top-3 -right-3 sm:top-2 sm:right-2 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-charcoal hover:bg-amarelo transition-colors shadow-lg"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedImage(null);
+              }}
             >
-              <span className="text-xl font-bold">&times;</span>
+              <span className="text-2xl font-bold leading-none">&times;</span>
             </button>
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-amarelo text-charcoal px-6 py-2 rounded-full font-medium shadow-lg">
-              Em Breve
-            </div>
           </div>
         </div>
       )}
