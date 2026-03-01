@@ -1,4 +1,5 @@
 import { Instagram, Facebook, Heart, Youtube } from "lucide-react";
+import { Link } from "react-router-dom";
 import logo from "@/assets/logo-olha-que-duas.png";
 import { siteConfig } from "@/config/site";
 
@@ -82,6 +83,23 @@ const Footer = () => {
 
         {/* Divider */}
         <div className="border-t border-white/10 pt-6">
+          {/* Legal Links */}
+          <div className="flex justify-center gap-4 mb-4">
+            <Link
+              to="/privacidade"
+              className="text-cream/50 hover:text-amarelo transition-colors text-xs"
+            >
+              Política de Privacidade
+            </Link>
+            <span className="text-cream/30">|</span>
+            <Link
+              to="/termos"
+              className="text-cream/50 hover:text-amarelo transition-colors text-xs"
+            >
+              Termos de Utilização
+            </Link>
+          </div>
+
           <div className="flex flex-col sm:flex-row justify-between items-center gap-2">
             <p className="text-cream/40 text-xs">
               © {new Date().getFullYear()} {siteConfig.info.name}
