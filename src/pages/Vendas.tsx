@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Bell, Heart, ShoppingBag, Sparkles, Instagram, Clock } from "lucide-react";
+import { Heart, ShoppingBag, Sparkles, Instagram, Facebook, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -82,43 +82,60 @@ const Vendas = () => {
               {/* Content */}
               <div className="text-cream space-y-6 md:space-y-8 text-center lg:text-left order-2 lg:order-1">
                 <div className="inline-flex items-center gap-2 bg-amarelo/20 text-amarelo px-4 py-2 rounded-full text-sm font-medium">
-                  <Clock className="w-4 h-4" />
-                  Em Breve
+                  <ShoppingBag className="w-4 h-4" />
+                  Loja Oficial
                 </div>
 
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-semibold leading-tight">
-                  A Nossa <span className="text-amarelo">Loja</span> está quase a chegar!
+                  Leva o <span className="text-amarelo">Olha que Duas</span> contigo!
                 </h1>
 
                 <p className="text-base md:text-lg text-cream/80 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                  Prepara-te para levar um pedacinho do <strong className="text-amarelo">Olha que Duas</strong> para a tua casa!
-                  Canecas exclusivas e muito mais novidades estão a caminho.
+                  Canecas exclusivas, produtos únicos e muito estilo para o teu dia a dia!
+                  <strong className="text-amarelo"> Faz já a tua encomenda</strong> e garante o teu antes que esgote!
                 </p>
 
-                {/* Email signup teaser */}
+                {/* CTA para encomendas */}
                 <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 space-y-4 border border-white/10">
                   <div className="flex items-center gap-2 text-amarelo">
-                    <Bell className="w-5 h-5" />
-                    <span className="font-medium">Queres ser o primeiro a saber?</span>
+                    <MessageCircle className="w-5 h-5" />
+                    <span className="font-medium">Queres encomendar? Fala connosco!</span>
                   </div>
                   <p className="text-cream/70 text-sm">
-                    Segue-nos nas redes sociais para não perderes o lançamento!
+                    Envia-nos mensagem nas redes sociais para fazeres a tua encomenda. Respondemos rapidamente!
                   </p>
-                  <Button
-                    asChild
-                    size="lg"
-                    className="w-full sm:w-auto btn-primary-glow font-medium h-11 md:h-12 px-6 md:px-8 border-none"
-                  >
-                    <a
-                      href={siteConfig.social.instagram}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2"
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Button
+                      asChild
+                      size="lg"
+                      className="flex-1 btn-primary-glow font-medium h-11 md:h-12 px-6 border-none"
                     >
-                      <Instagram className="w-5 h-5" />
-                      Seguir no Instagram
-                    </a>
-                  </Button>
+                      <a
+                        href={siteConfig.social.instagram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center gap-2"
+                      >
+                        <Instagram className="w-5 h-5" />
+                        Instagram
+                      </a>
+                    </Button>
+                    <Button
+                      asChild
+                      size="lg"
+                      className="flex-1 bg-[#1877F2] hover:bg-[#166FE5] text-white font-medium h-11 md:h-12 px-6 border-none"
+                    >
+                      <a
+                        href={siteConfig.social.facebook}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center gap-2"
+                      >
+                        <Facebook className="w-5 h-5" />
+                        Facebook
+                      </a>
+                    </Button>
+                  </div>
                 </div>
               </div>
 
@@ -140,7 +157,7 @@ const Vendas = () => {
                     <div className="absolute bottom-4 left-4 right-4">
                       <div className="bg-amarelo text-charcoal px-5 py-3 rounded-xl font-display text-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <ShoppingBag className="w-5 h-5" />
-                        Lançamento Exclusivo
+                        Disponível para Encomenda
                       </div>
                     </div>
                   </div>
@@ -160,12 +177,12 @@ const Vendas = () => {
           <div className="container mx-auto px-4 sm:px-6">
             {/* Section Header */}
             <div className="max-w-2xl mx-auto text-center mb-12 md:mb-16">
-              <span className="label-sm text-primary mb-3 block">Sneak Peek</span>
+              <span className="label-sm text-primary mb-3 block">Os Nossos Produtos</span>
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-semibold mb-4">
-                Espreita o que <span className="text-gradient-brand">vem aí</span>
+                Descobre a nossa <span className="text-gradient-brand">coleção</span>
               </h2>
               <p className="text-muted-foreground text-base md:text-lg">
-                Produtos exclusivos feitos com muito carinho para ti
+                Produtos exclusivos feitos com muito carinho. Escolhe o teu favorito e encomenda já!
               </p>
             </div>
 
@@ -212,7 +229,7 @@ const Vendas = () => {
               <div className="flex justify-center">
                 <div className="relative">
                   <div className="w-20 h-20 bg-amarelo/20 rounded-full flex items-center justify-center animate-pulse">
-                    <ShoppingBag className="w-10 h-10 text-amarelo" />
+                    <MessageCircle className="w-10 h-10 text-amarelo" />
                   </div>
                   <div className="absolute -top-1 -right-1 w-6 h-6 bg-vermelho rounded-full flex items-center justify-center">
                     <Sparkles className="w-4 h-4 text-white" />
@@ -221,12 +238,12 @@ const Vendas = () => {
               </div>
 
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-semibold">
-                Não percas o <span className="text-amarelo">lançamento!</span>
+                Pronto para <span className="text-amarelo">encomendar?</span>
               </h2>
 
               <p className="text-cream/80 text-base md:text-lg max-w-xl mx-auto">
-                A loja oficial do Olha que Duas está a ser preparada com todo o carinho.
-                Segue-nos para seres o primeiro a saber quando abrir!
+                É simples! Envia-nos uma mensagem no Instagram ou Facebook com o produto que queres.
+                Respondemos rapidamente e tratamos de tudo para ti!
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
@@ -242,17 +259,22 @@ const Vendas = () => {
                     className="inline-flex items-center gap-2"
                   >
                     <Instagram className="w-5 h-5" />
-                    Instagram
+                    Encomendar no Instagram
                   </a>
                 </Button>
                 <Button
                   asChild
                   size="lg"
-                  variant="outline"
-                  className="border-amarelo/50 bg-amarelo/10 text-amarelo hover:bg-amarelo hover:text-charcoal font-medium h-12 px-8"
+                  className="bg-[#1877F2] hover:bg-[#166FE5] text-white font-medium h-12 px-8 border-none"
                 >
-                  <a href="/#contacto">
-                    Entra em Contacto
+                  <a
+                    href={siteConfig.social.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2"
+                  >
+                    <Facebook className="w-5 h-5" />
+                    Encomendar no Facebook
                   </a>
                 </Button>
               </div>
