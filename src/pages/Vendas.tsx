@@ -28,6 +28,9 @@ import preview10 from "@/assets/merch/preview-10.jpg";
 import preview11 from "@/assets/merch/preview-11.jpg";
 import preview12 from "@/assets/merch/preview-12.jpg";
 import preview13 from "@/assets/merch/preview-13.jpg";
+import preview14 from "@/assets/merch/preview-14.jpg";
+import preview15 from "@/assets/merch/preview-15.jpg";
+import preview16 from "@/assets/merch/preview-16.jpg";
 
 // Galeria de produtos - temporário até lançamento da loja
 const produtos = [
@@ -50,6 +53,9 @@ const produtos = [
   { id: 15, img: preview11 },
   { id: 16, img: preview12 },
   { id: 17, img: preview13 },
+  { id: 18, img: preview14 },
+  { id: 19, img: preview15 },
+  { id: 20, img: preview16 },
 ];
 
 const Vendas = () => {
