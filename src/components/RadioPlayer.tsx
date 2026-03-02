@@ -82,9 +82,8 @@ const RadioPlayer = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-6xl mx-auto items-stretch">
 
-          {/* Refined Compact Player */}
           <div className="lg:col-span-4 flex flex-col gap-6">
-            <Card className="bg-gradient-to-br from-vermelho-soft to-vermelho-dark border-0 text-cream shadow-xl overflow-hidden relative group h-full">
+            <Card className="bg-gradient-to-br from-vermelho via-vermelho to-vermelho-dark border-0 text-cream shadow-xl overflow-hidden relative group h-full">
               <div className="absolute inset-0 bg-black/10 opacity-50 group-hover:opacity-30 transition-opacity"></div>
               <CardContent className="p-8 flex flex-col h-full relative z-10">
                 {radio.streamUrl && <audio ref={audioRef} src={radio.streamUrl} preload="none" />}
@@ -109,8 +108,8 @@ const RadioPlayer = () => {
                   <button
                     onClick={togglePlay}
                     className={`w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 shadow-xl ${isPlaying
-                        ? "bg-white text-vermelho scale-105"
-                        : "bg-amarelo text-charcoal hover:scale-110"
+                      ? "bg-white text-vermelho scale-105"
+                      : "bg-amarelo text-charcoal hover:scale-110"
                       }`}
                   >
                     {isPlaying ? <Pause className="w-8 h-8" fill="currentColor" /> : <Play className="w-8 h-8 ml-1" fill="currentColor" />}
