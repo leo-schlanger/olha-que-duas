@@ -27,7 +27,7 @@ import preview9 from "@/assets/merch/preview-9.jpg";
 import preview10 from "@/assets/merch/preview-10.jpg";
 import preview11 from "@/assets/merch/preview-11.jpg";
 import preview12 from "@/assets/merch/preview-12.jpg";
-import preview13 from "@/assets/merch/preview-31.jpg";
+import preview13 from "@/assets/merch/preview-13.jpg";
 
 // Galeria de produtos - temporário até lançamento da loja
 const produtos = [
