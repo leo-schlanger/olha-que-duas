@@ -22,8 +22,8 @@ const Index = () => {
         <VideoShowcase />
         <SobreNos />
         <Servicos />
-        <Podcast />
         <RadioPlayer />
+        <Podcast />
         <Parceiros />
         <Contacto />
       </main>
