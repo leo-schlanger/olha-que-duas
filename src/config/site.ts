@@ -15,7 +15,6 @@ export const siteConfig = {
     facebook: "https://www.facebook.com/share/17npXT7nNb/",
     tiktok: "https://www.tiktok.com/@olha.que.duas_?_r=1&_t=ZG-93XRaLNGROL",
     youtube: "https://youtube.com/@olhaqueduas-l9m?si=hKFnzKpluIODLFFk",
-    spotify: "https://open.spotify.com",
   },
 
   // Links de navegação
