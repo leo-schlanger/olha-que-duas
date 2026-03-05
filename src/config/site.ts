@@ -62,7 +62,7 @@ export const siteConfig = {
     },
     {
       name: "O Boticário",
-      logo: "/partners/boticario.jpg",
+      logo: "/partners/boticario2.jpg",
       url: "#",
     },
     {
