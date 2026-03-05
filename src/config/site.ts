@@ -60,5 +60,15 @@ export const siteConfig = {
       logo: "/partners/oriflame.jpg",
       url: "https://shop.oriflame.com/PT-alexandraserra/bGOLVwKh5",
     },
+    {
+      name: "O Boticário",
+      logo: "/partners/boticario.jpg",
+      url: "#",
+    },
+    {
+      name: "Geek & Toys",
+      logo: "/partners/geektoys.jpg",
+      url: "https://www.geeketoys.com.br/",
+    },
   ],
 } as const;
