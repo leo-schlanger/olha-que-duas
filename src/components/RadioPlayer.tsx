@@ -14,7 +14,7 @@ const schedule = [
   { day: "Terça", show: "Motivar", times: ["12:00", "19:00"], icon: <Target className="w-4 h-4" /> },
   { day: "Quarta", show: "Prazer Feminino", times: ["21:00", "00:00"], icon: <Heart className="w-4 h-4" /> },
   { day: "Quinta", show: "Companheiros de Caminhada", times: ["12:00", "19:00"], icon: <Footprints className="w-4 h-4" /> },
-  { day: "Sexta", show: "Língua Afiada", times: ["12:00", "19:00"], icon: <MessageSquare className="w-4 h-4" /> },
+  { day: "Sexta", show: "Dizem que...", times: ["12:00", "19:00"], icon: <MessageSquare className="w-4 h-4" /> },
   { day: "Sábado", show: "Olha que Duas!", times: ["11:00", "19:00", "00:00"], icon: <Users className="w-4 h-4" /> },
 ];
 
