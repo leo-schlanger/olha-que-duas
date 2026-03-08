@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import {
-  Calendar, Clock, Music, Headphones, Radio, Play, Pause,
+  Calendar, Clock, Music, Radio, Play, Pause,
   Volume2, VolumeX, Sparkles, Zap, ShieldCheck,
   Apple, Target, Heart, Footprints, MessageSquare, Users
 } from "lucide-react";
@@ -8,15 +8,17 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Card, CardContent } from "@/components/ui/card";
 import { siteConfig } from "@/config/site";
+import { useSchedule } from "@/hooks/useSchedule";
 
-const schedule = [
-  { day: "Segunda", show: "Nutrição", times: ["12:00", "19:00"], icon: <Apple className="w-4 h-4" /> },
-  { day: "Terça", show: "Motivar", times: ["12:00", "19:00"], icon: <Target className="w-4 h-4" /> },
-  { day: "Quarta", show: "Prazer Feminino", times: ["21:00", "00:00"], icon: <Heart className="w-4 h-4" /> },
-  { day: "Quinta", show: "Companheiros de Caminhada", times: ["12:00", "19:00"], icon: <Footprints className="w-4 h-4" /> },
-  { day: "Sexta", show: "Dizem que...", times: ["12:00", "19:00"], icon: <MessageSquare className="w-4 h-4" /> },
-  { day: "Sábado", show: "Olha que Duas!", times: ["11:00", "19:00", "00:00"], icon: <Users className="w-4 h-4" /> },
-];
+// Ícones fallback por nome de programa
+const FALLBACK_ICONS: Record<string, React.ReactNode> = {
+  'Nutrição': <Apple className="w-4 h-4" />,
+  'Motivar': <Target className="w-4 h-4" />,
+  'Prazer Feminino': <Heart className="w-4 h-4" />,
+  'Companheiros de Caminhada': <Footprints className="w-4 h-4" />,
+  'Dizem que...': <MessageSquare className="w-4 h-4" />,
+  'Olha que Duas!': <Users className="w-4 h-4" />,
+};
 
 const radioInfo = [
   {
@@ -42,6 +44,7 @@ const RadioPlayer = () => {
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
+  const { schedule, loading } = useSchedule();
   const { radio } = siteConfig;
 
   useEffect(() => {
@@ -64,6 +67,21 @@ const RadioPlayer = () => {
   const handleVolumeChange = (value: number[]) => {
     setVolume(value[0]);
     if (value[0] > 0 && isMuted) setIsMuted(false);
+  };
+
+  const renderIcon = (show: string, iconUrl: string) => {
+    // Se tem URL de ícone válida, usa a imagem
+    if (iconUrl && !iconUrl.includes('placehold.co')) {
+      return (
+        <img
+          src={iconUrl}
+          alt={show}
+          className="w-5 h-5 object-contain"
+        />
+      );
+    }
+    // Senão, usa o ícone fallback
+    return FALLBACK_ICONS[show] || <Radio className="w-4 h-4" />;
   };
 
   return (
@@ -156,29 +174,35 @@ const RadioPlayer = () => {
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-cream/10">
-                {schedule.map((item) => (
-                  <div key={item.day} className="bg-beige-dark/40 p-5 hover:bg-cream/5 transition-colors group">
-                    <div className="flex items-center gap-4">
-                      <div className="w-9 h-9 rounded-lg bg-beige-light border border-cream/10 flex items-center justify-center text-amarelo group-hover:scale-110 transition-transform">
-                        {item.icon}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-2">
-                          <h4 className="font-bold text-sm truncate">{item.show}</h4>
-                          <span className="text-[10px] text-cream/40 font-medium uppercase tracking-wider">{item.day}</span>
+                {loading ? (
+                  <div className="col-span-2 p-8 text-center text-cream/50">
+                    Carregando programação...
+                  </div>
+                ) : (
+                  schedule.map((item) => (
+                    <div key={`${item.day}-${item.show}`} className="bg-beige-dark/40 p-5 hover:bg-cream/5 transition-colors group">
+                      <div className="flex items-center gap-4">
+                        <div className="w-9 h-9 rounded-lg bg-beige-light border border-cream/10 flex items-center justify-center text-amarelo group-hover:scale-110 transition-transform overflow-hidden">
+                          {renderIcon(item.show, item.iconUrl)}
                         </div>
-                        <div className="flex gap-2 mt-2">
-                          {item.times.map(time => (
-                            <span key={time} className="flex items-center gap-1 text-[10px] font-mono text-cream/60 bg-black/20 px-2 py-0.5 rounded border border-white/5">
-                              <Clock className="w-3 h-3 text-amarelo/50" />
-                              {time}
-                            </span>
-                          ))}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-2">
+                            <h4 className="font-bold text-sm truncate">{item.show}</h4>
+                            <span className="text-[10px] text-cream/40 font-medium uppercase tracking-wider">{item.day}</span>
+                          </div>
+                          <div className="flex gap-2 mt-2 flex-wrap">
+                            {item.times.map(time => (
+                              <span key={time} className="flex items-center gap-1 text-[10px] font-mono text-cream/60 bg-black/20 px-2 py-0.5 rounded border border-white/5">
+                                <Clock className="w-3 h-3 text-amarelo/50" />
+                                {time}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </Card>
 

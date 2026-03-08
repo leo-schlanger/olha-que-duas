@@ -1,7 +1,17 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(npm install:*)",
+      "Bash(npx tailwindcss init -p)",
+      "Bash(./node_modules/.bin/tailwindcss:*)",
+      "Bash(timeout 10 npm run dev:*)",
+      "Bash(ls:*)",
+      "Bash(node scripts/setup-db.mjs:*)",
+      "Bash(curl:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx vercel:*)",
+      "Bash(npm ls @expo/vector-icons)"
     ]
   }
 }
