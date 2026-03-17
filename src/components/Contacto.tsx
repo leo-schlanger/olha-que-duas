@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Mail, Instagram, Facebook, Youtube, Send, ArrowRight } from "lucide-react";
+import { Mail, Instagram, Facebook, Youtube, Send, ArrowRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { siteConfig } from "@/config/site";
+import { useNewsletterSignup } from "@/hooks/useNewsletterSignup";
 
 const TikTokIcon = ({ className }: { className?: string }) => (
   <svg
@@ -33,6 +34,26 @@ const Contacto = () => {
     mensagem: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const { signup: signupNewsletter, loading: newsletterLoading } = useNewsletterSignup();
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail.trim()) return;
+
+    const result = await signupNewsletter(newsletterEmail);
+
+    if (result.success) {
+      toast.success("Inscrição realizada!", {
+        description: result.message,
+      });
+      setNewsletterEmail("");
+    } else {
+      toast.error("Erro na inscrição", {
+        description: result.message,
+      });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -263,19 +284,29 @@ const Contacto = () => {
                 <p className="text-charcoal/60 text-xs mb-3">
                   Recebe novidades e convites exclusivos.
                 </p>
-                <div className="flex gap-2">
+                <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
                   <Input
                     type="email"
                     placeholder="O teu email"
+                    value={newsletterEmail}
+                    onChange={(e) => setNewsletterEmail(e.target.value)}
                     className="bg-white border-0 h-9 text-sm"
+                    disabled={newsletterLoading}
+                    required
                   />
                   <Button
+                    type="submit"
                     size="icon"
                     className="bg-charcoal text-white hover:bg-charcoal/90 shrink-0 h-9 w-9"
+                    disabled={newsletterLoading}
                   >
-                    <ArrowRight className="w-4 h-4" />
+                    {newsletterLoading ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <ArrowRight className="w-4 h-4" />
+                    )}
                   </Button>
-                </div>
+                </form>
               </CardContent>
             </Card>
           </div>
