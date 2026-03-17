@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.olhaqueduas.app",
+      "sha256_cert_fingerprints": [
+        "8A:9A:97:B4:91:05:5A:35:41:C7:5C:D9:1D:F0:0A:35:6F:29:D4:57:97:23:27:7E:A2:0E:1D:DD:E7:01:BE:99"
+      ]
+    }
+  }
+]
