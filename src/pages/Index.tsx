@@ -6,6 +6,7 @@ import Servicos from "@/components/Servicos";
 import Podcast from "@/components/Podcast";
 import RadioPlayer from "@/components/RadioPlayer";
 import Parceiros from "@/components/Parceiros";
+import NewsletterSection from "@/components/NewsletterSection";
 import Contacto from "@/components/Contacto";
 import Footer from "@/components/Footer";
 import { useHashScroll } from "@/hooks/useHashScroll";
@@ -25,6 +26,7 @@ const Index = () => {
         <RadioPlayer />
         <Podcast />
         <Parceiros />
+        <NewsletterSection />
         <Contacto />
       </main>
       <Footer />
