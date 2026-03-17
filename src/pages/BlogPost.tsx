@@ -17,6 +17,7 @@ import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useBlogPost } from '@/hooks/useBlogPosts';
+import { useMetaTags, getBlogPostMetaConfig } from '@/hooks/useMetaTags';
 import { CATEGORY_LABELS, CATEGORY_COLORS } from '@/types/blog';
 import { isSupabaseConfigured } from '@/lib/supabase';
 
@@ -24,6 +25,10 @@ export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { data: post, isLoading, error } = useBlogPost(slug || '');
+
+  // Atualiza meta tags para SEO e compartilhamento
+  const metaConfig = post ? getBlogPostMetaConfig(post) : {};
+  useMetaTags(metaConfig);
 
   // Scroll para o topo quando a página carrega
   useEffect(() => {
