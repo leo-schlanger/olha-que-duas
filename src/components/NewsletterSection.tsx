@@ -19,7 +19,7 @@ const NewsletterSection = () => {
 
     if (result.success) {
       setIsSubscribed(true);
-      toast.success('Bem-vinda à família!', {
+      toast.success('Bem-vindo à família!', {
         description: result.message,
       });
     } else {
@@ -96,7 +96,7 @@ const NewsletterSection = () => {
                 className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm px-4 py-2 rounded-full mb-6"
               >
                 <span className="w-2 h-2 bg-amarelo rounded-full animate-pulse" />
-                <span className="text-white/90 text-sm font-medium">+10.000 subscritoras</span>
+                <span className="text-white/90 text-sm font-medium">Newsletter Exclusiva</span>
               </motion.div>
 
               {/* Headline */}
@@ -191,7 +191,7 @@ const NewsletterSection = () => {
                 <CheckCircle2 className="w-10 h-10 text-amarelo" />
               </motion.div>
               <h3 className="text-2xl md:text-3xl font-display font-bold text-white mb-3">
-                Bem-vinda à família!
+                Bem-vindo à família!
               </h3>
               <p className="text-white/80 text-lg">
                 Em breve vais receber novidades incríveis no teu email.

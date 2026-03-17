@@ -11,7 +11,6 @@ import {
   Percent,
   Heart,
   Zap,
-  Users
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -34,7 +33,7 @@ export default function Newsletter() {
 
     if (result.success) {
       setIsSubscribed(true);
-      toast.success('Bem-vinda à família!', {
+      toast.success('Bem-vindo à família!', {
         description: result.message,
       });
     } else {
@@ -45,7 +44,6 @@ export default function Newsletter() {
   };
 
   const stats = [
-    { value: '10K+', label: 'Subscritoras', icon: Users },
     { value: '50+', label: 'Episódios', icon: Zap },
   ];
 
@@ -121,7 +119,7 @@ export default function Newsletter() {
                     <h2 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-charcoal mb-3 leading-tight">
                       Junta-te a milhares de{' '}
                       <span className="bg-gradient-to-r from-vermelho to-vermelho-soft bg-clip-text text-transparent">
-                        mulheres inspiradoras
+                        pessoas inspiradoras
                       </span>
                     </h2>
 
@@ -329,7 +327,7 @@ export default function Newsletter() {
                     transition={{ delay: 0.4, duration: 0.5 }}
                   >
                     <h2 className="text-3xl md:text-4xl font-display font-bold text-charcoal mb-4">
-                      Bem-vinda à família!
+                      Bem-vindo à família!
                     </h2>
                     <p className="text-charcoal/60 text-lg mb-8 leading-relaxed">
                       Estamos super felizes por te ter connosco. Em breve vais receber novidades incríveis no teu email!

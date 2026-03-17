@@ -288,12 +288,8 @@ const Contacto = () => {
                     Newsletter Exclusiva
                   </h3>
                 </div>
-                <p className="text-charcoal/70 text-xs mb-1 leading-relaxed">
+                <p className="text-charcoal/70 text-xs mb-3 leading-relaxed">
                   Novidades em primeira mão, <span className="font-semibold">descontos exclusivos</span> dos nossos parceiros e promoções especiais.
-                </p>
-                <p className="text-charcoal/50 text-[10px] mb-3 flex items-center gap-1">
-                  <span className="inline-block w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                  +10K subscritoras
                 </p>
                 <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
                   <Input
