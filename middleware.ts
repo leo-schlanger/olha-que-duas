@@ -1,4 +1,5 @@
-import type { RequestContext } from '@vercel/edge';
+// Vercel Edge Middleware para SEO de crawlers
+// Detecta bots de redes sociais e serve HTML com meta tags OG corretas
 
 export const config = {
   matcher: '/noticias/:slug*',
@@ -24,9 +25,6 @@ function isCrawler(userAgent: string | null): boolean {
   );
 }
 
-const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
-const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
-
 interface BlogPost {
   title: string;
   summary: string | null;
@@ -38,6 +36,9 @@ interface BlogPost {
 }
 
 async function fetchBlogPost(slug: string): Promise<BlogPost | null> {
+  const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+  const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
     return null;
   }
@@ -121,7 +122,7 @@ function generateHTML(post: BlogPost | null, slug: string, originalUrl: string):
 </html>`;
 }
 
-export default async function middleware(request: Request, context: RequestContext) {
+export default async function middleware(request: Request): Promise<Response | undefined> {
   const userAgent = request.headers.get('user-agent');
   const url = new URL(request.url);
   const pathname = url.pathname;
@@ -129,6 +130,7 @@ export default async function middleware(request: Request, context: RequestConte
   // Extrai o slug da URL /noticias/slug
   const slugMatch = pathname.match(/^\/noticias\/([^/]+)\/?$/);
 
+  // Só intercepta se for um crawler E for uma página de notícia individual
   if (slugMatch && isCrawler(userAgent)) {
     const slug = slugMatch[1];
     const post = await fetchBlogPost(slug);
@@ -143,6 +145,6 @@ export default async function middleware(request: Request, context: RequestConte
     });
   }
 
-  // Para usuários normais, continua para a SPA
-  return context.next();
+  // Para usuários normais, retorna undefined para continuar para a SPA
+  return undefined;
 }
