@@ -276,13 +276,24 @@ const Contacto = () => {
             </Card>
 
             {/* Newsletter */}
-            <Card className="bg-amarelo border-0">
-              <CardContent className="p-4 md:p-5">
-                <h3 className="text-sm font-semibold text-charcoal mb-1">
-                  Newsletter
-                </h3>
-                <p className="text-charcoal/60 text-xs mb-3">
-                  Recebe novidades e convites exclusivos.
+            <Card className="bg-gradient-to-br from-amarelo via-amarelo to-amarelo-soft border-0 overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
+              <CardContent className="p-4 md:p-5 relative">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-8 h-8 bg-charcoal/10 rounded-lg flex items-center justify-center">
+                    <Mail className="w-4 h-4 text-charcoal" />
+                  </div>
+                  <h3 className="text-sm font-semibold text-charcoal">
+                    Newsletter Exclusiva
+                  </h3>
+                </div>
+                <p className="text-charcoal/70 text-xs mb-1 leading-relaxed">
+                  Novidades em primeira mão, <span className="font-semibold">descontos exclusivos</span> dos nossos parceiros e promoções especiais.
+                </p>
+                <p className="text-charcoal/50 text-[10px] mb-3 flex items-center gap-1">
+                  <span className="inline-block w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                  +10K subscritoras
                 </p>
                 <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
                   <Input
@@ -290,14 +301,14 @@ const Contacto = () => {
                     placeholder="O teu email"
                     value={newsletterEmail}
                     onChange={(e) => setNewsletterEmail(e.target.value)}
-                    className="bg-white border-0 h-9 text-sm"
+                    className="bg-white/90 backdrop-blur-sm border-0 h-10 text-sm rounded-xl shadow-sm focus:ring-2 focus:ring-charcoal/20"
                     disabled={newsletterLoading}
                     required
                   />
                   <Button
                     type="submit"
                     size="icon"
-                    className="bg-charcoal text-white hover:bg-charcoal/90 shrink-0 h-9 w-9"
+                    className="bg-charcoal text-white hover:bg-charcoal/90 shrink-0 h-10 w-10 rounded-xl shadow-md hover:shadow-lg transition-all"
                     disabled={newsletterLoading}
                   >
                     {newsletterLoading ? (
