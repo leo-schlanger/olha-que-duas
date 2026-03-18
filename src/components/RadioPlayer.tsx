@@ -12,12 +12,12 @@ import { useSchedule } from "@/hooks/useSchedule";
 
 // Ícones fallback por nome de programa
 const FALLBACK_ICONS: Record<string, React.ReactNode> = {
-  'Nutrição': <Apple className="w-4 h-4" />,
-  'Motivar': <Target className="w-4 h-4" />,
-  'Prazer Feminino': <Heart className="w-4 h-4" />,
-  'Companheiros de Caminhada': <Footprints className="w-4 h-4" />,
-  'Dizem que...': <MessageSquare className="w-4 h-4" />,
-  'Olha que Duas!': <Users className="w-4 h-4" />,
+  'Nutrição': <Apple className="w-full h-full p-1.5" />,
+  'Motivar': <Target className="w-full h-full p-1.5" />,
+  'Prazer Feminino': <Heart className="w-full h-full p-1.5" />,
+  'Companheiros de Caminhada': <Footprints className="w-full h-full p-1.5" />,
+  'Dizem que...': <MessageSquare className="w-full h-full p-1.5" />,
+  'Olha que Duas!': <Users className="w-full h-full p-1.5" />,
 };
 
 const radioInfo = [
@@ -76,12 +76,12 @@ const RadioPlayer = () => {
         <img
           src={iconUrl}
           alt={show}
-          className="w-5 h-5 object-contain"
+          className="w-full h-full object-cover rounded-md"
         />
       );
     }
     // Senão, usa o ícone fallback
-    return FALLBACK_ICONS[show] || <Radio className="w-4 h-4" />;
+    return FALLBACK_ICONS[show] || <Radio className="w-full h-full p-1.5" />;
   };
 
   return (
