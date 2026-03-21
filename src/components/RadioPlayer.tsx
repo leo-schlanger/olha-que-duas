@@ -9,6 +9,7 @@ import { Slider } from "@/components/ui/slider";
 import { Card, CardContent } from "@/components/ui/card";
 import { siteConfig } from "@/config/site";
 import { useSchedule } from "@/hooks/useSchedule";
+import { useNowPlaying } from "@/hooks/useNowPlaying";
 
 // Ícones fallback por nome de programa
 const FALLBACK_ICONS: Record<string, React.ReactNode> = {
@@ -46,6 +47,7 @@ const RadioPlayer = () => {
 
   const { schedule, loading } = useSchedule();
   const { radio } = siteConfig;
+  const { song, isMusic } = useNowPlaying(radio.streamUrl);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -132,9 +134,16 @@ const RadioPlayer = () => {
                   >
                     {isPlaying ? <Pause className="w-8 h-8" fill="currentColor" /> : <Play className="w-8 h-8 ml-1" fill="currentColor" />}
                   </button>
-                  <p className="mt-6 text-sm font-medium tracking-wide opacity-80">
-                    {isPlaying ? "Ouvindo agora..." : "Clique para ouvir"}
-                  </p>
+                  {isMusic && song ? (
+                    <div className="mt-6 text-center max-w-full px-2">
+                      <p className="text-sm font-bold truncate">{song.title}</p>
+                      <p className="text-xs opacity-70 truncate">{song.artist}</p>
+                    </div>
+                  ) : (
+                    <p className="mt-6 text-sm font-medium tracking-wide opacity-80">
+                      {isPlaying ? "Ouvindo agora..." : "Clique para ouvir"}
+                    </p>
+                  )}
                 </div>
 
                 {/* Compact Visualizer */}
