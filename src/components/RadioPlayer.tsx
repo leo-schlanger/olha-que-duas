@@ -47,7 +47,7 @@ const RadioPlayer = () => {
 
   const { schedule, loading } = useSchedule();
   const { radio } = siteConfig;
-  const { song, isMusic } = useNowPlaying(radio.streamUrl);
+  const { song, isMusic, isTransition } = useNowPlaying(radio.streamUrl);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -134,7 +134,12 @@ const RadioPlayer = () => {
                   >
                     {isPlaying ? <Pause className="w-8 h-8" fill="currentColor" /> : <Play className="w-8 h-8 ml-1" fill="currentColor" />}
                   </button>
-                  {isMusic && song ? (
+                  {isTransition ? (
+                    <div className="mt-6 text-center max-w-full px-2">
+                      <p className="text-sm font-bold">{radio.name}</p>
+                      <p className="text-xs opacity-70">{radio.tagline}</p>
+                    </div>
+                  ) : isMusic && song ? (
                     <div className="mt-6 text-center max-w-full px-2">
                       <p className="text-sm font-bold truncate">{song.title}</p>
                       <p className="text-xs opacity-70 truncate">{song.artist}</p>
