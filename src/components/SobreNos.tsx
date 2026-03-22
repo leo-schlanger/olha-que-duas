@@ -39,47 +39,61 @@ const team = [
 
 const SobreNos = () => {
   return (
-    <section id="sobre" className="py-16 md:py-24 lg:py-32 bg-background">
-      <div className="container mx-auto px-4 sm:px-6">
-        {/* Section Header */}
-        <div className="max-w-2xl mx-auto text-center mb-12 md:mb-16">
-          <span className="label-sm text-primary mb-3 block">Quem Somos</span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-semibold text-foreground mb-4 md:mb-6">
+    <section id="sobre" className="py-20 md:py-28 lg:py-36 bg-background relative overflow-hidden">
+      {/* Subtle background decoration */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/3 -right-32 w-64 h-64 bg-amarelo/[0.03] rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 -left-20 w-48 h-48 bg-vermelho/[0.02] rounded-full blur-3xl" />
+      </div>
+
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
+        {/* Section Header - Enhanced */}
+        <div className="max-w-2xl mx-auto text-center mb-14 md:mb-18">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/10 mb-5">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+            <span className="text-[11px] font-semibold uppercase tracking-widest text-primary">
+              Quem Somos
+            </span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-semibold text-foreground mb-5 leading-tight">
             Somos duas, mas{" "}
             <span className="text-gradient-brand">multiplicamos</span>
           </h2>
-          <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
+          <p className="text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto">
             Nascido da união entre duas mulheres luso-brasileiras com trajetórias
             distintas mas complementares.
           </p>
         </div>
 
-        {/* Founders */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto mb-12 md:mb-16">
+        {/* Founders - Enhanced cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto mb-16 md:mb-20">
           {founders.map((founder) => (
             <Card
               key={founder.name}
-              className="border-border/50 hover:border-border hover:shadow-md transition-all duration-300"
+              className="group border-border/30 bg-card/80 backdrop-blur-sm hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 overflow-hidden"
             >
-              <CardContent className="p-5 md:p-6">
+              <CardContent className="p-6 md:p-8">
                 <div className="flex flex-col items-center text-center">
-                  <Avatar className="w-20 h-20 md:w-24 md:h-24 mb-4 ring-2 ring-muted">
-                    <AvatarImage
-                      src={founder.image}
-                      alt={founder.name}
-                      className={founder.imagePosition}
-                    />
-                    <AvatarFallback className="text-xl font-display bg-primary/10 text-primary">
-                      {founder.initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <h3 className="text-lg md:text-xl font-display font-semibold text-foreground mb-1">
+                  <div className="relative mb-5">
+                    <div className="absolute -inset-2 bg-gradient-to-br from-vermelho/20 to-amarelo/20 rounded-full blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <Avatar className="relative w-24 h-24 md:w-28 md:h-28 ring-4 ring-muted/50 group-hover:ring-primary/20 transition-all shadow-lg">
+                      <AvatarImage
+                        src={founder.image}
+                        alt={founder.name}
+                        className={founder.imagePosition}
+                      />
+                      <AvatarFallback className="text-2xl font-display bg-primary/10 text-primary">
+                        {founder.initials}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-display font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
                     {founder.name}
                   </h3>
-                  <span className="text-[10px] md:text-xs text-primary font-medium mb-3 leading-tight">
+                  <span className="inline-flex items-center gap-1.5 text-[11px] md:text-xs text-primary font-semibold mb-4 px-3 py-1 bg-primary/5 rounded-full">
                     {founder.role}
                   </span>
-                  <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
                     {founder.description}
                   </p>
                 </div>
@@ -89,38 +103,46 @@ const SobreNos = () => {
         </div>
 
         {/* Team */}
-        <div className="max-w-2xl mx-auto text-center mb-8 md:mb-10">
-          <span className="label-sm text-primary mb-3 block">A Nossa Equipa</span>
-          <h3 className="text-xl sm:text-2xl md:text-3xl font-display font-semibold text-foreground mb-4">
+        <div className="max-w-2xl mx-auto text-center mb-10 md:mb-12">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 border border-secondary/20 mb-5">
+            <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
+            <span className="text-[11px] font-semibold uppercase tracking-widest text-secondary-foreground">
+              A Nossa Equipa
+            </span>
+          </div>
+          <h3 className="text-2xl sm:text-3xl md:text-4xl font-display font-semibold text-foreground">
             Quem nos <span className="text-gradient-brand">apoia</span>
           </h3>
         </div>
 
-        <div className="flex justify-center mb-12 md:mb-16">
+        <div className="flex justify-center mb-16 md:mb-20">
           {team.map((member) => (
             <Card
               key={member.name}
-              className="border-border/50 hover:border-border hover:shadow-md transition-all duration-300 max-w-sm"
+              className="group border-border/30 bg-card/80 backdrop-blur-sm hover:border-secondary/20 hover:shadow-xl hover:shadow-secondary/5 transition-all duration-300 max-w-md"
             >
-              <CardContent className="p-5 md:p-6">
+              <CardContent className="p-6 md:p-8">
                 <div className="flex flex-col items-center text-center">
-                  <Avatar className="w-20 h-20 md:w-24 md:h-24 mb-4 ring-2 ring-muted">
-                    <AvatarImage
-                      src={member.image}
-                      alt={member.name}
-                      className={member.imagePosition}
-                    />
-                    <AvatarFallback className="text-xl font-display bg-primary/10 text-primary">
-                      {member.initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <h3 className="text-lg md:text-xl font-display font-semibold text-foreground mb-1">
+                  <div className="relative mb-5">
+                    <div className="absolute -inset-2 bg-gradient-to-br from-secondary/20 to-primary/20 rounded-full blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <Avatar className="relative w-24 h-24 md:w-28 md:h-28 ring-4 ring-muted/50 group-hover:ring-secondary/20 transition-all shadow-lg">
+                      <AvatarImage
+                        src={member.image}
+                        alt={member.name}
+                        className={member.imagePosition}
+                      />
+                      <AvatarFallback className="text-2xl font-display bg-secondary/10 text-secondary-foreground">
+                        {member.initials}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-display font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
                     {member.name}
                   </h3>
-                  <span className="text-[10px] md:text-xs text-primary font-medium mb-3 leading-tight">
+                  <span className="inline-flex items-center gap-1.5 text-[11px] md:text-xs text-secondary-foreground font-semibold mb-4 px-3 py-1 bg-secondary/10 rounded-full">
                     {member.role}
                   </span>
-                  <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
                     {member.description}
                   </p>
                 </div>
@@ -129,15 +151,24 @@ const SobreNos = () => {
           ))}
         </div>
 
-        {/* Mission Statement */}
-        <div className="max-w-2xl mx-auto">
-          <div className="relative bg-beige-dark rounded-xl md:rounded-2xl p-6 md:p-10 text-center overflow-hidden">
-            <blockquote className="relative z-10 text-lg md:text-xl text-cream/90 font-display italic leading-relaxed">
-              "No centro de tudo, está a nossa amizade, a nossa voz e a nossa
-              vontade de fazer diferente."
+        {/* Mission Statement - Enhanced */}
+        <div className="max-w-3xl mx-auto">
+          <div className="relative bg-gradient-to-br from-beige-dark via-beige-dark to-charcoal rounded-2xl md:rounded-3xl p-8 md:p-12 text-center overflow-hidden shadow-2xl">
+            {/* Decorative elements */}
+            <div className="absolute top-0 left-0 w-32 h-32 bg-vermelho/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 right-0 w-40 h-40 bg-amarelo/10 rounded-full blur-3xl" />
+            <div className="absolute top-4 left-4 text-6xl md:text-8xl text-cream/5 font-display">"</div>
+            <div className="absolute bottom-4 right-4 text-6xl md:text-8xl text-cream/5 font-display rotate-180">"</div>
+
+            <blockquote className="relative z-10 text-xl md:text-2xl lg:text-3xl text-cream font-display italic leading-relaxed mb-6">
+              No centro de tudo, está a nossa amizade, a nossa voz e a nossa
+              vontade de fazer diferente.
             </blockquote>
-            <div className="relative z-10 mt-6 text-amarelo font-semibold text-sm md:text-base">
-              Olha que Duas. Olha bem.
+            <div className="relative z-10 inline-flex items-center gap-3 px-5 py-2 bg-amarelo/10 rounded-full border border-amarelo/20">
+              <span className="w-2 h-2 rounded-full bg-amarelo" />
+              <span className="text-amarelo font-display font-semibold text-base md:text-lg">
+                Olha que Duas. Olha bem.
+              </span>
             </div>
           </div>
         </div>

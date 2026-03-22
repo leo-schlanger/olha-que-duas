@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import {
   Calendar, Clock, Music, Radio, Play, Pause,
   Volume2, VolumeX, Sparkles, Zap, ShieldCheck,
-  Apple, Target, Heart, Footprints, MessageSquare, Users
+  Apple, Target, Heart, Footprints, MessageSquare, Users, ChevronRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -19,6 +19,17 @@ const FALLBACK_ICONS: Record<string, React.ReactNode> = {
   'Companheiros de Caminhada': <Footprints className="w-full h-full p-1.5" />,
   'Dizem que...': <MessageSquare className="w-full h-full p-1.5" />,
   'Olha que Duas!': <Users className="w-full h-full p-1.5" />,
+};
+
+const DAYS_ORDER = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+const DAYS_SHORT: Record<string, string> = {
+  'Segunda': 'Seg',
+  'Terça': 'Ter',
+  'Quarta': 'Qua',
+  'Quinta': 'Qui',
+  'Sexta': 'Sex',
+  'Sábado': 'Sáb',
+  'Domingo': 'Dom',
 };
 
 const radioInfo = [
@@ -43,11 +54,42 @@ const RadioPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(80);
   const [isMuted, setIsMuted] = useState(false);
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const { schedule, loading } = useSchedule();
   const { radio } = siteConfig;
   const { song, isMusic, isTransition } = useNowPlaying(radio.streamUrl);
+
+  // Agrupar programação por dia
+  const scheduleByDay = useMemo(() => {
+    const grouped: Record<string, typeof schedule> = {};
+    for (const item of schedule) {
+      if (!grouped[item.day]) {
+        grouped[item.day] = [];
+      }
+      grouped[item.day].push(item);
+    }
+    return grouped;
+  }, [schedule]);
+
+  // Dias disponíveis ordenados
+  const availableDays = useMemo(() => {
+    return DAYS_ORDER.filter(day => scheduleByDay[day]?.length > 0);
+  }, [scheduleByDay]);
+
+  // Selecionar dia atual por padrão
+  useEffect(() => {
+    if (availableDays.length > 0 && !selectedDay) {
+      const today = new Date().getDay();
+      const todayName = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'][today];
+      if (availableDays.includes(todayName)) {
+        setSelectedDay(todayName);
+      } else {
+        setSelectedDay(availableDays[0]);
+      }
+    }
+  }, [availableDays, selectedDay]);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -102,135 +144,228 @@ const RadioPlayer = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-6xl mx-auto items-stretch">
 
-          <div className="lg:col-span-4 flex flex-col gap-6">
-            <Card className="bg-gradient-to-br from-vermelho via-vermelho to-vermelho-dark border-0 text-cream shadow-xl overflow-hidden relative group h-full">
-              <div className="absolute inset-0 bg-black/10 opacity-50 group-hover:opacity-30 transition-opacity"></div>
-              <CardContent className="p-8 flex flex-col h-full relative z-10">
+          <div className="lg:col-span-4 flex flex-col">
+            <Card className="bg-gradient-to-br from-vermelho via-vermelho to-vermelho-dark border-0 text-cream shadow-2xl overflow-hidden relative group h-full">
+              {/* Decorative background elements */}
+              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute -top-20 -right-20 w-40 h-40 bg-amarelo/10 rounded-full blur-3xl" />
+                <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
+              </div>
+              <div className="absolute inset-0 bg-black/10 opacity-40 group-hover:opacity-20 transition-opacity duration-500" />
+
+              <CardContent className="p-6 md:p-8 flex flex-col h-full relative z-10">
                 {radio.streamUrl && <audio ref={audioRef} src={radio.streamUrl} preload="none" />}
 
-                <div className="flex items-center justify-between mb-8">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/10">
+                    <div className="p-2.5 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 shadow-lg">
                       <Music className="w-5 h-5 text-amarelo" />
                     </div>
                     <div>
-                      <h3 className="font-display font-bold text-lg leading-tight">{radio.name}</h3>
-                      <p className="text-[10px] text-white/50 tracking-widest">LIVE STREAM</p>
+                      <h3 className="font-display font-bold text-xl leading-tight">{radio.name}</h3>
+                      <p className="text-[10px] text-white/50 tracking-widest font-medium">LIVE STREAM</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-green-500/20 border border-green-500/20">
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                    <span className="text-[9px] font-bold text-green-500 uppercase tracking-tighter">Live</span>
+                  <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/20 border border-green-500/30 backdrop-blur-sm">
+                    <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-lg shadow-green-400/50" />
+                    <span className="text-[10px] font-bold text-green-400 uppercase tracking-wide">Ao Vivo</span>
                   </div>
                 </div>
 
-                <div className="flex-1 flex flex-col items-center justify-center my-6">
-                  <button
-                    onClick={togglePlay}
-                    className={`w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 shadow-xl ${isPlaying
-                      ? "bg-white text-vermelho scale-105"
-                      : "bg-amarelo text-charcoal hover:scale-110"
-                      }`}
-                  >
-                    {isPlaying ? <Pause className="w-8 h-8" fill="currentColor" /> : <Play className="w-8 h-8 ml-1" fill="currentColor" />}
-                  </button>
-                  {isTransition ? (
-                    <div className="mt-6 text-center max-w-full px-2">
-                      <p className="text-sm font-bold">{radio.name}</p>
-                      <p className="text-xs opacity-70">{radio.tagline}</p>
-                    </div>
-                  ) : isMusic && song ? (
-                    <div className="mt-6 text-center max-w-full px-2">
-                      <p className="text-sm font-bold truncate">{song.title}</p>
-                      <p className="text-xs opacity-70 truncate">{song.artist}</p>
-                    </div>
-                  ) : (
-                    <p className="mt-6 text-sm font-medium tracking-wide opacity-80">
-                      {isPlaying ? "Ouvindo agora..." : "Clique para ouvir"}
-                    </p>
-                  )}
+                {/* Play button area */}
+                <div className="flex-1 flex flex-col items-center justify-center py-8">
+                  {/* Outer glow ring */}
+                  <div className={`relative ${isPlaying ? 'animate-pulse' : ''}`} style={{ animationDuration: '2s' }}>
+                    <div className={`absolute inset-0 rounded-full ${isPlaying ? 'bg-amarelo/20 scale-150 blur-xl' : ''} transition-all duration-500`} />
+                    <button
+                      onClick={togglePlay}
+                      className={`relative w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 shadow-2xl ${isPlaying
+                        ? "bg-white text-vermelho scale-100 shadow-white/20"
+                        : "bg-gradient-to-br from-amarelo to-amarelo-soft text-charcoal hover:scale-105 shadow-amarelo/30"
+                        }`}
+                    >
+                      {isPlaying ? <Pause className="w-10 h-10" fill="currentColor" /> : <Play className="w-10 h-10 ml-1" fill="currentColor" />}
+                    </button>
+                  </div>
+
+                  {/* Now playing info */}
+                  <div className="mt-6 text-center max-w-full px-2">
+                    {isTransition ? (
+                      <>
+                        <p className="text-base font-display font-bold">{radio.name}</p>
+                        <p className="text-sm opacity-60 mt-1">{radio.tagline}</p>
+                      </>
+                    ) : isMusic && song ? (
+                      <>
+                        <p className="text-base font-display font-bold truncate">{song.title}</p>
+                        <p className="text-sm opacity-60 truncate mt-1">{song.artist}</p>
+                      </>
+                    ) : (
+                      <p className="text-base font-medium tracking-wide opacity-70">
+                        {isPlaying ? "Ouvindo agora..." : "Clique para ouvir"}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                {/* Compact Visualizer */}
-                <div className="flex items-end justify-center gap-1 h-8 mb-8">
-                  {[...Array(16)].map((_, i) => (
+                {/* Enhanced Visualizer */}
+                <div className="flex items-end justify-center gap-[3px] h-10 mb-6">
+                  {[...Array(20)].map((_, i) => (
                     <div
                       key={i}
-                      className="w-1 bg-white/30 rounded-full"
+                      className={`w-1 rounded-full transition-all duration-150 ${isPlaying ? 'bg-gradient-to-t from-white/30 to-amarelo/50' : 'bg-white/20'}`}
                       style={{
-                        height: isPlaying ? `${30 + Math.random() * 70}%` : '4px',
-                        animation: isPlaying ? `pulse 0.5s ease-in-out infinite` : 'none',
-                        animationDelay: `${i * 0.05}s`,
+                        height: isPlaying ? `${20 + Math.random() * 80}%` : '4px',
+                        animation: isPlaying ? `equalizer 0.4s ease-in-out infinite` : 'none',
+                        animationDelay: `${i * 0.03}s`,
                       }}
                     />
                   ))}
                 </div>
 
-                <div className="mt-auto pt-6 border-t border-white/10">
+                {/* Volume control */}
+                <div className="pt-5 border-t border-white/10">
                   <div className="flex items-center gap-3">
-                    <Button variant="ghost" size="icon" onClick={toggleMute} className="h-8 w-8 text-white/60 hover:text-white hover:bg-white/10">
-                      {isMuted || volume === 0 ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={toggleMute}
+                      className="h-9 w-9 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+                    >
+                      {isMuted || volume === 0 ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
                     </Button>
-                    <Slider value={[isMuted ? 0 : volume]} onValueChange={handleVolumeChange} max={100} step={1} className="flex-1" />
+                    <Slider
+                      value={[isMuted ? 0 : volume]}
+                      onValueChange={handleVolumeChange}
+                      max={100}
+                      step={1}
+                      className="flex-1"
+                    />
+                    <span className="text-xs font-mono text-white/40 w-8 text-right">{isMuted ? 0 : volume}%</span>
                   </div>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Balanced Schedule */}
-          <div className="lg:col-span-8 flex flex-col gap-6">
-            <Card className="bg-cream/5 backdrop-blur-sm border border-cream/10 text-cream h-full overflow-hidden shadow-lg">
-              <div className="p-6 border-b border-cream/10 bg-cream/5 flex items-center justify-between">
-                <div className="flex items-center gap-3">
+          {/* Schedule Section - Redesigned */}
+          <div className="lg:col-span-8 flex flex-col gap-5">
+            <Card className="bg-cream/5 backdrop-blur-sm border border-cream/10 text-cream overflow-hidden shadow-lg">
+              {/* Header with day tabs */}
+              <div className="border-b border-cream/10 bg-cream/5">
+                <div className="p-4 pb-0 flex items-center gap-3">
                   <Calendar className="w-4 h-4 text-amarelo" />
                   <h3 className="text-lg font-display font-bold">Programação Semanal</h3>
                 </div>
+
+                {/* Day tabs */}
+                <div className="flex gap-1 px-4 pt-4 pb-0 overflow-x-auto scrollbar-hide">
+                  {loading ? (
+                    <div className="flex gap-2">
+                      {[1, 2, 3, 4, 5].map(i => (
+                        <div key={i} className="h-9 w-16 bg-cream/10 rounded-t-lg animate-pulse" />
+                      ))}
+                    </div>
+                  ) : (
+                    availableDays.map((day) => {
+                      const isActive = selectedDay === day;
+                      const programCount = scheduleByDay[day]?.length || 0;
+                      return (
+                        <button
+                          key={day}
+                          onClick={() => setSelectedDay(day)}
+                          className={`relative px-4 py-2.5 text-sm font-medium rounded-t-lg transition-all whitespace-nowrap ${
+                            isActive
+                              ? 'bg-vermelho text-cream'
+                              : 'text-cream/60 hover:text-cream hover:bg-cream/10'
+                          }`}
+                        >
+                          <span className="hidden sm:inline">{day}</span>
+                          <span className="sm:hidden">{DAYS_SHORT[day]}</span>
+                          {programCount > 1 && (
+                            <span className={`ml-1.5 text-[10px] px-1.5 py-0.5 rounded-full ${
+                              isActive ? 'bg-cream/20' : 'bg-amarelo/20 text-amarelo'
+                            }`}>
+                              {programCount}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })
+                  )}
+                </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-cream/10">
+
+              {/* Programs list for selected day */}
+              <div className="p-4">
                 {loading ? (
-                  <div className="col-span-2 p-8 text-center text-cream/50">
-                    Carregando programação...
+                  <div className="space-y-3">
+                    {[1, 2].map(i => (
+                      <div key={i} className="h-20 bg-cream/5 rounded-xl animate-pulse" />
+                    ))}
                   </div>
-                ) : (
-                  schedule.map((item) => (
-                    <div key={`${item.day}-${item.show}`} className="bg-beige-dark/40 p-5 hover:bg-cream/5 transition-colors group">
-                      <div className="flex items-center gap-4">
-                        <div className="w-9 h-9 rounded-lg bg-beige-light border border-cream/10 flex items-center justify-center text-amarelo group-hover:scale-110 transition-transform overflow-hidden">
-                          {renderIcon(item.show, item.iconUrl)}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-2">
-                            <h4 className="font-bold text-sm truncate">{item.show}</h4>
-                            <span className="text-[10px] text-cream/40 font-medium uppercase tracking-wider">{item.day}</span>
+                ) : selectedDay && scheduleByDay[selectedDay] ? (
+                  <div className="space-y-3">
+                    {scheduleByDay[selectedDay].map((item, idx) => (
+                      <div
+                        key={`${item.day}-${item.show}-${idx}`}
+                        className="group relative bg-gradient-to-r from-cream/5 to-transparent rounded-xl p-4 hover:from-cream/10 transition-all border border-cream/5 hover:border-cream/10"
+                      >
+                        <div className="flex items-start gap-4">
+                          {/* Program icon */}
+                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-vermelho/20 to-amarelo/10 border border-cream/10 flex items-center justify-center text-amarelo shrink-0 group-hover:scale-105 transition-transform overflow-hidden">
+                            {renderIcon(item.show, item.iconUrl)}
                           </div>
-                          <div className="flex gap-2 mt-2 flex-wrap">
-                            {item.times.map(time => (
-                              <span key={time} className="flex items-center gap-1 text-[10px] font-mono text-cream/60 bg-black/20 px-2 py-0.5 rounded border border-white/5">
-                                <Clock className="w-3 h-3 text-amarelo/50" />
-                                {time}
-                              </span>
-                            ))}
+
+                          {/* Program info */}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-3">
+                              <div>
+                                <h4 className="font-display font-bold text-base text-cream group-hover:text-amarelo transition-colors">
+                                  {item.show}
+                                </h4>
+                                <p className="text-xs text-cream/50 mt-0.5">
+                                  {item.times.length} {item.times.length === 1 ? 'exibição' : 'exibições'} neste dia
+                                </p>
+                              </div>
+                              <ChevronRight className="w-4 h-4 text-cream/30 group-hover:text-amarelo group-hover:translate-x-1 transition-all shrink-0 mt-1" />
+                            </div>
+
+                            {/* Times */}
+                            <div className="flex gap-2 mt-3 flex-wrap">
+                              {item.times.map((time, timeIdx) => (
+                                <span
+                                  key={`${time}-${timeIdx}`}
+                                  className="inline-flex items-center gap-1.5 text-xs font-mono text-cream bg-black/30 px-3 py-1.5 rounded-lg border border-cream/10 group-hover:border-amarelo/20 transition-colors"
+                                >
+                                  <Clock className="w-3 h-3 text-amarelo" />
+                                  {time}
+                                </span>
+                              ))}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-cream/50">
+                    Seleciona um dia para ver a programação
+                  </div>
                 )}
               </div>
             </Card>
 
-            {/* Integrated Info Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* Info Cards - Compact horizontal */}
+            <div className="grid grid-cols-3 gap-3">
               {radioInfo.map((info) => (
-                <div key={info.title} className="p-4 rounded-xl bg-cream/5 border border-cream/10 flex items-center gap-3 hover:bg-cream/10 transition-all group">
-                  <div className="shrink-0 w-8 h-8 rounded-lg bg-beige-light flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                <div key={info.title} className="p-3 rounded-xl bg-cream/5 border border-cream/10 text-center hover:bg-cream/10 transition-all group">
+                  <div className="w-8 h-8 mx-auto rounded-lg bg-beige-light flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform mb-2">
                     {info.icon}
                   </div>
-                  <div className="min-w-0">
-                    <h5 className="text-[11px] font-bold truncate group-hover:text-amarelo transition-colors">{info.title}</h5>
-                    <p className="text-[10px] text-cream/40 truncate">{info.desc}</p>
-                  </div>
+                  <h5 className="text-[11px] font-bold group-hover:text-amarelo transition-colors">{info.title}</h5>
+                  <p className="text-[9px] text-cream/40 mt-0.5">{info.desc}</p>
                 </div>
               ))}
             </div>

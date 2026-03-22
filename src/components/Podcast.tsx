@@ -9,55 +9,73 @@ const platforms = [
 
 const Podcast = () => {
   return (
-    <section id="podcast" className="py-16 md:py-24 lg:py-32 bg-beige-dark text-cream">
-      <div className="container mx-auto px-4 sm:px-6">
-        {/* Section Header */}
-        <div className="max-w-2xl mx-auto text-center mb-10 md:mb-14">
-          <span className="label-sm text-amarelo mb-3 block">Podcast</span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-semibold text-cream mb-4">
+    <section id="podcast" className="py-20 md:py-28 lg:py-36 bg-beige-dark text-cream relative overflow-hidden">
+      {/* Decorative background */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-vermelho/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-amarelo/5 rounded-full blur-3xl" />
+      </div>
+
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
+        {/* Section Header - Enhanced */}
+        <div className="max-w-2xl mx-auto text-center mb-12 md:mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amarelo/10 border border-amarelo/20 mb-5">
+            <span className="w-1.5 h-1.5 rounded-full bg-amarelo animate-pulse" />
+            <span className="text-[11px] font-semibold uppercase tracking-widest text-amarelo">
+              Podcast
+            </span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-semibold text-cream mb-5 leading-tight">
             Conversas que <span className="text-amarelo">importam</span>
           </h2>
-          <p className="text-base md:text-lg text-cream/70">
+          <p className="text-base md:text-lg lg:text-xl text-cream/60 max-w-lg mx-auto">
             Damos voz a quem precisa ser ouvido.
           </p>
         </div>
 
-        <div className="max-w-xl mx-auto">
-          {/* Participate CTA */}
-          <Card className="bg-gradient-to-br from-vermelho to-vermelho-soft border-0 text-cream">
-            <CardContent className="p-5 md:p-6 lg:p-8">
-              <div className="flex items-center gap-2 mb-3">
-                <MessageCircle className="w-5 h-5 text-amarelo" />
-                <h3 className="text-lg md:text-xl font-display font-semibold">
+        <div className="max-w-2xl mx-auto">
+          {/* Participate CTA - Enhanced */}
+          <Card className="bg-gradient-to-br from-vermelho via-vermelho to-vermelho-soft border-0 text-cream shadow-2xl shadow-vermelho/20 overflow-hidden relative">
+            {/* Decorative elements */}
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-amarelo/10 rounded-full blur-2xl" />
+            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
+
+            <CardContent className="p-6 md:p-8 lg:p-10 relative z-10">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                  <MessageCircle className="w-5 h-5 text-amarelo" />
+                </div>
+                <h3 className="text-xl md:text-2xl font-display font-bold">
                   Participa!
                 </h3>
               </div>
-              <p className="text-sm md:text-base text-cream/90 mb-5 leading-relaxed">
+              <p className="text-base md:text-lg text-cream/80 mb-6 leading-relaxed">
                 Tem uma história para contar ou um projeto para destacar? Junte-se a nós e dê mais visibilidade à sua empresa ou evento com os nossos serviços.
               </p>
-              <div className="flex justify-center sm:justify-start">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <Button
                   asChild
-                  className="bg-amarelo text-charcoal hover:bg-amarelo-soft transition-colors font-medium h-10 shadow-lg shadow-black/5"
+                  size="lg"
+                  className="bg-gradient-to-r from-amarelo to-amarelo-soft text-charcoal hover:opacity-90 transition-all font-semibold h-12 px-8 rounded-xl shadow-lg shadow-amarelo/20"
                 >
                   <a href="#contacto">Enviar História</a>
                 </Button>
               </div>
 
               {/* Platforms */}
-              <div className="mt-6 pt-5 border-t border-cream/15">
-                <p className="text-xs text-cream/70 mb-3">Ouve-nos em:</p>
-                <div className="flex flex-wrap gap-x-4 gap-y-2">
+              <div className="mt-8 pt-6 border-t border-cream/10">
+                <p className="text-xs text-cream/50 mb-3 font-medium uppercase tracking-wider">Ouve-nos em:</p>
+                <div className="flex flex-wrap gap-3">
                   {platforms.map((platform) => (
                     <a
                       key={platform.name}
                       href={platform.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-cream/70 hover:text-amarelo transition-colors text-xs font-medium"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/15 rounded-lg transition-colors text-sm font-medium text-cream hover:text-amarelo"
                     >
                       {platform.name}
-                      <ExternalLink className="w-3 h-3" />
+                      <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                   ))}
                 </div>

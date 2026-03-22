@@ -35,48 +35,60 @@ const services = [
 
 const Servicos = () => {
   return (
-    <section id="servicos" className="py-16 md:py-24 lg:py-32 bg-muted/30">
-      <div className="container mx-auto px-4 sm:px-6">
-        {/* Section Header */}
-        <div className="max-w-2xl mx-auto text-center mb-10 md:mb-14">
-          <span className="label-sm text-primary mb-3 block">O Que Fazemos</span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-semibold text-foreground mb-4">
+    <section id="servicos" className="py-20 md:py-28 lg:py-36 bg-gradient-to-b from-muted/20 via-muted/40 to-muted/20 relative overflow-hidden">
+      {/* Subtle background decoration */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-vermelho/[0.02] rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-amarelo/[0.03] rounded-full blur-3xl" />
+      </div>
+
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
+        {/* Section Header - Enhanced */}
+        <div className="max-w-2xl mx-auto text-center mb-12 md:mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/10 mb-5">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+            <span className="text-[11px] font-semibold uppercase tracking-widest text-primary">
+              O Que Fazemos
+            </span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-semibold text-foreground mb-5 leading-tight">
             Múltiplas frentes,{" "}
             <span className="text-gradient-brand">um só propósito</span>
           </h2>
-          <p className="text-base md:text-lg text-muted-foreground">
+          <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl mx-auto">
             O poder da palavra, da escuta e da estética como ferramentas de
             transformação.
           </p>
         </div>
 
-        {/* Services Grid - Mobile first: 1 col, then 2 cols */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 max-w-4xl mx-auto mb-10 md:mb-12">
-          {services.map((service) => (
+        {/* Services Grid - Enhanced cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6 max-w-4xl mx-auto mb-12 md:mb-16">
+          {services.map((service, index) => (
             <Card
               key={service.title}
-              className="group border-border/50 bg-card hover:border-border transition-all duration-200 card-hover-effect"
+              className="group border-border/30 bg-card/80 backdrop-blur-sm hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300"
+              style={{ animationDelay: `${index * 100}ms` }}
             >
-              <CardContent className="p-5 md:p-6">
-                <div className="flex items-start gap-4">
+              <CardContent className="p-6 md:p-7">
+                <div className="flex items-start gap-5">
                   <div
-                    className={`flex-shrink-0 w-10 h-10 md:w-11 md:h-11 rounded-lg flex items-center justify-center transition-colors ${service.color === "vermelho"
-                      ? "bg-primary/10 group-hover:bg-primary/15"
-                      : "bg-secondary/20 group-hover:bg-secondary/30"
+                    className={`flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center transition-all duration-300 shadow-lg ${service.color === "vermelho"
+                      ? "bg-gradient-to-br from-primary/10 to-primary/5 group-hover:from-primary/20 group-hover:to-primary/10 shadow-primary/5"
+                      : "bg-gradient-to-br from-secondary/20 to-secondary/10 group-hover:from-secondary/30 group-hover:to-secondary/20 shadow-secondary/5"
                       }`}
                   >
                     <service.icon
-                      className={`w-5 h-5 ${service.color === "vermelho"
+                      className={`w-6 h-6 transition-transform duration-300 group-hover:scale-110 ${service.color === "vermelho"
                         ? "text-primary"
                         : "text-secondary-foreground"
                         }`}
                     />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-base md:text-lg font-display font-semibold text-foreground mb-2">
+                    <h3 className="text-lg md:text-xl font-display font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
                       {service.title}
                     </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                    <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
                       {service.description}
                     </p>
                   </div>
@@ -86,15 +98,16 @@ const Servicos = () => {
           ))}
         </div>
 
-        {/* CTA */}
+        {/* CTA - Enhanced */}
         <div className="text-center">
           <Button
             asChild
-            className="btn-primary-glow h-10 md:h-11 px-6 md:px-8 font-medium border-none"
+            size="lg"
+            className="btn-primary-glow h-12 md:h-14 px-8 md:px-10 text-base font-medium border-none rounded-xl"
           >
             <a href="#contacto" className="inline-flex items-center gap-2">
               Fala Conosco
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-5 h-5" />
             </a>
           </Button>
         </div>

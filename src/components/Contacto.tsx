@@ -103,15 +103,26 @@ const Contacto = () => {
   };
 
   return (
-    <section id="contacto" className="py-16 md:py-24 lg:py-32 bg-background">
-      <div className="container mx-auto px-4 sm:px-6">
-        {/* Section Header */}
-        <div className="max-w-2xl mx-auto text-center mb-10 md:mb-14">
-          <span className="label-sm text-primary mb-3 block">Contacto</span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-semibold text-foreground mb-4">
+    <section id="contacto" className="py-20 md:py-28 lg:py-36 bg-background relative overflow-hidden">
+      {/* Subtle background decoration */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary/[0.02] rounded-full blur-3xl" />
+        <div className="absolute top-1/4 -left-20 w-64 h-64 bg-secondary/[0.03] rounded-full blur-3xl" />
+      </div>
+
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
+        {/* Section Header - Enhanced */}
+        <div className="max-w-2xl mx-auto text-center mb-12 md:mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/10 mb-5">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+            <span className="text-[11px] font-semibold uppercase tracking-widest text-primary">
+              Contacto
+            </span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-semibold text-foreground mb-5 leading-tight">
             Fala <span className="text-gradient-brand">Conosco</span>
           </h2>
-          <p className="text-base md:text-lg text-muted-foreground">
+          <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-lg mx-auto">
             Queres trabalhar connosco? Estamos aqui para ouvir!
           </p>
         </div>
@@ -119,8 +130,8 @@ const Contacto = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
           {/* Contact Form */}
           <div className="lg:col-span-2">
-            <Card className="border-border/50">
-              <CardContent className="p-5 md:p-6">
+            <Card className="border-border/30 bg-card/80 backdrop-blur-sm shadow-xl shadow-primary/5">
+              <CardContent className="p-6 md:p-8">
                 <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
