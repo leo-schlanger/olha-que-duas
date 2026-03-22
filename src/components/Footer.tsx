@@ -30,7 +30,7 @@ const Footer = () => {
             <img
               src={logo}
               alt={siteConfig.info.name}
-              className="h-32 md:h-40 w-auto rounded-full mb-4 shadow-lg shadow-black/20"
+              className="h-24 md:h-28 w-auto mb-4"
             />
             <p className="text-cream/60 text-sm md:text-base text-center md:text-left max-w-xs leading-relaxed">
               {siteConfig.info.tagline}
