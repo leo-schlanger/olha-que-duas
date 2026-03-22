@@ -50,7 +50,7 @@ export const siteConfig = {
     // URL do stream AzuraCast
     streamUrl: "https://radio.olhaqueduas.com/listen/olha_que_duas/radio.mp3",
     isLive: true, // Rádio ativa
-    tagline: "A sua voz, 24 horas por dia",
+    tagline: "A sua companhia, 24 horas por dia",
   },
 
   // Parceiros
