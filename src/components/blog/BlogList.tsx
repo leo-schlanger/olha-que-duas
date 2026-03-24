@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Loader2, Newspaper, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Loader2, Newspaper, AlertCircle, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BlogCard } from './BlogCard';
 import { BlogFilters } from './BlogFilters';
 import { useBlogPosts, useBlogCategories, useBlogRegions } from '@/hooks/useBlogPosts';
 import { isSupabaseConfigured } from '@/lib/supabase';
+import { Animated, AnimatedGrid } from '@/components/ui/animated';
 import type { BlogFilters as BlogFiltersType } from '@/types/blog';
 
 export function BlogList() {
@@ -16,7 +17,7 @@ export function BlogList() {
     setCurrentPage(1);
   }, [filters]);
 
-  const { data, isLoading, error } = useBlogPosts(filters, currentPage, 12);
+  const { data, isLoading, error, refetch } = useBlogPosts(filters, currentPage, 12);
   const posts = data?.posts || [];
   const totalPages = data?.totalPages || 0;
 
@@ -25,133 +26,188 @@ export function BlogList() {
 
   if (!isSupabaseConfigured()) {
     return (
-      <div className="text-center py-16">
-        <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-charcoal mb-2">
-          Blog não configurado
-        </h3>
-        <p className="text-muted-foreground max-w-md mx-auto">
-          As credenciais do Supabase não estão configuradas.
-          Configure as variáveis de ambiente VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY.
-        </p>
-      </div>
+      <Animated animation="fade-up" className="text-center py-20">
+        <div className="max-w-md mx-auto">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-muted/50 flex items-center justify-center">
+            <AlertCircle className="w-10 h-10 text-muted-foreground" />
+          </div>
+          <h3 className="text-xl font-display font-semibold text-foreground mb-3">
+            Blog não configurado
+          </h3>
+          <p className="text-muted-foreground leading-relaxed">
+            As credenciais do Supabase não estão configuradas.
+            Configure as variáveis de ambiente VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY.
+          </p>
+        </div>
+      </Animated>
     );
   }
 
   if (error) {
     return (
-      <div className="text-center py-16">
-        <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-charcoal mb-2">
-          Erro ao carregar notícias
-        </h3>
-        <p className="text-muted-foreground">
-          Ocorreu um erro ao carregar as notícias. Tente novamente mais tarde.
-        </p>
-      </div>
+      <Animated animation="fade-up" className="text-center py-20">
+        <div className="max-w-md mx-auto">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-red-500/10 flex items-center justify-center">
+            <AlertCircle className="w-10 h-10 text-red-500" />
+          </div>
+          <h3 className="text-xl font-display font-semibold text-foreground mb-3">
+            Erro ao carregar notícias
+          </h3>
+          <p className="text-muted-foreground mb-6">
+            Ocorreu um erro ao carregar as notícias. Tente novamente.
+          </p>
+          <Button
+            onClick={() => refetch()}
+            variant="outline"
+            className="gap-2"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Tentar novamente
+          </Button>
+        </div>
+      </Animated>
     );
   }
 
   return (
     <div>
-      <BlogFilters
-        filters={filters}
-        onFiltersChange={setFilters}
-        categories={categories}
-        regions={regions}
-      />
+      {/* Filters */}
+      <Animated animation="fade-up">
+        <BlogFilters
+          filters={filters}
+          onFiltersChange={setFilters}
+          categories={categories}
+          regions={regions}
+        />
+      </Animated>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-16">
-          <Loader2 className="w-8 h-8 animate-spin text-vermelho" />
+        <div className="flex flex-col items-center justify-center py-20">
+          <div className="w-16 h-16 rounded-2xl bg-vermelho/10 flex items-center justify-center mb-4">
+            <Loader2 className="w-8 h-8 animate-spin text-vermelho" />
+          </div>
+          <p className="text-muted-foreground">A carregar notícias...</p>
         </div>
       ) : posts && posts.length > 0 ? (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {/* Posts Grid with staggered animation */}
+          <AnimatedGrid
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
+            staggerDelay={100}
+            animation="fade-up"
+          >
             {posts.map((post) => (
               <BlogCard key={post.id} post={post} />
             ))}
-          </div>
+          </AnimatedGrid>
 
+          {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 mt-8">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => {
-                  setCurrentPage(p => Math.max(1, p - 1));
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                disabled={currentPage === 1}
-              >
-                <span className="sr-only">Anterior</span>
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
+            <Animated animation="fade-up" delay={400}>
+              <div className="flex items-center justify-center gap-2 mt-12 pt-8 border-t border-border/50">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => {
+                    setCurrentPage(p => Math.max(1, p - 1));
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  disabled={currentPage === 1}
+                  className="h-10 w-10 rounded-xl hover:bg-primary/5 hover:border-primary/30 transition-all disabled:opacity-50"
+                >
+                  <span className="sr-only">Anterior</span>
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
 
-              <div className="flex items-center gap-2 hidden sm:flex">
-                {Array.from({ length: totalPages }).map((_, i) => {
-                  // Mostrar apenas páginas próximas à página atual
-                  if (
-                    totalPages <= 5 ||
-                    i === 0 ||
-                    i === totalPages - 1 ||
-                    Math.abs(currentPage - 1 - i) <= 1
-                  ) {
-                    return (
-                      <Button
-                        key={i}
-                        variant={currentPage === i + 1 ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => {
-                          setCurrentPage(i + 1);
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }}
-                        className={currentPage === i + 1 ? 'bg-vermelho hover:bg-vermelho/90 text-white' : ''}
-                      >
-                        {i + 1}
-                      </Button>
-                    );
-                  } else if (
-                    (i === 1 && currentPage > 3) ||
-                    (i === totalPages - 2 && currentPage < totalPages - 2)
-                  ) {
-                    return <span key={i} className="text-muted-foreground">...</span>;
-                  }
-                  return null;
-                })}
+                <div className="hidden sm:flex items-center gap-2">
+                  {Array.from({ length: totalPages }).map((_, i) => {
+                    if (
+                      totalPages <= 5 ||
+                      i === 0 ||
+                      i === totalPages - 1 ||
+                      Math.abs(currentPage - 1 - i) <= 1
+                    ) {
+                      return (
+                        <Button
+                          key={i}
+                          variant={currentPage === i + 1 ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => {
+                            setCurrentPage(i + 1);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }}
+                          className={`h-10 w-10 rounded-xl transition-all ${
+                            currentPage === i + 1
+                              ? 'bg-vermelho hover:bg-vermelho/90 text-white shadow-lg shadow-vermelho/20'
+                              : 'hover:bg-primary/5 hover:border-primary/30'
+                          }`}
+                        >
+                          {i + 1}
+                        </Button>
+                      );
+                    } else if (
+                      (i === 1 && currentPage > 3) ||
+                      (i === totalPages - 2 && currentPage < totalPages - 2)
+                    ) {
+                      return (
+                        <span key={i} className="text-muted-foreground px-1">
+                          ...
+                        </span>
+                      );
+                    }
+                    return null;
+                  })}
+                </div>
+
+                <div className="flex sm:hidden items-center gap-2 px-4">
+                  <span className="text-sm text-muted-foreground">
+                    Página <span className="font-semibold text-foreground">{currentPage}</span> de{' '}
+                    <span className="font-semibold text-foreground">{totalPages}</span>
+                  </span>
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => {
+                    setCurrentPage(p => Math.min(totalPages, p + 1));
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  disabled={currentPage === totalPages}
+                  className="h-10 w-10 rounded-xl hover:bg-primary/5 hover:border-primary/30 transition-all disabled:opacity-50"
+                >
+                  <span className="sr-only">Próxima</span>
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
               </div>
-
-              <div className="flex items-center gap-2 sm:hidden">
-                <span className="text-sm text-muted-foreground mr-2">Pág {currentPage} de {totalPages}</span>
-              </div>
-
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => {
-                  setCurrentPage(p => Math.min(totalPages, p + 1));
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                disabled={currentPage === totalPages}
-              >
-                <span className="sr-only">Próxima</span>
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
+            </Animated>
           )}
         </>
       ) : (
-        <div className="text-center py-16">
-          <Newspaper className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-charcoal mb-2">
-            Nenhuma notícia encontrada
-          </h3>
-          <p className="text-muted-foreground">
-            {filters.category || filters.region || filters.search
-              ? 'Não há notícias com os filtros selecionados.'
-              : 'Ainda não há notícias publicadas.'}
-          </p>
-        </div>
+        <Animated animation="fade-up" className="text-center py-20">
+          <div className="max-w-md mx-auto">
+            <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-muted/50 flex items-center justify-center">
+              <Newspaper className="w-10 h-10 text-muted-foreground" />
+            </div>
+            <h3 className="text-xl font-display font-semibold text-foreground mb-3">
+              Nenhuma notícia encontrada
+            </h3>
+            <p className="text-muted-foreground">
+              {filters.category || filters.region || filters.search
+                ? 'Não há notícias com os filtros selecionados.'
+                : 'Ainda não há notícias publicadas.'}
+            </p>
+            {(filters.category || filters.region || filters.search) && (
+              <Button
+                variant="outline"
+                className="mt-6"
+                onClick={() => setFilters({})}
+              >
+                Limpar filtros
+              </Button>
+            )}
+          </div>
+        </Animated>
       )}
     </div>
   );

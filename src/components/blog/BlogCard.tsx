@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { pt } from 'date-fns/locale';
-import { Calendar, MapPin, ExternalLink, Newspaper } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Calendar, MapPin, ExternalLink, Newspaper, ArrowRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import type { BlogPost } from '@/types/blog';
 import { CATEGORY_LABELS, CATEGORY_COLORS } from '@/types/blog';
@@ -20,14 +19,16 @@ export function BlogCard({ post }: BlogCardProps) {
     : null;
 
   return (
-    <Link to={`/noticias/${post.slug}`}>
-      <Card className="h-full overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 bg-white border-beige-medium">
-        <div className="aspect-video w-full overflow-hidden">
+    <Link to={`/noticias/${post.slug}`} className="group block h-full">
+      <article className="h-full rounded-2xl overflow-hidden transition-all duration-500 bg-card border border-border/50 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 card-3d">
+        {/* Image container */}
+        <div className="aspect-video w-full overflow-hidden relative">
           {post.image_url ? (
             <img
               src={post.image_url}
               alt={post.title}
-              className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.style.display = 'none';
@@ -43,42 +44,66 @@ export function BlogCard({ post }: BlogCardProps) {
               <Newspaper className="w-12 h-12 text-charcoal/30" />
             </div>
           )}
-        </div>
-        <CardContent className="p-4 sm:p-5">
-          <div className="flex flex-wrap items-center gap-2 mb-3">
-            <Badge className={`${categoryColor} text-white text-xs`}>
+
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+          {/* Category badge - positioned on image */}
+          <div className="absolute top-4 left-4">
+            <Badge className={`${categoryColor} text-white text-xs shadow-lg`}>
               {categoryLabel}
             </Badge>
-            {post.region && (
-              <Badge variant="outline" className="text-xs flex items-center gap-1">
+          </div>
+
+          {/* Region badge */}
+          {post.region && (
+            <div className="absolute top-4 right-4">
+              <Badge variant="secondary" className="text-xs flex items-center gap-1 bg-white/90 backdrop-blur-sm">
                 <MapPin className="w-3 h-3" />
                 {post.region}
               </Badge>
-            )}
-          </div>
+            </div>
+          )}
+        </div>
 
-          <h3 className="text-lg font-semibold text-charcoal mb-2 line-clamp-2 font-display">
+        {/* Content */}
+        <div className="p-5 md:p-6 flex flex-col h-[calc(100%-56.25%)]">
+          <h3 className="text-lg font-semibold text-foreground mb-3 line-clamp-2 font-display group-hover:text-primary transition-colors">
             {post.title}
           </h3>
 
           {post.summary && (
-            <p className="text-sm text-muted-foreground mb-3 line-clamp-3">
+            <p className="text-sm text-muted-foreground mb-4 line-clamp-2 flex-grow">
               {post.summary}
             </p>
           )}
 
-          <div className="flex items-center justify-between text-xs text-muted-foreground mt-auto pt-3 border-t border-beige-light">
-            <div className="flex items-center gap-1">
-              <Calendar className="w-3 h-3" />
-              {publishedDate}
+          {/* Footer */}
+          <div className="flex items-center justify-between text-xs text-muted-foreground pt-4 border-t border-border/50 mt-auto">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5" />
+                <span>{publishedDate}</span>
+              </div>
+              {post.source_name && (
+                <div className="flex items-center gap-1.5">
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span className="max-w-[100px] truncate">{post.source_name}</span>
+                </div>
+              )}
             </div>
-            <div className="flex items-center gap-1">
-              <ExternalLink className="w-3 h-3" />
-              {post.source_name}
+
+            {/* Read more indicator */}
+            <div className="flex items-center gap-1 text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+              <span>Ler</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+
+        {/* Hover glow effect */}
+        <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 blur-xl bg-primary/10" />
+      </article>
     </Link>
   );
 }
