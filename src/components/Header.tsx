@@ -80,7 +80,7 @@ const Header = () => {
               alt="Olha que Duas"
               className={cn(
                 "w-auto transition-all duration-300 group-hover:scale-105",
-                isScrolled ? "h-12 md:h-14" : "h-14 md:h-16"
+                isScrolled ? "h-14 md:h-16" : "h-16 md:h-20"
               )}
             />
           </Link>

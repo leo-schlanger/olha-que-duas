@@ -67,13 +67,13 @@ export function BlogCard({ post }: BlogCardProps) {
         </div>
 
         {/* Content */}
-        <div className="p-5 md:p-6 flex flex-col h-[calc(100%-56.25%)]">
-          <h3 className="text-lg font-semibold text-foreground mb-3 line-clamp-2 font-display group-hover:text-primary transition-colors">
+        <div className="p-5 md:p-6 flex flex-col">
+          <h3 className="text-base md:text-lg font-semibold text-foreground mb-2 line-clamp-3 font-display group-hover:text-primary transition-colors leading-snug">
             {post.title}
           </h3>
 
           {post.summary && (
-            <p className="text-sm text-muted-foreground mb-4 line-clamp-2 flex-grow">
+            <p className="text-sm text-muted-foreground mb-4 line-clamp-3 leading-relaxed">
               {post.summary}
             </p>
           )}
