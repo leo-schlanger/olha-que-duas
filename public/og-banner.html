@@ -6,7 +6,7 @@
   <title>OG Banner - Olha que Duas</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -24,98 +24,277 @@
     .banner {
       width: 1200px;
       height: 630px;
-      background: linear-gradient(135deg, #c93235 0%, #b4292b 30%, #8a1f21 100%);
+      background: linear-gradient(135deg, #d63031 0%, #b4292b 40%, #6d1517 100%);
       position: relative;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
       overflow: hidden;
     }
 
-    /* Decorative elements */
-    .decoration-1 {
-      position: absolute;
-      top: -80px;
-      right: -80px;
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, rgba(255,215,0,0.15) 0%, transparent 70%);
-      border-radius: 50%;
-    }
-
-    .decoration-2 {
-      position: absolute;
-      bottom: -100px;
-      left: -100px;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(0,0,0,0.2) 0%, transparent 70%);
-      border-radius: 50%;
-    }
-
-    .decoration-3 {
-      position: absolute;
-      top: 50%;
-      left: 5%;
-      transform: translateY(-50%);
-      width: 150px;
-      height: 150px;
-      background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
-      border-radius: 50%;
-    }
-
-    .decoration-4 {
-      position: absolute;
-      top: 50%;
-      right: 5%;
-      transform: translateY(-50%);
-      width: 150px;
-      height: 150px;
-      background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
-      border-radius: 50%;
-    }
-
-    /* Subtle pattern overlay */
-    .pattern {
+    /* Animated sound waves background */
+    .sound-waves {
       position: absolute;
       inset: 0;
-      background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 30px 30px;
+      overflow: hidden;
+      opacity: 0.15;
     }
 
-    /* Content */
+    .wave {
+      position: absolute;
+      border: 3px solid #FFD700;
+      border-radius: 50%;
+      animation: pulse 3s ease-out infinite;
+    }
+
+    .wave-1 {
+      width: 600px;
+      height: 600px;
+      top: 50%;
+      left: 25%;
+      transform: translate(-50%, -50%);
+      animation-delay: 0s;
+    }
+
+    .wave-2 {
+      width: 800px;
+      height: 800px;
+      top: 50%;
+      left: 25%;
+      transform: translate(-50%, -50%);
+      animation-delay: 0.5s;
+    }
+
+    .wave-3 {
+      width: 1000px;
+      height: 1000px;
+      top: 50%;
+      left: 25%;
+      transform: translate(-50%, -50%);
+      animation-delay: 1s;
+    }
+
+    .wave-4 {
+      width: 1200px;
+      height: 1200px;
+      top: 50%;
+      left: 25%;
+      transform: translate(-50%, -50%);
+      animation-delay: 1.5s;
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.8);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.2);
+      }
+    }
+
+    /* Glowing orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+    }
+
+    .orb-1 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255,215,0,0.4) 0%, transparent 70%);
+      top: -100px;
+      right: -50px;
+    }
+
+    .orb-2 {
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255,100,100,0.3) 0%, transparent 70%);
+      bottom: -50px;
+      left: 30%;
+    }
+
+    .orb-3 {
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(255,215,0,0.3) 0%, transparent 70%);
+      top: 20%;
+      right: 20%;
+    }
+
+    /* Floating particles */
+    .particles {
+      position: absolute;
+      inset: 0;
+    }
+
+    .particle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: #FFD700;
+      border-radius: 50%;
+      opacity: 0.6;
+    }
+
+    .particle:nth-child(1) { top: 15%; left: 10%; width: 6px; height: 6px; }
+    .particle:nth-child(2) { top: 25%; left: 85%; width: 10px; height: 10px; }
+    .particle:nth-child(3) { top: 70%; left: 75%; width: 5px; height: 5px; }
+    .particle:nth-child(4) { top: 80%; left: 15%; width: 8px; height: 8px; }
+    .particle:nth-child(5) { top: 40%; left: 95%; width: 6px; height: 6px; }
+    .particle:nth-child(6) { top: 60%; left: 5%; width: 4px; height: 4px; }
+
+    /* Equalizer bars */
+    .equalizer {
+      position: absolute;
+      display: flex;
+      gap: 6px;
+      align-items: flex-end;
+      height: 80px;
+    }
+
+    .equalizer-left {
+      left: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .equalizer-right {
+      right: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .eq-bar {
+      width: 8px;
+      background: linear-gradient(180deg, #FFD700 0%, #FFA500 100%);
+      border-radius: 4px;
+      opacity: 0.7;
+    }
+
+    .equalizer-left .eq-bar:nth-child(1) { height: 30px; }
+    .equalizer-left .eq-bar:nth-child(2) { height: 55px; }
+    .equalizer-left .eq-bar:nth-child(3) { height: 40px; }
+    .equalizer-left .eq-bar:nth-child(4) { height: 70px; }
+    .equalizer-left .eq-bar:nth-child(5) { height: 45px; }
+
+    .equalizer-right .eq-bar:nth-child(1) { height: 45px; }
+    .equalizer-right .eq-bar:nth-child(2) { height: 70px; }
+    .equalizer-right .eq-bar:nth-child(3) { height: 35px; }
+    .equalizer-right .eq-bar:nth-child(4) { height: 60px; }
+    .equalizer-right .eq-bar:nth-child(5) { height: 25px; }
+
+    /* Main content */
     .content {
       position: relative;
       z-index: 10;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 40px;
+      width: 100%;
+      height: 100%;
+      padding: 40px 60px;
     }
 
-    /* Logo container */
-    .logo-container {
-      margin-bottom: 30px;
-      filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
+    /* Left side - Logo */
+    .left-side {
+      flex: 0 0 45%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-wrapper {
+      position: relative;
+    }
+
+    /* Glow effect behind logo */
+    .logo-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 380px;
+      height: 380px;
+      background: radial-gradient(circle, rgba(255,215,0,0.4) 0%, rgba(255,215,0,0.1) 40%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(20px);
+    }
+
+    .logo-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 360px;
+      height: 360px;
+      border: 3px solid rgba(255,215,0,0.3);
+      border-radius: 50%;
+    }
+
+    .logo-ring-2 {
+      width: 400px;
+      height: 400px;
+      border: 2px solid rgba(255,215,0,0.15);
     }
 
     .logo {
-      width: 220px;
-      height: 220px;
+      position: relative;
+      width: 320px;
+      height: 320px;
       object-fit: contain;
+      filter: drop-shadow(0 20px 40px rgba(0,0,0,0.4));
+      z-index: 5;
+    }
+
+    /* Right side - Text */
+    .right-side {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-left: 20px;
+    }
+
+    /* Media icons */
+    .media-icons {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .media-icon {
+      width: 50px;
+      height: 50px;
+      background: rgba(255,215,0,0.2);
+      border: 2px solid rgba(255,215,0,0.5);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .media-icon svg {
+      width: 26px;
+      height: 26px;
+      fill: #FFD700;
     }
 
     /* Tagline */
     .tagline {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 42px;
+      font-size: 52px;
       font-weight: 700;
-      color: #FFD700;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      color: #FFFFFF;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.4);
       margin-bottom: 15px;
-      letter-spacing: 1px;
+      line-height: 1.1;
+    }
+
+    .tagline .highlight {
+      color: #FFD700;
+      text-shadow: 0 0 30px rgba(255,215,0,0.5), 0 4px 20px rgba(0,0,0,0.4);
     }
 
     /* Subtitle */
@@ -123,10 +302,38 @@
       font-family: 'Inter', sans-serif;
       font-size: 22px;
       font-weight: 500;
-      color: rgba(255,255,255,0.95);
-      text-shadow: 0 1px 5px rgba(0,0,0,0.2);
-      max-width: 700px;
-      line-height: 1.4;
+      color: rgba(255,255,255,0.9);
+      line-height: 1.5;
+      max-width: 500px;
+    }
+
+    /* Live badge */
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 8px 16px;
+      border-radius: 30px;
+      margin-top: 25px;
+      backdrop-filter: blur(10px);
+    }
+
+    .live-dot {
+      width: 10px;
+      height: 10px;
+      background: #00ff00;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #00ff00;
+    }
+
+    .live-text {
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     /* Bottom bar */
@@ -135,68 +342,139 @@
       bottom: 0;
       left: 0;
       right: 0;
-      height: 50px;
-      background: linear-gradient(90deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.3) 100%);
+      height: 55px;
+      background: linear-gradient(90deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.5) 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 40px;
+      gap: 50px;
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(255,215,0,0.2);
     }
 
     .bottom-item {
-      color: rgba(255,255,255,0.9);
+      color: rgba(255,255,255,0.95);
       font-size: 16px;
-      font-weight: 500;
+      font-weight: 600;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
 
     .bottom-item svg {
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       fill: #FFD700;
     }
 
     .divider {
-      width: 4px;
-      height: 4px;
-      background: rgba(255,255,255,0.4);
+      width: 5px;
+      height: 5px;
+      background: #FFD700;
       border-radius: 50%;
     }
 
-    /* Golden accent line */
-    .accent-line {
+    /* Top accent */
+    .top-accent {
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       height: 5px;
-      background: linear-gradient(90deg, transparent 0%, #FFD700 20%, #FFD700 80%, transparent 100%);
+      background: linear-gradient(90deg, transparent 0%, #FFD700 30%, #FFD700 70%, transparent 100%);
     }
   </style>
 </head>
 <body>
   <div class="banner">
-    <!-- Decorative elements -->
-    <div class="decoration-1"></div>
-    <div class="decoration-2"></div>
-    <div class="decoration-3"></div>
-    <div class="decoration-4"></div>
-    <div class="pattern"></div>
+    <!-- Sound waves animation -->
+    <div class="sound-waves">
+      <div class="wave wave-1"></div>
+      <div class="wave wave-2"></div>
+      <div class="wave wave-3"></div>
+      <div class="wave wave-4"></div>
+    </div>
 
-    <!-- Golden accent line at top -->
-    <div class="accent-line"></div>
+    <!-- Glowing orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <!-- Floating particles -->
+    <div class="particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+
+    <!-- Equalizer bars -->
+    <div class="equalizer equalizer-left">
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+    </div>
+
+    <div class="equalizer equalizer-right">
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+    </div>
+
+    <!-- Top accent line -->
+    <div class="top-accent"></div>
 
     <!-- Main content -->
     <div class="content">
-      <div class="logo-container">
-        <img src="https://www.olhaqueduas.com/og-image.png" alt="Olha que Duas" class="logo">
+      <!-- Left - Logo -->
+      <div class="left-side">
+        <div class="logo-wrapper">
+          <div class="logo-glow"></div>
+          <div class="logo-ring"></div>
+          <div class="logo-ring logo-ring-2"></div>
+          <img src="../src/assets/logo-olha-que-duas.png" alt="Olha que Duas" class="logo">
+        </div>
       </div>
 
-      <h1 class="tagline">Comunicacao, Voz e Negocios com Proposito</h1>
+      <!-- Right - Text -->
+      <div class="right-side">
+        <!-- Media type icons -->
+        <div class="media-icons">
+          <!-- Radio icon -->
+          <div class="media-icon">
+            <svg viewBox="0 0 24 24"><path d="M20 6H8.3l8.26-3.34L15.88 1 3.24 6.15C2.51 6.43 2 7.17 2 8v12c0 1.1.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zM8 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm12 2h-6v-2h6v2zm0-4h-6v-2h6v2z"/></svg>
+          </div>
+          <!-- Podcast/Mic icon -->
+          <div class="media-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1 1.93c-3.94-.49-7-3.85-7-7.93V7h2v1c0 2.76 2.24 5 5 5s5-2.24 5-5V7h2v1c0 4.08-3.06 7.44-7 7.93V18h4v2H8v-2h4v-2.07h-1z"/></svg>
+          </div>
+          <!-- Video/Play icon -->
+          <div class="media-icon">
+            <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+          </div>
+        </div>
 
-      <p class="subtitle">Podcast, Radio 24h e Assessoria de Comunicacao em Portugal</p>
+        <h1 class="tagline">
+          Comunicação, Voz e<br>
+          <span class="highlight">Negócios com Propósito</span>
+        </h1>
+
+        <p class="subtitle">
+          Podcast, Rádio 24 horas e Vídeos sobre<br>
+          Empreendedorismo Feminino em Portugal
+        </p>
+
+        <div class="live-badge">
+          <div class="live-dot"></div>
+          <span class="live-text">Rádio ao Vivo 24h</span>
+        </div>
+      </div>
     </div>
 
     <!-- Bottom bar -->
@@ -207,7 +485,7 @@
       </span>
       <div class="divider"></div>
       <span class="bottom-item">
-        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93V7h2v1c0 2.76 2.24 5 5 5s5-2.24 5-5V7h2v4c0 4.08-3.06 7.44-7 7.93z"/></svg>
         www.olhaqueduas.com
       </span>
       <div class="divider"></div>
