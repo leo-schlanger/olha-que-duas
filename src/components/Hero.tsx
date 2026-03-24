@@ -1,134 +1,293 @@
-import { ArrowRight, ChevronDown, Play } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { ArrowRight, Play, Mic, Radio, Video, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AnimatedCounter } from "@/components/ui/animated";
 import fotoJuntas from "@/assets/olha-que-duas-foto.jpg";
 
 const Hero = () => {
+  const [scrollY, setScrollY] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Parallax effect
+  useEffect(() => {
+    const handleScroll = () => {
+      if (sectionRef.current) {
+        const rect = sectionRef.current.getBoundingClientRect();
+        if (rect.bottom > 0) {
+          setScrollY(window.scrollY * 0.3);
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Trigger entrance animations
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoaded(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <section id="inicio" className="relative min-h-screen bg-hero-gradient overflow-hidden">
-      {/* Enhanced decorative elements */}
+    <section
+      ref={sectionRef}
+      id="inicio"
+      className="relative min-h-screen bg-hero-gradient overflow-hidden"
+    >
+      {/* Animated background with parallax */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Primary gradient orb */}
-        <div className="absolute top-1/4 -right-32 w-64 md:w-[500px] h-64 md:h-[500px] bg-vermelho/10 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }} />
-        {/* Secondary accent orb */}
-        <div className="absolute bottom-1/4 -left-20 w-48 md:w-80 h-48 md:h-80 bg-amarelo/8 rounded-full blur-3xl" />
+        {/* Primary gradient orb - parallax */}
+        <div
+          className="absolute top-1/4 -right-32 w-64 md:w-[600px] h-64 md:h-[600px] rounded-full blur-3xl animate-pulse"
+          style={{
+            background: "radial-gradient(circle, rgba(180,41,43,0.15) 0%, transparent 70%)",
+            transform: `translateY(${scrollY * 0.5}px)`,
+            animationDuration: "4s",
+          }}
+        />
+
+        {/* Secondary accent orb - parallax opposite */}
+        <div
+          className="absolute bottom-1/4 -left-20 w-48 md:w-96 h-48 md:h-96 rounded-full blur-3xl"
+          style={{
+            background: "radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%)",
+            transform: `translateY(${-scrollY * 0.3}px)`,
+          }}
+        />
+
+        {/* Floating particles */}
+        <div
+          className="absolute top-1/3 left-1/4 w-3 h-3 bg-amarelo/40 rounded-full animate-float"
+          style={{ animationDelay: "0s" }}
+        />
+        <div
+          className="absolute top-1/2 right-1/3 w-2 h-2 bg-vermelho/30 rounded-full animate-float"
+          style={{ animationDelay: "1s" }}
+        />
+        <div
+          className="absolute bottom-1/3 left-1/3 w-4 h-4 bg-amarelo/20 rounded-full animate-float-slow"
+          style={{ animationDelay: "2s" }}
+        />
+        <div
+          className="absolute top-2/3 right-1/4 w-2 h-2 bg-cream/20 rounded-full animate-float"
+          style={{ animationDelay: "0.5s" }}
+        />
+
+        {/* Animated gradient line */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amarelo/50 to-transparent animate-shimmer" />
+
         {/* Subtle grid pattern overlay */}
-        <div className="absolute inset-0 opacity-[0.02]" style={{
-          backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
-          backgroundSize: '40px 40px'
-        }} />
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+            backgroundSize: "50px 50px",
+            transform: `translateY(${scrollY * 0.1}px)`,
+          }}
+        />
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-screen pt-24 pb-20 md:pt-28 md:pb-16">
           {/* Content - Mobile first, stacks on top */}
           <div className="text-cream space-y-6 md:space-y-8 text-center lg:text-left order-2 lg:order-1">
-            {/* Enhanced label */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cream/5 border border-cream/10 backdrop-blur-sm">
-              <span className="w-2 h-2 rounded-full bg-amarelo animate-pulse" />
-              <span className="text-[11px] font-medium uppercase tracking-widest text-cream/70">
+            {/* Enhanced animated label */}
+            <div
+              className={`inline-flex items-center gap-3 px-5 py-2.5 rounded-full glass-dark transition-all duration-700 ${
+                isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+              }`}
+            >
+              <div className="flex items-center gap-1.5">
+                <Radio className="w-3.5 h-3.5 text-amarelo" />
+                <Mic className="w-3.5 h-3.5 text-vermelho-soft" />
+                <Video className="w-3.5 h-3.5 text-amarelo" />
+              </div>
+              <span className="text-[11px] font-semibold uppercase tracking-widest text-cream/80">
                 Comunicação • Voz • Negócios
+              </span>
+              <span className="flex items-center gap-1.5 pl-2 border-l border-cream/20">
+                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-[10px] text-green-400 font-medium">AO VIVO</span>
               </span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-display font-semibold leading-[1.1] tracking-tight">
+            {/* Animated headline */}
+            <h1
+              className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-display font-semibold leading-[1.1] tracking-tight transition-all duration-700 delay-150 ${
+                isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              }`}
+            >
               Onde a força, a comunicação é ponte e o afeto é{" "}
-              <span className="text-amarelo relative">
-                estratégia
-                <svg className="absolute -bottom-2 left-0 w-full h-3 text-amarelo/30" viewBox="0 0 200 12" preserveAspectRatio="none">
-                  <path d="M0,8 Q50,0 100,8 T200,8" stroke="currentColor" strokeWidth="3" fill="none" />
-                </svg>
+              <span className="text-amarelo relative inline-block group">
+                <span className="relative z-10">estratégia</span>
+                <span
+                  className={`absolute inset-x-0 -bottom-1 h-3 bg-amarelo/20 -skew-x-3 transition-transform duration-500 origin-left ${
+                    isLoaded ? "scale-x-100" : "scale-x-0"
+                  }`}
+                  style={{ transitionDelay: "800ms" }}
+                />
+                <Sparkles className="absolute -top-2 -right-4 w-5 h-5 text-amarelo animate-pulse" />
               </span>
             </h1>
 
-            <p className="text-base md:text-lg lg:text-xl text-cream/70 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+            {/* Animated description */}
+            <p
+              className={`text-base md:text-lg lg:text-xl text-cream/70 max-w-xl mx-auto lg:mx-0 leading-relaxed transition-all duration-700 delay-300 ${
+                isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              }`}
+            >
               Somos comunicadoras com propósito, estrategas com coração e
-              empreendedoras com visão.
+              empreendedoras com visão. Damos voz ao empreendedorismo feminino em Portugal.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 justify-center lg:justify-start">
+            {/* Animated buttons */}
+            <div
+              className={`flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 justify-center lg:justify-start transition-all duration-700 delay-[450ms] ${
+                isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              }`}
+            >
               <Button
                 asChild
                 size="lg"
-                className="btn-primary-glow font-medium h-12 md:h-14 px-6 md:px-8 text-base border-none rounded-xl"
+                className="btn-primary-glow btn-shine btn-magnetic font-medium h-12 md:h-14 px-6 md:px-8 text-base border-none rounded-xl group"
               >
                 <a href="#servicos" className="inline-flex items-center gap-2">
                   Conhecer Serviços
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </a>
               </Button>
               <Button
                 asChild
                 variant="outline"
                 size="lg"
-                className="border-cream/30 bg-cream/5 text-cream hover:bg-cream/10 hover:border-cream/50 font-medium h-12 md:h-14 px-6 md:px-8 text-base rounded-xl backdrop-blur-sm"
+                className="border-cream/30 bg-cream/5 text-cream hover:bg-cream/10 hover:border-cream/50 font-medium h-12 md:h-14 px-6 md:px-8 text-base rounded-xl backdrop-blur-sm btn-magnetic group"
               >
                 <a href="#radio" className="inline-flex items-center gap-2">
-                  <Play className="w-4 h-4" fill="currentColor" />
+                  <Play className="w-4 h-4 transition-transform group-hover:scale-110" fill="currentColor" />
                   Ouvir Rádio
                 </a>
               </Button>
             </div>
 
-            {/* Social proof / stats */}
-            <div className="flex items-center gap-6 pt-4 justify-center lg:justify-start">
-              <div className="text-center lg:text-left">
-                <div className="text-2xl md:text-3xl font-display font-bold text-amarelo">24/7</div>
-                <div className="text-[10px] text-cream/50 uppercase tracking-wider">No Ar</div>
+            {/* Animated stats with counters */}
+            <div
+              className={`flex items-center gap-4 sm:gap-6 pt-6 justify-center lg:justify-start transition-all duration-700 delay-[600ms] ${
+                isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              }`}
+            >
+              <div className="text-center lg:text-left group cursor-default">
+                <div className="text-2xl md:text-3xl font-display font-bold text-amarelo group-hover:scale-110 transition-transform">
+                  24/7
+                </div>
+                <div className="text-[10px] text-cream/50 uppercase tracking-wider mt-1">No Ar</div>
               </div>
-              <div className="w-px h-10 bg-cream/10" />
-              <div className="text-center lg:text-left">
-                <div className="text-2xl md:text-3xl font-display font-bold text-cream">6+</div>
-                <div className="text-[10px] text-cream/50 uppercase tracking-wider">Programas</div>
+              <div className="w-px h-12 bg-gradient-to-b from-transparent via-cream/20 to-transparent" />
+              <div className="text-center lg:text-left group cursor-default">
+                <div className="text-2xl md:text-3xl font-display font-bold text-cream group-hover:scale-110 transition-transform">
+                  <AnimatedCounter value={50} suffix="+" duration={2000} />
+                </div>
+                <div className="text-[10px] text-cream/50 uppercase tracking-wider mt-1">Episódios</div>
               </div>
-              <div className="w-px h-10 bg-cream/10" />
-              <div className="text-center lg:text-left">
-                <div className="text-2xl md:text-3xl font-display font-bold text-cream">2</div>
-                <div className="text-[10px] text-cream/50 uppercase tracking-wider">Fundadoras</div>
+              <div className="w-px h-12 bg-gradient-to-b from-transparent via-cream/20 to-transparent" />
+              <div className="text-center lg:text-left group cursor-default">
+                <div className="text-2xl md:text-3xl font-display font-bold text-cream group-hover:scale-110 transition-transform">
+                  <AnimatedCounter value={1000} suffix="+" duration={2500} />
+                </div>
+                <div className="text-[10px] text-cream/50 uppercase tracking-wider mt-1">Ouvintes</div>
               </div>
             </div>
           </div>
 
-          {/* Image - Enhanced with decorative frame */}
-          <div className="relative flex justify-center order-1 lg:order-2 w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
-            <div className="relative w-full">
-              {/* Decorative frame behind image */}
-              <div className="absolute -inset-4 bg-gradient-to-br from-vermelho/20 via-transparent to-amarelo/20 rounded-3xl blur-xl" />
-              <div className="absolute -inset-2 border border-cream/10 rounded-2xl" />
+          {/* Image - Enhanced with 3D effects */}
+          <div
+            className={`relative flex justify-center order-1 lg:order-2 w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg transition-all duration-1000 delay-200 ${
+              isLoaded ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-12 scale-95"
+            }`}
+          >
+            <div className="relative w-full group">
+              {/* Animated glow behind image */}
+              <div
+                className="absolute -inset-6 rounded-3xl blur-2xl transition-all duration-500 group-hover:scale-105"
+                style={{
+                  background: "linear-gradient(135deg, rgba(180,41,43,0.3) 0%, rgba(255,215,0,0.2) 100%)",
+                  transform: `translateY(${scrollY * 0.1}px)`,
+                }}
+              />
 
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-black/30">
+              {/* Rotating border ring */}
+              <div className="absolute -inset-3 rounded-2xl border border-cream/10 animate-rotate-slow opacity-50" />
+
+              {/* Main image container with 3D tilt on hover */}
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-black/40 card-3d">
                 <img
                   src={fotoJuntas}
-                  alt="Alexandra e Marluce - Olha que Duas"
-                  className="w-full aspect-[4/5] object-cover"
+                  alt="Alexandra e Marluce - Fundadoras do Olha que Duas"
+                  className="w-full aspect-[4/5] object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-charcoal/40 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 via-charcoal/10 to-transparent" />
+
+                {/* Shimmer overlay on hover */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                </div>
               </div>
 
-              {/* Enhanced floating badge */}
-              <div className="absolute -bottom-4 -left-2 sm:-bottom-5 sm:-left-4 bg-gradient-to-r from-amarelo to-amarelo-soft text-charcoal px-5 py-3 sm:px-6 sm:py-4 rounded-2xl font-display text-lg sm:text-xl font-bold shadow-xl shadow-amarelo/25 border border-amarelo-soft/50">
-                <span className="relative">
-                  Olha bem.
-                  <span className="absolute -top-1 -right-2 w-2 h-2 bg-vermelho rounded-full" />
-                </span>
+              {/* Enhanced floating badge with animation */}
+              <div
+                className="absolute -bottom-4 -left-2 sm:-bottom-5 sm:-left-4 animate-float-slow"
+                style={{ animationDuration: "5s" }}
+              >
+                <div className="bg-gradient-to-r from-amarelo to-amarelo-soft text-charcoal px-5 py-3 sm:px-6 sm:py-4 rounded-2xl font-display text-lg sm:text-xl font-bold shadow-xl shadow-amarelo/30 border border-amarelo-soft/50 btn-magnetic">
+                  <span className="relative flex items-center gap-2">
+                    Olha bem.
+                    <span className="w-2 h-2 bg-vermelho rounded-full animate-pulse" />
+                  </span>
+                </div>
               </div>
 
-              {/* Small decorative element */}
-              <div className="absolute -top-3 -right-3 w-12 h-12 bg-vermelho/80 rounded-xl flex items-center justify-center shadow-lg">
-                <Play className="w-5 h-5 text-cream ml-0.5" fill="currentColor" />
+              {/* Play button with pulse glow */}
+              <div className="absolute -top-3 -right-3 animate-bounce-soft" style={{ animationDuration: "3s" }}>
+                <a
+                  href="#radio"
+                  className="w-14 h-14 bg-vermelho rounded-xl flex items-center justify-center shadow-lg animate-pulse-glow btn-magnetic"
+                >
+                  <Play className="w-6 h-6 text-cream ml-0.5" fill="currentColor" />
+                </a>
+              </div>
+
+              {/* Media type badges */}
+              <div className="absolute top-4 left-4 flex gap-2">
+                <div className="glass-dark px-3 py-1.5 rounded-full flex items-center gap-1.5">
+                  <Radio className="w-3 h-3 text-amarelo" />
+                  <span className="text-[10px] font-semibold text-cream uppercase">Rádio</span>
+                </div>
+                <div className="glass-dark px-3 py-1.5 rounded-full flex items-center gap-1.5">
+                  <Mic className="w-3 h-3 text-vermelho-soft" />
+                  <span className="text-[10px] font-semibold text-cream uppercase">Podcast</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Enhanced scroll indicator */}
-        <div className="absolute bottom-8 md:bottom-10 left-1/2 -translate-x-1/2">
+        <div
+          className={`absolute bottom-8 md:bottom-10 left-1/2 -translate-x-1/2 transition-all duration-700 delay-[800ms] ${
+            isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+          }`}
+        >
           <a
             href="#sobre"
-            className="group flex flex-col items-center gap-2 text-cream/40 hover:text-cream/70 transition-colors"
+            className="group flex flex-col items-center gap-2 text-cream/40 hover:text-cream/70 transition-all duration-300"
           >
             <span className="text-[10px] uppercase tracking-widest font-medium">Explorar</span>
-            <div className="w-6 h-10 rounded-full border-2 border-current flex items-start justify-center p-1.5">
-              <div className="w-1 h-2 bg-current rounded-full animate-bounce" style={{ animationDuration: '1.5s' }} />
+            <div className="w-7 h-11 rounded-full border-2 border-current flex items-start justify-center p-2 group-hover:border-amarelo/50 transition-colors">
+              <div
+                className="w-1.5 h-3 bg-current rounded-full animate-bounce group-hover:bg-amarelo"
+                style={{ animationDuration: "1.5s" }}
+              />
             </div>
           </a>
         </div>
