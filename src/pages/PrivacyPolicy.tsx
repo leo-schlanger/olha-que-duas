@@ -1,6 +1,15 @@
 import { Link } from "react-router-dom";
+import { useMetaTags, getPageBreadcrumbJsonLd } from "@/hooks/useMetaTags";
 
 const PrivacyPolicy = () => {
+  // SEO Meta Tags
+  useMetaTags({
+    title: 'Política de Privacidade',
+    description: 'Política de Privacidade do Olha que Duas. Saiba como recolhemos, utilizamos e protegemos os seus dados pessoais em conformidade com o RGPD.',
+    url: 'https://www.olhaqueduas.com/privacidade',
+    jsonLd: getPageBreadcrumbJsonLd('Política de Privacidade', 'https://www.olhaqueduas.com/privacidade'),
+  });
+
   return (
     <div className="min-h-screen bg-[#1a1a1a] text-white">
       <div className="container mx-auto px-4 py-12 max-w-4xl">

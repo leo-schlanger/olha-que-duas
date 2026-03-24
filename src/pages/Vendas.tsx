@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { siteConfig } from "@/config/site";
+import { useMetaTags, getPageBreadcrumbJsonLd } from "@/hooks/useMetaTags";
 
 // Imagem destaque
 import canecaDestaque from "@/assets/merch/caneca-cenario-destaque.jpg";
@@ -60,6 +61,29 @@ const produtos = [
 
 const Vendas = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  // SEO Meta Tags
+  useMetaTags({
+    title: 'Loja Oficial',
+    description: 'Loja oficial Olha que Duas. Canecas exclusivas, produtos únicos e muito estilo. Encomende já os seus produtos favoritos e leve o Olha que Duas consigo!',
+    url: 'https://www.olhaqueduas.com/loja',
+    jsonLd: [
+      getPageBreadcrumbJsonLd('Loja', 'https://www.olhaqueduas.com/loja'),
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Store',
+        '@id': 'https://www.olhaqueduas.com/loja#store',
+        name: 'Loja Olha que Duas',
+        description: 'Loja oficial com produtos exclusivos Olha que Duas',
+        url: 'https://www.olhaqueduas.com/loja',
+        priceRange: '€€',
+        areaServed: {
+          '@type': 'Country',
+          name: 'Portugal',
+        },
+      },
+    ],
+  });
 
   useEffect(() => {
     window.scrollTo(0, 0);

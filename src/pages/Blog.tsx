@@ -5,8 +5,17 @@ import { Button } from '@/components/ui/button';
 import { BlogList } from '@/components/blog/BlogList';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
 
 export default function Blog() {
+  // SEO Meta Tags
+  useMetaTags({
+    title: 'Notícias',
+    description: 'Acompanhe as principais notícias de política, empreendedorismo, comunicação e acontecimentos em Portugal, Brasil e no mundo. Olha que Duas - Informação com propósito.',
+    url: 'https://www.olhaqueduas.com/noticias',
+    jsonLd: getPageBreadcrumbJsonLd('Notícias', 'https://www.olhaqueduas.com/noticias'),
+  });
+
   // Scroll para o topo quando a página carrega
   useEffect(() => {
     window.scrollTo(0, 0);

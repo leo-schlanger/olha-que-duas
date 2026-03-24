@@ -16,9 +16,17 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useNewsletterSignup } from '@/hooks/useNewsletterSignup';
+import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
 import logoImage from '@/assets/logo-olha-que-duas.png';
 
 export default function Newsletter() {
+  // SEO Meta Tags
+  useMetaTags({
+    title: 'Newsletter',
+    description: 'Subscreva a newsletter do Olha que Duas e receba em primeira mão novidades exclusivas, descontos especiais e conteúdo que não partilhamos em mais lado nenhum.',
+    url: 'https://www.olhaqueduas.com/newsletter',
+    jsonLd: getPageBreadcrumbJsonLd('Newsletter', 'https://www.olhaqueduas.com/newsletter'),
+  });
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);

@@ -1,16 +1,56 @@
+# Robots.txt para Olha que Duas
+# https://www.olhaqueduas.com
+
+# Google
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 1
 
+# Google Images
+User-agent: Googlebot-Image
+Allow: /
+
+# Bing
 User-agent: Bingbot
 Allow: /
+Crawl-delay: 1
 
-User-agent: Twitterbot
-Allow: /
-
+# Facebook
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
+# Twitter
+User-agent: Twitterbot
 Allow: /
 
+# LinkedIn
+User-agent: LinkedInBot
+Allow: /
+
+# WhatsApp
+User-agent: WhatsApp
+Allow: /
+
+# Telegram
+User-agent: TelegramBot
+Allow: /
+
+# Pinterest
+User-agent: Pinterest
+Allow: /
+
+# Todos os outros bots
+User-agent: *
+Allow: /
+Crawl-delay: 2
+
+# Diretórios a evitar
+Disallow: /api/
+Disallow: /*.json$
+Disallow: /assets/*.map$
+
+# Sitemaps
 Sitemap: https://www.olhaqueduas.com/sitemap.xml
+
+# Host preferido
+Host: https://www.olhaqueduas.com

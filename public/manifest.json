@@ -1,0 +1,77 @@
+{
+  "name": "Olha que Duas",
+  "short_name": "Olha que Duas",
+  "description": "Podcast, Rádio e Comunicação em Portugal. Empreendedorismo feminino com propósito.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FAF8F5",
+  "theme_color": "#b4292b",
+  "lang": "pt-PT",
+  "dir": "ltr",
+  "categories": ["entertainment", "news", "business"],
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/og-image.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/og-image.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Homepage do Olha que Duas"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Ouvir Rádio",
+      "short_name": "Rádio",
+      "description": "Ouvir a Rádio Olha que Duas ao vivo",
+      "url": "/#radio",
+      "icons": [
+        {
+          "src": "/favicon.png",
+          "sizes": "32x32"
+        }
+      ]
+    },
+    {
+      "name": "Notícias",
+      "short_name": "Notícias",
+      "description": "Ver últimas notícias",
+      "url": "/noticias",
+      "icons": [
+        {
+          "src": "/favicon.png",
+          "sizes": "32x32"
+        }
+      ]
+    },
+    {
+      "name": "Loja",
+      "short_name": "Loja",
+      "description": "Visitar a loja oficial",
+      "url": "/loja",
+      "icons": [
+        {
+          "src": "/favicon.png",
+          "sizes": "32x32"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

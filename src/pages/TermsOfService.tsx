@@ -1,6 +1,15 @@
 import { Link } from "react-router-dom";
+import { useMetaTags, getPageBreadcrumbJsonLd } from "@/hooks/useMetaTags";
 
 const TermsOfService = () => {
+  // SEO Meta Tags
+  useMetaTags({
+    title: 'Termos de Utilização',
+    description: 'Termos de Utilização do Olha que Duas. Ao utilizar os nossos serviços, concorda com estes termos. Leia atentamente antes de continuar.',
+    url: 'https://www.olhaqueduas.com/termos',
+    jsonLd: getPageBreadcrumbJsonLd('Termos de Utilização', 'https://www.olhaqueduas.com/termos'),
+  });
+
   return (
     <div className="min-h-screen bg-[#1a1a1a] text-white">
       <div className="container mx-auto px-4 py-12 max-w-4xl">

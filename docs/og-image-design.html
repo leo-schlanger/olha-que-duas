@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OG Image Design - Olha que Duas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #1a1a1a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      gap: 40px;
+    }
+
+    h1 {
+      color: white;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .instructions {
+      max-width: 800px;
+      color: #ccc;
+      line-height: 1.6;
+      margin-bottom: 40px;
+    }
+
+    .instructions h2 {
+      color: #FFD700;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    .instructions ul {
+      margin-left: 20px;
+    }
+
+    .instructions code {
+      background: #333;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    /* OG Image Container - 1200x630 */
+    .og-image {
+      width: 1200px;
+      height: 630px;
+      background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 50%, #2d2d2d 100%);
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    /* Decorative background elements */
+    .og-image::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(180, 41, 43, 0.3) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .og-image::after {
+      content: '';
+      position: absolute;
+      bottom: -150px;
+      left: -100px;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    /* Content container */
+    .og-content {
+      position: relative;
+      z-index: 10;
+      height: 100%;
+      display: flex;
+      padding: 60px 80px;
+      gap: 60px;
+    }
+
+    /* Left side - Logo */
+    .og-logo-side {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .og-logo {
+      width: 280px;
+      height: 280px;
+      background: #b4292b;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 20px 60px rgba(180, 41, 43, 0.4);
+      border: 6px solid rgba(255, 215, 0, 0.8);
+      position: relative;
+    }
+
+    .og-logo-inner {
+      text-align: center;
+      color: #FFD700;
+    }
+
+    .og-logo-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: 36px;
+      line-height: 1.1;
+    }
+
+    .og-logo-text-small {
+      font-size: 28px;
+      display: block;
+    }
+
+    /* Microphone icon placeholder */
+    .og-mic {
+      position: absolute;
+      right: -10px;
+      bottom: 20px;
+      width: 80px;
+      height: 120px;
+      background: linear-gradient(180deg, #FFD700 0%, #d4a500 100%);
+      border-radius: 30px 30px 0 0;
+      border: 4px solid #1a1a1a;
+    }
+
+    .og-mic::after {
+      content: '';
+      position: absolute;
+      bottom: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 30px;
+      background: #FFD700;
+      border-radius: 0 0 20px 20px;
+    }
+
+    /* Right side - Text */
+    .og-text-side {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-left: 20px;
+    }
+
+    .og-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: 72px;
+      color: white;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .og-title span {
+      color: #FFD700;
+    }
+
+    .og-tagline {
+      font-family: 'Inter', sans-serif;
+      font-size: 28px;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 500;
+      margin-bottom: 30px;
+      line-height: 1.4;
+    }
+
+    .og-features {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .og-feature {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .og-feature-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #b4292b 0%, #8a1f21 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 16px;
+    }
+
+    /* Bottom bar */
+    .og-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: linear-gradient(90deg, #b4292b 0%, #8a1f21 50%, #b4292b 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      z-index: 20;
+    }
+
+    .og-bottom-item {
+      color: white;
+      font-size: 16px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .og-bottom-divider {
+      width: 1px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Scale info */
+    .scale-info {
+      color: #888;
+      font-size: 14px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Open Graph Image Design - Olha que Duas</h1>
+
+  <div class="instructions">
+    <h2>Instruções para criar a imagem OG</h2>
+    <p>Esta imagem deve ter <strong>1200x630 pixels</strong> e ser salva como <code>og-image.png</code> na pasta <code>/public/</code>.</p>
+
+    <h2>Como capturar esta imagem:</h2>
+    <ul>
+      <li>Abra este arquivo HTML num browser</li>
+      <li>Use as DevTools (F12) para capturar o elemento <code>.og-image</code></li>
+      <li>Ou use ferramentas como Puppeteer, Playwright, ou serviços online</li>
+      <li>Exporte em PNG com fundo opaco</li>
+    </ul>
+
+    <h2>Alternativas para criar a imagem:</h2>
+    <ul>
+      <li><strong>Canva:</strong> Crie um design 1200x630 com a logo e cores da marca</li>
+      <li><strong>Figma:</strong> Use este design como referência</li>
+      <li><strong>OG Image Generator:</strong> Use ferramentas como og-image.vercel.app</li>
+    </ul>
+
+    <h2>Cores da marca:</h2>
+    <ul>
+      <li>Vermelho: <code>#b4292b</code></li>
+      <li>Amarelo/Dourado: <code>#FFD700</code></li>
+      <li>Charcoal: <code>#1a1a1a</code></li>
+      <li>Cream: <code>#FAF8F5</code></li>
+    </ul>
+  </div>
+
+  <!-- OG Image Preview - 1200x630 -->
+  <div class="og-image">
+    <div class="og-content">
+      <!-- Left - Logo -->
+      <div class="og-logo-side">
+        <div class="og-logo">
+          <div class="og-logo-inner">
+            <span class="og-logo-text">OLHA QUE</span>
+            <span class="og-logo-text og-logo-text-small">DUAS</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right - Text -->
+      <div class="og-text-side">
+        <h1 class="og-title">
+          Olha que <span>Duas</span>
+        </h1>
+        <p class="og-tagline">
+          Podcast, Radio 24h e Comunicacao<br>
+          com Proposito em Portugal
+        </p>
+        <div class="og-features">
+          <div class="og-feature">
+            <div class="og-feature-icon">&#127897;</div>
+            <span>Podcast</span>
+          </div>
+          <div class="og-feature">
+            <div class="og-feature-icon">&#128251;</div>
+            <span>Radio 24h</span>
+          </div>
+          <div class="og-feature">
+            <div class="og-feature-icon">&#128172;</div>
+            <span>Comunicacao</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="og-bottom">
+      <span class="og-bottom-item">&#127470;&#127481; Portugal</span>
+      <span class="og-bottom-divider"></span>
+      <span class="og-bottom-item">www.olhaqueduas.com</span>
+      <span class="og-bottom-divider"></span>
+      <span class="og-bottom-item">@olhaqueduas2025</span>
+    </div>
+  </div>
+
+  <p class="scale-info">Dimensoes reais: 1200 x 630 pixels (para redes sociais)</p>
+</body>
+</html>

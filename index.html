@@ -1,40 +1,195 @@
 <!doctype html>
-<html lang="pt">
+<html lang="pt-PT">
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" href="/favicon.png" />
-  <link rel="apple-touch-icon" href="/og-image.png" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Olha que Duas | Comunicação e Podcast em Portugal</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+  <!-- Primary Meta Tags -->
+  <title>Olha que Duas | Podcast, Rádio e Comunicação em Portugal</title>
+  <meta name="title" content="Olha que Duas | Podcast, Rádio e Comunicação em Portugal" />
   <meta name="description"
-    content="Olha que Duas - O podcast que dá voz à comunicação, empreendedorismo e novos negócios em Portugal. Assessoria de imprensa, representação de marcas e influência com propósito." />
+    content="O Olha que Duas é um podcast e rádio online que dá voz à comunicação, empreendedorismo feminino e novos negócios em Portugal. Assessoria de imprensa, representação de marcas e influência com propósito." />
   <meta name="keywords"
-    content="podcast, comunicação, empreendedorismo feminino, portugal, assessoria de imprensa, marketing de influência, negócios, olha que duas, noticias portugal" />
+    content="olha que duas, podcast portugal, rádio online portugal, empreendedorismo feminino, comunicação, assessoria de imprensa, marketing de influência, negócios portugal, podcast feminino, rádio 24 horas" />
   <meta name="author" content="Olha que Duas" />
+  <meta name="creator" content="Olha que Duas" />
+  <meta name="publisher" content="Olha que Duas" />
   <meta name="theme-color" content="#b4292b" />
-  <meta name="robots" content="index, follow" />
-  <meta name="googlebot" content="index, follow" />
+  <meta name="color-scheme" content="light" />
+
+  <!-- Robots & Indexing -->
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="bingbot" content="index, follow" />
+
+  <!-- Canonical -->
   <link rel="canonical" href="https://www.olhaqueduas.com" />
+
+  <!-- Locale & Language -->
+  <meta property="og:locale" content="pt_PT" />
+  <meta property="og:locale:alternate" content="pt_BR" />
+  <link rel="alternate" hreflang="pt" href="https://www.olhaqueduas.com" />
+  <link rel="alternate" hreflang="x-default" href="https://www.olhaqueduas.com" />
+
+  <!-- Geo Tags (Portugal) -->
+  <meta name="geo.region" content="PT" />
+  <meta name="geo.placename" content="Portugal" />
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://www.olhaqueduas.com/" />
   <meta property="og:site_name" content="Olha que Duas" />
-  <meta property="og:title" content="Olha que Duas | Comunicação e Podcast" />
+  <meta property="og:title" content="Olha que Duas | Podcast, Rádio e Comunicação em Portugal" />
   <meta property="og:description"
-    content="Somos comunicadoras com propósito. Podcast, Assessoria e Estratégia de Marca em Portugal." />
+    content="Somos comunicadoras com propósito. Podcast, Rádio 24h, Assessoria de Imprensa e Estratégia de Marca em Portugal." />
   <meta property="og:image" content="https://www.olhaqueduas.com/og-image.png" />
+  <meta property="og:image:secure_url" content="https://www.olhaqueduas.com/og-image.png" />
+  <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Olha que Duas - Podcast e Rádio em Portugal" />
 
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content="https://www.olhaqueduas.com/" />
-  <meta property="twitter:title" content="Olha que Duas | Comunicação e Podcast" />
-  <meta property="twitter:description"
-    content="Somos comunicadoras com propósito. Podcast, Assessoria e Estratégia de Marca em Portugal." />
-  <meta property="twitter:image" content="https://www.olhaqueduas.com/og-image.png" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://www.olhaqueduas.com/" />
+  <meta name="twitter:title" content="Olha que Duas | Podcast, Rádio e Comunicação" />
+  <meta name="twitter:description"
+    content="Somos comunicadoras com propósito. Podcast, Rádio 24h, Assessoria de Imprensa e Estratégia de Marca em Portugal." />
+  <meta name="twitter:image" content="https://www.olhaqueduas.com/og-image.png" />
+  <meta name="twitter:image:alt" content="Olha que Duas - Podcast e Rádio em Portugal" />
+
+  <!-- Favicons & Icons -->
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="msapplication-TileColor" content="#b4292b" />
+  <meta name="msapplication-config" content="/browserconfig.xml" />
+
+  <!-- Preconnect to external domains -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cloud.umami.is" />
+  <link rel="dns-prefetch" href="https://radio.olhaqueduas.com" />
+
+  <!-- Preload critical fonts -->
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+    media="print" onload="this.media='all'" />
+
+  <!-- JSON-LD Structured Data: Organization -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "@id": "https://www.olhaqueduas.com/#organization",
+      "name": "Olha que Duas",
+      "alternateName": "Olha que 2",
+      "url": "https://www.olhaqueduas.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.olhaqueduas.com/og-image.png",
+        "width": 1200,
+        "height": 630
+      },
+      "image": "https://www.olhaqueduas.com/og-image.png",
+      "description": "Podcast e rádio online que dá voz à comunicação, empreendedorismo feminino e novos negócios em Portugal.",
+      "email": "olhaqueduas.assessoria@gmail.com",
+      "areaServed": {
+        "@type": "Country",
+        "name": "Portugal"
+      },
+      "sameAs": [
+        "https://www.instagram.com/olhaqueduas2025",
+        "https://www.facebook.com/share/17npXT7nNb/",
+        "https://www.tiktok.com/@olha.que.duas_",
+        "https://youtube.com/@olhaqueduas-l9m"
+      ],
+      "knowsAbout": [
+        "Podcast",
+        "Rádio Online",
+        "Comunicação",
+        "Empreendedorismo Feminino",
+        "Assessoria de Imprensa",
+        "Marketing de Influência"
+      ]
+    }
+  </script>
+
+  <!-- JSON-LD Structured Data: WebSite with SearchAction -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": "https://www.olhaqueduas.com/#website",
+      "url": "https://www.olhaqueduas.com",
+      "name": "Olha que Duas",
+      "description": "Podcast, Rádio e Comunicação em Portugal",
+      "publisher": {
+        "@id": "https://www.olhaqueduas.com/#organization"
+      },
+      "inLanguage": "pt-PT"
+    }
+  </script>
+
+  <!-- JSON-LD Structured Data: RadioBroadcastService -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "RadioBroadcastService",
+      "@id": "https://www.olhaqueduas.com/#radio",
+      "name": "Rádio Olha que Duas",
+      "description": "Rádio online 24 horas com música, entretenimento e conteúdo sobre empreendedorismo feminino",
+      "url": "https://www.olhaqueduas.com/#radio",
+      "broadcastDisplayName": "Rádio Olha que Duas",
+      "broadcaster": {
+        "@id": "https://www.olhaqueduas.com/#organization"
+      },
+      "broadcastTimezone": "Europe/Lisbon",
+      "areaServed": {
+        "@type": "Country",
+        "name": "Portugal"
+      },
+      "inLanguage": "pt-PT"
+    }
+  </script>
+
+  <!-- JSON-LD Structured Data: PodcastSeries -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "PodcastSeries",
+      "@id": "https://www.olhaqueduas.com/#podcast",
+      "name": "Olha que Duas Podcast",
+      "description": "Podcast que dá voz à comunicação, empreendedorismo feminino e novos negócios em Portugal",
+      "url": "https://www.olhaqueduas.com/#podcast",
+      "webFeed": "https://youtube.com/@olhaqueduas-l9m",
+      "author": {
+        "@id": "https://www.olhaqueduas.com/#organization"
+      },
+      "inLanguage": "pt-PT"
+    }
+  </script>
+
+  <!-- JSON-LD Structured Data: BreadcrumbList -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Início",
+          "item": "https://www.olhaqueduas.com"
+        }
+      ]
+    }
+  </script>
 
   <!-- Umami Analytics -->
   <script defer src="https://cloud.umami.is/script.js" data-website-id="a77e46d6-e40e-4975-8c02-767799bd63bf"></script>
