@@ -43,8 +43,10 @@ const TermsOfService = () => {
               A Olha que Duas é uma aplicação móvel que oferece:
             </p>
             <ul className="list-disc list-inside text-gray-300 space-y-2 mt-2">
-              <li>Transmissão de rádio ao vivo</li>
+              <li>Transmissão de rádio ao vivo 24 horas por dia</li>
               <li>Acesso a notícias e conteúdos informativos</li>
+              <li>Previsão meteorológica (requer autorização de localização)</li>
+              <li>Lembretes de programas via notificações (opcional)</li>
               <li>Opção de subscrição premium para remoção de anúncios</li>
             </ul>
           </section>
@@ -94,7 +96,36 @@ const TermsOfService = () => {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-white mb-4">6. Compras na Aplicação</h2>
+            <h2 className="text-2xl font-semibold text-white mb-4">6. Previsão Meteorológica</h2>
+            <p className="text-gray-300 leading-relaxed">
+              A funcionalidade de previsão meteorológica:
+            </p>
+            <ul className="list-disc list-inside text-gray-300 space-y-2 mt-2">
+              <li>Requer autorização de acesso à localização do dispositivo</li>
+              <li>Utiliza dados de serviços meteorológicos de terceiros</li>
+              <li>Pode apresentar uma localização predefinida (Lisboa) caso não autorize o acesso à localização</li>
+              <li>É fornecida apenas para fins informativos</li>
+            </ul>
+            <p className="text-gray-300 leading-relaxed mt-4">
+              Não garantimos a precisão dos dados meteorológicos, que são obtidos de fontes externas.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold text-white mb-4">7. Notificações e Lembretes</h2>
+            <p className="text-gray-300 leading-relaxed">
+              A Aplicação permite configurar lembretes para programas de rádio:
+            </p>
+            <ul className="list-disc list-inside text-gray-300 space-y-2 mt-2">
+              <li>Requer autorização de envio de notificações</li>
+              <li>Pode configurar o tempo de antecedência do lembrete</li>
+              <li>Pode desativar lembretes individuais ou todos de uma vez</li>
+              <li>As preferências são armazenadas apenas no seu dispositivo</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold text-white mb-4">8. Compras na Aplicação</h2>
 
             <h3 className="text-xl font-medium text-[#FFD700] mb-2">6.1 Versão Premium</h3>
             <p className="text-gray-300 leading-relaxed">
@@ -118,7 +149,7 @@ const TermsOfService = () => {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-white mb-4">7. Anúncios</h2>
+            <h2 className="text-2xl font-semibold text-white mb-4">9. Anúncios</h2>
             <p className="text-gray-300 leading-relaxed">
               A versão gratuita da Aplicação exibe anúncios fornecidos pelo Google AdMob.
               Ao utilizar a versão gratuita, consente a exibição de anúncios de acordo com
@@ -127,7 +158,7 @@ const TermsOfService = () => {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-white mb-4">8. Propriedade Intelectual</h2>
+            <h2 className="text-2xl font-semibold text-white mb-4">10. Propriedade Intelectual</h2>
             <p className="text-gray-300 leading-relaxed">
               A Aplicação, incluindo mas não limitado ao seu design, logótipos, gráficos e software,
               é propriedade da Olha que Duas e está protegida por leis de propriedade intelectual.
@@ -139,7 +170,7 @@ const TermsOfService = () => {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-white mb-4">9. Limitação de Responsabilidade</h2>
+            <h2 className="text-2xl font-semibold text-white mb-4">11. Limitação de Responsabilidade</h2>
             <p className="text-gray-300 leading-relaxed">
               Na máxima extensão permitida por lei:
             </p>
@@ -152,7 +183,7 @@ const TermsOfService = () => {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-white mb-4">10. Modificações aos Termos</h2>
+            <h2 className="text-2xl font-semibold text-white mb-4">12. Modificações aos Termos</h2>
             <p className="text-gray-300 leading-relaxed">
               Reservamo-nos o direito de modificar estes Termos a qualquer momento.
               Alterações significativas serão comunicadas através da Aplicação.
@@ -161,7 +192,7 @@ const TermsOfService = () => {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-white mb-4">11. Rescisão</h2>
+            <h2 className="text-2xl font-semibold text-white mb-4">13. Rescisão</h2>
             <p className="text-gray-300 leading-relaxed">
               Podemos suspender ou terminar o seu acesso à Aplicação a qualquer momento,
               por qualquer motivo, sem aviso prévio. Pode deixar de utilizar a Aplicação
@@ -170,7 +201,7 @@ const TermsOfService = () => {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-white mb-4">12. Lei Aplicável</h2>
+            <h2 className="text-2xl font-semibold text-white mb-4">14. Lei Aplicável</h2>
             <p className="text-gray-300 leading-relaxed">
               Estes Termos são regidos pelas leis de Portugal. Quaisquer disputas serão
               submetidas à jurisdição exclusiva dos tribunais portugueses.
@@ -178,7 +209,7 @@ const TermsOfService = () => {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-white mb-4">13. Contacto</h2>
+            <h2 className="text-2xl font-semibold text-white mb-4">15. Contacto</h2>
             <p className="text-gray-300 leading-relaxed">
               Para questões sobre estes Termos, contacte-nos:
             </p>

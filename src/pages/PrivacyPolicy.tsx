@@ -49,22 +49,40 @@ const PrivacyPolicy = () => {
             <ul className="list-disc list-inside text-gray-300 space-y-2">
               <li>Informações de compra (quando adquire a versão premium)</li>
               <li>Preferências de utilização da aplicação</li>
+              <li>Preferências de notificações e lembretes de programas</li>
             </ul>
 
-            <h3 className="text-xl font-medium text-[#FFD700] mb-2 mt-4">2.2 Dados Recolhidos Automaticamente</h3>
+            <h3 className="text-xl font-medium text-[#FFD700] mb-2 mt-4">2.2 Dados de Localização</h3>
+            <p className="text-gray-300 leading-relaxed">
+              Com a sua autorização, recolhemos dados de localização para fornecer previsões meteorológicas
+              personalizadas para a sua área. Estes dados:
+            </p>
+            <ul className="list-disc list-inside text-gray-300 space-y-2 mt-2">
+              <li>São utilizados apenas para obter dados meteorológicos da sua região</li>
+              <li>Não são armazenados nos nossos servidores</li>
+              <li>Não são partilhados com terceiros além do serviço de meteorologia</li>
+              <li>Pode desativar esta funcionalidade a qualquer momento nas definições do dispositivo</li>
+            </ul>
+            <p className="text-gray-300 leading-relaxed mt-2">
+              Se não autorizar o acesso à localização, será utilizada uma localização predefinida (Lisboa).
+            </p>
+
+            <h3 className="text-xl font-medium text-[#FFD700] mb-2 mt-4">2.3 Dados Recolhidos Automaticamente</h3>
             <ul className="list-disc list-inside text-gray-300 space-y-2">
               <li>Identificadores de dispositivo (para funcionamento de anúncios)</li>
               <li>Dados de utilização anónimos (estatísticas de uso)</li>
               <li>Informações técnicas (versão do sistema operativo, modelo do dispositivo)</li>
             </ul>
 
-            <h3 className="text-xl font-medium text-[#FFD700] mb-2 mt-4">2.3 Dados de Terceiros</h3>
+            <h3 className="text-xl font-medium text-[#FFD700] mb-2 mt-4">2.4 Dados de Terceiros</h3>
             <p className="text-gray-300 leading-relaxed">
               Utilizamos serviços de terceiros que podem recolher dados:
             </p>
             <ul className="list-disc list-inside text-gray-300 space-y-2 mt-2">
               <li><strong>Google AdMob:</strong> Para exibição de anúncios (pode ser desativado na versão premium)</li>
               <li><strong>Google Play / Apple App Store:</strong> Para processamento de compras</li>
+              <li><strong>Serviço de Meteorologia:</strong> Recebe coordenadas de localização para fornecer previsões meteorológicas</li>
+              <li><strong>Supabase:</strong> Para sincronização de dados de programação da rádio</li>
             </ul>
           </section>
 
@@ -72,11 +90,24 @@ const PrivacyPolicy = () => {
             <h2 className="text-2xl font-semibold text-white mb-4">3. Como Utilizamos os Seus Dados</h2>
             <p className="text-gray-300 leading-relaxed">Utilizamos os dados recolhidos para:</p>
             <ul className="list-disc list-inside text-gray-300 space-y-2 mt-2">
-              <li>Fornecer e manter o serviço</li>
+              <li>Fornecer e manter o serviço de rádio e notícias</li>
               <li>Processar compras e transações</li>
               <li>Exibir anúncios (com o seu consentimento)</li>
+              <li>Mostrar previsões meteorológicas da sua área (com a sua autorização)</li>
+              <li>Enviar notificações de lembretes de programas (quando ativadas por si)</li>
               <li>Melhorar a experiência do utilizador</li>
               <li>Cumprir obrigações legais</li>
+            </ul>
+
+            <h3 className="text-xl font-medium text-[#FFD700] mb-2 mt-4">3.1 Dados Armazenados Localmente</h3>
+            <p className="text-gray-300 leading-relaxed">
+              Os seguintes dados são armazenados apenas no seu dispositivo e não são enviados para os nossos servidores:
+            </p>
+            <ul className="list-disc list-inside text-gray-300 space-y-2 mt-2">
+              <li>Preferências de notificações e lembretes de programas</li>
+              <li>Configurações de reprodução de rádio (volume, reprodução em segundo plano)</li>
+              <li>Consentimento de anúncios (RGPD)</li>
+              <li>Preferência de tema (claro/escuro)</li>
             </ul>
           </section>
 

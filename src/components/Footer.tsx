@@ -98,6 +98,13 @@ const Footer = () => {
           {/* Legal Links */}
           <div className="flex justify-center gap-6 mb-6">
             <Link
+              to="/faq"
+              className="text-cream/40 hover:text-amarelo transition-colors text-sm"
+            >
+              Ajuda (FAQ)
+            </Link>
+            <span className="text-cream/20">•</span>
+            <Link
               to="/privacidade"
               className="text-cream/40 hover:text-amarelo transition-colors text-sm"
             >
