@@ -70,5 +70,10 @@ export const siteConfig = {
       logo: "/partners/geektoys.jpg",
       url: "https://www.geeketoys.com.br/",
     },
+    {
+      name: "Nortravel",
+      logo: "/partners/nortravel.jpg",
+      url: "#",
+    },
   ],
 } as const;
