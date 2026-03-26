@@ -1,4 +1,4 @@
-import { MessageCircle, ExternalLink, Play, Headphones, Clock, TrendingUp, Mic, Youtube } from "lucide-react";
+import { MessageCircle, ExternalLink, Headphones, Mic, Youtube, Users, Sparkles, CheckCircle2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
 import { Animated, AnimatedCounter } from "@/components/ui/animated";
@@ -27,26 +27,53 @@ const platforms = [
   },
 ];
 
-// Episódios em destaque (exemplo - pode ser dinâmico no futuro)
-const featuredEpisodes = [
+// TODO: Episódios em destaque - descomentar quando houver episódios reais
+// const featuredEpisodes = [
+//   {
+//     title: "Empreendedorismo Feminino em Portugal",
+//     description: "Conversamos sobre os desafios e conquistas das mulheres empreendedoras no mercado português.",
+//     duration: "45 min",
+//     date: "Mar 2026",
+//   },
+//   {
+//     title: "A Força da Comunicação Autêntica",
+//     description: "Como construir uma marca pessoal baseada em valores e autenticidade.",
+//     duration: "38 min",
+//     date: "Mar 2026",
+//   },
+//   {
+//     title: "Networking: Criar Conexões Reais",
+//     description: "Estratégias para construir relacionamentos profissionais significativos.",
+//     duration: "42 min",
+//     date: "Fev 2026",
+//   },
+// ];
+
+// Benefícios de participar no podcast
+const guestBenefits = [
   {
-    title: "Empreendedorismo Feminino em Portugal",
-    description: "Conversamos sobre os desafios e conquistas das mulheres empreendedoras no mercado português.",
-    duration: "45 min",
-    date: "Mar 2026",
+    icon: "mic",
+    title: "Partilha a Tua História",
+    description: "Um espaço autêntico para contar o teu percurso e inspirar outros.",
   },
   {
-    title: "A Força da Comunicação Autêntica",
-    description: "Como construir uma marca pessoal baseada em valores e autenticidade.",
-    duration: "38 min",
-    date: "Mar 2026",
+    icon: "users",
+    title: "Alcança Nova Audiência",
+    description: "Conecta-te com uma comunidade engajada e interessada no teu trabalho.",
   },
   {
-    title: "Networking: Criar Conexões Reais",
-    description: "Estratégias para construir relacionamentos profissionais significativos.",
-    duration: "42 min",
-    date: "Fev 2026",
+    icon: "sparkles",
+    title: "Fortalece a Tua Marca",
+    description: "Posiciona-te como referência na tua área de atuação.",
   },
+];
+
+// Perfis que procuramos
+const guestProfiles = [
+  "Empreendedoras com histórias inspiradoras",
+  "Profissionais de comunicação e marketing",
+  "Mulheres que estão a fazer a diferença",
+  "Especialistas em desenvolvimento pessoal",
 ];
 
 const Podcast = () => {
@@ -86,8 +113,8 @@ const Podcast = () => {
           </p>
         </Animated>
 
-        {/* Stats row */}
-        <Animated animation="fade-up" delay={100} className="flex justify-center gap-8 md:gap-16 mb-14 md:mb-20">
+        {/* TODO: Stats row - descomentar quando houver dados reais */}
+        {/* <Animated animation="fade-up" delay={100} className="flex justify-center gap-8 md:gap-16 mb-14 md:mb-20">
           <div className="text-center">
             <div className="text-3xl md:text-4xl font-display font-bold text-amarelo">
               <AnimatedCounter value={50} suffix="+" />
@@ -108,68 +135,78 @@ const Podcast = () => {
             </div>
             <div className="text-xs text-cream/50 uppercase tracking-wider mt-1">Ouvintes</div>
           </div>
-        </Animated>
+        </Animated> */}
 
         <div className="grid lg:grid-cols-5 gap-8 max-w-6xl mx-auto">
-          {/* Featured Episodes - Left side */}
-          <div className="lg:col-span-3 space-y-4">
+          {/* Guest Invitation Section - Left side */}
+          <div className="lg:col-span-3 space-y-6">
             <Animated animation="fade-right">
-              <h3 className="text-lg font-semibold text-cream/80 mb-4 flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-amarelo" />
-                Episódios em Destaque
-              </h3>
+              <div className="mb-8">
+                <h3 className="text-2xl md:text-3xl font-display font-semibold text-cream mb-3">
+                  Sê a Nossa Próxima <span className="text-amarelo">Convidada</span>
+                </h3>
+                <p className="text-cream/60 text-base leading-relaxed">
+                  Estamos à procura de vozes autênticas para partilhar histórias que inspiram.
+                  Se tens uma jornada única, queremos ouvir-te.
+                </p>
+              </div>
             </Animated>
 
-            {featuredEpisodes.map((episode, index) => (
-              <Animated key={episode.title} animation="fade-up" delay={150 + index * 100}>
-                <a
-                  href={siteConfig.social.youtube}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group block p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-amarelo/30 transition-all duration-300 card-3d"
-                >
-                  <div className="flex gap-4">
-                    {/* Play button */}
-                    <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-vermelho to-vermelho-soft flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg shadow-vermelho/30">
-                      <Play className="w-6 h-6 text-white ml-0.5" fill="currentColor" />
-                    </div>
-
-                    {/* Content */}
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-base md:text-lg font-semibold text-cream group-hover:text-amarelo transition-colors line-clamp-1">
-                        {episode.title}
-                      </h4>
-                      <p className="text-sm text-cream/50 mt-1 line-clamp-2">
-                        {episode.description}
-                      </p>
-                      <div className="flex items-center gap-4 mt-3 text-xs text-cream/40">
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-3.5 h-3.5" />
-                          {episode.duration}
-                        </span>
-                        <span>{episode.date}</span>
+            {/* Benefits Grid */}
+            <div className="grid sm:grid-cols-3 gap-4">
+              {guestBenefits.map((benefit, index) => {
+                const IconComponent = benefit.icon === "mic" ? Mic : benefit.icon === "users" ? Users : Sparkles;
+                return (
+                  <Animated key={benefit.title} animation="fade-up" delay={150 + index * 100}>
+                    <div className="group p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-amarelo/30 transition-all duration-300">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amarelo/20 to-amarelo/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <IconComponent className="w-6 h-6 text-amarelo" />
                       </div>
+                      <h4 className="text-base font-semibold text-cream mb-2">
+                        {benefit.title}
+                      </h4>
+                      <p className="text-sm text-cream/50 leading-relaxed">
+                        {benefit.description}
+                      </p>
                     </div>
-                  </div>
-                </a>
-              </Animated>
-            ))}
+                  </Animated>
+                );
+              })}
+            </div>
 
-            {/* View all link */}
+            {/* Who We're Looking For */}
             <Animated animation="fade-up" delay={450}>
-              <a
-                href={siteConfig.social.youtube}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm font-medium text-amarelo hover:text-white transition-colors mt-4"
+              <div className="p-5 rounded-2xl bg-gradient-to-br from-white/5 to-transparent border border-white/10">
+                <h4 className="text-sm font-semibold text-amarelo uppercase tracking-wider mb-4">
+                  Quem Procuramos
+                </h4>
+                <ul className="space-y-3">
+                  {guestProfiles.map((profile, index) => (
+                    <li key={index} className="flex items-center gap-3 text-cream/70 text-sm">
+                      <CheckCircle2 className="w-4 h-4 text-amarelo flex-shrink-0" />
+                      {profile}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Animated>
+
+            {/* CTA Button */}
+            <Animated animation="fade-up" delay={550}>
+              <Button
+                asChild
+                size="lg"
+                className="group bg-transparent border-2 border-amarelo text-amarelo hover:bg-amarelo hover:text-charcoal transition-all font-semibold h-12 rounded-xl"
               >
-                Ver todos os episódios
-                <ExternalLink className="w-4 h-4" />
-              </a>
+                <a href="#contacto" className="flex items-center gap-2">
+                  Quero Participar
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </a>
+              </Button>
             </Animated>
           </div>
 
-          {/* CTA Card - Right side */}
+          {/* Coming Soon Card - Right side */}
           <div className="lg:col-span-2">
             <Animated animation="fade-left" delay={200}>
               <div className="sticky top-28 bg-gradient-to-br from-vermelho via-vermelho to-vermelho-soft rounded-2xl p-6 md:p-8 shadow-2xl shadow-vermelho/30 border border-vermelho-soft/30 relative overflow-hidden">
@@ -180,16 +217,21 @@ const Podcast = () => {
                 <div className="relative z-10">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center animate-pulse-glow">
-                      <MessageCircle className="w-6 h-6 text-amarelo" />
+                      <Headphones className="w-6 h-6 text-amarelo" />
                     </div>
-                    <h3 className="text-xl md:text-2xl font-display font-bold text-white">
-                      Participa!
-                    </h3>
+                    <div>
+                      <span className="text-xs font-semibold text-amarelo uppercase tracking-wider">
+                        Em Breve
+                      </span>
+                      <h3 className="text-xl md:text-2xl font-display font-bold text-white">
+                        Novos Episódios
+                      </h3>
+                    </div>
                   </div>
 
                   <p className="text-base text-white/80 mb-6 leading-relaxed">
-                    Tens uma história inspiradora para contar ou um projeto para destacar?
-                    Junta-te a nós e dá voz à tua jornada!
+                    Estamos a preparar conversas incríveis com mulheres inspiradoras.
+                    Segue-nos para seres a primeira a ouvir!
                   </p>
 
                   <Button
@@ -197,39 +239,31 @@ const Podcast = () => {
                     size="lg"
                     className="w-full bg-gradient-to-r from-amarelo to-amarelo-soft text-charcoal hover:opacity-90 transition-all font-semibold h-12 rounded-xl shadow-lg shadow-amarelo/30 btn-shine btn-magnetic"
                   >
-                    <a href="#contacto" className="flex items-center justify-center gap-2">
-                      Enviar a Minha História
-                      <ExternalLink className="w-4 h-4" />
+                    <a
+                      href={siteConfig.social.youtube}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2"
+                    >
+                      <Youtube className="w-5 h-5" />
+                      Seguir no YouTube
                     </a>
                   </Button>
 
                   {/* Platforms */}
                   <div className="mt-8 pt-6 border-t border-white/10">
                     <p className="text-xs text-white/50 mb-4 font-medium uppercase tracking-wider">
-                      Ouve-nos em:
+                      Disponível em breve:
                     </p>
                     <div className="flex flex-wrap gap-2">
-                      {platforms.map((platform) => (
-                        <a
+                      {platforms.filter(p => p.comingSoon).map((platform) => (
+                        <div
                           key={platform.name}
-                          href={platform.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`relative inline-flex items-center gap-2 px-4 py-2.5 bg-white/10 rounded-xl transition-all text-sm font-medium text-white ${
-                            platform.comingSoon
-                              ? "opacity-50 cursor-not-allowed"
-                              : platform.color
-                          }`}
-                          onClick={(e) => platform.comingSoon && e.preventDefault()}
+                          className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/10 rounded-xl text-sm font-medium text-white/50"
                         >
                           <platform.icon className="w-4 h-4" />
                           {platform.name}
-                          {platform.comingSoon && (
-                            <span className="text-[9px] bg-white/20 px-1.5 py-0.5 rounded-full">
-                              Em breve
-                            </span>
-                          )}
-                        </a>
+                        </div>
                       ))}
                     </div>
                   </div>
