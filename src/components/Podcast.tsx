@@ -143,7 +143,7 @@ const Podcast = () => {
             <Animated animation="fade-right">
               <div className="mb-8">
                 <h3 className="text-2xl md:text-3xl font-display font-semibold text-cream mb-3">
-                  Sê o Nosso Próximo <span className="text-amarelo">Convidado</span>
+                  Vem Ser o Nosso Próximo <span className="text-amarelo">Convidado</span>
                 </h3>
                 <p className="text-cream/60 text-base leading-relaxed">
                   Estamos à procura de vozes autênticas para partilhar histórias que inspiram.
