@@ -20,7 +20,7 @@ const DEFAULT_CONFIG = {
   siteName: 'Olha que Duas',
   defaultTitle: 'Olha que Duas | Podcast, Rádio e Comunicação em Portugal',
   defaultDescription: 'Somos comunicadoras com propósito. Podcast, Rádio 24h, Assessoria de Imprensa e Estratégia de Marca em Portugal.',
-  defaultImage: 'https://www.olhaqueduas.com/og-image.png',
+  defaultImage: 'https://www.olhaqueduas.com/og-image.jpg',
   defaultImageAlt: 'Olha que Duas - Podcast e Rádio em Portugal',
   baseUrl: 'https://www.olhaqueduas.com',
   locale: 'pt_PT',

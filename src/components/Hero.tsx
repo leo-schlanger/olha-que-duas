@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { ArrowRight, Play, Mic, Radio, Video, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { AnimatedCounter } from "@/components/ui/animated";
 import fotoJuntas from "@/assets/olha-que-duas-foto.jpg";
 
 const Hero = () => {
@@ -171,31 +170,18 @@ const Hero = () => {
               </Button>
             </div>
 
-            {/* Animated stats with counters */}
+            {/* Live indicator */}
             <div
-              className={`flex items-center gap-4 sm:gap-6 pt-6 justify-center lg:justify-start transition-all duration-700 delay-[600ms] ${
+              className={`flex items-center gap-3 pt-6 justify-center lg:justify-start transition-all duration-700 delay-[600ms] ${
                 isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
               }`}
             >
-              <div className="text-center lg:text-left group cursor-default">
-                <div className="text-2xl md:text-3xl font-display font-bold text-amarelo group-hover:scale-110 transition-transform">
+              <div className="flex items-center gap-2 bg-cream/5 backdrop-blur-sm px-4 py-2 rounded-full border border-cream/10 group cursor-default">
+                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-2xl md:text-3xl font-display font-bold text-amarelo group-hover:scale-105 transition-transform">
                   24/7
-                </div>
-                <div className="text-[10px] text-cream/50 uppercase tracking-wider mt-1">No Ar</div>
-              </div>
-              <div className="w-px h-12 bg-gradient-to-b from-transparent via-cream/20 to-transparent" />
-              <div className="text-center lg:text-left group cursor-default">
-                <div className="text-2xl md:text-3xl font-display font-bold text-cream group-hover:scale-110 transition-transform">
-                  <AnimatedCounter value={50} suffix="+" duration={2000} />
-                </div>
-                <div className="text-[10px] text-cream/50 uppercase tracking-wider mt-1">Episódios</div>
-              </div>
-              <div className="w-px h-12 bg-gradient-to-b from-transparent via-cream/20 to-transparent" />
-              <div className="text-center lg:text-left group cursor-default">
-                <div className="text-2xl md:text-3xl font-display font-bold text-cream group-hover:scale-110 transition-transform">
-                  <AnimatedCounter value={1000} suffix="+" duration={2500} />
-                </div>
-                <div className="text-[10px] text-cream/50 uppercase tracking-wider mt-1">Ouvintes</div>
+                </span>
+                <span className="text-sm text-cream/60 font-medium">No Ar</span>
               </div>
             </div>
           </div>

@@ -5,11 +5,14 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useNewsletterSignup } from '@/hooks/useNewsletterSignup';
+import { isSupabaseConfigured } from '@/lib/supabase';
+import { siteConfig } from '@/config/site';
 
 const NewsletterSection = () => {
   const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
   const { signup, loading } = useNewsletterSignup();
+  const supabaseReady = isSupabaseConfigured();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,6 +31,67 @@ const NewsletterSection = () => {
       });
     }
   };
+
+  // Fallback when Supabase is not configured
+  const renderMailtoFallback = () => (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-100px' }}
+      transition={{ duration: 0.6 }}
+    >
+      {/* Badge */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.1, duration: 0.4 }}
+        className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm px-4 py-2 rounded-full mb-6"
+      >
+        <span className="w-2 h-2 bg-amarelo rounded-full animate-pulse" />
+        <span className="text-white/90 text-sm font-medium">Newsletter Exclusiva</span>
+      </motion.div>
+
+      {/* Headline */}
+      <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-4 leading-tight">
+        Junta-te à Nossa{' '}
+        <span className="text-amarelo">Comunidade</span>
+      </h2>
+
+      {/* Description */}
+      <p className="text-white/80 text-base sm:text-lg md:text-xl mb-8 max-w-2xl mx-auto leading-relaxed">
+        Recebe <span className="text-amarelo font-semibold">novidades em primeira mão</span>,
+        descontos exclusivos dos nossos parceiros e conteudo que não partilhamos em mais lado nenhum.
+      </p>
+
+      {/* Mailto CTA */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.3, duration: 0.5 }}
+        className="max-w-xl mx-auto"
+      >
+        <p className="text-white/70 text-sm mb-4">
+          Envia-nos um email para te adicionarmos à newsletter:
+        </p>
+        <Button
+          asChild
+          className="h-14 px-8 bg-charcoal hover:bg-charcoal/90 text-white font-semibold rounded-2xl shadow-xl shadow-black/20 transition-all duration-300 text-base"
+        >
+          <a href={`mailto:${siteConfig.contact.email}?subject=Quero subscrever a newsletter`}>
+            <Mail className="w-5 h-5 mr-2" />
+            {siteConfig.contact.email}
+          </a>
+        </Button>
+      </motion.div>
+
+      {/* Privacy note */}
+      <p className="text-white/50 text-xs mt-6">
+        Sem spam, prometemos. Cancela quando quiseres.
+      </p>
+    </motion.div>
+  );
 
   return (
     <section className="relative py-20 md:py-28 overflow-hidden">
@@ -80,7 +144,9 @@ const NewsletterSection = () => {
 
       <div className="container mx-auto px-4 sm:px-6 relative">
         <div className="max-w-4xl mx-auto text-center">
-          {!isSubscribed ? (
+          {!supabaseReady ? (
+            renderMailtoFallback()
+          ) : !isSubscribed ? (
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}

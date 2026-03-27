@@ -17,7 +17,7 @@ import caneca02 from "@/assets/merch/caneca-olha-que-duas-02.jpg";
 import caneca03 from "@/assets/merch/caneca-olha-que-duas-03.jpg";
 import caneca04 from "@/assets/merch/caneca-olha-que-duas-04.jpg";
 
-// Preview da loja - imagens temporárias (serão substituídas no lançamento)
+// Preview da loja
 import preview1 from "@/assets/merch/preview-1.jpg";
 import preview2 from "@/assets/merch/preview-2.jpg";
 import preview3 from "@/assets/merch/preview-3.jpg";
@@ -35,7 +35,7 @@ import preview14 from "@/assets/merch/preview-14.jpg";
 import preview15 from "@/assets/merch/preview-15.jpg";
 import preview16 from "@/assets/merch/preview-16.jpg";
 
-// Galeria de produtos - temporário até lançamento da loja
+// Galeria de produtos
 const produtos = [
   // Canecas principais (destaque)
   { id: 1, img: caneca01, featured: true },

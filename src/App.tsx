@@ -1,18 +1,32 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 import Index from "./pages/Index";
-import Blog from "./pages/Blog";
-import BlogPost from "./pages/BlogPost";
-import Vendas from "./pages/Vendas";
-import Newsletter from "./pages/Newsletter";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import TermsOfService from "./pages/TermsOfService";
-import FAQ from "./pages/FAQ";
-import NotFound from "./pages/NotFound";
 import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
+import { SkipToContent } from "./components/SkipToContent";
+
+// Lazy load pages (except Index which is the landing page)
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
+const Vendas = lazy(() => import("./pages/Vendas"));
+const Newsletter = lazy(() => import("./pages/Newsletter"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("./pages/TermsOfService"));
+const FAQ = lazy(() => import("./pages/FAQ"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+
+// Loading component for lazy-loaded pages
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="w-16 h-16 rounded-2xl bg-vermelho/10 flex items-center justify-center">
+      <Loader2 className="w-8 h-8 animate-spin text-vermelho" />
+    </div>
+  </div>
+);
 
 const queryClient = new QueryClient();
 
@@ -22,18 +36,21 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/noticias" element={<Blog />} />
-          <Route path="/noticias/:slug" element={<BlogPost />} />
-          <Route path="/loja" element={<Vendas />} />
-          <Route path="/newsletter" element={<Newsletter />} />
-          <Route path="/privacidade" element={<PrivacyPolicy />} />
-          <Route path="/termos" element={<TermsOfService />} />
-          <Route path="/faq" element={<FAQ />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <SkipToContent />
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/noticias" element={<Blog />} />
+            <Route path="/noticias/:slug" element={<BlogPost />} />
+            <Route path="/loja" element={<Vendas />} />
+            <Route path="/newsletter" element={<Newsletter />} />
+            <Route path="/privacidade" element={<PrivacyPolicy />} />
+            <Route path="/termos" element={<TermsOfService />} />
+            <Route path="/faq" element={<FAQ />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
         {/* PWA Install Prompt */}
         <PWAInstallPrompt />
       </BrowserRouter>
