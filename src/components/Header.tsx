@@ -68,7 +68,7 @@ const Header = () => {
           {/* Logo */}
           <Link
             to="/"
-            className="flex items-center group"
+            className="flex items-center shrink-0 group"
             onClick={() => {
               if (location.pathname === "/") {
                 window.scrollTo({ top: 0, behavior: "smooth" });
@@ -79,7 +79,7 @@ const Header = () => {
               src={logo}
               alt="Olha que Duas"
               className={cn(
-                "w-auto transition-all duration-300 group-hover:scale-105",
+                "w-auto shrink-0 object-contain transition-all duration-300 group-hover:scale-105",
                 isScrolled ? "h-14 md:h-16" : "h-16 md:h-20"
               )}
             />
