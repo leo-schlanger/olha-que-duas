@@ -52,13 +52,17 @@ const Contacto = () => {
 
     try {
       const payload = {
-        // Only include the message in the "body" of the email to keep it clean
+        // Dados do remetente
+        Nome: formData.nome,
+        Email: formData.email,
+        Assunto: formData.assunto || "Geral",
         Mensagem: formData.mensagem,
 
         // Metadata fields for FormSubmit
-        _subject: `Novo contacto de ${formData.nome} - ${formData.assunto || "Geral"}`,
-        _replyto: formData.email, // Allows replying directly to the sender
-        _template: "box", // "box" is usually cleaner than "table"
+        _subject: `[Olha que Duas] ${formData.assunto || "Contacto"} - ${formData.nome}`,
+        _replyto: formData.email,
+        _template: "table",
+        _captcha: "false",
       };
 
       const response = await fetch(`https://formsubmit.co/ajax/${siteConfig.contact.email}`, {
