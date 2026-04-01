@@ -2,15 +2,7 @@
 
 ## Credenciais
 
-### Cloudinary
-- **Cloud Name:** dfljesvj7
-- **API Key:** ***CLOUDINARY_API_KEY_REMOVED***
-- **API Secret:** ***CLOUDINARY_SECRET_REMOVED***
-- **Pasta base:** olhaqueduas/galeria/
-
-### Supabase
-- **Project Ref:** jjifjbdfpvgeseqbjpkg
-- **URL:** https://jjifjbdfpvgeseqbjpkg.supabase.co
+As credenciais estão no ficheiro `.env` (não commitado).
 
 ---
 
@@ -25,11 +17,7 @@ C:\Users\leosc\Downloads\galeria-[slug]-[YYYYMMDD]\
 
 2. **Nomear fotos:** 01.jpg, 02.jpg, 03.jpg... (ordem de exibição)
 
-3. **Upload Cloudinary:**
-```bash
-cd "C:\Users\leosc\Downloads\galeria-[slug]"
-node upload.js
-```
+3. **Upload Cloudinary:** usar script upload.js
 
 4. **Inserir no Supabase:**
 ```bash
@@ -40,22 +28,12 @@ supabase db query --linked -f "[caminho-sql]"
 ### SQL template para novo álbum:
 ```sql
 INSERT INTO gallery_albums (slug, title, description, event_date, location, photo_count, is_published, published_at)
-VALUES (
-    '[slug]',
-    '[Título do Evento]',
-    '[Descrição]',
-    '[YYYY-MM-DD]',
-    '[Local]',
-    [N],
-    TRUE,
-    NOW()
-);
+VALUES ('[slug]', '[Título]', '[Descrição]', '[YYYY-MM-DD]', '[Local]', [N], TRUE, NOW());
 
 INSERT INTO gallery_photos (album_id, cloudinary_public_id, display_order, is_cover)
 VALUES
     ((SELECT id FROM gallery_albums WHERE slug = '[slug]'), 'olhaqueduas/galeria/[slug]/01', 1, TRUE),
-    ((SELECT id FROM gallery_albums WHERE slug = '[slug]'), 'olhaqueduas/galeria/[slug]/02', 2, FALSE),
-    ...
+    ((SELECT id FROM gallery_albums WHERE slug = '[slug]'), 'olhaqueduas/galeria/[slug]/02', 2, FALSE);
 ```
 
 ### Alterar capa:
@@ -78,6 +56,7 @@ UPDATE gallery_photos SET display_order = [N] WHERE cloudinary_public_id = 'olha
 - **Componentes:** src/components/gallery/
 - **Hook:** src/hooks/useGallery.ts
 - **Cloudinary lib:** src/lib/cloudinary.ts
+- **Pasta Cloudinary:** olhaqueduas/galeria/[slug]/
 
 ---
 
