@@ -12,6 +12,8 @@ import { SkipToContent } from "./components/SkipToContent";
 // Lazy load pages (except Index which is the landing page)
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
+const Gallery = lazy(() => import("./pages/Gallery"));
+const GalleryAlbum = lazy(() => import("./pages/GalleryAlbum"));
 const Vendas = lazy(() => import("./pages/Vendas"));
 const Newsletter = lazy(() => import("./pages/Newsletter"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
@@ -42,6 +44,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/noticias" element={<Blog />} />
             <Route path="/noticias/:slug" element={<BlogPost />} />
+            <Route path="/galeria" element={<Gallery />} />
+            <Route path="/galeria/:slug" element={<GalleryAlbum />} />
             <Route path="/loja" element={<Vendas />} />
             <Route path="/newsletter" element={<Newsletter />} />
             <Route path="/privacidade" element={<PrivacyPolicy />} />

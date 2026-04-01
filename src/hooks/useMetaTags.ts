@@ -350,3 +350,58 @@ export function getPageBreadcrumbJsonLd(
     itemListElement: items,
   };
 }
+
+// Helper to generate meta config from a gallery album
+export function getGalleryAlbumMetaConfig(album: {
+  title: string;
+  description?: string | null;
+  slug: string;
+  event_date: string;
+  location?: string | null;
+  photo_count: number;
+  published_at?: string | null;
+  cover_image_url?: string;
+}): MetaTagsConfig {
+  const albumUrl = `${DEFAULT_CONFIG.baseUrl}/galeria/${album.slug}`;
+
+  // Generate ImageGallery JSON-LD
+  const galleryJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ImageGallery',
+    '@id': `${albumUrl}#gallery`,
+    name: album.title,
+    description: album.description || `Galeria de fotos: ${album.title}`,
+    url: albumUrl,
+    datePublished: album.published_at || undefined,
+    dateCreated: album.event_date,
+    numberOfItems: album.photo_count,
+    ...(album.location && {
+      contentLocation: {
+        '@type': 'Place',
+        name: album.location,
+      },
+    }),
+    publisher: {
+      '@type': 'Organization',
+      '@id': 'https://www.olhaqueduas.com/#organization',
+      name: 'Olha que Duas',
+    },
+  };
+
+  // Breadcrumb JSON-LD
+  const breadcrumbJsonLd = getPageBreadcrumbJsonLd(
+    album.title,
+    albumUrl,
+    [{ name: 'Galeria', url: `${DEFAULT_CONFIG.baseUrl}/galeria` }]
+  );
+
+  return {
+    title: album.title,
+    description: album.description || `Veja ${album.photo_count} fotos de ${album.title}. Galeria de fotos do Olha que Duas.`,
+    image: album.cover_image_url || undefined,
+    imageAlt: album.title,
+    url: albumUrl,
+    type: 'website',
+    jsonLd: [galleryJsonLd, breadcrumbJsonLd],
+  };
+}
