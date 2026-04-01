@@ -76,5 +76,15 @@ export const siteConfig = {
       logo: "/partners/nortravel.jpg",
       url: "#",
     },
+    {
+      name: "Casa da Guia",
+      logo: "/partners/casadaguia.jpg",
+      url: "https://casadaguiacascais.pt/",
+    },
+    {
+      name: "R.Rodyner Gallery",
+      logo: "/partners/rrodynergallery.jpg",
+      url: "https://www.instagram.com/rrodynergallery/",
+    },
   ],
 } as const;
