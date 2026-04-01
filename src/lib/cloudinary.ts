@@ -81,8 +81,10 @@ function buildTransformString(config: TransformConfig): string {
 export function getCloudinaryUrl(publicId: string, transform: CloudinaryTransform = 'thumbnail'): string {
   const config = TRANSFORMS[transform];
   const transformString = buildTransformString(config);
+  // Add cache-busting based on public_id hash to prevent browser caching issues
+  const cacheBust = publicId.split('/').pop() || '';
 
-  return `${BASE_URL}/${transformString}/${publicId}`;
+  return `${BASE_URL}/${transformString}/${publicId}?cb=${cacheBust}`;
 }
 
 /**
@@ -112,7 +114,8 @@ export function getCloudinaryUrlCustom(publicId: string, customConfig: Partial<T
  * @returns Blurred placeholder URL (very small)
  */
 export function getCloudinaryPlaceholder(publicId: string): string {
-  return `${BASE_URL}/w_50,h_50,q_30,e_blur:1000,f_auto/${publicId}`;
+  const cacheBust = publicId.split('/').pop() || '';
+  return `${BASE_URL}/w_50,h_50,q_30,e_blur:1000,f_auto/${publicId}?cb=${cacheBust}`;
 }
 
 /**

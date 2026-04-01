@@ -36,7 +36,7 @@ export function PhotoGrid({ photos, className }: PhotoGridProps) {
       >
         {photos.map((photo, index) => (
           <PhotoGridItem
-            key={photo.id}
+            key={photo.cloudinary_public_id}
             photo={photo}
             onClick={() => openLightbox(index)}
           />
