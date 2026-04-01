@@ -72,6 +72,8 @@ export function useGalleryAlbums() {
 export function useGalleryAlbum(slug: string) {
   return useQuery({
     queryKey: ['gallery-album', slug],
+    refetchOnMount: 'always',
+    staleTime: 0,
     queryFn: async (): Promise<GalleryAlbumWithPhotos | null> => {
       const supabase = getSupabase();
       if (!isSupabaseConfigured() || !supabase) {
@@ -117,7 +119,6 @@ export function useGalleryAlbum(slug: string) {
       };
     },
     enabled: isSupabaseConfigured() && !!slug,
-    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 }
 
