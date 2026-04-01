@@ -30,3 +30,6 @@ supabase/.temp/
 
 # Windows
 nul
+
+# Claude context
+CLAUDE.md
