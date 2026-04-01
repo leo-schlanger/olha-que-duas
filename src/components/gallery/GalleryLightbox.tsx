@@ -148,6 +148,7 @@ export function GalleryLightbox({ photos, initialIndex, isOpen, onClose }: Galle
             {isImageLoading && (
               <div className="absolute inset-0 flex items-center justify-center">
                 <img
+                  key={`placeholder-${currentPhoto.cloudinary_public_id}`}
                   src={getCloudinaryPlaceholder(currentPhoto.cloudinary_public_id)}
                   alt=""
                   className="w-full h-full object-contain blur-lg scale-105"
@@ -160,6 +161,7 @@ export function GalleryLightbox({ photos, initialIndex, isOpen, onClose }: Galle
 
             {/* Main image */}
             <img
+              key={currentPhoto.cloudinary_public_id}
               src={getCloudinaryUrl(currentPhoto.cloudinary_public_id, 'lightbox')}
               alt={currentPhoto.alt_text || ''}
               className={cn(
