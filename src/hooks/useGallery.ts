@@ -98,12 +98,13 @@ export function useGalleryAlbum(slug: string) {
         return null;
       }
 
-      // Fetch photos for this album
+      // Fetch photos for this album (limit 500 to ensure all photos are returned)
       const { data: photos, error: photosError } = await supabase
         .from('gallery_photos')
         .select('*')
         .eq('album_id', album.id)
-        .order('display_order', { ascending: true });
+        .order('display_order', { ascending: true })
+        .limit(500);
 
       if (photosError) {
         console.error('Error fetching gallery photos:', photosError);
