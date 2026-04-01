@@ -69,6 +69,7 @@ function PhotoGridItem({ photo, onClick }: PhotoGridItemProps) {
     >
       {/* Blur placeholder */}
       <img
+        key={`blur-${photo.cloudinary_public_id}`}
         src={getCloudinaryPlaceholder(photo.cloudinary_public_id)}
         alt=""
         className={cn(
@@ -80,6 +81,7 @@ function PhotoGridItem({ photo, onClick }: PhotoGridItemProps) {
 
       {/* Main image */}
       <img
+        key={`main-${photo.cloudinary_public_id}`}
         src={getCloudinaryUrl(photo.cloudinary_public_id, 'grid')}
         alt={photo.alt_text || ''}
         className={cn(

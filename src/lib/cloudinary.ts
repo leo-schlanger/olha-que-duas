@@ -26,8 +26,8 @@ const TRANSFORMS: Record<CloudinaryTransform, TransformConfig> = {
     format: 'auto',
   },
   grid: {
-    width: 400,
-    height: 400,
+    width: 401,
+    height: 401,
     quality: 'auto',
     crop: 'fill',
     gravity: 'auto',
@@ -81,10 +81,11 @@ function buildTransformString(config: TransformConfig): string {
 export function getCloudinaryUrl(publicId: string, transform: CloudinaryTransform = 'thumbnail'): string {
   const config = TRANSFORMS[transform];
   const transformString = buildTransformString(config);
-  // Add cache-busting based on public_id hash to prevent browser caching issues
-  const cacheBust = publicId.split('/').pop() || '';
+  // Add cache-busting with timestamp to force fresh images
+  const fileName = publicId.split('/').pop() || '';
+  const cacheBust = `${fileName}_v20260401`;
 
-  return `${BASE_URL}/${transformString}/${publicId}?cb=${cacheBust}`;
+  return `${BASE_URL}/${transformString}/${publicId}?_cb=${cacheBust}`;
 }
 
 /**
@@ -114,8 +115,9 @@ export function getCloudinaryUrlCustom(publicId: string, customConfig: Partial<T
  * @returns Blurred placeholder URL (very small)
  */
 export function getCloudinaryPlaceholder(publicId: string): string {
-  const cacheBust = publicId.split('/').pop() || '';
-  return `${BASE_URL}/w_50,h_50,q_30,e_blur:1000,f_auto/${publicId}?cb=${cacheBust}`;
+  const fileName = publicId.split('/').pop() || '';
+  const cacheBust = `${fileName}_v20260401`;
+  return `${BASE_URL}/w_50,h_50,q_30,e_blur:1000,f_auto/${publicId}?_cb=${cacheBust}`;
 }
 
 /**
