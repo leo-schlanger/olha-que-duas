@@ -24,3 +24,9 @@ dist-ssr
 *.sw?
 
 .env
+
+# Supabase CLI
+supabase/.temp/
+
+# Windows
+nul
