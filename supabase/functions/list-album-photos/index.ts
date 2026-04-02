@@ -55,15 +55,15 @@ serve(async (req) => {
 
     const data = await response.json()
 
-    // Extract and sort photos by public_id (which contains the filename like 01, 02, etc.)
+    // Extract and sort photos by display_name (the name shown in Cloudinary panel)
     const photos = (data.resources || [])
       .filter((r: any) => r.public_id.startsWith(folder + '/'))
       .map((r: any) => ({
         public_id: r.public_id,
-        // Extract the filename (01, 02, etc.) for sorting
-        filename: r.public_id.split('/').pop() || '',
+        // Use display_name if available, otherwise fall back to public_id filename
+        display_name: r.display_name || r.public_id.split('/').pop() || '',
       }))
-      .sort((a: any, b: any) => a.filename.localeCompare(b.filename, undefined, { numeric: true }))
+      .sort((a: any, b: any) => a.display_name.localeCompare(b.display_name, undefined, { numeric: true }))
       .map((r: any) => r.public_id)
 
     return new Response(
