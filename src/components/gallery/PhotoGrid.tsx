@@ -65,7 +65,7 @@ function PhotoGridItem({ photo, onClick }: PhotoGridItemProps) {
     <button
       onClick={onClick}
       className="relative aspect-square group overflow-hidden rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-vermelho focus-visible:ring-offset-2"
-      aria-label={photo.alt_text || 'Ver foto em tamanho maior'}
+      aria-label="Ver foto em tamanho maior"
     >
       {/* Blur placeholder */}
       <img
@@ -83,7 +83,7 @@ function PhotoGridItem({ photo, onClick }: PhotoGridItemProps) {
       <img
         key={`main-${photo.cloudinary_public_id}`}
         src={getCloudinaryUrl(photo.cloudinary_public_id, 'grid')}
-        alt={photo.alt_text || ''}
+        alt=""
         className={cn(
           'w-full h-full object-cover transition-all duration-300',
           'group-hover:scale-105',
@@ -95,13 +95,6 @@ function PhotoGridItem({ photo, onClick }: PhotoGridItemProps) {
 
       {/* Hover overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-      {/* Caption on hover */}
-      {photo.caption && (
-        <div className="absolute bottom-0 left-0 right-0 p-2 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-          <p className="text-white text-xs line-clamp-2">{photo.caption}</p>
-        </div>
-      )}
     </button>
   );
 }

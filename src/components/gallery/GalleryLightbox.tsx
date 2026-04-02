@@ -163,7 +163,7 @@ export function GalleryLightbox({ photos, initialIndex, isOpen, onClose }: Galle
             <img
               key={currentPhoto.cloudinary_public_id}
               src={getCloudinaryUrl(currentPhoto.cloudinary_public_id, 'lightbox')}
-              alt={currentPhoto.alt_text || ''}
+              alt=""
               className={cn(
                 'max-w-full max-h-[85vh] object-contain transition-opacity duration-300',
                 isImageLoading ? 'opacity-0' : 'opacity-100'
@@ -174,18 +174,9 @@ export function GalleryLightbox({ photos, initialIndex, isOpen, onClose }: Galle
 
           {/* Bottom info bar */}
           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-4 py-6">
-            <div className="container mx-auto flex items-end justify-between">
-              {/* Caption */}
-              <div className="flex-1 min-w-0">
-                {currentPhoto.caption && (
-                  <p className="text-white/90 text-sm md:text-base max-w-2xl">
-                    {currentPhoto.caption}
-                  </p>
-                )}
-              </div>
-
+            <div className="container mx-auto flex items-end justify-end">
               {/* Counter */}
-              <div className="flex-shrink-0 ml-4">
+              <div className="flex-shrink-0">
                 <span className="text-white/70 text-sm font-medium">
                   {currentIndex + 1} / {photos.length}
                 </span>

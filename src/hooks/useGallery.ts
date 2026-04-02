@@ -1,6 +1,28 @@
 import { useQuery } from '@tanstack/react-query';
-import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
+import { getSupabase, isSupabaseConfigured, getSupabaseUrl } from '@/lib/supabase';
 import type { GalleryAlbum, GalleryAlbumWithPhotos, GalleryPhoto, GalleryAlbumsByYear } from '@/types/gallery';
+
+// Fetch photos from Cloudinary via Edge Function
+async function fetchAlbumPhotos(slug: string): Promise<string[]> {
+  const supabaseUrl = getSupabaseUrl();
+  if (!supabaseUrl) return [];
+
+  const response = await fetch(`${supabaseUrl}/functions/v1/list-album-photos`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ slug }),
+  });
+
+  if (!response.ok) {
+    console.error('Error fetching album photos from Cloudinary');
+    return [];
+  }
+
+  const data = await response.json();
+  return data.photos || [];
+}
 
 export function useGalleryAlbums() {
   return useQuery({
@@ -27,22 +49,14 @@ export function useGalleryAlbums() {
         return [];
       }
 
-      // Fetch cover photos for all albums
-      const albumIds = albums.map(a => a.id);
-      const { data: coverPhotos } = await supabase
-        .from('gallery_photos')
-        .select('*')
-        .in('album_id', albumIds)
-        .eq('is_cover', true);
-
-      // Map cover photos to albums
-      const albumsWithCovers: GalleryAlbum[] = albums.map(album => {
-        const coverPhoto = coverPhotos?.find(p => p.album_id === album.id);
-        return {
-          ...album,
-          cover_photo: coverPhoto || undefined,
-        };
-      });
+      // Cover photo is now the first image (01) in the Cloudinary folder
+      const albumsWithCovers: GalleryAlbum[] = albums.map(album => ({
+        ...album,
+        cover_photo: {
+          cloudinary_public_id: `olhaqueduas/galeria/${album.slug}/01`,
+          display_order: 1,
+        },
+      }));
 
       // Group albums by year
       const albumsByYear = albumsWithCovers.reduce<Record<number, GalleryAlbum[]>>((acc, album) => {
@@ -80,7 +94,7 @@ export function useGalleryAlbum(slug: string) {
         return null;
       }
 
-      // Fetch album by slug
+      // Fetch album metadata from Supabase
       const { data: album, error: albumError } = await supabase
         .from('gallery_albums')
         .select('*')
@@ -100,54 +114,21 @@ export function useGalleryAlbum(slug: string) {
         return null;
       }
 
-      // Fetch photos for this album (limit 500 to ensure all photos are returned)
-      const { data: photos, error: photosError } = await supabase
-        .from('gallery_photos')
-        .select('*')
-        .eq('album_id', album.id)
-        .order('display_order', { ascending: true })
-        .limit(500);
+      // Fetch photos from Cloudinary via Edge Function
+      const photoIds = await fetchAlbumPhotos(slug);
 
-      if (photosError) {
-        console.error('Error fetching gallery photos:', photosError);
-        throw photosError;
-      }
+      // Convert to GalleryPhoto format with display_order based on position
+      const photos: GalleryPhoto[] = photoIds.map((publicId, index) => ({
+        cloudinary_public_id: publicId,
+        display_order: index + 1,
+      }));
 
       return {
         ...album,
-        photos: photos || [],
+        photos,
       };
     },
     enabled: isSupabaseConfigured() && !!slug,
   });
 }
 
-export function useGalleryPhoto(photoId: number) {
-  return useQuery({
-    queryKey: ['gallery-photo', photoId],
-    queryFn: async (): Promise<GalleryPhoto | null> => {
-      const supabase = getSupabase();
-      if (!isSupabaseConfigured() || !supabase) {
-        return null;
-      }
-
-      const { data, error } = await supabase
-        .from('gallery_photos')
-        .select('*')
-        .eq('id', photoId)
-        .single();
-
-      if (error) {
-        if (error.code === 'PGRST116') {
-          return null;
-        }
-        console.error('Error fetching gallery photo:', error);
-        throw error;
-      }
-
-      return data;
-    },
-    enabled: isSupabaseConfigured() && !!photoId,
-    staleTime: 1000 * 60 * 10, // 10 minutes
-  });
-}

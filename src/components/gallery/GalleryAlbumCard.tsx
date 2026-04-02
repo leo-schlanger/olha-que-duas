@@ -53,7 +53,7 @@ export function GalleryAlbumCard({ album, position = 'left', className }: Galler
               {/* Main image */}
               <img
                 src={getCloudinaryUrl(coverImageId, 'thumbnail')}
-                alt={album.cover_photo?.alt_text || album.title}
+                alt={album.title}
                 className={cn(
                   'w-full h-full object-cover transition-transform duration-500',
                   'group-hover:scale-105',

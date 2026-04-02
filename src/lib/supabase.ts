@@ -30,3 +30,7 @@ export const supabase = getSupabase();
 export const isSupabaseConfigured = () => {
   return !!(supabaseUrl && supabaseAnonKey && isValidUrl(supabaseUrl));
 };
+
+export const getSupabaseUrl = () => {
+  return supabaseUrl && isValidUrl(supabaseUrl) ? supabaseUrl : null;
+};

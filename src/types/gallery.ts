@@ -14,14 +14,8 @@ export interface GalleryAlbum {
 }
 
 export interface GalleryPhoto {
-  id: number;
-  album_id: number;
   cloudinary_public_id: string;
-  alt_text: string | null;
-  caption: string | null;
   display_order: number;
-  is_cover: boolean;
-  created_at: string;
 }
 
 export interface GalleryAlbumWithPhotos extends GalleryAlbum {

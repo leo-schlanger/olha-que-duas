@@ -29,8 +29,8 @@ export default function GalleryAlbum() {
   const navigate = useNavigate();
   const { data: album, isLoading, error } = useGalleryAlbum(slug || '');
 
-  // Find cover photo
-  const coverPhoto = album?.photos.find(p => p.is_cover) || album?.photos[0];
+  // Cover photo is the first photo in the album
+  const coverPhoto = album?.photos[0];
   const coverImageUrl = coverPhoto
     ? getCloudinaryUrl(coverPhoto.cloudinary_public_id, 'og')
     : undefined;
@@ -159,7 +159,7 @@ export default function GalleryAlbum() {
           {coverPhoto ? (
             <img
               src={getCloudinaryUrl(coverPhoto.cloudinary_public_id, 'lightbox')}
-              alt={coverPhoto.alt_text || album.title}
+              alt={album.title}
               className="w-full h-full object-cover"
             />
           ) : (
