@@ -21,7 +21,7 @@ export const siteConfig = {
   navLinks: [
     { href: "#inicio", label: "Início" },
     { href: "#sobre", label: "Sobre" },
-    { href: "#servicos", label: "Serviços" },
+    { href: "/servicos", label: "Serviços", isRoute: true },
     { href: "#radio", label: "Rádio" },
     { href: "#podcast", label: "Podcast" },
     { href: "/noticias", label: "Notícias", isRoute: true },

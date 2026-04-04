@@ -2,7 +2,6 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import VideoShowcase from "@/components/VideoShowcase";
 import SobreNos from "@/components/SobreNos";
-import Servicos from "@/components/Servicos";
 import Podcast from "@/components/Podcast";
 import RadioPlayer from "@/components/RadioPlayer";
 import Weather from "@/components/Weather";
@@ -28,9 +27,6 @@ const Index = () => {
 
         {/* Quem somos */}
         <SobreNos />
-
-        {/* O que fazemos */}
-        <Servicos />
 
         {/* Rádio ao vivo - Destaque principal */}
         <RadioPlayer />
