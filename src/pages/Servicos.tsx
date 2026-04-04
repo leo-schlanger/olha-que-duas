@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  ArrowLeft,
   ArrowRight,
   Sparkles,
   Instagram,
@@ -11,437 +10,591 @@ import {
   Radio,
   Mic,
   Globe,
-  Wrench,
   Palette,
   TrendingUp,
   Megaphone,
   Handshake,
-  CheckCircle2,
+  Check,
+  Star,
+  Zap,
+  Crown,
+  Building2,
   Mail,
+  Phone,
+  MessageCircle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import { Animated, AnimatedGrid } from '@/components/ui/animated';
-import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
+import { useMetaTags } from '@/hooks/useMetaTags';
 import { siteConfig } from '@/config/site';
 
-// Service categories data
-const serviceCategories = [
+// JSON-LD Schema for Services Page
+const servicesJsonLd = [
+  // Breadcrumb
   {
-    id: 'conteudo-digital',
-    title: 'Conteudo Digital',
-    shortTitle: 'Digital',
-    icon: Instagram,
-    color: 'vermelho',
-    description: 'Criamos conteudo que conecta a sua marca com o publico certo.',
-    services: [
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
       {
-        name: 'Post Instagram',
-        description: 'Design + copy otimizado para engagement',
-        details: 'Arte estatica com texto estrategico para maximizar alcance e interacao.',
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Início',
+        item: 'https://www.olhaqueduas.com',
       },
       {
-        name: 'Carrossel Instagram',
-        description: 'Ate 10 slides com narrativa visual',
-        details: 'Design coeso que conta uma historia e mantem o publico envolvido.',
-      },
-      {
-        name: 'Pack Stories',
-        description: '5 unidades personalizadas',
-        details: 'Templates exclusivos alinhados com a identidade da sua marca.',
-      },
-      {
-        name: 'Reel Simples',
-        description: 'Ate 30 segundos editados',
-        details: 'Edicao profissional com musica e legendas para maior alcance.',
-      },
-      {
-        name: 'Reel com IA Avancada',
-        description: '30-60 segundos de producao premium',
-        details: 'Producao com ferramentas de IA profissionais para resultados impactantes.',
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Serviços',
+        item: 'https://www.olhaqueduas.com/servicos',
       },
     ],
   },
+  // Service Catalog
   {
-    id: 'producao-video',
-    title: 'Producao de Video',
-    shortTitle: 'Video',
-    icon: Video,
-    color: 'amarelo',
-    description: 'Videos profissionais que contam a historia da sua marca.',
-    services: [
-      {
-        name: 'Video Comercial Curto',
-        description: 'Ate 30 segundos',
-        details: 'Ideal para anuncios e redes sociais com mensagem direta e impactante.',
-      },
-      {
-        name: 'Video Comercial',
-        description: '1-2 minutos completos',
-        details: 'Roteiro, producao e edicao completa para apresentar o seu negocio.',
-      },
-      {
-        name: 'Video Institucional',
-        description: '2-3 minutos profissionais',
-        details: 'Apresentacao profissional da marca com qualidade cinematografica.',
-      },
-      {
-        name: 'Video Longo / Documentario',
-        description: '5+ minutos de producao',
-        details: 'Producao completa com entrevistas e narrativa envolvente.',
-      },
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': 'https://www.olhaqueduas.com/servicos#services',
+    name: 'Serviços de Comunicação e Marketing Digital',
+    description: 'Serviços completos de comunicação, marketing digital, produção de vídeo, consultoria de marca, rádio online e podcast em Portugal.',
+    url: 'https://www.olhaqueduas.com/servicos',
+    provider: {
+      '@type': 'Organization',
+      '@id': 'https://www.olhaqueduas.com/#organization',
+      name: 'Olha que Duas',
+    },
+    areaServed: {
+      '@type': 'Country',
+      name: 'Portugal',
+    },
+    serviceType: [
+      'Marketing Digital',
+      'Gestão de Redes Sociais',
+      'Produção de Vídeo',
+      'Produção de Áudio',
+      'Consultoria de Marca',
+      'Desenvolvimento Web',
+      'Publicidade em Rádio',
+      'Produção de Podcast',
     ],
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Catálogo de Serviços Olha que Duas',
+      itemListElement: [
+        {
+          '@type': 'OfferCatalog',
+          name: 'Planos de Marketing Digital',
+          itemListElement: [
+            {
+              '@type': 'Offer',
+              itemOffered: {
+                '@type': 'Service',
+                name: 'Plano Starter',
+                description: 'Gestão de 1 rede social, 8-12 posts/mês, 2 Reels, relatório mensal',
+              },
+            },
+            {
+              '@type': 'Offer',
+              itemOffered: {
+                '@type': 'Service',
+                name: 'Plano Growth',
+                description: 'Gestão de 2 redes sociais, 16-20 posts/mês, 4 Reels, vídeo comercial, consultoria mensal',
+              },
+            },
+            {
+              '@type': 'Offer',
+              itemOffered: {
+                '@type': 'Service',
+                name: 'Plano Premium',
+                description: 'Gestão de 3 redes sociais, até 30 posts/mês, 8 Reels, 2 vídeos, veiculação rádio, consultoria semanal',
+              },
+            },
+            {
+              '@type': 'Offer',
+              itemOffered: {
+                '@type': 'Service',
+                name: 'Plano Enterprise',
+                description: 'Solução completa personalizada com campanhas integradas e account manager dedicado',
+              },
+            },
+          ],
+        },
+        {
+          '@type': 'OfferCatalog',
+          name: 'Produção de Vídeo',
+          itemListElement: [
+            {
+              '@type': 'Offer',
+              itemOffered: {
+                '@type': 'Service',
+                name: 'Vídeo Comercial',
+                description: 'Produção de vídeos comerciais de 30 segundos a 3 minutos',
+              },
+            },
+            {
+              '@type': 'Offer',
+              itemOffered: {
+                '@type': 'Service',
+                name: 'Vídeo Institucional',
+                description: 'Vídeos institucionais com qualidade cinematográfica',
+              },
+            },
+          ],
+        },
+        {
+          '@type': 'OfferCatalog',
+          name: 'Rádio e Podcast',
+          itemListElement: [
+            {
+              '@type': 'Offer',
+              itemOffered: {
+                '@type': 'Service',
+                name: 'Veiculação em Rádio',
+                description: 'Spots publicitários na rádio online 24h',
+              },
+            },
+            {
+              '@type': 'Offer',
+              itemOffered: {
+                '@type': 'Service',
+                name: 'Produção de Podcast',
+                description: 'Gravação, edição e distribuição de podcasts',
+              },
+            },
+          ],
+        },
+        {
+          '@type': 'OfferCatalog',
+          name: 'Desenvolvimento Web',
+          itemListElement: [
+            {
+              '@type': 'Offer',
+              itemOffered: {
+                '@type': 'Service',
+                name: 'Criação de Websites',
+                description: 'Landing pages e sites institucionais modernos e responsivos',
+              },
+            },
+          ],
+        },
+      ],
+    },
   },
+  // FAQ Schema
   {
-    id: 'consultoria-marca',
-    title: 'Consultoria de Marca',
-    shortTitle: 'Marca',
-    icon: Lightbulb,
-    color: 'vermelho',
-    description: 'Estrategia e posicionamento para marcas com proposito.',
-    services: [
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
       {
-        name: 'Sessao de Consultoria',
-        description: '1 hora de orientacao',
-        details: 'Orientacao estrategica personalizada para os seus desafios de marca.',
+        '@type': 'Question',
+        name: 'Quais serviços de marketing digital a Olha que Duas oferece?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Oferecemos gestão completa de redes sociais, criação de conteúdo (posts, Reels, Stories), produção de vídeo, consultoria de marca, produção de áudio, publicidade em rádio online e produção de podcast.',
+        },
       },
       {
-        name: 'Diagnostico de Marca',
-        description: 'Analise completa',
-        details: 'Avaliacao profunda da sua marca com relatorio detalhado e recomendacoes.',
+        '@type': 'Question',
+        name: 'Como funcionam os planos de marketing digital?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Temos 4 planos: Starter (negócios locais), Growth (PMEs em crescimento), Premium (empresas estabelecidas) e Enterprise (grandes marcas). Cada plano inclui gestão de redes sociais, criação de conteúdo, relatórios e suporte, com diferentes níveis de serviço.',
+        },
       },
       {
-        name: 'Estrategia de Marca Completa',
-        description: 'Posicionamento total',
-        details: 'Definicao de posicionamento, tom de voz e guidelines de comunicacao.',
+        '@type': 'Question',
+        name: 'A Olha que Duas produz vídeos para empresas?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Sim, produzimos vídeos comerciais (30 segundos a 2 minutos), vídeos institucionais (2-3 minutos) e documentários (5+ minutos), com roteiro, produção e edição profissional.',
+        },
       },
       {
-        name: 'Rebranding Completo',
-        description: 'Nova identidade',
-        details: 'Transformacao completa da identidade visual e estrategica da marca.',
-      },
-    ],
-  },
-  {
-    id: 'producao-audio',
-    title: 'Producao Audio',
-    shortTitle: 'Audio',
-    icon: Music,
-    color: 'amarelo',
-    description: 'Som profissional para radio, podcast e publicidade.',
-    services: [
-      {
-        name: 'Jingle Basico',
-        description: '15-30 segundos',
-        details: 'Composicao original com voz profissional para a sua marca.',
+        '@type': 'Question',
+        name: 'Como posso anunciar na rádio Olha que Duas?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Oferecemos spots rotativos, spots em horário nobre (8h-10h e 17h-20h), menções ao vivo durante programas, patrocínio de programas e pacotes mensais com 20 spots.',
+        },
       },
       {
-        name: 'Jingle Profissional',
-        description: '30-60 segundos premium',
-        details: 'Producao completa com instrumentos e arranjo profissional.',
-      },
-      {
-        name: 'Pacote Jingle',
-        description: 'Versoes 15s + 30s + 60s',
-        details: 'Versoes adaptadas para diferentes usos e plataformas.',
-      },
-      {
-        name: 'Spot Radio',
-        description: 'Anuncio profissional',
-        details: 'Anuncio de voz com mixagem profissional para veiculacao.',
-      },
-      {
-        name: 'Vinheta / Intro Audio',
-        description: 'Abertura personalizada',
-        details: 'Abertura profissional para podcast ou programa de radio.',
-      },
-    ],
-  },
-  {
-    id: 'radio-digital',
-    title: 'Radio Digital',
-    shortTitle: 'Radio',
-    icon: Radio,
-    color: 'vermelho',
-    description: 'Veiculacao na nossa radio online 24 horas.',
-    services: [
-      {
-        name: 'Spot Rotativo',
-        description: 'Veiculacao semanal',
-        details: 'Spot de 30 segundos em horarios variados ao longo da semana.',
-      },
-      {
-        name: 'Spot Prime Time',
-        description: 'Horario nobre',
-        details: 'Veiculacao nos horarios de maior audiencia: 8h-10h e 17h-20h.',
-      },
-      {
-        name: 'Mencao ao Vivo',
-        description: 'Durante programa',
-        details: 'Citacao da sua marca durante programa ao vivo.',
-      },
-      {
-        name: 'Patrocinio de Programa',
-        description: 'Mensal',
-        details: '"Este programa e oferecido por..." - associacao direta com conteudo.',
-      },
-      {
-        name: 'Pacote Mensal',
-        description: '20 spots',
-        details: 'Veiculacao diaria com desconto especial para compromisso mensal.',
-      },
-    ],
-  },
-  {
-    id: 'podcast',
-    title: 'Podcast',
-    shortTitle: 'Podcast',
-    icon: Mic,
-    color: 'amarelo',
-    description: 'Participe ou crie o seu proprio podcast.',
-    services: [
-      {
-        name: 'Participacao como Convidado',
-        description: 'Entrevista no nosso podcast',
-        details: 'Seja entrevistado no podcast Olha que Duas e alcance a nossa audiencia.',
-      },
-      {
-        name: 'Episodio Patrocinado',
-        description: 'Episodio dedicado',
-        details: 'Episodio completamente dedicado a sua marca ou tema de interesse.',
-      },
-      {
-        name: 'Producao de Podcast',
-        description: 'Por episodio',
-        details: 'Gravacao, edicao profissional e publicacao nas plataformas.',
-      },
-      {
-        name: 'Lancamento de Podcast',
-        description: 'Pacote completo',
-        details: 'Estrategia, branding e 4 episodios iniciais para comecar com forca.',
-      },
-      {
-        name: 'Gestao Mensal de Podcast',
-        description: '4 episodios + distribuicao',
-        details: 'Producao, distribuicao e promocao mensal completa do seu podcast.',
-      },
-    ],
-  },
-  {
-    id: 'websites',
-    title: 'Websites',
-    shortTitle: 'Web',
-    icon: Globe,
-    color: 'vermelho',
-    description: 'Sites modernos e funcionais para o seu negocio.',
-    services: [
-      {
-        name: 'Landing Page Simples',
-        description: '1 pagina responsiva',
-        details: 'Pagina unica com formulario para captura de leads.',
-      },
-      {
-        name: 'Landing Page Avancada',
-        description: 'Com animacoes e SEO',
-        details: 'Animacoes modernas, integracoes e otimizacao para buscadores.',
-      },
-      {
-        name: 'Site Institucional Basico',
-        description: '3-5 paginas',
-        details: 'Design responsivo, formulario de contacto e SEO basico.',
-      },
-      {
-        name: 'Site Institucional Completo',
-        description: '5-10 paginas',
-        details: 'Portfolio, galeria, blog integrado e analytics.',
-      },
-      {
-        name: 'Site Premium',
-        description: 'Ate 10 paginas exclusivas',
-        details: 'Design exclusivo, animacoes avancadas e performance otimizada.',
-      },
-    ],
-  },
-  {
-    id: 'manutencao-web',
-    title: 'Manutencao Web',
-    shortTitle: 'Manutencao',
-    icon: Wrench,
-    color: 'amarelo',
-    description: 'Mantenha o seu site sempre atualizado e seguro.',
-    services: [
-      {
-        name: 'Plano Basico',
-        description: 'Essencial',
-        details: 'Updates de seguranca e backup mensal para manter o site protegido.',
-      },
-      {
-        name: 'Plano Standard',
-        description: 'Recomendado',
-        details: 'Plano basico + pequenas alteracoes mensais de conteudo.',
-      },
-      {
-        name: 'Plano Premium',
-        description: 'Completo',
-        details: 'Alteracoes ilimitadas e suporte prioritario para o seu site.',
-      },
-    ],
-  },
-  {
-    id: 'servicos-adicionais',
-    title: 'Servicos Adicionais',
-    shortTitle: 'Extras',
-    icon: Palette,
-    color: 'vermelho',
-    description: 'Complementos para potenciar a sua comunicacao.',
-    services: [
-      {
-        name: 'Design de Logo',
-        description: 'Identidade visual',
-        details: 'Criacao de logotipo profissional que representa a sua marca.',
-      },
-      {
-        name: 'Copywriting',
-        description: 'Por pagina',
-        details: 'Textos persuasivos e estrategicos para o seu site ou materiais.',
-      },
-      {
-        name: 'Sessao Fotografica',
-        description: 'Profissional',
-        details: 'Fotos profissionais para perfil, produtos ou eventos.',
-      },
-      {
-        name: 'Video Hero / Background',
-        description: 'Para website',
-        details: 'Video de fundo impactante para a pagina inicial do seu site.',
-      },
-      {
-        name: 'Integracao WhatsApp / Chat',
-        description: 'Atendimento direto',
-        details: 'Adicione chat ao vivo no seu site para falar com clientes.',
-      },
-      {
-        name: 'Traducao',
-        description: 'Por idioma',
-        details: 'Traducao profissional do seu site para outros idiomas.',
-      },
-    ],
-  },
-  {
-    id: 'planos-marketing',
-    title: 'Planos de Marketing',
-    shortTitle: 'Planos',
-    icon: TrendingUp,
-    color: 'amarelo',
-    description: 'Gestao completa das suas redes sociais.',
-    services: [
-      {
-        name: 'Starter',
-        description: 'Para negocios locais',
-        details: '8-12 posts/mes, 2 Reels, gestao de 1 rede social, relatorio mensal.',
-      },
-      {
-        name: 'Growth',
-        description: 'Para PMEs em crescimento',
-        details: '16-20 posts/mes, 4 Reels, 2 redes sociais, 1 video comercial, consultoria mensal.',
-      },
-      {
-        name: 'Premium',
-        description: 'Para empresas estabelecidas',
-        details: 'Ate 30 posts/mes, 8 Reels, 3 redes, 2 videos, veiculacao radio, consultoria semanal.',
-      },
-      {
-        name: 'Enterprise',
-        description: 'Para grandes marcas',
-        details: 'Tudo do Premium + campanhas integradas, producao ilimitada, account manager dedicado.',
-      },
-    ],
-  },
-  {
-    id: 'campanhas',
-    title: 'Campanhas Avulsas',
-    shortTitle: 'Campanhas',
-    icon: Megaphone,
-    color: 'vermelho',
-    description: 'Campanhas pontuais para momentos especiais.',
-    services: [
-      {
-        name: 'Campanha de Lancamento',
-        description: 'Novos produtos',
-        details: 'Estrategia completa para lancar novos produtos ou servicos no mercado.',
-      },
-      {
-        name: 'Campanha Sazonal',
-        description: 'Datas especiais',
-        details: 'Campanhas para Natal, Pascoa, Dia das Maes e outras datas importantes.',
-      },
-      {
-        name: 'Campanha Redes Sociais',
-        description: '1 mes de foco',
-        details: 'Campanha focada em engagement e crescimento das redes sociais.',
-      },
-      {
-        name: 'Campanha Integrada',
-        description: 'Digital + Radio',
-        details: 'Presenca multicanal com alcance maximo combinando digital e radio.',
-      },
-    ],
-  },
-  {
-    id: 'colaboracoes',
-    title: 'Colaboracoes e Parcerias',
-    shortTitle: 'Parcerias',
-    icon: Handshake,
-    color: 'amarelo',
-    description: 'Parcerias estrategicas para ampliar o seu alcance.',
-    services: [
-      {
-        name: 'Mencao no Site',
-        description: 'Badge ou logo',
-        details: 'Presenca como parceiro no nosso site com link para o seu negocio.',
-      },
-      {
-        name: 'Post Patrocinado',
-        description: 'Nas nossas redes',
-        details: 'Publicacao com o alcance da nossa audiencia nas redes sociais.',
-      },
-      {
-        name: 'Video Colaboracao',
-        description: 'Conteudo conjunto',
-        details: 'Participacao em conteudo de video colaborativo.',
-      },
-      {
-        name: 'Pacote Influencer',
-        description: '3 posts + stories',
-        details: 'Divulgacao completa da sua marca nas nossas plataformas.',
-      },
-      {
-        name: 'Parceria Trimestral',
-        description: 'Pacote completo',
-        details: 'Site + Redes + Radio + Podcast - presenca total por 3 meses.',
+        '@type': 'Question',
+        name: 'A Olha que Duas cria websites?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Sim, criamos landing pages simples e avançadas, sites institucionais (3-10 páginas) e sites premium com design exclusivo, animações e performance optimizada.',
+        },
       },
     ],
   },
 ];
 
-export default function Servicos() {
-  const [activeTab, setActiveTab] = useState('conteudo-digital');
+// Planos de Marketing Digital
+const marketingPlans = [
+  {
+    name: 'Starter',
+    icon: Zap,
+    description: 'Ideal para negócios locais que querem começar a marcar presença digital.',
+    badge: null,
+    features: [
+      '8 a 12 publicações por mês no Instagram',
+      '2 Reels editados com música e legendas',
+      'Gestão completa de 1 rede social',
+      'Calendário editorial mensal',
+      'Relatório de métricas básico',
+      'Suporte por email',
+    ],
+  },
+  {
+    name: 'Growth',
+    icon: TrendingUp,
+    description: 'Para PMEs em crescimento que precisam de uma estratégia mais robusta.',
+    badge: 'Mais Popular',
+    features: [
+      '16 a 20 publicações por mês',
+      '4 Reels profissionais (2 com IA avançada)',
+      'Gestão de 2 redes sociais',
+      '1 vídeo comercial por mês (até 1 min)',
+      'Sessão de consultoria mensal (1 hora)',
+      'Relatório detalhado com análise de métricas',
+      'Suporte prioritário por WhatsApp',
+    ],
+  },
+  {
+    name: 'Premium',
+    icon: Crown,
+    description: 'Para empresas estabelecidas que querem dominar todos os canais.',
+    badge: null,
+    features: [
+      'Até 30 publicações por mês',
+      '8 Reels profissionais com produção premium',
+      'Gestão de 3 redes sociais',
+      '2 vídeos comerciais por mês',
+      'Veiculação de spots na nossa rádio',
+      'Consultoria estratégica semanal',
+      'Copywriting profissional incluído',
+      'Account manager dedicado',
+    ],
+  },
+  {
+    name: 'Enterprise',
+    icon: Building2,
+    description: 'Solução completa e personalizada para grandes marcas.',
+    badge: 'Sob Medida',
+    features: [
+      'Tudo do plano Premium incluído',
+      'Campanhas integradas multicanal',
+      'Produção de conteúdo ilimitada',
+      'Espaço privilegiado na rádio',
+      'Participações no podcast',
+      'Estratégia de influencer marketing',
+      'Relatórios executivos personalizados',
+      'Reuniões semanais de alinhamento',
+    ],
+  },
+];
 
+// Serviços de Conteúdo Digital
+const digitalServices = [
+  {
+    name: 'Post Instagram',
+    subtitle: 'Design + Copywriting',
+    description: 'Arte estática profissional com texto otimizado para engagement. Inclui design alinhado à identidade visual da sua marca e copy estratégico.',
+  },
+  {
+    name: 'Carrossel Instagram',
+    subtitle: 'Até 10 slides',
+    description: 'Design coeso com narrativa visual que conta uma história. Ideal para conteúdo educativo, lançamentos e storytelling da marca.',
+  },
+  {
+    name: 'Pack Stories',
+    subtitle: '5 unidades',
+    description: 'Templates personalizados e alinhados com a identidade da sua marca. Perfeitos para o dia a dia, promoções e bastidores.',
+  },
+  {
+    name: 'Reel Simples',
+    subtitle: 'Até 30 segundos',
+    description: 'Edição profissional com música trending, legendas estilizadas e transições dinâmicas. Optimizado para o algoritmo.',
+  },
+  {
+    name: 'Reel com IA Avançada',
+    subtitle: '30-60 segundos',
+    description: 'Produção premium utilizando ferramentas de IA profissionais. Avatar digital, voiceover sintético, efeitos visuais avançados.',
+  },
+];
+
+// Serviços de Produção de Vídeo
+const videoServices = [
+  {
+    name: 'Vídeo Comercial Curto',
+    subtitle: 'Até 30 segundos',
+    description: 'Ideal para anúncios em redes sociais e YouTube Ads. Mensagem directa e impactante que converte.',
+  },
+  {
+    name: 'Vídeo Comercial',
+    subtitle: '1-2 minutos',
+    description: 'Roteiro, produção e edição completa. Apresentação profissional do seu negócio, produto ou serviço.',
+  },
+  {
+    name: 'Vídeo Institucional',
+    subtitle: '2-3 minutos',
+    description: 'Qualidade cinematográfica para apresentar a sua empresa. Inclui entrevistas, imagens de cobertura e pós-produção premium.',
+  },
+  {
+    name: 'Documentário',
+    subtitle: '5+ minutos',
+    description: 'Produção completa com entrevistas, narrativa envolvente e storytelling profissional. Ideal para histórias de marca.',
+  },
+];
+
+// Serviços de Consultoria
+const consultingServices = [
+  {
+    name: 'Sessão de Consultoria',
+    subtitle: '1 hora',
+    description: 'Orientação estratégica personalizada para os seus desafios de marca, comunicação ou marketing digital.',
+  },
+  {
+    name: 'Diagnóstico de Marca',
+    subtitle: 'Análise completa',
+    description: 'Avaliação profunda da sua marca com relatório detalhado, análise SWOT e recomendações accionáveis.',
+  },
+  {
+    name: 'Estratégia de Marca',
+    subtitle: 'Posicionamento completo',
+    description: 'Definição de posicionamento, tom de voz, guidelines de comunicação e manual de identidade verbal.',
+  },
+  {
+    name: 'Rebranding Completo',
+    subtitle: 'Nova identidade',
+    description: 'Transformação completa da identidade visual e estratégica. Inclui logo, paleta, tipografia e aplicações.',
+  },
+];
+
+// Serviços de Áudio
+const audioServices = [
+  {
+    name: 'Jingle',
+    subtitle: '15-60 segundos',
+    description: 'Composição original com voz profissional. Disponível em versões de 15s, 30s e 60s para diferentes aplicações.',
+  },
+  {
+    name: 'Spot de Rádio',
+    subtitle: 'Anúncio profissional',
+    description: 'Locução profissional com mixagem de alta qualidade. Pronto para veiculação em rádio ou podcast.',
+  },
+  {
+    name: 'Vinheta / Intro',
+    subtitle: 'Abertura personalizada',
+    description: 'Identidade sonora para o seu podcast, programa de rádio ou canal de YouTube.',
+  },
+];
+
+// Serviços de Rádio
+const radioServices = [
+  {
+    name: 'Spot Rotativo',
+    subtitle: 'Por semana',
+    description: 'Veiculação do seu anúncio de 30 segundos em horários variados ao longo da semana na nossa rádio online 24h.',
+  },
+  {
+    name: 'Spot Prime Time',
+    subtitle: 'Horário nobre',
+    description: 'Veiculação nos horários de maior audiência: manhã (8h-10h) e fim de tarde (17h-20h).',
+  },
+  {
+    name: 'Menção ao Vivo',
+    subtitle: 'Durante programa',
+    description: 'A sua marca mencionada ao vivo durante os nossos programas. Autenticidade e conexão directa.',
+  },
+  {
+    name: 'Patrocínio de Programa',
+    subtitle: 'Mensal',
+    description: '"Este programa é oferecido por..." - Associação directa da sua marca com o nosso conteúdo.',
+  },
+  {
+    name: 'Pacote Mensal',
+    subtitle: '20 spots',
+    description: 'Veiculação diária garantida com condições especiais. Presença constante na nossa programação.',
+  },
+];
+
+// Serviços de Podcast
+const podcastServices = [
+  {
+    name: 'Participação como Convidado',
+    subtitle: 'Entrevista',
+    description: 'Seja entrevistado no podcast Olha que Duas. Partilhe a sua história e alcance a nossa audiência.',
+  },
+  {
+    name: 'Episódio Patrocinado',
+    subtitle: 'Episódio dedicado',
+    description: 'Um episódio completamente dedicado à sua marca, produto ou tema de interesse.',
+  },
+  {
+    name: 'Produção de Podcast',
+    subtitle: 'Por episódio',
+    description: 'Gravação em estúdio, edição profissional, masterização e publicação em todas as plataformas.',
+  },
+  {
+    name: 'Lançamento de Podcast',
+    subtitle: 'Pacote completo',
+    description: 'Estratégia, identidade visual e sonora, 4 episódios iniciais gravados e editados, distribuição configurada.',
+  },
+  {
+    name: 'Gestão Mensal',
+    subtitle: '4 episódios + promoção',
+    description: 'Produção mensal completa: gravação, edição, publicação e promoção nas redes sociais.',
+  },
+];
+
+// Serviços Web
+const webServices = [
+  {
+    name: 'Landing Page Simples',
+    subtitle: '1 página',
+    description: 'Página única responsiva com formulário de captação de leads. Design moderno e optimizado para conversão.',
+  },
+  {
+    name: 'Landing Page Avançada',
+    subtitle: 'Com animações',
+    description: 'Animações modernas, integrações com ferramentas de marketing, SEO optimizado e analytics.',
+  },
+  {
+    name: 'Site Institucional',
+    subtitle: '3-5 páginas',
+    description: 'Apresentação completa do seu negócio. Design responsivo, formulário de contacto e SEO básico.',
+  },
+  {
+    name: 'Site Completo',
+    subtitle: '5-10 páginas',
+    description: 'Portfolio, galeria, blog integrado, área de clientes e integração com Google Analytics.',
+  },
+  {
+    name: 'Site Premium',
+    subtitle: 'Até 10 páginas',
+    description: 'Design exclusivo, animações avançadas, performance optimizada e experiência de utilizador premium.',
+  },
+];
+
+// Serviços Adicionais
+const additionalServices = [
+  { name: 'Design de Logo', description: 'Criação de logótipo profissional com variações e manual de aplicação.' },
+  { name: 'Copywriting', description: 'Textos persuasivos e estratégicos para websites, redes sociais ou materiais.' },
+  { name: 'Sessão Fotográfica', description: 'Fotos profissionais para perfil, produtos, equipa ou eventos.' },
+  { name: 'Vídeo Hero', description: 'Vídeo de fundo impactante para a página inicial do seu website.' },
+  { name: 'Integração WhatsApp', description: 'Chat ao vivo no seu site para atendimento directo ao cliente.' },
+  { name: 'Tradução', description: 'Tradução profissional do seu site ou materiais para outros idiomas.' },
+];
+
+// Campanhas
+const campaignServices = [
+  {
+    name: 'Campanha de Lançamento',
+    description: 'Estratégia completa para lançar novos produtos ou serviços. Inclui teaser, lançamento e pós-lançamento.',
+  },
+  {
+    name: 'Campanha Sazonal',
+    description: 'Campanhas para datas especiais: Natal, Páscoa, Dia das Mães, Black Friday e outras ocasiões.',
+  },
+  {
+    name: 'Campanha de Redes Sociais',
+    description: 'Um mês de conteúdo focado em engagement, crescimento de seguidores ou conversões.',
+  },
+  {
+    name: 'Campanha Integrada',
+    description: 'Presença multicanal combinando digital e rádio para alcance máximo.',
+  },
+];
+
+// Parcerias
+const partnershipServices = [
+  { name: 'Menção no Site', description: 'O seu logo como parceiro no nosso website com link para o seu negócio.' },
+  { name: 'Post Patrocinado', description: 'Publicação dedicada nas nossas redes sociais com o alcance da nossa audiência.' },
+  { name: 'Vídeo Colaboração', description: 'Participação em conteúdo de vídeo conjunto para ambas as audiências.' },
+  { name: 'Pacote Influencer', description: '3 posts + stories completos para divulgação da sua marca.' },
+  { name: 'Parceria Trimestral', description: 'Presença completa: Site + Redes + Rádio + Podcast durante 3 meses.' },
+];
+
+// Componente de Card de Serviço
+function ServiceCard({ name, subtitle, description }: { name: string; subtitle?: string; description: string }) {
+  return (
+    <div className="group relative rounded-2xl p-6 bg-card border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300">
+      <h4 className="text-lg font-display font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">
+        {name}
+      </h4>
+      {subtitle && (
+        <p className="text-sm font-medium text-primary/80 mb-3">{subtitle}</p>
+      )}
+      <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+    </div>
+  );
+}
+
+// Componente de Card Simples
+function SimpleCard({ name, description }: { name: string; description: string }) {
+  return (
+    <div className="flex items-start gap-3 p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
+      <Check className="w-5 h-5 text-primary mt-0.5 shrink-0" />
+      <div>
+        <h4 className="font-medium text-foreground">{name}</h4>
+        <p className="text-sm text-muted-foreground mt-1">{description}</p>
+      </div>
+    </div>
+  );
+}
+
+// Componente de Secção
+function Section({
+  id,
+  title,
+  subtitle,
+  icon: Icon,
+  children,
+  className = ''
+}: {
+  id: string;
+  title: string;
+  subtitle: string;
+  icon: React.ElementType;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <section id={id} className={`py-16 md:py-24 ${className}`}>
+      <div className="container mx-auto px-4 sm:px-6">
+        <Animated animation="fade-up" className="text-center mb-12 md:mb-16">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 mb-4">
+            <Icon className="w-7 h-7 text-primary" />
+          </div>
+          <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-4">
+            {title}
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            {subtitle}
+          </p>
+        </Animated>
+        {children}
+      </div>
+    </section>
+  );
+}
+
+export default function Servicos() {
   useMetaTags({
-    title: 'Servicos',
-    description: 'Descubra todos os servicos da Olha que Duas: conteudo digital, producao de video, consultoria de marca, radio, podcast, websites e muito mais.',
+    title: 'Serviços de Marketing Digital e Comunicação',
+    description: 'Serviços profissionais de marketing digital, gestão de redes sociais, produção de vídeo, consultoria de marca, rádio online 24h e podcast em Portugal. Planos desde gestão básica até soluções enterprise. Peça orçamento.',
     url: 'https://www.olhaqueduas.com/servicos',
-    jsonLd: getPageBreadcrumbJsonLd('Servicos', 'https://www.olhaqueduas.com/servicos'),
+    image: 'https://www.olhaqueduas.com/og-servicos.jpg',
+    imageAlt: 'Serviços de Marketing Digital e Comunicação - Olha que Duas',
+    jsonLd: servicesJsonLd,
   });
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  const activeCategory = serviceCategories.find((cat) => cat.id === activeTab);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -449,16 +602,13 @@ export default function Servicos() {
 
       <main className="flex-1 pt-24 md:pt-28">
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-br from-charcoal via-charcoal/95 to-charcoal py-20 md:py-28 overflow-hidden">
-          {/* Animated background elements */}
+        <section className="relative bg-gradient-to-br from-charcoal via-charcoal/95 to-charcoal py-20 md:py-32 overflow-hidden">
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-vermelho/10 rounded-full blur-3xl animate-float-slow" />
-            <div className="absolute bottom-0 left-0 w-80 h-80 bg-amarelo/10 rounded-full blur-3xl animate-float" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-radial from-vermelho/5 to-transparent rounded-full" />
-
-            {/* Grid pattern */}
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-vermelho/10 rounded-full blur-3xl animate-float-slow" />
+            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-amarelo/10 rounded-full blur-3xl animate-float" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-vermelho/5 to-transparent rounded-full" />
             <div
-              className="absolute inset-0 opacity-[0.03]"
+              className="absolute inset-0 opacity-[0.02]"
               style={{
                 backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h60v60H0V0zm1 1v58h58V1H1z' fill='%23ffffff' fill-opacity='1'/%3E%3C/svg%3E")`,
                 backgroundSize: '60px 60px',
@@ -468,291 +618,378 @@ export default function Servicos() {
 
           <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
-              {/* Badge */}
               <Animated animation="fade-down">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-vermelho/10 border border-vermelho/20 mb-6">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-vermelho/10 border border-vermelho/20 mb-8">
                   <Sparkles className="w-4 h-4 text-vermelho" />
-                  <span className="text-[11px] font-semibold uppercase tracking-widest text-vermelho">
-                    Os Nossos Servicos
+                  <span className="text-xs font-semibold uppercase tracking-widest text-vermelho">
+                    Os Nossos Serviços
                   </span>
                 </div>
               </Animated>
 
-              {/* Title */}
               <Animated animation="fade-up" delay={100}>
                 <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold text-cream mb-6 leading-tight">
-                  Comunicacao com{' '}
-                  <span className="text-gradient-brand">Proposito</span>
+                  Comunicação com{' '}
+                  <span className="text-gradient-brand">Propósito</span>
                 </h1>
               </Animated>
 
-              {/* Description */}
               <Animated animation="fade-up" delay={200}>
-                <p className="text-lg md:text-xl text-cream/70 max-w-2xl mx-auto leading-relaxed mb-10">
-                  Do conteudo digital a producao de audio e video, oferecemos solucoes completas
+                <p className="text-lg md:text-xl text-cream/70 max-w-2xl mx-auto leading-relaxed mb-12">
+                  Do conteúdo digital à produção audiovisual, oferecemos soluções completas
                   para marcas que querem comunicar com autenticidade e impacto.
                 </p>
               </Animated>
 
-              {/* Stats */}
               <Animated animation="fade-up" delay={300}>
-                <div className="flex justify-center gap-8 md:gap-16">
+                <div className="flex flex-wrap justify-center gap-6 md:gap-12">
                   <div className="text-center">
-                    <div className="text-3xl md:text-4xl font-display font-bold text-vermelho">
-                      12
-                    </div>
-                    <div className="text-xs text-cream/50 uppercase tracking-wider mt-1">
-                      Categorias
-                    </div>
+                    <div className="text-3xl md:text-4xl font-display font-bold text-vermelho">50+</div>
+                    <div className="text-xs text-cream/50 uppercase tracking-wider mt-1">Serviços</div>
                   </div>
-                  <div className="w-px h-12 bg-cream/10" />
+                  <div className="hidden sm:block w-px h-12 bg-cream/10" />
                   <div className="text-center">
-                    <div className="text-3xl md:text-4xl font-display font-bold text-cream">
-                      50+
-                    </div>
-                    <div className="text-xs text-cream/50 uppercase tracking-wider mt-1">
-                      Servicos
-                    </div>
+                    <div className="text-3xl md:text-4xl font-display font-bold text-cream">24h</div>
+                    <div className="text-xs text-cream/50 uppercase tracking-wider mt-1">Rádio Online</div>
                   </div>
-                  <div className="w-px h-12 bg-cream/10" />
+                  <div className="hidden sm:block w-px h-12 bg-cream/10" />
                   <div className="text-center">
-                    <div className="text-3xl md:text-4xl font-display font-bold text-amarelo">
-                      24h
-                    </div>
-                    <div className="text-xs text-cream/50 uppercase tracking-wider mt-1">
-                      Radio Online
-                    </div>
+                    <div className="text-3xl md:text-4xl font-display font-bold text-amarelo">100%</div>
+                    <div className="text-xs text-cream/50 uppercase tracking-wider mt-1">Personalizado</div>
                   </div>
                 </div>
               </Animated>
             </div>
           </div>
 
-          {/* Bottom wave */}
           <div className="absolute bottom-0 left-0 right-0">
-            <svg
-              viewBox="0 0 1440 120"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-full h-auto"
-            >
-              <path
-                d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
-                fill="hsl(var(--background))"
-              />
+            <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+              <path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="hsl(var(--background))"/>
             </svg>
           </div>
         </section>
 
-        {/* Services Content */}
-        <section className="py-12 md:py-20">
+        {/* Planos de Marketing Digital */}
+        <section id="planos" className="py-20 md:py-28 bg-gradient-to-b from-background via-muted/20 to-background">
           <div className="container mx-auto px-4 sm:px-6">
-            {/* Back button */}
-            <Animated animation="fade-right">
-              <div className="mb-8">
-                <Link to="/">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="gap-2 hover:bg-primary/5 hover:text-primary transition-colors"
-                  >
-                    <ArrowLeft className="w-4 h-4" />
-                    Voltar ao inicio
-                  </Button>
-                </Link>
+            <Animated animation="fade-up" className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/10 mb-6">
+                <TrendingUp className="w-4 h-4 text-primary" />
+                <span className="text-xs font-semibold uppercase tracking-widest text-primary">
+                  Planos Mensais
+                </span>
               </div>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
+                Planos de Marketing Digital
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Gestão completa das suas redes sociais com estratégia, conteúdo e resultados.
+                Escolha o plano ideal para o seu negócio.
+              </p>
             </Animated>
 
-            {/* Tabs */}
-            <Animated animation="fade-up" delay={100}>
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                {/* Tab List - Scrollable on mobile */}
-                <div className="mb-10 -mx-4 px-4 overflow-x-auto scrollbar-hide">
-                  <TabsList className="inline-flex h-auto p-1.5 bg-muted/50 rounded-2xl gap-1 min-w-max">
-                    {serviceCategories.map((category) => {
-                      const Icon = category.icon;
-                      return (
-                        <TabsTrigger
-                          key={category.id}
-                          value={category.id}
-                          className={`
-                            flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium
-                            transition-all duration-300
-                            data-[state=active]:bg-background data-[state=active]:shadow-lg
-                            data-[state=active]:text-primary
-                            hover:bg-background/50
-                          `}
-                        >
-                          <Icon className="w-4 h-4" />
-                          <span className="hidden sm:inline">{category.title}</span>
-                          <span className="sm:hidden">{category.shortTitle}</span>
-                        </TabsTrigger>
-                      );
-                    })}
-                  </TabsList>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+              {marketingPlans.map((plan, index) => {
+                const Icon = plan.icon;
+                const isPopular = plan.badge === 'Mais Popular';
 
-                {/* Tab Content */}
-                {serviceCategories.map((category) => {
-                  const Icon = category.icon;
-                  return (
-                    <TabsContent
-                      key={category.id}
-                      value={category.id}
-                      className="focus-visible:outline-none"
+                return (
+                  <Animated key={plan.name} animation="fade-up" delay={index * 100}>
+                    <div
+                      className={`relative h-full rounded-2xl p-6 transition-all duration-300 ${
+                        isPopular
+                          ? 'bg-gradient-to-br from-primary to-primary/80 text-white shadow-xl shadow-primary/20 scale-[1.02] lg:scale-105'
+                          : 'bg-card border border-border/50 hover:border-primary/30 hover:shadow-lg'
+                      }`}
                     >
-                      {/* Category Header */}
-                      <div className="mb-10 text-center">
+                      {plan.badge && (
                         <div
-                          className={`
-                            inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4
-                            ${category.color === 'vermelho' ? 'bg-vermelho/10' : 'bg-amarelo/10'}
-                          `}
+                          className={`absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${
+                            isPopular
+                              ? 'bg-amarelo text-charcoal'
+                              : 'bg-muted text-muted-foreground'
+                          }`}
                         >
-                          <Icon
-                            className={`w-8 h-8 ${
-                              category.color === 'vermelho' ? 'text-vermelho' : 'text-amarelo'
-                            }`}
-                          />
+                          {plan.badge}
                         </div>
-                        <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground mb-3">
-                          {category.title}
-                        </h2>
-                        <p className="text-muted-foreground max-w-xl mx-auto">
-                          {category.description}
-                        </p>
+                      )}
+
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${
+                        isPopular ? 'bg-white/20' : 'bg-primary/10'
+                      }`}>
+                        <Icon className={`w-6 h-6 ${isPopular ? 'text-white' : 'text-primary'}`} />
                       </div>
 
-                      {/* Services Grid */}
-                      <AnimatedGrid
-                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto"
-                        staggerDelay={80}
-                        animation="fade-up"
-                      >
-                        {category.services.map((service, index) => (
-                          <div
-                            key={service.name}
-                            className={`
-                              group relative rounded-2xl p-6 bg-card border border-border/50
-                              hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5
-                              transition-all duration-500 card-3d cursor-default
-                            `}
-                          >
-                            {/* Service number */}
-                            <div
-                              className={`
-                                absolute -top-3 -left-3 w-8 h-8 rounded-full flex items-center justify-center
-                                text-xs font-bold shadow-lg
-                                ${
-                                  category.color === 'vermelho'
-                                    ? 'bg-vermelho text-white'
-                                    : 'bg-amarelo text-charcoal'
-                                }
-                              `}
-                            >
-                              {(index + 1).toString().padStart(2, '0')}
-                            </div>
+                      <h3 className={`text-xl font-display font-bold mb-2 ${
+                        isPopular ? 'text-white' : 'text-foreground'
+                      }`}>
+                        {plan.name}
+                      </h3>
 
-                            {/* Content */}
-                            <div className="pt-2">
-                              <h3 className="text-lg font-display font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-                                {service.name}
-                              </h3>
-                              <p
-                                className={`
-                                text-sm font-medium mb-3
-                                ${
-                                  category.color === 'vermelho'
-                                    ? 'text-vermelho'
-                                    : 'text-amarelo-soft'
-                                }
-                              `}
-                              >
-                                {service.description}
-                              </p>
-                              <p className="text-sm text-muted-foreground leading-relaxed">
-                                {service.details}
-                              </p>
-                            </div>
+                      <p className={`text-sm mb-6 ${
+                        isPopular ? 'text-white/80' : 'text-muted-foreground'
+                      }`}>
+                        {plan.description}
+                      </p>
 
-                            {/* Checkmark */}
-                            <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <CheckCircle2
-                                className={`w-5 h-5 ${
-                                  category.color === 'vermelho'
-                                    ? 'text-vermelho/50'
-                                    : 'text-amarelo/50'
-                                }`}
-                              />
-                            </div>
-
-                            {/* Hover glow effect */}
-                            <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 blur-xl bg-primary/10" />
-                          </div>
+                      <ul className="space-y-3 mb-6">
+                        {plan.features.map((feature) => (
+                          <li key={feature} className="flex items-start gap-2">
+                            <Check className={`w-4 h-4 mt-0.5 shrink-0 ${
+                              isPopular ? 'text-amarelo' : 'text-primary'
+                            }`} />
+                            <span className={`text-sm ${
+                              isPopular ? 'text-white/90' : 'text-foreground/80'
+                            }`}>
+                              {feature}
+                            </span>
+                          </li>
                         ))}
-                      </AnimatedGrid>
-                    </TabsContent>
-                  );
-                })}
-              </Tabs>
-            </Animated>
+                      </ul>
+
+                      <Button
+                        asChild
+                        className={`w-full ${
+                          isPopular
+                            ? 'bg-white text-primary hover:bg-white/90'
+                            : 'bg-primary text-white hover:bg-primary/90'
+                        }`}
+                      >
+                        <a href="#contacto-section">
+                          Pedir Orçamento
+                        </a>
+                      </Button>
+                    </div>
+                  </Animated>
+                );
+              })}
+            </div>
           </div>
         </section>
 
+        {/* Conteúdo Digital */}
+        <Section
+          id="digital"
+          title="Conteúdo Digital"
+          subtitle="Criamos conteúdo que conecta a sua marca com o público certo nas redes sociais."
+          icon={Instagram}
+        >
+          <AnimatedGrid className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto" staggerDelay={80}>
+            {digitalServices.map((service) => (
+              <ServiceCard key={service.name} {...service} />
+            ))}
+          </AnimatedGrid>
+        </Section>
+
+        {/* Produção de Vídeo */}
+        <Section
+          id="video"
+          title="Produção de Vídeo"
+          subtitle="Vídeos profissionais que contam a história da sua marca com qualidade cinematográfica."
+          icon={Video}
+          className="bg-muted/30"
+        >
+          <AnimatedGrid className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto" staggerDelay={80}>
+            {videoServices.map((service) => (
+              <ServiceCard key={service.name} {...service} />
+            ))}
+          </AnimatedGrid>
+        </Section>
+
+        {/* Consultoria de Marca */}
+        <Section
+          id="consultoria"
+          title="Consultoria de Marca"
+          subtitle="Estratégia e posicionamento para marcas que querem comunicar com propósito."
+          icon={Lightbulb}
+        >
+          <AnimatedGrid className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto" staggerDelay={80}>
+            {consultingServices.map((service) => (
+              <ServiceCard key={service.name} {...service} />
+            ))}
+          </AnimatedGrid>
+        </Section>
+
+        {/* Produção de Áudio */}
+        <Section
+          id="audio"
+          title="Produção de Áudio"
+          subtitle="Identidade sonora profissional para rádio, podcast e publicidade."
+          icon={Music}
+          className="bg-muted/30"
+        >
+          <AnimatedGrid className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto" staggerDelay={80}>
+            {audioServices.map((service) => (
+              <ServiceCard key={service.name} {...service} />
+            ))}
+          </AnimatedGrid>
+        </Section>
+
+        {/* Rádio Digital */}
+        <Section
+          id="radio"
+          title="Rádio Digital"
+          subtitle="Veiculação na nossa rádio online 24 horas com audiência qualificada."
+          icon={Radio}
+        >
+          <AnimatedGrid className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto" staggerDelay={80}>
+            {radioServices.map((service) => (
+              <ServiceCard key={service.name} {...service} />
+            ))}
+          </AnimatedGrid>
+        </Section>
+
+        {/* Podcast */}
+        <Section
+          id="podcast"
+          title="Podcast"
+          subtitle="Participe do nosso podcast ou crie o seu próprio com a nossa produção."
+          icon={Mic}
+          className="bg-muted/30"
+        >
+          <AnimatedGrid className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto" staggerDelay={80}>
+            {podcastServices.map((service) => (
+              <ServiceCard key={service.name} {...service} />
+            ))}
+          </AnimatedGrid>
+        </Section>
+
+        {/* Websites */}
+        <Section
+          id="websites"
+          title="Websites"
+          subtitle="Sites modernos, responsivos e optimizados para conversão."
+          icon={Globe}
+        >
+          <AnimatedGrid className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto" staggerDelay={80}>
+            {webServices.map((service) => (
+              <ServiceCard key={service.name} {...service} />
+            ))}
+          </AnimatedGrid>
+        </Section>
+
+        {/* Serviços Adicionais */}
+        <Section
+          id="adicionais"
+          title="Serviços Adicionais"
+          subtitle="Complementos para potenciar a sua comunicação."
+          icon={Palette}
+          className="bg-muted/30"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+            {additionalServices.map((service, index) => (
+              <Animated key={service.name} animation="fade-up" delay={index * 50}>
+                <SimpleCard {...service} />
+              </Animated>
+            ))}
+          </div>
+        </Section>
+
+        {/* Campanhas */}
+        <Section
+          id="campanhas"
+          title="Campanhas Avulsas"
+          subtitle="Campanhas pontuais para momentos especiais do seu negócio."
+          icon={Megaphone}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+            {campaignServices.map((service, index) => (
+              <Animated key={service.name} animation="fade-up" delay={index * 50}>
+                <SimpleCard {...service} />
+              </Animated>
+            ))}
+          </div>
+        </Section>
+
+        {/* Parcerias */}
+        <Section
+          id="parcerias"
+          title="Colaborações e Parcerias"
+          subtitle="Parcerias estratégicas para ampliar o alcance da sua marca."
+          icon={Handshake}
+          className="bg-muted/30"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+            {partnershipServices.map((service, index) => (
+              <Animated key={service.name} animation="fade-up" delay={index * 50}>
+                <SimpleCard {...service} />
+              </Animated>
+            ))}
+          </div>
+        </Section>
+
         {/* CTA Section */}
-        <section className="py-16 md:py-24 bg-gradient-to-br from-charcoal via-charcoal/95 to-charcoal relative overflow-hidden">
-          {/* Background decorations */}
+        <section id="contacto-section" className="py-20 md:py-28 bg-gradient-to-br from-charcoal via-charcoal/95 to-charcoal relative overflow-hidden">
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-0 left-1/4 w-64 h-64 bg-vermelho/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-amarelo/10 rounded-full blur-3xl" />
+            <div className="absolute top-0 left-1/4 w-80 h-80 bg-vermelho/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-amarelo/10 rounded-full blur-3xl" />
           </div>
 
           <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <Animated animation="fade-up" className="max-w-3xl mx-auto text-center">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-vermelho/10 border border-vermelho/20 mb-8">
+                <Star className="w-4 h-4 text-vermelho" />
+                <span className="text-xs font-semibold uppercase tracking-widest text-vermelho">
+                  Vamos Começar
+                </span>
+              </div>
+
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-cream mb-6">
-                Pronto para comecar?
+                Pronto para transformar a sua comunicação?
               </h2>
+
               <p className="text-lg text-cream/70 mb-10 max-w-xl mx-auto">
-                Entre em contacto connosco para um orcamento personalizado.
-                Vamos criar algo incrivel juntos.
+                Entre em contacto connosco para um orçamento personalizado.
+                Vamos criar algo incrível juntos.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
                 <Button
                   asChild
                   size="lg"
-                  className="btn-primary-glow btn-shine h-14 px-10 text-base font-medium border-none rounded-xl"
+                  className="h-14 px-8 text-base font-medium rounded-xl bg-vermelho hover:bg-vermelho/90 text-white"
                 >
                   <a
                     href={`mailto:${siteConfig.contact.email}`}
                     className="inline-flex items-center gap-2"
                   >
                     <Mail className="w-5 h-5" />
-                    Pedir Orcamento
+                    Pedir Orçamento
                   </a>
                 </Button>
                 <Button
                   asChild
                   size="lg"
                   variant="outline"
-                  className="h-14 px-10 text-base font-medium rounded-xl border-cream/20 text-cream hover:bg-cream/10"
+                  className="h-14 px-8 text-base font-medium rounded-xl border-cream/30 text-cream hover:bg-cream/10 hover:border-cream/50"
                 >
                   <Link to="/#contacto" className="inline-flex items-center gap-2">
-                    Falar Connosco
-                    <ArrowRight className="w-5 h-5" />
+                    <MessageCircle className="w-5 h-5" />
+                    Enviar Mensagem
                   </Link>
                 </Button>
               </div>
 
-              {/* Contact info */}
-              <div className="mt-10 pt-10 border-t border-cream/10">
-                <p className="text-sm text-cream/50 mb-2">Ou envie-nos um email diretamente:</p>
-                <a
-                  href={`mailto:${siteConfig.contact.email}`}
-                  className="text-vermelho hover:text-vermelho/80 font-medium transition-colors"
-                >
-                  {siteConfig.contact.email}
-                </a>
+              <div className="pt-8 border-t border-cream/10">
+                <p className="text-sm text-cream/50 mb-4">Ou contacte-nos directamente:</p>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                  <a
+                    href={`mailto:${siteConfig.contact.email}`}
+                    className="flex items-center gap-2 text-cream hover:text-vermelho transition-colors"
+                  >
+                    <Mail className="w-4 h-4" />
+                    <span className="text-sm font-medium">{siteConfig.contact.email}</span>
+                  </a>
+                  <a
+                    href={siteConfig.social.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-cream hover:text-vermelho transition-colors"
+                  >
+                    <Instagram className="w-4 h-4" />
+                    <span className="text-sm font-medium">@olhaqueduas2025</span>
+                  </a>
+                </div>
               </div>
             </Animated>
           </div>
