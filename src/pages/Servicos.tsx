@@ -20,8 +20,8 @@ import {
   Crown,
   Building2,
   Mail,
-  Phone,
   MessageCircle,
+  Facebook,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
@@ -960,8 +960,7 @@ export default function Servicos() {
                 <Button
                   asChild
                   size="lg"
-                  variant="outline"
-                  className="h-14 px-8 text-base font-medium rounded-xl border-cream/30 text-cream hover:bg-cream/10 hover:border-cream/50"
+                  className="h-14 px-8 text-base font-medium rounded-xl bg-amarelo hover:bg-amarelo/90 text-charcoal"
                 >
                   <Link to="/#contacto" className="inline-flex items-center gap-2">
                     <MessageCircle className="w-5 h-5" />
@@ -972,7 +971,7 @@ export default function Servicos() {
 
               <div className="pt-8 border-t border-cream/10">
                 <p className="text-sm text-cream/50 mb-4">Ou contacte-nos directamente:</p>
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                <div className="flex flex-wrap items-center justify-center gap-6">
                   <a
                     href={`mailto:${siteConfig.contact.email}`}
                     className="flex items-center gap-2 text-cream hover:text-vermelho transition-colors"
@@ -988,6 +987,15 @@ export default function Servicos() {
                   >
                     <Instagram className="w-4 h-4" />
                     <span className="text-sm font-medium">@olhaqueduas2025</span>
+                  </a>
+                  <a
+                    href={siteConfig.social.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-cream hover:text-vermelho transition-colors"
+                  >
+                    <Facebook className="w-4 h-4" />
+                    <span className="text-sm font-medium">Facebook</span>
                   </a>
                 </div>
               </div>
