@@ -31,200 +31,258 @@ import { Animated, AnimatedGrid } from '@/components/ui/animated';
 import { useMetaTags } from '@/hooks/useMetaTags';
 import { siteConfig } from '@/config/site';
 
-// JSON-LD Schema for Services Page
+// JSON-LD Schema for Services Page - SEO Optimizado
 const servicesJsonLd = [
-  // Breadcrumb
+  // Breadcrumb Navigation
   {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'Início',
-        item: 'https://www.olhaqueduas.com',
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: 'Serviços',
-        item: 'https://www.olhaqueduas.com/servicos',
-      },
+      { '@type': 'ListItem', position: 1, name: 'Início', item: 'https://www.olhaqueduas.com' },
+      { '@type': 'ListItem', position: 2, name: 'Serviços', item: 'https://www.olhaqueduas.com/servicos' },
     ],
   },
-  // Service Catalog
+  // Professional Service - Main Entity
   {
     '@context': 'https://schema.org',
-    '@type': 'Service',
-    '@id': 'https://www.olhaqueduas.com/servicos#services',
-    name: 'Serviços de Comunicação e Marketing Digital',
-    description: 'Serviços completos de comunicação, marketing digital, produção de vídeo, consultoria de marca, rádio online e podcast em Portugal.',
+    '@type': 'ProfessionalService',
+    '@id': 'https://www.olhaqueduas.com/servicos#professionalservice',
+    name: 'Olha que Duas - Agência de Comunicação e Marketing Digital',
+    description: 'Agência de comunicação e marketing digital em Portugal especializada em gestão de redes sociais, produção de vídeo, consultoria de marca, rádio online 24h e podcast.',
     url: 'https://www.olhaqueduas.com/servicos',
-    provider: {
-      '@type': 'Organization',
-      '@id': 'https://www.olhaqueduas.com/#organization',
-      name: 'Olha que Duas',
-    },
-    areaServed: {
-      '@type': 'Country',
-      name: 'Portugal',
-    },
-    serviceType: [
-      'Marketing Digital',
-      'Gestão de Redes Sociais',
-      'Produção de Vídeo',
-      'Produção de Áudio',
-      'Consultoria de Marca',
-      'Desenvolvimento Web',
-      'Publicidade em Rádio',
-      'Produção de Podcast',
+    telephone: '+351',
+    email: 'olhaqueduas.assessoria@gmail.com',
+    image: 'https://www.olhaqueduas.com/og-image.jpg',
+    priceRange: '€€',
+    currenciesAccepted: 'EUR',
+    paymentAccepted: 'Transferência Bancária, MBWay',
+    areaServed: [
+      { '@type': 'Country', name: 'Portugal' },
+      { '@type': 'Country', name: 'Brasil' },
     ],
+    serviceArea: {
+      '@type': 'GeoCircle',
+      geoMidpoint: { '@type': 'GeoCoordinates', latitude: 38.7223, longitude: -9.1393 },
+      geoRadius: '500000',
+    },
+    knowsLanguage: ['pt-PT', 'pt-BR', 'en'],
+    slogan: 'Comunicação com Propósito',
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
-      name: 'Catálogo de Serviços Olha que Duas',
+      '@id': 'https://www.olhaqueduas.com/servicos#catalog',
+      name: 'Serviços de Comunicação e Marketing',
       itemListElement: [
+        // Marketing Digital
         {
-          '@type': 'OfferCatalog',
-          name: 'Planos de Marketing Digital',
-          itemListElement: [
-            {
-              '@type': 'Offer',
-              itemOffered: {
-                '@type': 'Service',
-                name: 'Plano Starter',
-                description: 'Gestão de 1 rede social, 8-12 posts/mês, 2 Reels, relatório mensal',
-              },
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            '@id': 'https://www.olhaqueduas.com/servicos#marketing-digital',
+            name: 'Gestão de Redes Sociais e Marketing Digital',
+            description: 'Planos mensais de gestão completa de redes sociais incluindo criação de conteúdo, posts, Reels, Stories, calendário editorial, relatórios de métricas e consultoria estratégica.',
+            serviceType: 'Social Media Marketing',
+            provider: { '@id': 'https://www.olhaqueduas.com/#organization' },
+            areaServed: { '@type': 'Country', name: 'Portugal' },
+            hasOfferCatalog: {
+              '@type': 'OfferCatalog',
+              name: 'Planos de Marketing Digital',
+              itemListElement: [
+                { '@type': 'Offer', name: 'Plano Starter', description: '8-12 posts/mês, 2 Reels, 1 rede social, relatório mensal. Ideal para negócios locais.' },
+                { '@type': 'Offer', name: 'Plano Growth', description: '16-20 posts/mês, 4 Reels, 2 redes sociais, vídeo comercial, consultoria mensal. Para PMEs em crescimento.' },
+                { '@type': 'Offer', name: 'Plano Premium', description: '30 posts/mês, 8 Reels, 3 redes sociais, 2 vídeos, veiculação rádio, consultoria semanal. Para empresas estabelecidas.' },
+                { '@type': 'Offer', name: 'Plano Enterprise', description: 'Solução personalizada com campanhas integradas, produção ilimitada, account manager dedicado. Para grandes marcas.' },
+              ],
             },
-            {
-              '@type': 'Offer',
-              itemOffered: {
-                '@type': 'Service',
-                name: 'Plano Growth',
-                description: 'Gestão de 2 redes sociais, 16-20 posts/mês, 4 Reels, vídeo comercial, consultoria mensal',
-              },
-            },
-            {
-              '@type': 'Offer',
-              itemOffered: {
-                '@type': 'Service',
-                name: 'Plano Premium',
-                description: 'Gestão de 3 redes sociais, até 30 posts/mês, 8 Reels, 2 vídeos, veiculação rádio, consultoria semanal',
-              },
-            },
-            {
-              '@type': 'Offer',
-              itemOffered: {
-                '@type': 'Service',
-                name: 'Plano Enterprise',
-                description: 'Solução completa personalizada com campanhas integradas e account manager dedicado',
-              },
-            },
-          ],
+          },
         },
+        // Produção de Conteúdo Digital
         {
-          '@type': 'OfferCatalog',
-          name: 'Produção de Vídeo',
-          itemListElement: [
-            {
-              '@type': 'Offer',
-              itemOffered: {
-                '@type': 'Service',
-                name: 'Vídeo Comercial',
-                description: 'Produção de vídeos comerciais de 30 segundos a 3 minutos',
-              },
-            },
-            {
-              '@type': 'Offer',
-              itemOffered: {
-                '@type': 'Service',
-                name: 'Vídeo Institucional',
-                description: 'Vídeos institucionais com qualidade cinematográfica',
-              },
-            },
-          ],
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            '@id': 'https://www.olhaqueduas.com/servicos#conteudo-digital',
+            name: 'Criação de Conteúdo Digital',
+            description: 'Design de posts para Instagram, carrosséis até 10 slides, pack de Stories, Reels simples e Reels com IA avançada para redes sociais.',
+            serviceType: 'Content Creation',
+            provider: { '@id': 'https://www.olhaqueduas.com/#organization' },
+          },
         },
+        // Produção de Vídeo
         {
-          '@type': 'OfferCatalog',
-          name: 'Rádio e Podcast',
-          itemListElement: [
-            {
-              '@type': 'Offer',
-              itemOffered: {
-                '@type': 'Service',
-                name: 'Veiculação em Rádio',
-                description: 'Spots publicitários na rádio online 24h',
-              },
-            },
-            {
-              '@type': 'Offer',
-              itemOffered: {
-                '@type': 'Service',
-                name: 'Produção de Podcast',
-                description: 'Gravação, edição e distribuição de podcasts',
-              },
-            },
-          ],
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            '@id': 'https://www.olhaqueduas.com/servicos#producao-video',
+            name: 'Produção de Vídeo Profissional',
+            description: 'Produção de vídeos comerciais (30s-2min), vídeos institucionais (2-3min) e documentários (5+min) com roteiro, captação e edição profissional.',
+            serviceType: 'Video Production',
+            provider: { '@id': 'https://www.olhaqueduas.com/#organization' },
+          },
         },
+        // Consultoria de Marca
         {
-          '@type': 'OfferCatalog',
-          name: 'Desenvolvimento Web',
-          itemListElement: [
-            {
-              '@type': 'Offer',
-              itemOffered: {
-                '@type': 'Service',
-                name: 'Criação de Websites',
-                description: 'Landing pages e sites institucionais modernos e responsivos',
-              },
-            },
-          ],
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            '@id': 'https://www.olhaqueduas.com/servicos#consultoria-marca',
+            name: 'Consultoria e Estratégia de Marca',
+            description: 'Sessões de consultoria, diagnóstico de marca, estratégia de posicionamento, tom de voz, guidelines de comunicação e rebranding completo.',
+            serviceType: 'Brand Consulting',
+            provider: { '@id': 'https://www.olhaqueduas.com/#organization' },
+          },
+        },
+        // Produção de Áudio
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            '@id': 'https://www.olhaqueduas.com/servicos#producao-audio',
+            name: 'Produção de Áudio e Jingles',
+            description: 'Criação de jingles (15s-60s), spots de rádio, vinhetas e intros para podcast com composição original e locução profissional.',
+            serviceType: 'Audio Production',
+            provider: { '@id': 'https://www.olhaqueduas.com/#organization' },
+          },
+        },
+        // Publicidade em Rádio
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            '@id': 'https://www.olhaqueduas.com/servicos#radio-publicidade',
+            name: 'Publicidade em Rádio Online',
+            description: 'Veiculação de spots publicitários na rádio Olha que Duas 24h: spots rotativos, prime time (8h-10h, 17h-20h), menções ao vivo, patrocínio de programas.',
+            serviceType: 'Radio Advertising',
+            provider: { '@id': 'https://www.olhaqueduas.com/#organization' },
+          },
+        },
+        // Podcast
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            '@id': 'https://www.olhaqueduas.com/servicos#podcast',
+            name: 'Produção e Gestão de Podcast',
+            description: 'Participação como convidado, episódios patrocinados, produção completa de podcast (gravação, edição, distribuição), lançamento e gestão mensal.',
+            serviceType: 'Podcast Production',
+            provider: { '@id': 'https://www.olhaqueduas.com/#organization' },
+          },
+        },
+        // Desenvolvimento Web
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            '@id': 'https://www.olhaqueduas.com/servicos#desenvolvimento-web',
+            name: 'Criação de Websites',
+            description: 'Desenvolvimento de landing pages, sites institucionais (3-10 páginas) e sites premium com design responsivo, SEO, animações e alta performance.',
+            serviceType: 'Web Development',
+            provider: { '@id': 'https://www.olhaqueduas.com/#organization' },
+          },
+        },
+        // Campanhas
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            '@id': 'https://www.olhaqueduas.com/servicos#campanhas',
+            name: 'Campanhas de Marketing',
+            description: 'Campanhas de lançamento de produto, campanhas sazonais (Natal, Páscoa, Dia das Mães), campanhas focadas em redes sociais e campanhas integradas digital + rádio.',
+            serviceType: 'Marketing Campaign',
+            provider: { '@id': 'https://www.olhaqueduas.com/#organization' },
+          },
         },
       ],
     },
+    sameAs: [
+      'https://www.instagram.com/olhaqueduas2025',
+      'https://www.facebook.com/share/17npXT7nNb/',
+      'https://www.tiktok.com/@olha.que.duas_',
+      'https://youtube.com/@olhaqueduas-l9m',
+    ],
   },
-  // FAQ Schema
+  // WebPage
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': 'https://www.olhaqueduas.com/servicos#webpage',
+    url: 'https://www.olhaqueduas.com/servicos',
+    name: 'Serviços de Marketing Digital e Comunicação | Olha que Duas',
+    description: 'Serviços profissionais de marketing digital, gestão de redes sociais, produção de vídeo, consultoria de marca, publicidade em rádio online e podcast em Portugal.',
+    isPartOf: { '@id': 'https://www.olhaqueduas.com/#website' },
+    about: { '@id': 'https://www.olhaqueduas.com/servicos#professionalservice' },
+    mainEntity: { '@id': 'https://www.olhaqueduas.com/servicos#professionalservice' },
+    inLanguage: 'pt-PT',
+    datePublished: '2025-01-01',
+    dateModified: '2026-04-05',
+  },
+  // FAQ Schema - Perguntas relevantes sobre os serviços
   {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
+    '@id': 'https://www.olhaqueduas.com/servicos#faq',
     mainEntity: [
       {
         '@type': 'Question',
-        name: 'Quais serviços de marketing digital a Olha que Duas oferece?',
+        name: 'Quais são os planos de marketing digital disponíveis?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Oferecemos gestão completa de redes sociais, criação de conteúdo (posts, Reels, Stories), produção de vídeo, consultoria de marca, produção de áudio, publicidade em rádio online e produção de podcast.',
+          text: 'Oferecemos 4 planos: Starter (ideal para negócios locais, inclui 8-12 posts/mês, 2 Reels e gestão de 1 rede social), Growth (para PMEs, 16-20 posts/mês, 4 Reels, 2 redes sociais), Premium (empresas estabelecidas, até 30 posts/mês, 8 Reels, 3 redes, veiculação rádio) e Enterprise (solução personalizada para grandes marcas).',
         },
       },
       {
         '@type': 'Question',
-        name: 'Como funcionam os planos de marketing digital?',
+        name: 'A Olha que Duas produz vídeos comerciais e institucionais?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Temos 4 planos: Starter (negócios locais), Growth (PMEs em crescimento), Premium (empresas estabelecidas) e Enterprise (grandes marcas). Cada plano inclui gestão de redes sociais, criação de conteúdo, relatórios e suporte, com diferentes níveis de serviço.',
+          text: 'Sim, produzimos vídeos comerciais curtos (até 30 segundos) ideais para anúncios, vídeos comerciais de 1-2 minutos com roteiro e edição completa, vídeos institucionais de 2-3 minutos com qualidade cinematográfica, e documentários de 5+ minutos com entrevistas e narrativa profissional.',
         },
       },
       {
         '@type': 'Question',
-        name: 'A Olha que Duas produz vídeos para empresas?',
+        name: 'Como funciona a publicidade na rádio Olha que Duas?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Sim, produzimos vídeos comerciais (30 segundos a 2 minutos), vídeos institucionais (2-3 minutos) e documentários (5+ minutos), com roteiro, produção e edição profissional.',
+          text: 'Oferecemos várias opções: spots rotativos de 30 segundos veiculados ao longo da semana, spots em horário prime time (8h-10h e 17h-20h), menções ao vivo durante programas, patrocínio de programas mensais, e pacotes mensais com 20 spots. A rádio transmite 24 horas online.',
         },
       },
       {
         '@type': 'Question',
-        name: 'Como posso anunciar na rádio Olha que Duas?',
+        name: 'Que tipos de conteúdo digital a Olha que Duas cria?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Oferecemos spots rotativos, spots em horário nobre (8h-10h e 17h-20h), menções ao vivo durante programas, patrocínio de programas e pacotes mensais com 20 spots.',
+          text: 'Criamos posts para Instagram (design + copywriting), carrosséis até 10 slides com narrativa visual, packs de 5 Stories personalizados, Reels simples até 30 segundos com edição profissional, e Reels com IA avançada de 30-60 segundos utilizando ferramentas de inteligência artificial.',
         },
       },
       {
         '@type': 'Question',
-        name: 'A Olha que Duas cria websites?',
+        name: 'A Olha que Duas desenvolve websites?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Sim, criamos landing pages simples e avançadas, sites institucionais (3-10 páginas) e sites premium com design exclusivo, animações e performance optimizada.',
+          text: 'Sim, desenvolvemos landing pages simples e avançadas (com animações e SEO), sites institucionais de 3-5 páginas ou 5-10 páginas completas com blog e galeria, e sites premium com design exclusivo, animações avançadas e performance optimizada. Também oferecemos planos de manutenção mensal.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Como posso participar do podcast Olha que Duas?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Oferecemos participação como convidado para entrevistas, episódios patrocinados dedicados à sua marca ou tema, e também produzimos podcasts para clientes incluindo gravação, edição, masterização e publicação em todas as plataformas.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'A Olha que Duas oferece consultoria de marca?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Sim, oferecemos sessões de consultoria de 1 hora, diagnóstico completo de marca com relatório e recomendações, estratégia de marca com posicionamento e tom de voz, e rebranding completo incluindo nova identidade visual e estratégica.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Quais serviços adicionais a Olha que Duas oferece?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Além dos serviços principais, oferecemos design de logo, copywriting profissional, sessões fotográficas, vídeos hero para websites, integração de WhatsApp/chat, traduções, e campanhas de marketing sazonais ou de lançamento de produtos.',
         },
       },
     ],
