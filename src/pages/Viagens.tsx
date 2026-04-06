@@ -30,104 +30,201 @@ import { useMetaTags } from '@/hooks/useMetaTags';
 import { siteConfig } from '@/config/site';
 import tripLogo from '@/assets/olhaqueduas-trip-logo.jpg';
 
-// JSON-LD Schema for Travel Page - SEO
+// JSON-LD Schema for Travel Page - SEO Exclusivo Olha que Duas Trip
 const travelJsonLd = [
+  // Breadcrumb Navigation
   {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://www.olhaqueduas.com' },
+      { '@type': 'ListItem', position: 1, name: 'Início', item: 'https://www.olhaqueduas.com' },
       { '@type': 'ListItem', position: 2, name: 'Viagens', item: 'https://www.olhaqueduas.com/viagens' },
     ],
   },
+  // WebPage - Identificação exclusiva da página
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': 'https://www.olhaqueduas.com/viagens#webpage',
+    url: 'https://www.olhaqueduas.com/viagens',
+    name: 'Olha que Duas Trip — Viagens Personalizadas & Experiências Exclusivas',
+    description: 'Descubra o mundo com a Olha que Duas Trip! Planejamento de viagens à medida, estadias em hotéis de charme, passagens aéreas com as melhores tarifas e experiências gourmet inesquecíveis.',
+    isPartOf: { '@id': 'https://www.olhaqueduas.com/#website' },
+    about: { '@id': 'https://www.olhaqueduas.com/viagens#travelagency' },
+    primaryImageOfPage: {
+      '@type': 'ImageObject',
+      url: 'https://www.olhaqueduas.com/og-viagens.jpg',
+      width: 1200,
+      height: 630,
+      caption: 'Olha que Duas Trip — Promotora de Viagens Personalizadas',
+    },
+    inLanguage: 'pt-PT',
+    dateModified: '2026-04-06',
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['h1', 'h2', '.text-muted-foreground'],
+    },
+  },
+  // TravelAgency - Entidade principal
   {
     '@context': 'https://schema.org',
     '@type': 'TravelAgency',
     '@id': 'https://www.olhaqueduas.com/viagens#travelagency',
-    name: 'Olha que Duas Trip - Promotora de Viagens',
-    description: 'Promotora de viagens especializada em planejamento personalizado, estadias exclusivas, passagens aéreas e experiências gourmet. Viagens à medida para todo o mundo.',
+    name: 'Olha que Duas Trip',
+    alternateName: 'Olha que Duas Trip - Promotora de Viagens',
+    description: 'Promotora de viagens especializada em planejamento personalizado. Estadias exclusivas em hotéis de charme, passagens aéreas com as melhores tarifas, experiências gourmet e roteiros à medida para Portugal, Europa e todo o mundo. Orçamento gratuito e suporte 24/7.',
     url: 'https://www.olhaqueduas.com/viagens',
     email: 'olhaqueduas.assessoria@gmail.com',
-    image: 'https://www.olhaqueduas.com/og-viagens.jpg',
-    logo: 'https://www.olhaqueduas.com/og-viagens.jpg',
+    image: {
+      '@type': 'ImageObject',
+      url: 'https://www.olhaqueduas.com/og-viagens.jpg',
+      width: 1200,
+      height: 630,
+      caption: 'Olha que Duas Trip — Promotora de Viagens',
+    },
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://www.olhaqueduas.com/og-viagens.jpg',
+      width: 1200,
+      height: 630,
+    },
     priceRange: '€€-€€€',
     currenciesAccepted: 'EUR',
+    paymentAccepted: 'Transferência Bancária, MBWay, Cartão de Crédito',
     areaServed: [
-      { '@type': 'Place', name: 'Europa' },
+      { '@type': 'Country', name: 'Portugal' },
+      { '@type': 'Continent', name: 'Europa' },
       { '@type': 'Place', name: 'Mundo' },
     ],
+    serviceArea: {
+      '@type': 'GeoCircle',
+      geoMidpoint: { '@type': 'GeoCoordinates', latitude: 38.7223, longitude: -9.1393 },
+      geoRadius: '20000000',
+    },
     knowsLanguage: ['pt-PT', 'pt-BR', 'en'],
     slogan: 'A sua viagem dos sonhos começa aqui',
+    keywords: 'viagens personalizadas, promotora de viagens, agência de viagens Portugal, estadias exclusivas, passagens aéreas baratas, experiências gourmet, lua de mel, viagens em família, escapadinhas, circuitos culturais, orçamento de viagem grátis',
     parentOrganization: {
       '@type': 'Organization',
       '@id': 'https://www.olhaqueduas.com/#organization',
       name: 'Olha que Duas',
+      url: 'https://www.olhaqueduas.com',
     },
+    sameAs: [
+      'https://www.instagram.com/olhaqueduas2025',
+      'https://www.facebook.com/share/17npXT7nNb/',
+    ],
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
-      name: 'Serviços de Viagem',
+      name: 'Serviços de Viagem Personalizados',
       itemListElement: [
         {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
             name: 'Planejamento de Viagens Personalizado',
-            description: 'Roteiros exclusivos, orçamentos detalhados e consultoria completa para a sua viagem dos sonhos.',
+            description: 'Consultoria completa com roteiros exclusivos, orçamentos detalhados e itinerários à medida. Do primeiro contacto à viagem, tratamos de cada detalhe.',
+            serviceType: 'Travel Planning',
           },
         },
         {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: 'Estadias e Alojamento',
-            description: 'Reservas em hotéis, resorts, apartamentos e alojamentos selecionados nos melhores destinos.',
+            name: 'Estadias & Alojamento Premium',
+            description: 'Reservas em hotéis de charme, resorts exclusivos, villas privadas e apartamentos selecionados nos melhores destinos do mundo.',
+            serviceType: 'Hotel Booking',
           },
         },
         {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: 'Passagens Aéreas',
-            description: 'Pesquisa e reserva das melhores tarifas aéreas com rotas otimizadas.',
+            name: 'Passagens Aéreas ao Melhor Preço',
+            description: 'Pesquisa e reserva das melhores tarifas aéreas com rotas otimizadas, voos directos e opções de upgrade.',
+            serviceType: 'Flight Booking',
           },
         },
         {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: 'Experiências Gourmet',
-            description: 'Reservas em restaurantes exclusivos, wine tours e experiências gastronómicas.',
+            name: 'Experiências Gourmet & Wine Tours',
+            description: 'Restaurantes com estrela Michelin, wine tours em vinícolas premiadas, aulas de culinária local e experiências gastronómicas inesquecíveis.',
+            serviceType: 'Food Experience',
+          },
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Viagens em Família & Lua de Mel',
+            description: 'Pacotes especiais para famílias com atividades para todas as idades e destinos românticos para casais e lua de mel.',
+            serviceType: 'Family Travel',
+          },
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Viagens Corporativas & Team Building',
+            description: 'Organização completa de viagens de negócios, congressos, eventos corporativos e experiências de team building.',
+            serviceType: 'Corporate Travel',
           },
         },
       ],
     },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '5',
+      reviewCount: '1',
+      bestRating: '5',
+    },
   },
+  // FAQ - Perguntas Frequentes
   {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
+    '@id': 'https://www.olhaqueduas.com/viagens#faq',
     mainEntity: [
       {
         '@type': 'Question',
-        name: 'Como funciona o planejamento de viagens?',
+        name: 'Como funciona o planejamento de viagens com a Olha que Duas Trip?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Contacte-nos com o seu destino desejado e preferências. Elaboramos um orçamento personalizado com todas as opções de estadias, voos e experiências. Após aprovação, tratamos de todas as reservas.',
+          text: 'É simples! Contacte-nos com o seu destino desejado, datas e preferências. Elaboramos um orçamento personalizado e gratuito com todas as opções de estadias, voos e experiências. Após aprovação, tratamos de todas as reservas e entregamos o seu itinerário completo.',
         },
       },
       {
         '@type': 'Question',
-        name: 'Que tipos de viagens organizam?',
+        name: 'Que tipos de viagens a Olha que Duas Trip organiza?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Organizamos viagens em família, lua de mel, viagens de grupo, corporativas, escapadinhas de fim de semana e circuitos culturais para qualquer destino no mundo.',
+          text: 'Organizamos viagens em família, lua de mel e viagens românticas, viagens de grupo, corporativas e team building, escapadinhas de fim de semana e circuitos culturais para qualquer destino no mundo. Cada viagem é personalizada ao seu perfil e orçamento.',
         },
       },
       {
         '@type': 'Question',
-        name: 'Tem suporte durante a viagem?',
+        name: 'A Olha que Duas Trip oferece suporte durante a viagem?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Sim! Oferecemos suporte 24/7 durante toda a sua viagem para garantir que tudo corre como planeado.',
+          text: 'Sim! Oferecemos suporte 24/7 durante toda a sua viagem. Qualquer imprevisto ou necessidade, estamos a uma chamada de distância para garantir que tudo corre como planeado.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'O orçamento de viagem é gratuito?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Sim, o orçamento é totalmente gratuito e sem compromisso. Contacte-nos, partilhe o seu sonho de viagem e receba uma proposta personalizada com as melhores opções.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Quais destinos a Olha que Duas Trip cobre?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Cobrimos destinos em todo o mundo! Desde escapadinhas em Portugal e pela Europa até viagens intercontinentais para as Caraíbas, Ásia, África e Américas. Qualquer que seja o seu destino de sonho, nós organizamos.',
         },
       },
     ],
@@ -255,10 +352,10 @@ const benefits = [
 
 export default function Viagens() {
   useMetaTags({
-    title: 'Viagens - Promotora de Viagens',
-    description: 'Olha que Duas Trip - Promotora de viagens especializada em planejamento personalizado. Estadias exclusivas, passagens aéreas, experiências gourmet e roteiros à medida para todo o mundo.',
+    title: 'Olha que Duas Trip — Viagens Personalizadas & Experiências Exclusivas',
+    description: 'Descubra o mundo com a Olha que Duas Trip! Planejamento de viagens à medida, estadias em hotéis de charme, passagens aéreas com as melhores tarifas e experiências gourmet inesquecíveis. Peça já o seu orçamento gratuito e viaje sem preocupações.',
     image: 'https://www.olhaqueduas.com/og-viagens.jpg',
-    imageAlt: 'Olha que Duas Trip - Promotora de Viagens',
+    imageAlt: 'Olha que Duas Trip — Promotora de Viagens Personalizadas em Portugal e no Mundo',
     url: 'https://www.olhaqueduas.com/viagens',
     jsonLd: travelJsonLd,
   });
