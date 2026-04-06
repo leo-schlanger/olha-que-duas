@@ -146,18 +146,31 @@ const RadioPlayer = () => {
 
           <div className="lg:col-span-4 flex flex-col">
             <Card className="bg-gradient-to-br from-vermelho via-vermelho to-vermelho-dark border-0 text-cream shadow-2xl overflow-hidden relative group h-full">
-              {/* Decorative background elements */}
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute -top-20 -right-20 w-40 h-40 bg-amarelo/10 rounded-full blur-3xl" />
-                <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
-              </div>
+              {/* Album art background blur */}
+              {isMusic && song?.art && (
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <img
+                    src={song.art}
+                    alt=""
+                    className="w-full h-full object-cover scale-150 blur-3xl opacity-30 transition-all duration-1000"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-br from-vermelho/80 via-vermelho/70 to-vermelho-dark/90" />
+                </div>
+              )}
+              {/* Decorative background elements (fallback when no art) */}
+              {!(isMusic && song?.art) && (
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <div className="absolute -top-20 -right-20 w-40 h-40 bg-amarelo/10 rounded-full blur-3xl" />
+                  <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
+                </div>
+              )}
               <div className="absolute inset-0 bg-black/10 opacity-40 group-hover:opacity-20 transition-opacity duration-500" />
 
               <CardContent className="p-6 md:p-8 flex flex-col h-full relative z-10">
                 {radio.streamUrl && <audio ref={audioRef} src={radio.streamUrl} preload="none" />}
 
                 {/* Header */}
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center justify-between mb-5">
                   <div className="flex items-center gap-3">
                     <div className="p-2.5 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 shadow-lg">
                       <Music className="w-5 h-5 text-amarelo" />
@@ -173,20 +186,56 @@ const RadioPlayer = () => {
                   </div>
                 </div>
 
-                {/* Play button area */}
-                <div className="flex-1 flex flex-col items-center justify-center py-8">
-                  {/* Outer glow ring */}
-                  <div className={`relative ${isPlaying ? 'animate-pulse' : ''}`} style={{ animationDuration: '2s' }}>
-                    <div className={`absolute inset-0 rounded-full ${isPlaying ? 'bg-amarelo/20 scale-150 blur-xl' : ''} transition-all duration-500`} />
-                    <button
-                      onClick={togglePlay}
-                      className={`relative w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 shadow-2xl ${isPlaying
-                        ? "bg-white text-vermelho scale-100 shadow-white/20"
-                        : "bg-gradient-to-br from-amarelo to-amarelo-soft text-charcoal hover:scale-105 shadow-amarelo/30"
-                        }`}
-                    >
-                      {isPlaying ? <Pause className="w-10 h-10" fill="currentColor" /> : <Play className="w-10 h-10 ml-1" fill="currentColor" />}
-                    </button>
+                {/* Album Art + Play Button */}
+                <div className="flex-1 flex flex-col items-center justify-center py-4">
+                  <div className="relative">
+                    {/* Album art disc */}
+                    <div className={`w-36 h-36 md:w-40 md:h-40 rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border-2 border-white/10 transition-all duration-500 ${isPlaying ? 'scale-100' : 'scale-95 opacity-90'}`}>
+                      {isMusic && song?.art ? (
+                        <img
+                          src={song.art}
+                          alt={`${song.title} - ${song.artist}`}
+                          className="w-full h-full object-cover transition-all duration-1000"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center">
+                          <Radio className="w-16 h-16 text-white/30" />
+                        </div>
+                      )}
+                      {/* Play/Pause overlay */}
+                      <button
+                        onClick={togglePlay}
+                        className="absolute inset-0 flex items-center justify-center bg-black/0 hover:bg-black/30 transition-all duration-300 group/play"
+                      >
+                        <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
+                          isPlaying
+                            ? 'bg-white/0 group-hover/play:bg-white/90 text-transparent group-hover/play:text-vermelho'
+                            : 'bg-white/90 text-vermelho shadow-xl'
+                        }`}>
+                          {isPlaying
+                            ? <Pause className="w-7 h-7" fill="currentColor" />
+                            : <Play className="w-7 h-7 ml-0.5" fill="currentColor" />
+                          }
+                        </div>
+                      </button>
+                    </div>
+
+                    {/* Equalizer dots around the art */}
+                    {isPlaying && (
+                      <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-end gap-[2px] h-4">
+                        {[...Array(12)].map((_, i) => (
+                          <div
+                            key={i}
+                            className="w-[3px] rounded-full bg-amarelo/70"
+                            style={{
+                              height: `${20 + Math.random() * 80}%`,
+                              animation: `equalizer 0.4s ease-in-out infinite`,
+                              animationDelay: `${i * 0.05}s`,
+                            }}
+                          />
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   {/* Now playing info */}
@@ -198,30 +247,16 @@ const RadioPlayer = () => {
                       </>
                     ) : isMusic && song ? (
                       <>
-                        <p className="text-base font-display font-bold truncate">{song.title}</p>
+                        <p className="text-lg font-display font-bold truncate">{song.title}</p>
                         <p className="text-sm opacity-60 truncate mt-1">{song.artist}</p>
+                        {song.album && <p className="text-xs opacity-40 truncate mt-0.5">{song.album}</p>}
                       </>
                     ) : (
                       <p className="text-base font-medium tracking-wide opacity-70">
-                        {isPlaying ? "Ouvindo agora..." : "Clique para ouvir"}
+                        {isPlaying ? "A ouvir agora..." : "Clique para ouvir"}
                       </p>
                     )}
                   </div>
-                </div>
-
-                {/* Enhanced Visualizer */}
-                <div className="flex items-end justify-center gap-[3px] h-10 mb-6">
-                  {[...Array(20)].map((_, i) => (
-                    <div
-                      key={i}
-                      className={`w-1 rounded-full transition-all duration-150 ${isPlaying ? 'bg-gradient-to-t from-white/30 to-amarelo/50' : 'bg-white/20'}`}
-                      style={{
-                        height: isPlaying ? `${20 + Math.random() * 80}%` : '4px',
-                        animation: isPlaying ? `equalizer 0.4s ease-in-out infinite` : 'none',
-                        animationDelay: `${i * 0.03}s`,
-                      }}
-                    />
-                  ))}
                 </div>
 
                 {/* Volume control */}
