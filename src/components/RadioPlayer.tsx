@@ -2,7 +2,8 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import {
   Calendar, Clock, Music, Radio, Play, Pause,
   Volume2, VolumeX, Sparkles, Zap, ShieldCheck,
-  Apple, Target, Heart, Footprints, MessageSquare, Users, ChevronRight
+  Apple, Target, Heart, Footprints, MessageSquare, Users, ChevronRight,
+  Sun, Sunset, Moon, CloudMoon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -50,6 +51,65 @@ const radioInfo = [
     icon: <Sparkles className="w-4 h-4 text-amarelo" />,
   },
 ];
+
+// Programação diária da rádio
+const dailySchedule = [
+  {
+    period: 'Manhã',
+    range: '07H - 12H',
+    icon: Sun,
+    startHour: 7,
+    endHour: 12,
+    slots: [
+      { time: '07h', name: 'Wake Up Mix' },
+      { time: '09h', name: 'Hits da Manhã' },
+      { time: '10h30', name: 'Mini Break' },
+    ],
+  },
+  {
+    period: 'Tarde',
+    range: '12H - 18H',
+    icon: Sunset,
+    startHour: 12,
+    endHour: 18,
+    slots: [
+      { time: '12h', name: 'Lunch Beats' },
+      { time: '14h', name: 'Playlist Chill & Work' },
+      { time: '16h', name: 'Power Hour' },
+    ],
+  },
+  {
+    period: 'Noite',
+    range: '18H - 00H',
+    icon: Moon,
+    startHour: 18,
+    endHour: 24,
+    slots: [
+      { time: '18h', name: 'Sunset Mix' },
+      { time: '20h', name: 'Especial do Dia' },
+      { time: '22h', name: 'Night Flow' },
+    ],
+  },
+  {
+    period: 'Madrugada',
+    range: '00H - 07H',
+    icon: CloudMoon,
+    startHour: 0,
+    endHour: 7,
+    slots: [
+      { time: '00h', name: 'Midnight Session' },
+      { time: '03h', name: 'Relax Mode' },
+    ],
+  },
+];
+
+function getCurrentPeriodIndex(): number {
+  const hour = new Date().getHours();
+  if (hour >= 7 && hour < 12) return 0;
+  if (hour >= 12 && hour < 18) return 1;
+  if (hour >= 18) return 2;
+  return 3; // 0-6h madrugada
+}
 
 const RadioPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -405,18 +465,66 @@ const RadioPlayer = () => {
               </div>
             </Card>
 
-            {/* Info Cards - Compact horizontal */}
-            <div className="grid grid-cols-3 gap-3">
-              {radioInfo.map((info) => (
-                <div key={info.title} className="p-3 rounded-xl bg-cream/5 border border-cream/10 text-center hover:bg-cream/10 transition-all group">
-                  <div className="w-8 h-8 mx-auto rounded-lg bg-beige-light flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform mb-2">
-                    {info.icon}
+            {/* Daily Schedule - A Tua Soundtrack Do Dia */}
+            <Card className="bg-cream/5 backdrop-blur-sm border border-cream/10 text-cream overflow-hidden shadow-lg">
+              <div className="p-4 pb-3 border-b border-cream/10 bg-cream/5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Music className="w-4 h-4 text-amarelo" />
+                    <h3 className="text-lg font-display font-bold">A Tua Soundtrack do Dia</h3>
                   </div>
-                  <h5 className="text-[11px] font-bold group-hover:text-amarelo transition-colors">{info.title}</h5>
-                  <p className="text-[9px] text-cream/40 mt-0.5">{info.desc}</p>
+                  <span className="text-[10px] font-semibold text-amarelo uppercase tracking-widest">24H Non-Stop</span>
                 </div>
-              ))}
-            </div>
+              </div>
+              <div className="p-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {dailySchedule.map((block, blockIdx) => {
+                    const isCurrent = getCurrentPeriodIndex() === blockIdx;
+                    const Icon = block.icon;
+                    return (
+                      <div
+                        key={block.period}
+                        className={`relative rounded-xl p-3.5 transition-all duration-300 border ${
+                          isCurrent
+                            ? 'bg-gradient-to-br from-vermelho/20 to-amarelo/10 border-amarelo/30 shadow-lg shadow-amarelo/5'
+                            : 'bg-cream/5 border-cream/5 hover:border-cream/10 hover:bg-cream/8'
+                        }`}
+                      >
+                        {isCurrent && (
+                          <span className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-full bg-amarelo/20 border border-amarelo/30">
+                            <span className="w-1.5 h-1.5 rounded-full bg-amarelo animate-pulse" />
+                            <span className="text-[9px] font-bold text-amarelo uppercase">Agora</span>
+                          </span>
+                        )}
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${
+                            isCurrent ? 'bg-amarelo/20 text-amarelo' : 'bg-cream/10 text-cream/50'
+                          }`}>
+                            <Icon className="w-3.5 h-3.5" />
+                          </div>
+                          <div>
+                            <span className={`text-sm font-display font-bold ${isCurrent ? 'text-amarelo' : 'text-cream'}`}>
+                              {block.period}
+                            </span>
+                            <span className="text-[10px] text-cream/40 ml-2">{block.range}</span>
+                          </div>
+                        </div>
+                        <div className="space-y-1.5">
+                          {block.slots.map((slot) => (
+                            <div key={slot.time} className="flex items-center gap-2.5">
+                              <span className={`text-xs font-mono w-10 shrink-0 ${isCurrent ? 'text-amarelo/80' : 'text-cream/40'}`}>
+                                {slot.time}
+                              </span>
+                              <span className="text-sm text-cream/80">{slot.name}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </Card>
           </div>
 
         </div>
