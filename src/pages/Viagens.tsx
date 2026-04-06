@@ -45,7 +45,7 @@ const travelJsonLd = [
     '@type': 'TravelAgency',
     '@id': 'https://www.olhaqueduas.com/viagens#travelagency',
     name: 'Olha que Duas Trip - Promotora de Viagens',
-    description: 'Promotora de viagens especializada em planejamento personalizado, estadias exclusivas, passagens aereas e experiencias gourmet. Viagens a medida para todo o mundo.',
+    description: 'Promotora de viagens especializada em planejamento personalizado, estadias exclusivas, passagens aéreas e experiências gourmet. Viagens à medida para todo o mundo.',
     url: 'https://www.olhaqueduas.com/viagens',
     email: 'olhaqueduas.assessoria@gmail.com',
     image: 'https://www.olhaqueduas.com/og-viagens.jpg',
@@ -57,7 +57,7 @@ const travelJsonLd = [
       { '@type': 'Place', name: 'Mundo' },
     ],
     knowsLanguage: ['pt-PT', 'pt-BR', 'en'],
-    slogan: 'A sua viagem dos sonhos comeca aqui',
+    slogan: 'A sua viagem dos sonhos começa aqui',
     parentOrganization: {
       '@type': 'Organization',
       '@id': 'https://www.olhaqueduas.com/#organization',
@@ -65,14 +65,14 @@ const travelJsonLd = [
     },
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
-      name: 'Servicos de Viagem',
+      name: 'Serviços de Viagem',
       itemListElement: [
         {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
             name: 'Planejamento de Viagens Personalizado',
-            description: 'Roteiros exclusivos, orcamentos detalhados e consultoria completa para a sua viagem dos sonhos.',
+            description: 'Roteiros exclusivos, orçamentos detalhados e consultoria completa para a sua viagem dos sonhos.',
           },
         },
         {
@@ -80,23 +80,23 @@ const travelJsonLd = [
           itemOffered: {
             '@type': 'Service',
             name: 'Estadias e Alojamento',
-            description: 'Reservas em hoteis, resorts, apartamentos e alojamentos selecionados nos melhores destinos.',
+            description: 'Reservas em hotéis, resorts, apartamentos e alojamentos selecionados nos melhores destinos.',
           },
         },
         {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: 'Passagens Aereas',
-            description: 'Pesquisa e reserva das melhores tarifas aereas com rotas otimizadas.',
+            name: 'Passagens Aéreas',
+            description: 'Pesquisa e reserva das melhores tarifas aéreas com rotas otimizadas.',
           },
         },
         {
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: 'Experiencias Gourmet',
-            description: 'Reservas em restaurantes exclusivos, wine tours e experiencias gastronomicas.',
+            name: 'Experiências Gourmet',
+            description: 'Reservas em restaurantes exclusivos, wine tours e experiências gastronómicas.',
           },
         },
       ],
@@ -111,7 +111,7 @@ const travelJsonLd = [
         name: 'Como funciona o planejamento de viagens?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Contacte-nos com o seu destino desejado e preferencias. Elaboramos um orcamento personalizado com todas as opcoes de estadias, voos e experiencias. Apos aprovacao, tratamos de todas as reservas.',
+          text: 'Contacte-nos com o seu destino desejado e preferências. Elaboramos um orçamento personalizado com todas as opções de estadias, voos e experiências. Após aprovação, tratamos de todas as reservas.',
         },
       },
       {
@@ -119,7 +119,7 @@ const travelJsonLd = [
         name: 'Que tipos de viagens organizam?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Organizamos viagens em familia, lua de mel, viagens de grupo, corporativas, escapadinhas de fim de semana e circuitos culturais para qualquer destino no mundo.',
+          text: 'Organizamos viagens em família, lua de mel, viagens de grupo, corporativas, escapadinhas de fim de semana e circuitos culturais para qualquer destino no mundo.',
         },
       },
       {
@@ -138,7 +138,7 @@ const travelJsonLd = [
 const images = {
   hero: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1200&q=80',
   estadias: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80',
-  passagens: 'https://images.unsplash.com/photo-1436491865332-7a61a109db05?w=800&q=80',
+  passagens: 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?w=800&q=80',
   gourmet: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80',
   familia: 'https://images.unsplash.com/photo-1602002418816-5c0aeef426aa?w=600&q=80',
   luademel: 'https://images.unsplash.com/photo-1439130490301-25e322d88054?w=600&q=80',
@@ -153,19 +153,19 @@ const mainServices = [
   {
     icon: Hotel,
     title: 'Estadias & Alojamento',
-    description: 'Hoteis de charme, resorts exclusivos, apartamentos e villas selecionadas nos melhores destinos. Encontramos o alojamento perfeito para cada tipo de viagem.',
+    description: 'Hotéis de charme, resorts exclusivos, apartamentos e villas selecionadas nos melhores destinos. Encontramos o alojamento perfeito para cada tipo de viagem.',
     image: images.estadias,
   },
   {
     icon: Plane,
-    title: 'Passagens Aereas',
-    description: 'Pesquisa e reserva das melhores tarifas com rotas otimizadas. Voos directos, escalas estrategicas e upgrades para garantir o melhor custo-beneficio.',
+    title: 'Passagens Aéreas',
+    description: 'Pesquisa e reserva das melhores tarifas com rotas otimizadas. Voos directos, escalas estratégicas e upgrades para garantir o melhor custo-benefício.',
     image: images.passagens,
   },
   {
     icon: UtensilsCrossed,
-    title: 'Experiencias Gourmet',
-    description: 'Restaurantes com estrela Michelin, wine tours em vinicolas premiadas, aulas de culinaria local e experiencias gastronomicas inesqueciveis.',
+    title: 'Experiências Gourmet',
+    description: 'Restaurantes com estrela Michelin, wine tours em vinícolas premiadas, aulas de culinária local e experiências gastronómicas inesquecíveis.',
     image: images.gourmet,
   },
 ];
@@ -174,38 +174,38 @@ const mainServices = [
 const travelCategories = [
   {
     icon: Users,
-    title: 'Viagens em Familia',
-    description: 'Destinos family-friendly com atividades para todas as idades. Hoteis com kids club, parques tematicos e aventuras em familia.',
+    title: 'Viagens em Família',
+    description: 'Destinos family-friendly com atividades para todas as idades. Hotéis com kids club, parques temáticos e aventuras em família.',
     image: images.familia,
   },
   {
     icon: Heart,
-    title: 'Lua de Mel & Romanticas',
-    description: 'Destinos de sonho para casais. Resorts com spa, jantares a luz de velas, passeios romanticos e momentos inesqueciveis a dois.',
+    title: 'Lua de Mel & Românticas',
+    description: 'Destinos de sonho para casais. Resorts com spa, jantares à luz de velas, passeios românticos e momentos inesquecíveis a dois.',
     image: images.luademel,
   },
   {
     icon: MapPin,
     title: 'Viagens de Grupo',
-    description: 'Organizacao completa para grupos de amigos, associacoes ou comunidades. Roteiros partilhados com experiencias unicas.',
+    description: 'Organização completa para grupos de amigos, associações ou comunidades. Roteiros partilhados com experiências únicas.',
     image: images.grupo,
   },
   {
     icon: Briefcase,
     title: 'Corporativo & Incentivos',
-    description: 'Viagens de negocios, team building, congressos e eventos corporativos. Logistica completa e servicos VIP.',
+    description: 'Viagens de negócios, team building, congressos e eventos corporativos. Logística completa e serviços VIP.',
     image: images.corporativo,
   },
   {
     icon: Mountain,
     title: 'Escapadinhas de Fim de Semana',
-    description: 'Fugas rapidas para recarregar energias. Destinos proximos com experiencias marcantes para 2 a 3 dias.',
+    description: 'Fugas rápidas para recarregar energias. Destinos próximos com experiências marcantes para 2 a 3 dias.',
     image: images.escapadinha,
   },
   {
     icon: Compass,
     title: 'Circuitos Culturais',
-    description: 'Roteiros tematicos por cidades historicas, museus, monumentos e patrimonio mundial. Cultura e conhecimento em cada paragem.',
+    description: 'Roteiros temáticos por cidades históricas, museus, monumentos e património mundial. Cultura e conhecimento em cada paragem.',
     image: images.circuitos,
   },
 ];
@@ -215,17 +215,17 @@ const steps = [
   {
     number: '01',
     title: 'Conte-nos o Seu Sonho',
-    description: 'Entre em contacto connosco e partilhe os seus desejos: destino, datas, orcamento e preferencias. Cada viagem comeca com uma conversa.',
+    description: 'Entre em contacto connosco e partilhe os seus desejos: destino, datas, orçamento e preferências. Cada viagem começa com uma conversa.',
   },
   {
     number: '02',
-    title: 'Orcamento Personalizado',
-    description: 'Elaboramos uma proposta a medida com as melhores opcoes de voos, alojamento e experiencias, tudo adaptado ao seu perfil e orcamento.',
+    title: 'Orçamento Personalizado',
+    description: 'Elaboramos uma proposta à medida com as melhores opções de voos, alojamento e experiências, tudo adaptado ao seu perfil e orçamento.',
   },
   {
     number: '03',
-    title: 'Viaje Sem Preocupacoes',
-    description: 'Tratamos de todas as reservas e logistica. Receba o seu itinerario completo e aproveite a viagem com total tranquilidade e suporte 24/7.',
+    title: 'Viaje Sem Preocupações',
+    description: 'Tratamos de todas as reservas e logística. Receba o seu itinerário completo e aproveite a viagem com total tranquilidade e suporte 24/7.',
   },
 ];
 
@@ -234,29 +234,29 @@ const benefits = [
   {
     icon: HeadphonesIcon,
     title: 'Atendimento Personalizado',
-    description: 'Cada viagem e unica. Ouvimos os seus desejos e criamos experiencias a medida que superam expectativas.',
+    description: 'Cada viagem é única. Ouvimos os seus desejos e criamos experiências à medida que superam expectativas.',
   },
   {
     icon: Shield,
-    title: 'Seguranca & Confianca',
+    title: 'Segurança & Confiança',
     description: 'Trabalhamos com parceiros certificados e seguros de viagem para garantir total tranquilidade.',
   },
   {
     icon: Clock,
     title: 'Suporte 24/7',
-    description: 'Estamos consigo antes, durante e apos a viagem. Qualquer imprevisto, estamos a uma chamada de distancia.',
+    description: 'Estamos consigo antes, durante e após a viagem. Qualquer imprevisto, estamos a uma chamada de distância.',
   },
   {
     icon: Handshake,
     title: 'Parcerias Exclusivas',
-    description: 'Acordos com hoteis, companhias aereas e operadores que nos permitem oferecer condicoes especiais.',
+    description: 'Acordos com hotéis, companhias aéreas e operadores que nos permitem oferecer condições especiais.',
   },
 ];
 
 export default function Viagens() {
   useMetaTags({
     title: 'Viagens - Promotora de Viagens',
-    description: 'Olha que Duas Trip - Promotora de viagens especializada em planejamento personalizado. Estadias exclusivas, passagens aereas, experiencias gourmet e roteiros a medida para todo o mundo.',
+    description: 'Olha que Duas Trip - Promotora de viagens especializada em planejamento personalizado. Estadias exclusivas, passagens aéreas, experiências gourmet e roteiros à medida para todo o mundo.',
     image: 'https://www.olhaqueduas.com/og-viagens.jpg',
     imageAlt: 'Olha que Duas Trip - Promotora de Viagens',
     url: 'https://www.olhaqueduas.com/viagens',
@@ -299,14 +299,14 @@ export default function Viagens() {
                 <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold text-cream mb-6 leading-tight">
                   A sua viagem dos{' '}
                   <span className="text-gradient-brand">sonhos</span>{' '}
-                  comeca aqui
+                  começa aqui
                 </h1>
               </Animated>
 
               <Animated animation="fade-up" delay={200}>
                 <p className="text-lg md:text-xl text-cream/70 max-w-2xl mx-auto leading-relaxed mb-12">
-                  Planejamento personalizado, orcamentos a medida e experiencias inesqueciveis.
-                  Do destino ao regresso, cuidamos de cada detalhe para que so precise de aproveitar.
+                  Planejamento personalizado, orçamentos à medida e experiências inesquecíveis.
+                  Do destino ao regresso, cuidamos de cada detalhe para que só precise de aproveitar.
                 </p>
               </Animated>
 
@@ -323,7 +323,7 @@ export default function Viagens() {
                     <div className="text-3xl md:text-4xl font-display font-bold text-cream">
                       <Star className="w-8 h-8 mx-auto mb-1 text-amarelo" />
                     </div>
-                    <div className="text-xs text-cream/50 uppercase tracking-wider mt-1">Experiencias Unicas</div>
+                    <div className="text-xs text-cream/50 uppercase tracking-wider mt-1">Experiências Únicas</div>
                   </div>
                   <div className="hidden sm:block w-px h-12 bg-cream/10" />
                   <div className="text-center">
@@ -344,18 +344,17 @@ export default function Viagens() {
                   >
                     <a href="#orcamento" className="inline-flex items-center gap-2">
                       <Mail className="w-5 h-5" />
-                      Pedir Orcamento
+                      Pedir Orçamento
                     </a>
                   </Button>
                   <Button
                     asChild
                     size="lg"
-                    variant="outline"
-                    className="h-14 px-8 text-base font-medium rounded-xl border-cream/30 text-cream hover:bg-cream/10"
+                    className="h-14 px-8 text-base font-medium rounded-xl bg-amarelo hover:bg-amarelo/90 text-charcoal btn-magnetic"
                   >
                     <a href="#servicos" className="inline-flex items-center gap-2">
                       <Compass className="w-5 h-5" />
-                      Explorar Servicos
+                      Explorar Serviços
                     </a>
                   </Button>
                 </div>
@@ -381,11 +380,11 @@ export default function Viagens() {
                 </span>
               </div>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
-                Servicos de Viagem <span className="text-gradient-brand">Premium</span>
+                Serviços de Viagem <span className="text-gradient-brand">Premium</span>
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Desde a pesquisa do destino perfeito ate ao regresso a casa, tratamos de tudo
-                para que a sua viagem seja inesquecivel.
+                Desde a pesquisa do destino perfeito até ao regresso a casa, tratamos de tudo
+                para que a sua viagem seja inesquecível.
               </p>
             </Animated>
 
@@ -432,14 +431,14 @@ export default function Viagens() {
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amarelo/10 border border-amarelo/20 mb-6">
                 <MapPin className="w-4 h-4 text-amarelo" />
                 <span className="text-xs font-semibold uppercase tracking-widest text-amarelo">
-                  Simples e Facil
+                  Simples e Fácil
                 </span>
               </div>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
                 Como <span className="text-gradient-brand">Funciona</span>
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Em tres passos simples, transformamos o seu sonho de viagem em realidade.
+                Em três passos simples, transformamos o seu sonho de viagem em realidade.
               </p>
             </Animated>
 
@@ -480,14 +479,14 @@ export default function Viagens() {
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/10 mb-6">
                 <Plane className="w-4 h-4 text-primary" />
                 <span className="text-xs font-semibold uppercase tracking-widest text-primary">
-                  Para Cada Ocasiao
+                  Para Cada Ocasião
                 </span>
               </div>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
                 Tipos de <span className="text-gradient-brand">Viagem</span>
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Cada viajante e unico. Por isso, adaptamos cada experiencia ao seu perfil,
+                Cada viajante é único. Por isso, adaptamos cada experiência ao seu perfil,
                 estilo e momento de vida.
               </p>
             </Animated>
@@ -542,8 +541,8 @@ export default function Viagens() {
                 <span className="text-gradient-brand">Olha que Duas Trip</span>?
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Mais do que uma agencia, somos as suas companheiras de viagem.
-                Tratamos de tudo com carinho, dedicacao e profissionalismo.
+                Mais do que uma agência, somos as suas companheiras de viagem.
+                Tratamos de tudo com carinho, dedicação e profissionalismo.
               </p>
             </Animated>
 
@@ -580,22 +579,22 @@ export default function Viagens() {
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/10 mb-6">
                       <Check className="w-4 h-4 text-primary" />
                       <span className="text-xs font-semibold uppercase tracking-widest text-primary">
-                        Tudo Incluido
+                        Tudo Incluído
                       </span>
                     </div>
                     <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-6">
-                      O que esta incluido no nosso{' '}
-                      <span className="text-gradient-brand">servico</span>?
+                      O que está incluído no nosso{' '}
+                      <span className="text-gradient-brand">serviço</span>?
                     </h2>
                     <ul className="space-y-4">
                       {[
                         'Consultoria e planejamento personalizado',
-                        'Pesquisa e comparacao de voos e alojamentos',
-                        'Orcamento detalhado sem compromisso',
-                        'Reservas e gestao de toda a logistica',
-                        'Itinerario completo e organizado',
-                        'Recomendacoes de restaurantes e atividades',
-                        'Seguro de viagem e assistencia',
+                        'Pesquisa e comparação de voos e alojamentos',
+                        'Orçamento detalhado sem compromisso',
+                        'Reservas e gestão de toda a logística',
+                        'Itinerário completo e organizado',
+                        'Recomendações de restaurantes e atividades',
+                        'Seguro de viagem e assistência',
                         'Suporte 24/7 durante toda a viagem',
                       ].map((item, index) => (
                         <li key={index} className="flex items-start gap-3">
@@ -623,7 +622,7 @@ export default function Viagens() {
                           <Plane className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                          <p className="font-display font-bold text-foreground">Orcamento Gratis</p>
+                          <p className="font-display font-bold text-foreground">Orçamento Grátis</p>
                           <p className="text-sm text-muted-foreground">Sem compromisso</p>
                         </div>
                       </div>
@@ -653,11 +652,11 @@ export default function Viagens() {
               </div>
 
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-cream mb-6">
-                Pronto para a sua proxima <span className="text-amarelo">aventura</span>?
+                Pronto para a sua próxima <span className="text-amarelo">aventura</span>?
               </h2>
 
               <p className="text-lg text-cream/70 mb-10 max-w-xl mx-auto">
-                Peca ja o seu orcamento gratuito e sem compromisso.
+                Peça já o seu orçamento gratuito e sem compromisso.
                 Vamos transformar o seu sonho de viagem em realidade.
               </p>
 
@@ -668,11 +667,11 @@ export default function Viagens() {
                   className="h-14 px-8 text-base font-medium rounded-xl bg-vermelho hover:bg-vermelho/90 text-white btn-shine"
                 >
                   <a
-                    href={`mailto:${siteConfig.contact.email}?subject=Orcamento de Viagem`}
+                    href={`mailto:${siteConfig.contact.email}?subject=Orçamento de Viagem`}
                     className="inline-flex items-center gap-2"
                   >
                     <Mail className="w-5 h-5" />
-                    Pedir Orcamento
+                    Pedir Orçamento
                   </a>
                 </Button>
                 <Button
