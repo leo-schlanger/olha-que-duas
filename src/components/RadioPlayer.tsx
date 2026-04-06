@@ -89,7 +89,7 @@ const RadioPlayer = () => {
         setSelectedDay(availableDays[0]);
       }
     }
-  }, [availableDays, selectedDay]);
+  }, [availableDays]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (audioRef.current) {
@@ -97,12 +97,21 @@ const RadioPlayer = () => {
     }
   }, [volume, isMuted]);
 
-  const togglePlay = () => {
+  const togglePlay = async () => {
     if (!radio.isLive || !radio.streamUrl) return;
     if (audioRef.current) {
-      if (isPlaying) audioRef.current.pause();
-      else audioRef.current.play();
-      setIsPlaying(!isPlaying);
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        try {
+          await audioRef.current.play();
+          setIsPlaying(true);
+        } catch {
+          // Browser blocked autoplay — user interaction required
+          setIsPlaying(false);
+        }
+      }
     }
   };
 

@@ -82,7 +82,6 @@ const Contacto = () => {
 
       setFormData({ nome: "", email: "", assunto: "", mensagem: "" });
     } catch (error) {
-      console.error("Erro ao enviar:", error);
       toast.error("Erro ao enviar mensagem", {
         description: "Por favor tenta novamente ou envia email direto.",
       });

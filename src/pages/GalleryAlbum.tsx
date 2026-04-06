@@ -74,7 +74,7 @@ export default function GalleryAlbum() {
           url: window.location.href,
         });
       } catch {
-        console.log('Share cancelled');
+        // Share cancelled by user
       }
     } else {
       navigator.clipboard.writeText(window.location.href);

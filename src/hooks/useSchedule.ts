@@ -112,7 +112,7 @@ export function useSchedule() {
           setSchedule(sortedSchedule);
         }
       } catch (err) {
-        console.error('Error fetching schedule:', err);
+
         setError(err instanceof Error ? err.message : 'Error fetching schedule');
       } finally {
         setLoading(false);

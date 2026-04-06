@@ -1,10 +1,6 @@
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
 import { useMetaTags } from "@/hooks/useMetaTags";
 
 const NotFound = () => {
-  const location = useLocation();
-
   // SEO Meta Tags - noindex para páginas 404
   useMetaTags({
     title: 'Página Não Encontrada',
@@ -12,9 +8,6 @@ const NotFound = () => {
     noindex: true,
   });
 
-  useEffect(() => {
-    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
-  }, [location.pathname]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted">

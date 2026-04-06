@@ -30,7 +30,7 @@ export function useBlogPosts(filters: BlogFilters = {}, page = 1, limit = 12) {
       const { count, error: countError } = await countQuery;
 
       if (countError) {
-        console.error('Error fetching count:', countError);
+
         throw countError;
       }
 
@@ -64,7 +64,7 @@ export function useBlogPosts(filters: BlogFilters = {}, page = 1, limit = 12) {
       const { data, error } = await query;
 
       if (error) {
-        console.error('Error fetching blog posts:', error);
+
         throw error;
       }
 
@@ -98,7 +98,7 @@ export function useBlogPost(slug: string) {
         if (error.code === 'PGRST116') {
           return null; // Not found
         }
-        console.error('Error fetching blog post:', error);
+
         throw error;
       }
 
@@ -124,7 +124,7 @@ export function useBlogCategories() {
         .eq('is_published', true);
 
       if (error) {
-        console.error('Error fetching categories:', error);
+
         throw error;
       }
 
@@ -151,7 +151,7 @@ export function useBlogRegions() {
         .eq('is_published', true);
 
       if (error) {
-        console.error('Error fetching regions:', error);
+
         throw error;
       }
 

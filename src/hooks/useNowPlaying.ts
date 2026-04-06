@@ -100,7 +100,10 @@ export function useNowPlaying(streamUrl: string | undefined) {
       const url = new URL(streamUrl);
       const apiUrl = `${url.protocol}//${url.host}/api/nowplaying/olha_que_duas`;
 
-      const response = await fetch(apiUrl);
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 6000);
+      const response = await fetch(apiUrl, { signal: controller.signal });
+      clearTimeout(timeout);
       if (!response.ok) throw new Error("Failed to fetch");
 
       const data = await response.json();

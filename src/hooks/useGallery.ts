@@ -16,7 +16,7 @@ async function fetchAlbumPhotos(slug: string): Promise<string[]> {
   });
 
   if (!response.ok) {
-    console.error('Error fetching album photos from Cloudinary');
+
     return [];
   }
 
@@ -41,7 +41,7 @@ export function useGalleryAlbums() {
         .order('event_date', { ascending: false });
 
       if (error) {
-        console.error('Error fetching gallery albums:', error);
+
         throw error;
       }
 
@@ -86,8 +86,7 @@ export function useGalleryAlbums() {
 export function useGalleryAlbum(slug: string) {
   return useQuery({
     queryKey: ['gallery-album', slug],
-    refetchOnMount: 'always',
-    staleTime: 0,
+    staleTime: 1000 * 60 * 5, // 5 minutes
     queryFn: async (): Promise<GalleryAlbumWithPhotos | null> => {
       const supabase = getSupabase();
       if (!isSupabaseConfigured() || !supabase) {
@@ -106,7 +105,7 @@ export function useGalleryAlbum(slug: string) {
         if (albumError.code === 'PGRST116') {
           return null; // Not found
         }
-        console.error('Error fetching gallery album:', albumError);
+
         throw albumError;
       }
 
