@@ -66,7 +66,7 @@ export function PWAInstallPrompt() {
               <Button
                 size="sm"
                 onClick={handleInstall}
-                className="bg-vermelho hover:bg-vermelho/90 text-white rounded-lg h-9 px-4 text-sm font-medium"
+                className="bg-vermelho hover:bg-vermelho/90 text-white rounded-lg h-11 px-4 text-sm font-medium"
               >
                 <Download className="w-4 h-4 mr-1.5" />
                 Instalar
@@ -75,7 +75,7 @@ export function PWAInstallPrompt() {
                 size="sm"
                 variant="ghost"
                 onClick={handleDismiss}
-                className="text-muted-foreground hover:text-foreground rounded-lg h-9 px-3 text-sm"
+                className="text-muted-foreground hover:text-foreground rounded-lg h-11 px-3 text-sm"
               >
                 Agora não
               </Button>

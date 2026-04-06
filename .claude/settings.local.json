@@ -11,7 +11,29 @@
       "Bash(curl:*)",
       "Bash(npx tsc:*)",
       "Bash(npx vercel:*)",
-      "Bash(npm ls @expo/vector-icons)"
+      "Bash(npm ls @expo/vector-icons)",
+      "WebFetch(domain:radio.olhaqueduas.com)",
+      "Bash(git add:*)",
+      "WebSearch",
+      "WebFetch(domain:www.olhaqueduas.com)",
+      "Bash(node scripts/generate-pwa-icons.mjs:*)",
+      "Bash(copy:*)",
+      "Bash(wc:*)",
+      "Bash(node scripts/optimize-og-image.mjs:*)",
+      "Bash(powershell:*)",
+      "Bash(npx cld:*)",
+      "Bash(node update-gallery.js:*)",
+      "Bash(npx supabase db query:*)",
+      "Bash(node fix-gallery.js:*)",
+      "Bash(git commit:*)",
+      "Bash(node -e \"\nconst cloudinary = require\\(''cloudinary''\\).v2;\nconst fs = require\\(''fs''\\);\nconst env = fs.readFileSync\\(''.env'', ''utf8''\\);\nconst secret = env.match\\(/CLOUDINARY_API_SECRET=\\(.+\\)/\\)?.[1]?.trim\\(\\);\n\ncloudinary.config\\({\n  cloud_name: ''dfljesvj7'',\n  api_key: ''***CLOUDINARY_API_KEY_REMOVED***'',\n  api_secret: secret\n}\\);\n\ncloudinary.api.resources\\({\n  type: ''upload'',\n  prefix: ''olhaqueduas/galeria/fragmentos-temas-cascais-20260329'',\n  max_results: 50\n}\\).then\\(r => {\n  console.log\\(''Imagens no Cloudinary \\(public_id completo\\):''\\);\n  r.resources.sort\\(\\(a,b\\) => a.public_id.localeCompare\\(b.public_id\\)\\).forEach\\(img => {\n    console.log\\(img.public_id + '' \\('' + img.bytes + '' bytes\\)''\\);\n  }\\);\n}\\).catch\\(e => console.error\\(e.message\\)\\);\n\")",
+      "Bash(npx supabase db execute --help:*)",
+      "WebFetch(domain:influenceflow.io)",
+      "WebFetch(domain:www.brandvm.com)",
+      "Bash(grep:*)",
+      "Bash(npm list:*)",
+      "Bash(git:*)",
+      "Bash(npm run:*)"
     ]
   }
 }

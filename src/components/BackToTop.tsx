@@ -33,7 +33,7 @@ export default function BackToTop({ showAfter = 400, className }: BackToTopProps
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={cn(
-        "fixed bottom-6 right-6 z-50",
+        "fixed bottom-6 right-6 z-40 mb-[env(safe-area-inset-bottom)]",
         "w-12 h-12 rounded-full",
         "bg-vermelho text-cream shadow-lg shadow-vermelho/30",
         "flex items-center justify-center",

@@ -52,7 +52,7 @@ const Footer = () => {
                 href={siteConfig.social.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 bg-cream/10 rounded-xl flex items-center justify-center hover:bg-gradient-to-br hover:from-pink-500 hover:to-orange-500 hover:text-white transition-all duration-300 shadow-sm"
+                className="w-11 h-11 bg-cream/10 rounded-xl flex items-center justify-center hover:bg-gradient-to-br hover:from-pink-500 hover:to-orange-500 hover:text-white transition-all duration-300 shadow-sm"
               >
                 <Instagram className="w-4 h-4" />
               </a>
@@ -60,7 +60,7 @@ const Footer = () => {
                 href={siteConfig.social.youtube}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 bg-cream/10 rounded-xl flex items-center justify-center hover:bg-[#FF0000] hover:text-white transition-all duration-300 shadow-sm"
+                className="w-11 h-11 bg-cream/10 rounded-xl flex items-center justify-center hover:bg-[#FF0000] hover:text-white transition-all duration-300 shadow-sm"
               >
                 <Youtube className="w-4 h-4" />
               </a>
@@ -68,7 +68,7 @@ const Footer = () => {
                 href={siteConfig.social.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 bg-cream/10 rounded-xl flex items-center justify-center hover:bg-[#1877F2] hover:text-white transition-all duration-300 shadow-sm"
+                className="w-11 h-11 bg-cream/10 rounded-xl flex items-center justify-center hover:bg-[#1877F2] hover:text-white transition-all duration-300 shadow-sm"
               >
                 <Facebook className="w-4 h-4" />
               </a>
@@ -76,7 +76,7 @@ const Footer = () => {
                 href={siteConfig.social.tiktok}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 bg-cream/10 rounded-xl flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300 shadow-sm"
+                className="w-11 h-11 bg-cream/10 rounded-xl flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300 shadow-sm"
               >
                 <TikTokIcon className="w-4 h-4" />
               </a>

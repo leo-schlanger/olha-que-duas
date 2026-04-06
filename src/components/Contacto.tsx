@@ -139,7 +139,7 @@ const Contacto = () => {
                         onChange={handleChange}
                         placeholder="O teu nome"
                         required
-                        className="h-10"
+                        className="h-12 sm:h-10"
                         disabled={isSubmitting}
                       />
                     </div>
@@ -155,7 +155,7 @@ const Contacto = () => {
                         onChange={handleChange}
                         placeholder="o.teu@email.com"
                         required
-                        className="h-10"
+                        className="h-12 sm:h-10"
                         disabled={isSubmitting}
                       />
                     </div>
@@ -172,7 +172,7 @@ const Contacto = () => {
                       }
                       disabled={isSubmitting}
                     >
-                      <SelectTrigger className="h-10">
+                      <SelectTrigger className="h-12 sm:h-10">
                         <SelectValue placeholder="Seleciona um assunto" />
                       </SelectTrigger>
                       <SelectContent>
@@ -205,11 +205,11 @@ const Contacto = () => {
 
                   <Button
                     type="submit"
-                    className="w-full bg-primary hover:bg-primary/90 h-10 font-medium"
+                    className="w-full bg-primary hover:bg-primary/90 h-12 sm:h-10 font-medium"
                     disabled={isSubmitting}
                   >
                     <Send className="w-4 h-4 mr-2" />
-                    {isSubmitting ? "Enviando..." : "Enviar Mensagem"}
+                    {isSubmitting ? "A enviar..." : "Enviar Mensagem"}
                   </Button>
                 </form>
               </CardContent>
@@ -249,7 +249,7 @@ const Contacto = () => {
                     href={siteConfig.social.instagram}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 bg-gradient-to-br from-pink-500 to-orange-500 rounded-lg flex items-center justify-center text-white hover:opacity-90 transition-opacity"
+                    className="w-11 h-11 bg-gradient-to-br from-pink-500 to-orange-500 rounded-lg flex items-center justify-center text-white hover:opacity-90 transition-opacity"
                   >
                     <Instagram className="w-4 h-4" />
                   </a>
@@ -257,7 +257,7 @@ const Contacto = () => {
                     href={siteConfig.social.youtube}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 bg-[#FF0000] rounded-lg flex items-center justify-center text-white hover:opacity-90 transition-opacity"
+                    className="w-11 h-11 bg-[#FF0000] rounded-lg flex items-center justify-center text-white hover:opacity-90 transition-opacity"
                   >
                     <Youtube className="w-4 h-4" />
                   </a>
@@ -265,7 +265,7 @@ const Contacto = () => {
                     href={siteConfig.social.facebook}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 bg-[#1877F2] rounded-lg flex items-center justify-center text-white hover:opacity-90 transition-opacity"
+                    className="w-11 h-11 bg-[#1877F2] rounded-lg flex items-center justify-center text-white hover:opacity-90 transition-opacity"
                   >
                     <Facebook className="w-4 h-4" />
                   </a>
@@ -273,7 +273,7 @@ const Contacto = () => {
                     href={siteConfig.social.tiktok}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 bg-black rounded-lg flex items-center justify-center text-white hover:opacity-90 transition-opacity"
+                    className="w-11 h-11 bg-black rounded-lg flex items-center justify-center text-white hover:opacity-90 transition-opacity"
                   >
                     <TikTokIcon className="w-4 h-4" />
                   </a>
@@ -303,14 +303,14 @@ const Contacto = () => {
                     placeholder="O teu email"
                     value={newsletterEmail}
                     onChange={(e) => setNewsletterEmail(e.target.value)}
-                    className="bg-white/90 backdrop-blur-sm border-0 h-10 text-sm rounded-xl shadow-sm focus:ring-2 focus:ring-charcoal/20"
+                    className="bg-white/90 backdrop-blur-sm border-0 h-11 text-sm rounded-xl shadow-sm focus:ring-2 focus:ring-charcoal/20"
                     disabled={newsletterLoading}
                     required
                   />
                   <Button
                     type="submit"
                     size="icon"
-                    className="bg-charcoal text-white hover:bg-charcoal/90 shrink-0 h-10 w-10 rounded-xl shadow-md hover:shadow-lg transition-all"
+                    className="bg-charcoal text-white hover:bg-charcoal/90 shrink-0 h-11 w-11 rounded-xl shadow-md hover:shadow-lg transition-all"
                     disabled={newsletterLoading}
                   >
                     {newsletterLoading ? (

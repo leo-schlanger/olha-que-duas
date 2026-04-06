@@ -29,7 +29,7 @@ export function usePWA() {
       setIsInstalled(true);
       setIsInstallable(false);
       setDeferredPrompt(null);
-      console.log('[PWA] App installed successfully');
+      // App installed
     };
 
     // Listen for online/offline
@@ -51,7 +51,7 @@ export function usePWA() {
 
   const installApp = useCallback(async () => {
     if (!deferredPrompt) {
-      console.log('[PWA] No install prompt available');
+      // No install prompt available
       return false;
     }
 
@@ -60,16 +60,16 @@ export function usePWA() {
       const { outcome } = await deferredPrompt.userChoice;
 
       if (outcome === 'accepted') {
-        console.log('[PWA] User accepted install');
+        // User accepted install
         setIsInstallable(false);
         setDeferredPrompt(null);
         return true;
       } else {
-        console.log('[PWA] User dismissed install');
+        // User dismissed install
         return false;
       }
     } catch (error) {
-      console.error('[PWA] Install error:', error);
+      // Install error
       return false;
     }
   }, [deferredPrompt]);
@@ -91,7 +91,7 @@ export function registerServiceWorker() {
           scope: '/',
         });
 
-        console.log('[SW] Registered successfully:', registration.scope);
+        // SW registered
 
         // Check for updates
         registration.addEventListener('updatefound', () => {
@@ -100,13 +100,13 @@ export function registerServiceWorker() {
             newWorker.addEventListener('statechange', () => {
               if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                 // New content available
-                console.log('[SW] New content available, refresh to update');
+                // New content available
               }
             });
           }
         });
       } catch (error) {
-        console.error('[SW] Registration failed:', error);
+        // SW registration failed
       }
     });
   }

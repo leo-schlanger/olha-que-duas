@@ -74,7 +74,7 @@ export function useBlogPosts(filters: BlogFilters = {}, page = 1, limit = 12) {
       };
     },
     enabled: isSupabaseConfigured(),
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 15, // 15 minutes
   });
 }
 
@@ -105,7 +105,7 @@ export function useBlogPost(slug: string) {
       return data;
     },
     enabled: isSupabaseConfigured() && !!slug,
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 15, // 15 minutes
   });
 }
 
