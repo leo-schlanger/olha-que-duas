@@ -48,7 +48,7 @@ const travelJsonLd = [
     '@id': 'https://www.olhaqueduas.com/viagens#webpage',
     url: 'https://www.olhaqueduas.com/viagens',
     name: 'Olha que Duas Trip — Viagens Personalizadas & Experiências Exclusivas',
-    description: 'Descubra o mundo com a Olha que Duas Trip! Planejamento de viagens à medida, estadias em hotéis de charme, passagens aéreas com as melhores tarifas e experiências gourmet inesquecíveis.',
+    description: 'Descubra o mundo com a Olha que Duas Trip! Planeamento de viagens à medida, estadias em hotéis de charme, passagens aéreas com as melhores tarifas e experiências gourmet inesquecíveis.',
     isPartOf: { '@id': 'https://www.olhaqueduas.com/#website' },
     about: { '@id': 'https://www.olhaqueduas.com/viagens#travelagency' },
     primaryImageOfPage: {
@@ -72,7 +72,7 @@ const travelJsonLd = [
     '@id': 'https://www.olhaqueduas.com/viagens#travelagency',
     name: 'Olha que Duas Trip',
     alternateName: 'Olha que Duas Trip - Promotora de Viagens',
-    description: 'Promotora de viagens especializada em planejamento personalizado. Estadias exclusivas em hotéis de charme, passagens aéreas com as melhores tarifas, experiências gourmet e roteiros à medida para Portugal, Europa e todo o mundo. Orçamento gratuito e suporte 24/7.',
+    description: 'Promotora de viagens especializada em planeamento personalizado. Estadias exclusivas em hotéis de charme, passagens aéreas com as melhores tarifas, experiências gourmet e roteiros à medida para Portugal, Europa e todo o mundo. Orçamento gratuito e suporte 24/7.',
     url: 'https://www.olhaqueduas.com/viagens',
     email: 'olhaqueduas.assessoria@gmail.com',
     image: {
@@ -122,7 +122,7 @@ const travelJsonLd = [
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: 'Planejamento de Viagens Personalizado',
+            name: 'Planeamento de Viagens Personalizado',
             description: 'Consultoria completa com roteiros exclusivos, orçamentos detalhados e itinerários à medida. Do primeiro contacto à viagem, tratamos de cada detalhe.',
             serviceType: 'Travel Planning',
           },
@@ -132,7 +132,7 @@ const travelJsonLd = [
           itemOffered: {
             '@type': 'Service',
             name: 'Estadias & Alojamento Premium',
-            description: 'Reservas em hotéis de charme, resorts exclusivos, villas privadas e apartamentos selecionados nos melhores destinos do mundo.',
+            description: 'Reservas em hotéis de charme, resorts exclusivos, villas privadas e apartamentos seleccionados nos melhores destinos do mundo.',
             serviceType: 'Hotel Booking',
           },
         },
@@ -141,7 +141,7 @@ const travelJsonLd = [
           itemOffered: {
             '@type': 'Service',
             name: 'Passagens Aéreas ao Melhor Preço',
-            description: 'Pesquisa e reserva das melhores tarifas aéreas com rotas otimizadas, voos directos e opções de upgrade.',
+            description: 'Pesquisa e reserva das melhores tarifas aéreas com rotas optimizadas, voos directos e opções de upgrade.',
             serviceType: 'Flight Booking',
           },
         },
@@ -159,7 +159,7 @@ const travelJsonLd = [
           itemOffered: {
             '@type': 'Service',
             name: 'Viagens em Família & Lua de Mel',
-            description: 'Pacotes especiais para famílias com atividades para todas as idades e destinos românticos para casais e lua de mel.',
+            description: 'Pacotes especiais para famílias com actividades para todas as idades e destinos românticos para casais e lua de mel.',
             serviceType: 'Family Travel',
           },
         },
@@ -189,7 +189,7 @@ const travelJsonLd = [
     mainEntity: [
       {
         '@type': 'Question',
-        name: 'Como funciona o planejamento de viagens com a Olha que Duas Trip?',
+        name: 'Como funciona o planeamento de viagens com a Olha que Duas Trip?',
         acceptedAnswer: {
           '@type': 'Answer',
           text: 'É simples! Contacte-nos com o seu destino desejado, datas e preferências. Elaboramos um orçamento personalizado e gratuito com todas as opções de estadias, voos e experiências. Após aprovação, tratamos de todas as reservas e entregamos o seu itinerário completo.',
@@ -208,7 +208,7 @@ const travelJsonLd = [
         name: 'A Olha que Duas Trip oferece suporte durante a viagem?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Sim! Oferecemos suporte 24/7 durante toda a sua viagem. Qualquer imprevisto ou necessidade, estamos a uma chamada de distância para garantir que tudo corre como planeado.',
+          text: 'Sim! Disponibilizamos suporte 24/7 durante toda a sua viagem. Qualquer imprevisto ou necessidade, estamos a uma chamada de distância para garantir que tudo corre como planeado.',
         },
       },
       {
@@ -224,7 +224,7 @@ const travelJsonLd = [
         name: 'Quais destinos a Olha que Duas Trip cobre?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Cobrimos destinos em todo o mundo! Desde escapadinhas em Portugal e pela Europa até viagens intercontinentais para as Caraíbas, Ásia, África e Américas. Qualquer que seja o seu destino de sonho, nós organizamos.',
+          text: 'Abrangemos destinos em todo o mundo! Desde escapadinhas em Portugal e pela Europa até viagens intercontinentais para as Caraíbas, Ásia, África e Américas. Qualquer que seja o seu destino de sonho, nós organizamos.',
         },
       },
     ],
@@ -250,13 +250,13 @@ const mainServices = [
   {
     icon: Hotel,
     title: 'Estadias & Alojamento',
-    description: 'Hotéis de charme, resorts exclusivos, apartamentos e villas selecionadas nos melhores destinos. Encontramos o alojamento perfeito para cada tipo de viagem.',
+    description: 'Hotéis de charme, resorts exclusivos, apartamentos e villas seleccionadas nos melhores destinos. Encontramos o alojamento perfeito para cada tipo de viagem.',
     image: images.estadias,
   },
   {
     icon: Plane,
     title: 'Passagens Aéreas',
-    description: 'Pesquisa e reserva das melhores tarifas com rotas otimizadas. Voos directos, escalas estratégicas e upgrades para garantir o melhor custo-benefício.',
+    description: 'Pesquisa e reserva das melhores tarifas com rotas optimizadas. Voos directos, escalas estratégicas e upgrades para garantir o melhor custo-benefício.',
     image: images.passagens,
   },
   {
@@ -272,7 +272,7 @@ const travelCategories = [
   {
     icon: Users,
     title: 'Viagens em Família',
-    description: 'Destinos family-friendly com atividades para todas as idades. Hotéis com kids club, parques temáticos e aventuras em família.',
+    description: 'Destinos family-friendly com actividades para todas as idades. Hotéis com kids club, parques temáticos e aventuras em família.',
     image: images.familia,
   },
   {
@@ -353,7 +353,7 @@ const benefits = [
 export default function Viagens() {
   useMetaTags({
     title: 'Olha que Duas Trip — Viagens Personalizadas & Experiências Exclusivas',
-    description: 'Descubra o mundo com a Olha que Duas Trip! Planejamento de viagens à medida, estadias em hotéis de charme, passagens aéreas com as melhores tarifas e experiências gourmet inesquecíveis. Peça já o seu orçamento gratuito e viaje sem preocupações.',
+    description: 'Descubra o mundo com a Olha que Duas Trip! Planeamento de viagens à medida, estadias em hotéis de charme, passagens aéreas com as melhores tarifas e experiências gourmet inesquecíveis. Peça já o seu orçamento gratuito e viaje sem preocupações.',
     image: 'https://www.olhaqueduas.com/og-viagens.jpg',
     imageAlt: 'Olha que Duas Trip — Promotora de Viagens Personalizadas em Portugal e no Mundo',
     url: 'https://www.olhaqueduas.com/viagens',
@@ -402,7 +402,7 @@ export default function Viagens() {
 
               <Animated animation="fade-up" delay={200}>
                 <p className="text-lg md:text-xl text-cream/70 max-w-2xl mx-auto leading-relaxed mb-12">
-                  Planejamento personalizado, orçamentos à medida e experiências inesquecíveis.
+                  Planeamento personalizado, orçamentos à medida e experiências inesquecíveis.
                   Do destino ao regresso, cuidamos de cada detalhe para que só precise de aproveitar.
                 </p>
               </Animated>
@@ -685,12 +685,12 @@ export default function Viagens() {
                     </h2>
                     <ul className="space-y-4">
                       {[
-                        'Consultoria e planejamento personalizado',
+                        'Consultoria e planeamento personalizado',
                         'Pesquisa e comparação de voos e alojamentos',
                         'Orçamento detalhado sem compromisso',
                         'Reservas e gestão de toda a logística',
                         'Itinerário completo e organizado',
-                        'Recomendações de restaurantes e atividades',
+                        'Recomendações de restaurantes e actividades',
                         'Seguro de viagem e assistência',
                         'Suporte 24/7 durante toda a viagem',
                       ].map((item, index) => (

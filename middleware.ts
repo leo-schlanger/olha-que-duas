@@ -49,7 +49,7 @@ export default async function middleware(request: Request): Promise<Response | u
   if (path === '/viagens') {
     return html({
       title: 'Olha que Duas Trip — Viagens Personalizadas & Experiências Exclusivas',
-      description: 'Descubra o mundo com a Olha que Duas Trip! Planejamento de viagens à medida, estadias em hotéis de charme, passagens aéreas com as melhores tarifas e experiências gourmet inesquecíveis. Peça já o seu orçamento gratuito e viaje sem preocupações.',
+      description: 'Descubra o mundo com a Olha que Duas Trip! Planeamento de viagens à medida, estadias em hotéis de charme, passagens aéreas com as melhores tarifas e experiências gourmet inesquecíveis. Peça já o seu orçamento gratuito e viaje sem preocupações.',
       image: 'https://www.olhaqueduas.com/og-viagens.jpg',
       url: 'https://www.olhaqueduas.com/viagens',
     });
