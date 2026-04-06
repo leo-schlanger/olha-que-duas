@@ -29,7 +29,7 @@ const team = [
   {
     name: "Leo Schlanger",
     image: leoImg,
-    role: "Coordenador de Presença Digital",
+    role: "Co-Fundador | Coordenador de Presença Digital",
     description:
       "Desenvolvedor de software sénior com expertise em cibersegurança e infraestrutura. Apaixonado por automações e tecnologias Web3, é o responsável por toda a vertente tecnológica do projeto, garantindo soluções robustas, seguras e inovadoras que sustentam a presença digital do Olha que Duas.",
     initials: "LS",
