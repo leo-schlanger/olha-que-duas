@@ -38,30 +38,22 @@ const CACHE_PATTERNS = {
 
 // Instalação - precache de assets essenciais
 self.addEventListener('install', (event) => {
-  console.log('[SW] Installing...');
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('[SW] Precaching assets');
-        return cache.addAll(PRECACHE_ASSETS);
-      })
+      .then((cache) => cache.addAll(PRECACHE_ASSETS))
       .then(() => self.skipWaiting())
   );
 });
 
 // Ativação - limpar caches antigos
 self.addEventListener('activate', (event) => {
-  console.log('[SW] Activating...');
   event.waitUntil(
     caches.keys()
       .then((cacheNames) => {
         return Promise.all(
           cacheNames
             .filter((name) => name !== CACHE_NAME)
-            .map((name) => {
-              console.log('[SW] Deleting old cache:', name);
-              return caches.delete(name);
-            })
+            .map((name) => caches.delete(name))
         );
       })
       .then(() => self.clients.claim())
@@ -93,7 +85,6 @@ async function cacheFirst(request) {
     }
     return networkResponse;
   } catch (error) {
-    console.log('[SW] Cache first failed:', error);
     return new Response('Offline', { status: 503 });
   }
 }
@@ -108,7 +99,6 @@ async function networkFirst(request) {
     }
     return networkResponse;
   } catch (error) {
-    console.log('[SW] Network failed, trying cache...');
     const cachedResponse = await caches.match(request);
     if (cachedResponse) {
       return cachedResponse;
