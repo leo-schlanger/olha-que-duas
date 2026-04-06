@@ -25,7 +25,7 @@ const Header = () => {
       setIsScrolled(window.scrollY > 50);
 
       // Detect active section based on scroll position
-      const sections = ["inicio", "sobre", "radio", "podcast", "contacto"];
+      const sections = ["inicio", "sobre", "radio", "contacto"];
       const scrollPosition = window.scrollY + 150;
 
       for (const section of sections) {

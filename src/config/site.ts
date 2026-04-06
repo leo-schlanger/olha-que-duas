@@ -23,7 +23,7 @@ export const siteConfig = {
     { href: "#sobre", label: "Sobre" },
     { href: "/servicos", label: "Serviços", isRoute: true },
     { href: "#radio", label: "Rádio" },
-    { href: "#podcast", label: "Podcast" },
+    { href: "/viagens", label: "Viagens", isRoute: true },
     { href: "/noticias", label: "Notícias", isRoute: true },
     { href: "/galeria", label: "Galeria", isRoute: true },
     { href: "/loja", label: "Loja", isRoute: true },

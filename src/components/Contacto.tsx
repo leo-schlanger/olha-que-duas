@@ -181,6 +181,7 @@ const Contacto = () => {
                         <SelectItem value="assessoria">Assessoria de Imprensa</SelectItem>
                         <SelectItem value="marcas">Representação de Marcas</SelectItem>
                         <SelectItem value="negocios">Promoção de Negócios</SelectItem>
+                        <SelectItem value="viagens">Viagens - Pedir Orçamento</SelectItem>
                         <SelectItem value="outro">Outro Assunto</SelectItem>
                       </SelectContent>
                     </Select>

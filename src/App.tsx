@@ -11,6 +11,7 @@ import { SkipToContent } from "./components/SkipToContent";
 
 // Lazy load pages (except Index which is the landing page)
 const Servicos = lazy(() => import("./pages/Servicos"));
+const Viagens = lazy(() => import("./pages/Viagens"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
 const Gallery = lazy(() => import("./pages/Gallery"));
@@ -44,6 +45,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/servicos" element={<Servicos />} />
+            <Route path="/viagens" element={<Viagens />} />
             <Route path="/noticias" element={<Blog />} />
             <Route path="/noticias/:slug" element={<BlogPost />} />
             <Route path="/galeria" element={<Gallery />} />
