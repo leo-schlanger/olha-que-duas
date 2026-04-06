@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { siteConfig } from "@/config/site";
 import { useSchedule } from "@/hooks/useSchedule";
 import { useNowPlaying } from "@/hooks/useNowPlaying";
+import radioLogo from "@/assets/logo-olha-que-duas.png";
 
 // Ícones fallback por nome de programa
 const FALLBACK_ICONS: Record<string, React.ReactNode> = {
@@ -59,7 +60,7 @@ const RadioPlayer = () => {
 
   const { schedule, loading } = useSchedule();
   const { radio } = siteConfig;
-  const { song, isMusic, isTransition } = useNowPlaying(radio.streamUrl);
+  const { song, isMusic, isLiveShow, liveShowName } = useNowPlaying(radio.streamUrl);
 
   // Agrupar programação por dia
   const scheduleByDay = useMemo(() => {
@@ -207,8 +208,8 @@ const RadioPlayer = () => {
                           className="w-full h-full object-cover transition-all duration-1000"
                         />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center">
-                          <Radio className="w-16 h-16 text-white/30" />
+                        <div className="w-full h-full bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center p-4">
+                          <img src={radioLogo} alt={radio.name} className="w-full h-full object-contain opacity-70" />
                         </div>
                       )}
                       {/* Play/Pause overlay */}
@@ -249,10 +250,10 @@ const RadioPlayer = () => {
 
                   {/* Now playing info */}
                   <div className="mt-6 text-center max-w-full px-2">
-                    {isTransition ? (
+                    {isLiveShow ? (
                       <>
-                        <p className="text-base font-display font-bold">{radio.name}</p>
-                        <p className="text-sm opacity-60 mt-1">{radio.tagline}</p>
+                        <p className="text-base font-display font-bold">{liveShowName}</p>
+                        <p className="text-sm opacity-60 mt-1">Programa ao Vivo</p>
                       </>
                     ) : isMusic && song ? (
                       <>
@@ -261,9 +262,12 @@ const RadioPlayer = () => {
                         {song.album && <p className="text-xs opacity-40 truncate mt-0.5">{song.album}</p>}
                       </>
                     ) : (
-                      <p className="text-base font-medium tracking-wide opacity-70">
-                        {isPlaying ? "A ouvir agora..." : "Clique para ouvir"}
-                      </p>
+                      <>
+                        <p className="text-base font-display font-bold">{radio.name}</p>
+                        <p className="text-sm opacity-60 mt-1">
+                          {isPlaying ? radio.tagline : "Clica para ouvir"}
+                        </p>
+                      </>
                     )}
                   </div>
                 </div>
