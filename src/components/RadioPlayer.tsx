@@ -11,6 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { siteConfig } from "@/config/site";
 import { useSchedule } from "@/hooks/useSchedule";
 import { useNowPlaying } from "@/hooks/useNowPlaying";
+import { useDailySchedule, getCurrentPeriod } from "@/hooks/useDailySchedule";
 import radioLogo from "@/assets/logo-olha-que-duas.png";
 
 // Ícones fallback por nome de programa
@@ -52,64 +53,13 @@ const radioInfo = [
   },
 ];
 
-// Programação diária da rádio
-const dailySchedule = [
-  {
-    period: 'Manhã',
-    range: '07H - 12H',
-    icon: Sun,
-    startHour: 7,
-    endHour: 12,
-    slots: [
-      { time: '07h', name: 'Wake Up Mix' },
-      { time: '09h', name: 'Hits da Manhã' },
-      { time: '10h30', name: 'Mini Break' },
-    ],
-  },
-  {
-    period: 'Tarde',
-    range: '12H - 18H',
-    icon: Sunset,
-    startHour: 12,
-    endHour: 18,
-    slots: [
-      { time: '12h', name: 'Lunch Beats' },
-      { time: '14h', name: 'Playlist Chill & Work' },
-      { time: '16h', name: 'Power Hour' },
-    ],
-  },
-  {
-    period: 'Noite',
-    range: '18H - 00H',
-    icon: Moon,
-    startHour: 18,
-    endHour: 24,
-    slots: [
-      { time: '18h', name: 'Sunset Mix' },
-      { time: '20h', name: 'Especial do Dia' },
-      { time: '22h', name: 'Night Flow' },
-    ],
-  },
-  {
-    period: 'Madrugada',
-    range: '00H - 07H',
-    icon: CloudMoon,
-    startHour: 0,
-    endHour: 7,
-    slots: [
-      { time: '00h', name: 'Midnight Session' },
-      { time: '03h', name: 'Relax Mode' },
-    ],
-  },
-];
-
-function getCurrentPeriodIndex(): number {
-  const hour = new Date().getHours();
-  if (hour >= 7 && hour < 12) return 0;
-  if (hour >= 12 && hour < 18) return 1;
-  if (hour >= 18) return 2;
-  return 3; // 0-6h madrugada
-}
+// Mapping period key → icon
+const PERIOD_ICONS: Record<string, typeof Sun> = {
+  manha: Sun,
+  tarde: Sunset,
+  noite: Moon,
+  madrugada: CloudMoon,
+};
 
 const RadioPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -119,8 +69,10 @@ const RadioPlayer = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const { schedule, loading } = useSchedule();
+  const { data: dailySchedule } = useDailySchedule();
   const { radio } = siteConfig;
   const { song, isMusic, isLiveShow, liveShowName } = useNowPlaying(radio.streamUrl);
+  const currentPeriod = getCurrentPeriod();
 
   // Agrupar programação por dia
   const scheduleByDay = useMemo(() => {
@@ -478,9 +430,9 @@ const RadioPlayer = () => {
               </div>
               <div className="p-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {dailySchedule.map((block, blockIdx) => {
-                    const isCurrent = getCurrentPeriodIndex() === blockIdx;
-                    const Icon = block.icon;
+                  {(dailySchedule || []).map((block) => {
+                    const isCurrent = currentPeriod === block.period;
+                    const Icon = PERIOD_ICONS[block.period] || Music;
                     return (
                       <div
                         key={block.period}
@@ -504,7 +456,7 @@ const RadioPlayer = () => {
                           </div>
                           <div>
                             <span className={`text-sm font-display font-bold ${isCurrent ? 'text-amarelo' : 'text-cream'}`}>
-                              {block.period}
+                              {block.label}
                             </span>
                             <span className="text-[10px] text-cream/40 ml-2">{block.range}</span>
                           </div>
