@@ -1,5 +1,5 @@
 export const config = {
-  matcher: ['/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*'],
+  matcher: ['/viagens', '/servicos', '/loja', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*'],
 };
 
 const SUPABASE_URL = 'https://jjifjbdfpvgeseqbjpkg.supabase.co';
@@ -44,6 +44,36 @@ export default async function middleware(request: Request): Promise<Response | u
 
   const url = new URL(request.url);
   const path = url.pathname;
+
+  // ========== VIAGENS ==========
+  if (path === '/viagens') {
+    return html({
+      title: 'Olha que Duas Trip — Viagens Personalizadas & Experiências Exclusivas',
+      description: 'Descubra o mundo com a Olha que Duas Trip! Planejamento de viagens à medida, estadias em hotéis de charme, passagens aéreas com as melhores tarifas e experiências gourmet inesquecíveis. Peça já o seu orçamento gratuito e viaje sem preocupações.',
+      image: 'https://www.olhaqueduas.com/og-viagens.jpg',
+      url: 'https://www.olhaqueduas.com/viagens',
+    });
+  }
+
+  // ========== SERVIÇOS ==========
+  if (path === '/servicos') {
+    return html({
+      title: 'Serviços de Comunicação e Marketing Digital',
+      description: 'Serviços completos de comunicação e marketing digital: gestão de redes sociais, produção de vídeo, consultoria de marca, rádio online 24h, podcast e criação de websites. Peça o seu orçamento.',
+      image: DEFAULT_IMAGE,
+      url: 'https://www.olhaqueduas.com/servicos',
+    });
+  }
+
+  // ========== LOJA ==========
+  if (path === '/loja') {
+    return html({
+      title: 'Loja Olha que Duas',
+      description: 'Descubra os produtos exclusivos do Olha que Duas. Merchandising, acessórios e muito mais com a nossa marca.',
+      image: DEFAULT_IMAGE,
+      url: 'https://www.olhaqueduas.com/loja',
+    });
+  }
 
   // ========== GALERIA ==========
   if (path === '/galeria') {
