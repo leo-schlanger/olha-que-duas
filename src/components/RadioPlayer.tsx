@@ -174,7 +174,7 @@ const RadioPlayer = () => {
                   <img
                     src={song.art}
                     alt=""
-                    className="w-full h-full object-cover scale-150 blur-3xl opacity-30 transition-all duration-1000"
+                    className="w-full h-full object-cover scale-150 blur-3xl opacity-30 transition-all duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-br from-vermelho/80 via-vermelho/70 to-vermelho-dark/90" />
                 </div>
@@ -212,12 +212,12 @@ const RadioPlayer = () => {
                 <div className="flex-1 flex flex-col items-center justify-center py-4">
                   <div className="relative">
                     {/* Album art disc */}
-                    <div className={`w-36 h-36 md:w-40 md:h-40 rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border-2 border-white/10 transition-all duration-500 ${isPlaying ? 'scale-100' : 'scale-95 opacity-90'}`}>
+                    <div className={`w-36 h-36 md:w-40 md:h-40 rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border-2 border-white/10 transition-all duration-300 ${isPlaying ? 'scale-100' : 'scale-95 opacity-90'}`}>
                       {isMusic && song?.art ? (
                         <img
                           src={song.art}
                           alt={`${song.title} - ${song.artist}`}
-                          className="w-full h-full object-cover transition-all duration-1000"
+                          className="w-full h-full object-cover transition-all duration-300"
                         />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center p-4">
