@@ -8,7 +8,7 @@ const founders = [
   {
     name: "Alexandra Serra",
     image: alexandraImg,
-    role: "Fundadora Olha que Duas | Diretora de Comunicação e Marketing",
+    role: "Fundadora Olha que Duas | Diretora",
     description:
       "Especialista em marketing e comunicação, com sólida experiência na gestão de redes sociais, equipas e projetos de grande impacto. Atuou como colaboradora e diretora de meios de comunicação. Curadora de eventos culturais, integrando criatividade e estratégia na construção de marcas e narrativas. Alia visão empreendedora à capacidade de impulsionar negócios e desenvolver soluções inovadoras em gestão e comunicação social.",
     initials: "AS",
