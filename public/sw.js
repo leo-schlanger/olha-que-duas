@@ -1,7 +1,7 @@
 // Olha que Duas - Service Worker
 // PWA com cache inteligente
 
-const CACHE_NAME = 'olhaqueduas-v6';
+const CACHE_NAME = 'olhaqueduas-v7';
 const OFFLINE_URL = '/offline.html';
 
 // Assets para cache imediato (instalar)
@@ -35,6 +35,7 @@ const CACHE_PATTERNS = {
     /umami/, // Analytics
     /images\.unsplash\.com/, // Unsplash (evitar cache stale)
     /img\.youtube\.com/, // YouTube thumbnails
+    /api\.open-meteo\.com/, // Weather API
   ],
 };
 
