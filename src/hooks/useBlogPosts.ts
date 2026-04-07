@@ -58,7 +58,8 @@ export function useBlogPosts(filters: BlogFilters = {}, page = 1, limit = 12) {
       }
 
       if (filters.search) {
-        query = query.or(`title.ilike.%${filters.search}%,summary.ilike.%${filters.search}%`);
+        const escaped = filters.search.replace(/[\\%_]/g, '\\$&');
+        query = query.or(`title.ilike.%${escaped}%,summary.ilike.%${escaped}%`);
       }
 
       const { data, error } = await query;

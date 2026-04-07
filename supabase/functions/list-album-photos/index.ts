@@ -55,9 +55,9 @@ serve(async (req) => {
   try {
     const { slug } = await req.json()
 
-    if (!slug) {
+    if (!slug || typeof slug !== 'string' || !/^[a-z0-9][a-z0-9\-]*[a-z0-9]$/.test(slug) || slug.length > 100) {
       return new Response(
-        JSON.stringify({ error: 'slug is required' }),
+        JSON.stringify({ error: 'Invalid or missing slug' }),
         { status: 400, headers: { ...cors, 'Content-Type': 'application/json' } }
       )
     }
@@ -82,10 +82,9 @@ serve(async (req) => {
     })
 
     if (!response.ok) {
-      const error = await response.text()
-      console.error('Cloudinary API error:', error)
+      console.error('Cloudinary API error: status', response.status)
       return new Response(
-        JSON.stringify({ error: 'Failed to fetch images from Cloudinary' }),
+        JSON.stringify({ error: 'Failed to fetch images' }),
         { status: 500, headers: { ...cors, 'Content-Type': 'application/json' } }
       )
     }
@@ -108,8 +107,8 @@ serve(async (req) => {
       { headers: { ...cors, 'Content-Type': 'application/json' } }
     )
 
-  } catch (error) {
-    console.error('Error:', error)
+  } catch {
+    console.error('Edge function error processing request')
     return new Response(
       JSON.stringify({ error: 'Internal server error' }),
       { status: 500, headers: { ...cors, 'Content-Type': 'application/json' } }

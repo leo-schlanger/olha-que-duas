@@ -7,6 +7,8 @@ const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || '';
 
 const CRAWLERS = ['facebookexternalhit', 'Facebot', 'Twitterbot', 'WhatsApp', 'LinkedInBot', 'Slackbot', 'TelegramBot', 'Discordbot'];
 
+const SLUG_REGEX = /^[a-z0-9][a-z0-9\-]*[a-z0-9]$/;
+
 const DEFAULT_IMAGE = 'https://www.olhaqueduas.com/og-image.jpg';
 
 function html(meta: { title: string; description: string; image: string; url: string }): Response {
@@ -88,8 +90,9 @@ export default async function middleware(request: Request): Promise<Response | u
   const galleryMatch = path.match(/^\/galeria\/([^/]+)$/);
   if (galleryMatch) {
     const slug = galleryMatch[1];
+    if (!SLUG_REGEX.test(slug) || slug.length > 100) return;
     try {
-      const [album] = await fetchSupabase('gallery_albums', `slug=eq.${slug}&is_published=eq.true`);
+      const [album] = await fetchSupabase('gallery_albums', `slug=eq.${encodeURIComponent(slug)}&is_published=eq.true`);
       if (!album) return;
 
       const [photo] = await fetchSupabase('gallery_photos', `album_id=eq.${album.id}&is_cover=eq.true`);
@@ -123,8 +126,9 @@ export default async function middleware(request: Request): Promise<Response | u
   const newsMatch = path.match(/^\/noticias\/([^/]+)$/);
   if (newsMatch) {
     const slug = newsMatch[1];
+    if (!SLUG_REGEX.test(slug) || slug.length > 100) return;
     try {
-      const [post] = await fetchSupabase('blog_posts', `slug=eq.${slug}&is_published=eq.true`);
+      const [post] = await fetchSupabase('blog_posts', `slug=eq.${encodeURIComponent(slug)}&is_published=eq.true`);
       if (!post) return;
 
       const description = post.meta_description || post.summary || `${post.title} - Olha que Duas`;
