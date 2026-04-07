@@ -716,17 +716,20 @@ export default function Viagens() {
                       loading="lazy"
                       onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                     />
-                    <div className="absolute -bottom-6 -left-6 bg-card rounded-2xl p-5 shadow-xl border border-border/50">
+                    <Link
+                      to="/#contacto"
+                      className="absolute -bottom-6 -left-6 bg-vermelho hover:bg-vermelho/90 rounded-2xl p-5 shadow-xl border border-vermelho/30 transition-all duration-300 hover:scale-105 hover:shadow-2xl group/cta"
+                    >
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-vermelho flex items-center justify-center">
-                          <Plane className="w-6 h-6 text-white" />
+                        <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                          <Mail className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                          <p className="font-display font-bold text-foreground">Orçamento Grátis</p>
-                          <p className="text-sm text-muted-foreground">Sem compromisso</p>
+                          <p className="font-display font-bold text-white">Orçamento Grátis</p>
+                          <p className="text-sm text-white/70">Sem compromisso</p>
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   </div>
                 </Animated>
               </div>
