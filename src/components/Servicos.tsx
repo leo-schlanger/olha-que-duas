@@ -7,7 +7,7 @@ const services = [
     icon: Radio,
     title: "Rádio Online 24h",
     description:
-      "Transmissão contínua com música, entretenimento e programas exclusivos sobre empreendedorismo feminino.",
+      "Transmissão contínua com música, entretenimento e programas exclusivos sobre empreendedorismo.",
     color: "vermelho" as const,
     highlight: true,
   },

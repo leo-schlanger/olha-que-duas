@@ -20,7 +20,7 @@ const faqData: FAQCategory[] = [
     items: [
       {
         question: "O que é o Olha que Duas?",
-        answer: "O Olha que Duas é uma aplicação móvel e rádio online portuguesa que oferece entretenimento, bem-estar e conversas autênticas. Temos uma programação diversificada com programas sobre nutrição, motivação, empreendedorismo feminino e muito mais, 24 horas por dia.",
+        answer: "O Olha que Duas é uma aplicação móvel e rádio online portuguesa que oferece entretenimento, bem-estar e conversas autênticas. Temos uma programação diversificada com programas sobre nutrição, motivação, empreendedorismo e muito mais, 24 horas por dia.",
       },
       {
         question: "Onde posso descarregar a aplicação?",
