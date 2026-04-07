@@ -225,12 +225,13 @@ const RadioPlayer = () => {
                         />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center p-4">
-                          <img src={radioLogo} alt={radio.name} className="w-full h-full object-contain opacity-70" />
+                          <img src={radioLogo} alt={radio.name} className="w-full h-full object-contain opacity-70" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                         </div>
                       )}
                       {/* Play/Pause overlay */}
                       <button
                         onClick={togglePlay}
+                        aria-label={isPlaying ? "Pausar rádio" : "Ouvir rádio"}
                         className="absolute inset-0 flex items-center justify-center bg-black/0 hover:bg-black/30 transition-all duration-300 group/play"
                       >
                         <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
@@ -295,7 +296,8 @@ const RadioPlayer = () => {
                       variant="ghost"
                       size="icon"
                       onClick={toggleMute}
-                      className="h-9 w-9 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+                      className="h-11 w-11 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+                      aria-label={isMuted || volume === 0 ? "Ativar som" : "Silenciar"}
                     >
                       {isMuted || volume === 0 ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
                     </Button>

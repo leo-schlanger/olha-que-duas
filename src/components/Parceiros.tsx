@@ -31,6 +31,7 @@ const Parceiros = () => {
                 width={128}
                 height={128}
                 className="h-24 w-24 md:h-32 md:w-32 object-contain rounded-lg shadow-md group-hover:shadow-lg transition-shadow duration-200"
+                onError={(e) => { (e.target as HTMLImageElement).style.opacity = '0'; }}
               />
             </a>
           ))}

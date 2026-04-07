@@ -22,6 +22,7 @@ const Footer = () => {
               src={logo}
               alt={siteConfig.info.name}
               className="h-24 md:h-28 w-auto mb-4"
+              loading="lazy"
             />
             <p className="text-cream/60 text-sm md:text-base text-center md:text-left max-w-xs leading-relaxed">
               {siteConfig.info.tagline}

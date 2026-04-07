@@ -497,6 +497,7 @@ export default function Viagens() {
                           alt={service.title}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                           loading="lazy"
+                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 to-transparent" />
                         <div className="absolute bottom-4 left-4">
@@ -601,6 +602,7 @@ export default function Viagens() {
                       alt={category.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       loading="lazy"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/50 to-transparent group-hover:from-charcoal/95 transition-all duration-500" />
                     <div className="absolute inset-0 p-6 flex flex-col justify-end">
@@ -710,8 +712,9 @@ export default function Viagens() {
                     <img
                       src={images.hero}
                       alt="Viagem dos sonhos"
-                      className="rounded-2xl shadow-2xl w-full h-[450px] object-cover"
+                      className="rounded-2xl shadow-2xl w-full h-[300px] md:h-[450px] object-cover"
                       loading="lazy"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                     />
                     <div className="absolute -bottom-6 -left-6 bg-card rounded-2xl p-5 shadow-xl border border-border/50">
                       <div className="flex items-center gap-3">

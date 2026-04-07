@@ -82,6 +82,7 @@ const Header = () => {
                 "w-auto shrink-0 object-contain transition-all duration-300 group-hover:scale-105",
                 isScrolled ? "h-14 md:h-16" : "h-16 md:h-20"
               )}
+              loading="eager"
             />
           </Link>
 
@@ -183,7 +184,7 @@ const Header = () => {
               <SheetHeader className="p-6 pb-4 border-b border-border/50">
                 <div className="flex items-center justify-between">
                   <SheetTitle className="text-left">
-                    <img src={logo} alt="Olha que Duas" className="h-12" />
+                    <img src={logo} alt="Olha que Duas" className="h-12" loading="eager" />
                   </SheetTitle>
                   {/* Live badge mobile */}
                   <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-vermelho/10 border border-vermelho/20">
