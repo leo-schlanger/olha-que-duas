@@ -11,7 +11,7 @@ const highlights = [
 
 const VideoShowcase = () => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const thumbnailUrl = `https://img.youtube.com/vi/${siteConfig.video.youtubeId}/maxresdefault.jpg`;
+  const thumbnailUrl = `https://img.youtube.com/vi/${siteConfig.video.youtubeId}/hqdefault.jpg`;
 
   return (
     <section className="relative py-20 md:py-28 lg:py-32 overflow-hidden">
