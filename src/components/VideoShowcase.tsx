@@ -33,10 +33,10 @@ const VideoShowcase = () => {
               </span>
             </div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-semibold text-foreground mb-4 leading-tight">
-              Conhece o nosso <span className="text-gradient-brand">trabalho</span>
+              Conheça o nosso <span className="text-gradient-brand">trabalho</span>
             </h2>
             <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-              Descobre como damos voz as historias que merecem ser ouvidas
+              Descubra como damos voz as historias que merecem ser ouvidas
             </p>
           </div>
 
