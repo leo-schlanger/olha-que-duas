@@ -1,7 +1,7 @@
 // Olha que Duas - Service Worker
 // PWA com cache inteligente
 
-const CACHE_NAME = 'olhaqueduas-v4';
+const CACHE_NAME = 'olhaqueduas-v5';
 const OFFLINE_URL = '/offline.html';
 
 // Assets para cache imediato (instalar)
@@ -67,12 +67,17 @@ function shouldNotCache(url) {
   return CACHE_PATTERNS.noCache.some((pattern) => pattern.test(url));
 }
 
-// Verificar se é asset estático (apenas same-origin e CDN confiáveis)
+// Verificar se é asset estático (apenas same-origin e fonts)
 function isStaticAsset(url) {
   const isSameOrigin = url.startsWith(self.location.origin);
-  const isTrustedCDN = /res\.cloudinary\.com|fonts\.googleapis\.com|fonts\.gstatic\.com/.test(url);
-  if (!isSameOrigin && !isTrustedCDN) return false;
+  const isFonts = /fonts\.googleapis\.com|fonts\.gstatic\.com/.test(url);
+  if (!isSameOrigin && !isFonts) return false;
   return CACHE_PATTERNS.static.some((pattern) => pattern.test(url));
+}
+
+// Cloudinary images: network-first with cache fallback
+function isCloudinaryImage(url) {
+  return /res\.cloudinary\.com/.test(url);
 }
 
 // Estratégia Cache First (para assets estáticos)
@@ -139,7 +144,10 @@ self.addEventListener('fetch', (event) => {
   }
 
   // Escolher estratégia baseada no tipo de recurso
-  if (isStaticAsset(url)) {
+  if (isCloudinaryImage(url)) {
+    // Cloudinary: network-first para evitar servir cache stale
+    event.respondWith(networkFirst(request));
+  } else if (isStaticAsset(url)) {
     event.respondWith(cacheFirst(request));
   } else {
     event.respondWith(networkFirst(request));
