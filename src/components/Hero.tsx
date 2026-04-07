@@ -138,7 +138,7 @@ const Hero = () => {
               }`}
             >
               Somos comunicadoras com propósito, estrategas com coração e
-              empreendedoras com visão. Damos voz ao empreendedorismo em Portugal.
+              empreendedoras com visão. Damos voz ao empreendedorismo.
             </p>
 
             {/* Animated buttons */}
