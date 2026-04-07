@@ -7,7 +7,7 @@ const Parceiros = () => {
         <div className="max-w-2xl mx-auto text-center mb-10 md:mb-14">
           <span className="label-sm text-primary mb-3 block">Parceiros</span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-semibold text-foreground mb-4">
-            Quem <span className="text-gradient-brand">caminha conosco</span>
+            Quem <span className="text-gradient-brand">caminha connosco</span>
           </h2>
           <p className="text-base md:text-lg text-muted-foreground">
             Marcas e pessoas que partilham dos nossos valores e propósito.

@@ -157,7 +157,7 @@ const Header = () => {
               size="sm"
               className="bg-primary hover:bg-primary/90 btn-shine btn-magnetic"
             >
-              <Link to="/#contacto">Fala Conosco</Link>
+              <Link to="/#contacto">Fale Connosco</Link>
             </Button>
           </div>
 
@@ -253,7 +253,7 @@ const Header = () => {
                     className="w-full h-12 bg-primary hover:bg-primary/90 rounded-xl btn-shine"
                     onClick={() => setIsOpen(false)}
                   >
-                    <Link to="/#contacto">Fala Conosco</Link>
+                    <Link to="/#contacto">Fale Connosco</Link>
                   </Button>
                 </div>
               </nav>

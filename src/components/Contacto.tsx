@@ -115,7 +115,7 @@ const Contacto = () => {
             </span>
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-semibold text-foreground mb-5 leading-tight">
-            Fala <span className="text-gradient-brand">Conosco</span>
+            Fale <span className="text-gradient-brand">Connosco</span>
           </h2>
           <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-lg mx-auto">
             Queres trabalhar connosco? Estamos aqui para ouvir!
