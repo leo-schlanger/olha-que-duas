@@ -12,7 +12,7 @@ const founders = [
     description:
       "Especialista em marketing e comunicação, com sólida experiência na gestão de redes sociais, equipas e projetos de grande impacto. Atuou como colaboradora e diretora de meios de comunicação. Curadora de eventos culturais, integrando criatividade e estratégia na construção de marcas e narrativas. Alia visão empreendedora à capacidade de impulsionar negócios e desenvolver soluções inovadoras em gestão e comunicação social.",
     initials: "AS",
-    imagePosition: "object-cover object-top", // Ajusta para mostrar mais o rosto
+    imagePosition: "object-cover object-[50%_25%]", // Ajusta para mostrar mais o rosto
   },
   {
     name: "Marluce Revoredo",
