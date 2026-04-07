@@ -1,9 +1,49 @@
+import { Link } from "react-router-dom";
+import { Plane } from "lucide-react";
 import { siteConfig } from "@/config/site";
+import tripLogo from "@/assets/olhaqueduas-trip-logo.jpg";
 
 const Parceiros = () => {
   return (
     <section id="parceiros" className="py-16 md:py-24 bg-muted/30">
       <div className="container mx-auto px-4 sm:px-6">
+        {/* Olha que Duas Trip Banner */}
+        <Link
+          to="/viagens"
+          className="group block max-w-2xl mx-auto mb-14 md:mb-18"
+        >
+          <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-charcoal via-charcoal/95 to-charcoal p-6 md:p-8 border border-border/30 shadow-lg hover:shadow-xl transition-all duration-300">
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute -top-10 -right-10 w-40 h-40 bg-amarelo/10 rounded-full blur-3xl" />
+              <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-vermelho/10 rounded-full blur-3xl" />
+            </div>
+            <div className="relative flex flex-col sm:flex-row items-center gap-5 sm:gap-6">
+              <img
+                src={tripLogo}
+                alt="Olha que Duas Trip"
+                className="h-20 w-20 md:h-24 md:w-24 rounded-xl shadow-lg object-cover group-hover:scale-105 transition-transform duration-300"
+                loading="lazy"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              />
+              <div className="text-center sm:text-left flex-1">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amarelo/10 border border-amarelo/20 mb-2">
+                  <Plane className="w-3 h-3 text-amarelo" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-amarelo">Viagens</span>
+                </div>
+                <h3 className="text-lg md:text-xl font-display font-bold text-cream mb-1 group-hover:text-amarelo transition-colors">
+                  Olha que Duas Trip
+                </h3>
+                <p className="text-sm text-cream/60">
+                  Viagens personalizadas, estadias exclusivas e experiências inesquecíveis.
+                </p>
+              </div>
+              <div className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full bg-cream/10 group-hover:bg-amarelo/20 transition-colors">
+                <Plane className="w-5 h-5 text-cream/60 group-hover:text-amarelo transition-colors" />
+              </div>
+            </div>
+          </div>
+        </Link>
+
         <div className="max-w-2xl mx-auto text-center mb-10 md:mb-14">
           <span className="label-sm text-primary mb-3 block">Parceiros</span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-semibold text-foreground mb-4">
