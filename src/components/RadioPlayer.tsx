@@ -164,10 +164,10 @@ const RadioPlayer = () => {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-6xl mx-auto items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-6xl mx-auto items-start">
 
-          <div className="lg:col-span-4 flex flex-col">
-            <Card className="bg-gradient-to-br from-vermelho via-vermelho to-vermelho-dark border-0 text-cream shadow-2xl overflow-hidden relative group h-full">
+          <div className="lg:col-span-4 flex flex-col lg:sticky lg:top-24">
+            <Card className="bg-gradient-to-br from-vermelho via-vermelho to-vermelho-dark border-0 text-cream shadow-2xl overflow-hidden relative group">
               {/* Album art background blur */}
               {isMusic && song?.art && (
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -261,22 +261,22 @@ const RadioPlayer = () => {
                   </div>
 
                   {/* Now playing info */}
-                  <div className="mt-6 text-center max-w-full px-2">
+                  <div className="mt-6 text-center w-full min-w-0 px-2">
                     {isLiveShow ? (
                       <>
-                        <p className="text-base font-display font-bold">{liveShowName}</p>
+                        <p className="text-base font-display font-bold truncate" title={liveShowName}>{liveShowName}</p>
                         <p className="text-sm opacity-60 mt-1">Programa ao Vivo</p>
                       </>
                     ) : isMusic && song ? (
                       <>
-                        <p className="text-lg font-display font-bold truncate">{song.title}</p>
-                        <p className="text-sm opacity-60 truncate mt-1">{song.artist}</p>
-                        {song.album && <p className="text-xs opacity-40 truncate mt-0.5">{song.album}</p>}
+                        <p className="text-lg font-display font-bold truncate" title={song.title}>{song.title}</p>
+                        <p className="text-sm opacity-60 truncate mt-1" title={song.artist}>{song.artist}</p>
+                        {song.album && <p className="text-xs opacity-40 truncate mt-0.5" title={song.album}>{song.album}</p>}
                       </>
                     ) : (
                       <>
-                        <p className="text-base font-display font-bold">{radio.name}</p>
-                        <p className="text-sm opacity-60 mt-1">
+                        <p className="text-base font-display font-bold truncate">{radio.name}</p>
+                        <p className="text-sm opacity-60 mt-1 truncate">
                           {isPlaying ? radio.tagline : "Clica para ouvir"}
                         </p>
                       </>
@@ -309,14 +309,77 @@ const RadioPlayer = () => {
             </Card>
           </div>
 
-          {/* Schedule Section - Redesigned */}
+          {/* Schedule Section */}
           <div className="lg:col-span-8 flex flex-col gap-5">
+
+            {/* Daily Schedule - A Tua Soundtrack Do Dia (priority: what's on now) */}
+            <Card className="bg-cream/5 backdrop-blur-sm border border-cream/10 text-cream overflow-hidden shadow-lg">
+              <div className="p-4 pb-3 border-b border-cream/10 bg-cream/5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Music className="w-4 h-4 text-amarelo" />
+                    <h3 className="text-lg font-display font-bold">A Tua Soundtrack do Dia</h3>
+                  </div>
+                  <span className="text-[10px] font-semibold text-amarelo uppercase tracking-widest">24H Non-Stop</span>
+                </div>
+              </div>
+              <div className="p-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {(dailySchedule || []).map((block) => {
+                    const isCurrent = currentPeriod === block.period;
+                    const Icon = PERIOD_ICONS[block.period] || Music;
+                    return (
+                      <div
+                        key={block.period}
+                        className={`relative rounded-xl p-3.5 transition-all duration-300 border ${
+                          isCurrent
+                            ? 'bg-gradient-to-br from-vermelho/20 to-amarelo/10 border-amarelo/30 shadow-lg shadow-amarelo/5'
+                            : 'bg-cream/5 border-cream/5 hover:border-cream/10 hover:bg-cream/8'
+                        }`}
+                      >
+                        {isCurrent && (
+                          <span className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-full bg-amarelo/20 border border-amarelo/30">
+                            <span className="w-1.5 h-1.5 rounded-full bg-amarelo animate-pulse" />
+                            <span className="text-[9px] font-bold text-amarelo uppercase">Agora</span>
+                          </span>
+                        )}
+                        <div className="flex items-center gap-2 mb-3 min-w-0">
+                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+                            isCurrent ? 'bg-amarelo/20 text-amarelo' : 'bg-cream/10 text-cream/50'
+                          }`}>
+                            <Icon className="w-3.5 h-3.5" />
+                          </div>
+                          <div className="min-w-0">
+                            <span className={`text-sm font-display font-bold ${isCurrent ? 'text-amarelo' : 'text-cream'}`}>
+                              {block.label}
+                            </span>
+                            <span className="text-[10px] text-cream/40 ml-1.5">{block.range}</span>
+                          </div>
+                        </div>
+                        <div className="space-y-1.5">
+                          {block.slots.map((slot) => (
+                            <div key={slot.time} className="flex items-center gap-2.5 min-w-0">
+                              <span className={`text-xs font-mono w-10 shrink-0 ${isCurrent ? 'text-amarelo/80' : 'text-cream/40'}`}>
+                                {slot.time}
+                              </span>
+                              <span className="text-sm text-cream/80 truncate" title={slot.name}>{slot.name}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </Card>
+
+            {/* Weekly Schedule */}
             <Card className="bg-cream/5 backdrop-blur-sm border border-cream/10 text-cream overflow-hidden shadow-lg">
               {/* Header with day tabs */}
               <div className="border-b border-cream/10 bg-cream/5">
                 <div className="p-4 pb-0 flex items-center gap-3">
                   <Calendar className="w-4 h-4 text-amarelo" />
-                  <h3 className="text-lg font-display font-bold">Programação Semanal</h3>
+                  <h3 className="text-lg font-display font-bold">Programacao Semanal</h3>
                 </div>
 
                 {/* Day tabs */}
@@ -358,7 +421,7 @@ const RadioPlayer = () => {
               </div>
 
               {/* Programs list for selected day */}
-              <div className="p-4">
+              <div className="p-4 max-h-[420px] overflow-y-auto scrollbar-hide">
                 {loading ? (
                   <div className="space-y-3">
                     {[1, 2].map(i => (
@@ -380,13 +443,13 @@ const RadioPlayer = () => {
 
                           {/* Program info */}
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between gap-3">
-                              <div>
-                                <h4 className="font-display font-bold text-base text-cream group-hover:text-amarelo transition-colors">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="min-w-0 flex-1">
+                                <h4 className="font-display font-bold text-base text-cream group-hover:text-amarelo transition-colors truncate" title={item.show}>
                                   {item.show}
                                 </h4>
                                 <p className="text-xs text-cream/50 mt-0.5">
-                                  {item.times.length} {item.times.length === 1 ? 'exibição' : 'exibições'} neste dia
+                                  {item.times.length} {item.times.length === 1 ? 'exibicao' : 'exibicoes'} neste dia
                                 </p>
                               </div>
                               <ChevronRight className="w-4 h-4 text-cream/30 group-hover:text-amarelo group-hover:translate-x-1 transition-all shrink-0 mt-1" />
@@ -411,70 +474,9 @@ const RadioPlayer = () => {
                   </div>
                 ) : (
                   <div className="text-center py-8 text-cream/50">
-                    Seleciona um dia para ver a programação
+                    Seleciona um dia para ver a programacao
                   </div>
                 )}
-              </div>
-            </Card>
-
-            {/* Daily Schedule - A Tua Soundtrack Do Dia */}
-            <Card className="bg-cream/5 backdrop-blur-sm border border-cream/10 text-cream overflow-hidden shadow-lg">
-              <div className="p-4 pb-3 border-b border-cream/10 bg-cream/5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Music className="w-4 h-4 text-amarelo" />
-                    <h3 className="text-lg font-display font-bold">A Tua Soundtrack do Dia</h3>
-                  </div>
-                  <span className="text-[10px] font-semibold text-amarelo uppercase tracking-widest">24H Non-Stop</span>
-                </div>
-              </div>
-              <div className="p-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {(dailySchedule || []).map((block) => {
-                    const isCurrent = currentPeriod === block.period;
-                    const Icon = PERIOD_ICONS[block.period] || Music;
-                    return (
-                      <div
-                        key={block.period}
-                        className={`relative rounded-xl p-3.5 transition-all duration-300 border ${
-                          isCurrent
-                            ? 'bg-gradient-to-br from-vermelho/20 to-amarelo/10 border-amarelo/30 shadow-lg shadow-amarelo/5'
-                            : 'bg-cream/5 border-cream/5 hover:border-cream/10 hover:bg-cream/8'
-                        }`}
-                      >
-                        {isCurrent && (
-                          <span className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-full bg-amarelo/20 border border-amarelo/30">
-                            <span className="w-1.5 h-1.5 rounded-full bg-amarelo animate-pulse" />
-                            <span className="text-[9px] font-bold text-amarelo uppercase">Agora</span>
-                          </span>
-                        )}
-                        <div className="flex items-center gap-2 mb-3">
-                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${
-                            isCurrent ? 'bg-amarelo/20 text-amarelo' : 'bg-cream/10 text-cream/50'
-                          }`}>
-                            <Icon className="w-3.5 h-3.5" />
-                          </div>
-                          <div>
-                            <span className={`text-sm font-display font-bold ${isCurrent ? 'text-amarelo' : 'text-cream'}`}>
-                              {block.label}
-                            </span>
-                            <span className="text-[10px] text-cream/40 ml-2">{block.range}</span>
-                          </div>
-                        </div>
-                        <div className="space-y-1.5">
-                          {block.slots.map((slot) => (
-                            <div key={slot.time} className="flex items-center gap-2.5">
-                              <span className={`text-xs font-mono w-10 shrink-0 ${isCurrent ? 'text-amarelo/80' : 'text-cream/40'}`}>
-                                {slot.time}
-                              </span>
-                              <span className="text-sm text-cream/80">{slot.name}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
               </div>
             </Card>
           </div>
