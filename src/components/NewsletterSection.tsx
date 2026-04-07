@@ -11,6 +11,7 @@ import { siteConfig } from '@/config/site';
 const NewsletterSection = () => {
   const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [consentChecked, setConsentChecked] = useState(false);
   const { signup, loading } = useNewsletterSignup();
   const supabaseReady = isSupabaseConfigured();
 
@@ -235,8 +236,25 @@ const NewsletterSection = () => {
                 </motion.div>
               </motion.form>
 
-              {/* Privacy note */}
-              <p className="text-white/50 text-xs mt-6">
+              {/* Privacy consent */}
+              <div className="flex items-start gap-2 mt-5 max-w-xl mx-auto text-left">
+                <input
+                  type="checkbox"
+                  id="newsletter-consent-section"
+                  checked={consentChecked}
+                  onChange={(e) => setConsentChecked(e.target.checked)}
+                  className="mt-1 h-4 w-4 rounded border-white/30 accent-amarelo"
+                  required
+                />
+                <label htmlFor="newsletter-consent-section" className="text-white/60 text-xs leading-relaxed">
+                  Li e aceito a{' '}
+                  <a href="/privacidade" className="text-amarelo underline hover:text-amarelo/80">
+                    Politica de Privacidade
+                  </a>
+                  . Autorizo o tratamento do meu email para envio da newsletter.
+                </label>
+              </div>
+              <p className="text-white/50 text-xs mt-3">
                 Sem spam, prometemos. Cancela quando quiseres.
               </p>
             </motion.div>

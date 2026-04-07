@@ -8,6 +8,7 @@ import { Loader2 } from "lucide-react";
 import Index from "./pages/Index";
 import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
 import { SkipToContent } from "./components/SkipToContent";
+import { CookieConsent } from "./components/CookieConsent";
 
 // Lazy load pages (except Index which is the landing page)
 const Servicos = lazy(() => import("./pages/Servicos"));
@@ -61,6 +62,8 @@ const App = () => (
         </Suspense>
         {/* PWA Install Prompt */}
         <PWAInstallPrompt />
+        {/* Cookie Consent Banner */}
+        <CookieConsent />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

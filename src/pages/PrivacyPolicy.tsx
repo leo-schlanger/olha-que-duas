@@ -79,22 +79,45 @@ const PrivacyPolicy = () => {
               Utilizamos serviços de terceiros que podem recolher dados:
             </p>
             <ul className="list-disc list-inside text-gray-300 space-y-2 mt-2">
-              <li><strong>Google AdMob:</strong> Para exibição de anúncios (pode ser desativado na versão premium)</li>
+              <li><strong>Google AdMob:</strong> Para exibição de anúncios na app móvel (pode ser desativado na versão premium)</li>
               <li><strong>Google Play / Apple App Store:</strong> Para processamento de compras</li>
               <li><strong>Serviço de Meteorologia:</strong> Recebe coordenadas de localização para fornecer previsões meteorológicas</li>
-              <li><strong>Supabase:</strong> Para sincronização de dados de programação da rádio</li>
+              <li><strong>Supabase:</strong> Para sincronização de dados de programação da rádio e armazenamento de metadados (alojamento na UE)</li>
+              <li><strong>Cloudinary:</strong> Para alojamento e entrega otimizada de imagens da galeria de fotos</li>
+              <li><strong>Vercel:</strong> Para alojamento do website e execução de funções serverless</li>
+              <li><strong>Brevo (Sendinblue):</strong> Para gestão e envio da newsletter</li>
+              <li><strong>FormSubmit.co:</strong> Para processamento do formulário de contacto</li>
+              <li><strong>Umami Analytics:</strong> Para estatísticas de utilização anónimas e sem cookies (conforme RGPD)</li>
+              <li><strong>Google Fonts:</strong> Para carregamento de tipos de letra no website</li>
             </ul>
+
+            <h3 className="text-xl font-medium text-[#FFD700] mb-2 mt-4">2.5 Cookies e Armazenamento Local</h3>
+            <p className="text-gray-300 leading-relaxed">
+              O nosso website utiliza os seguintes cookies e mecanismos de armazenamento local:
+            </p>
+            <ul className="list-disc list-inside text-gray-300 space-y-2 mt-2">
+              <li><strong>Preferência de consentimento:</strong> Armazena a sua escolha sobre cookies (estritamente necessário)</li>
+              <li><strong>Estado da interface:</strong> Guarda preferências de navegação como o estado do menu lateral (funcional, requer consentimento)</li>
+              <li><strong>Instalação da app:</strong> Regista se dispensou o convite de instalação da app (funcional, requer consentimento)</li>
+            </ul>
+            <p className="text-gray-300 leading-relaxed mt-2">
+              Não utilizamos cookies de rastreamento, publicidade ou de terceiros para fins de marketing.
+              O Umami Analytics que utilizamos não requer cookies e está em conformidade com o RGPD.
+            </p>
           </section>
 
           <section>
             <h2 className="text-2xl font-semibold text-white mb-4">3. Como Utilizamos os Seus Dados</h2>
             <p className="text-gray-300 leading-relaxed">Utilizamos os dados recolhidos para:</p>
             <ul className="list-disc list-inside text-gray-300 space-y-2 mt-2">
-              <li>Fornecer e manter o serviço de rádio e notícias</li>
+              <li>Fornecer e manter o serviço de rádio, notícias e website</li>
               <li>Processar compras e transações</li>
-              <li>Exibir anúncios (com o seu consentimento)</li>
+              <li>Enviar a newsletter (com o seu consentimento explícito)</li>
+              <li>Responder a mensagens enviadas pelo formulário de contacto</li>
+              <li>Exibir anúncios na app móvel (com o seu consentimento)</li>
               <li>Mostrar previsões meteorológicas da sua área (com a sua autorização)</li>
               <li>Enviar notificações de lembretes de programas (quando ativadas por si)</li>
+              <li>Obter estatísticas anónimas de utilização do website (via Umami, sem dados pessoais)</li>
               <li>Melhorar a experiência do utilizador</li>
               <li>Cumprir obrigações legais</li>
             </ul>

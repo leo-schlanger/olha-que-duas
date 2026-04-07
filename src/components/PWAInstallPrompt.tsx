@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { X, Download, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePWA } from '@/hooks/usePWA';
+import { hasConsent } from '@/hooks/useCookieConsent';
 
 export function PWAInstallPrompt() {
   const { isInstallable, isInstalled, installApp } = usePWA();
@@ -9,13 +10,15 @@ export function PWAInstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
-    // Check if user dismissed before
-    const dismissed = localStorage.getItem('pwa-prompt-dismissed');
-    if (dismissed) {
-      const dismissedTime = parseInt(dismissed, 10);
-      // Show again after 7 days
-      if (Date.now() - dismissedTime < 7 * 24 * 60 * 60 * 1000) {
-        setIsDismissed(true);
+    // Check if user dismissed before (only if consent was given)
+    if (hasConsent()) {
+      const dismissed = localStorage.getItem('pwa-prompt-dismissed');
+      if (dismissed) {
+        const dismissedTime = parseInt(dismissed, 10);
+        // Show again after 7 days
+        if (Date.now() - dismissedTime < 7 * 24 * 60 * 60 * 1000) {
+          setIsDismissed(true);
+        }
       }
     }
 
@@ -29,7 +32,9 @@ export function PWAInstallPrompt() {
 
   const handleDismiss = () => {
     setIsDismissed(true);
-    localStorage.setItem('pwa-prompt-dismissed', Date.now().toString());
+    if (hasConsent()) {
+      localStorage.setItem('pwa-prompt-dismissed', Date.now().toString());
+    }
   };
 
   const handleInstall = async () => {

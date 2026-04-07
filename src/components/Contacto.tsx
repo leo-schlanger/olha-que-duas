@@ -26,6 +26,7 @@ const Contacto = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [newsletterConsent, setNewsletterConsent] = useState(false);
   const { signup: signupNewsletter, loading: newsletterLoading } = useNewsletterSignup();
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
@@ -297,28 +298,46 @@ const Contacto = () => {
                 <p className="text-charcoal/70 text-xs mb-3 leading-relaxed">
                   Novidades em primeira mão, <span className="font-semibold">descontos exclusivos</span> dos nossos parceiros e promoções especiais.
                 </p>
-                <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
-                  <Input
-                    type="email"
-                    placeholder="O teu email"
-                    value={newsletterEmail}
-                    onChange={(e) => setNewsletterEmail(e.target.value)}
-                    className="bg-white/90 backdrop-blur-sm border-0 h-11 text-sm rounded-xl shadow-sm focus:ring-2 focus:ring-charcoal/20"
-                    disabled={newsletterLoading}
-                    required
-                  />
-                  <Button
-                    type="submit"
-                    size="icon"
-                    className="bg-charcoal text-white hover:bg-charcoal/90 shrink-0 h-11 w-11 rounded-xl shadow-md hover:shadow-lg transition-all"
-                    disabled={newsletterLoading}
-                  >
-                    {newsletterLoading ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <ArrowRight className="w-4 h-4" />
-                    )}
-                  </Button>
+                <form onSubmit={handleNewsletterSubmit} className="space-y-2">
+                  <div className="flex gap-2">
+                    <Input
+                      type="email"
+                      placeholder="O teu email"
+                      value={newsletterEmail}
+                      onChange={(e) => setNewsletterEmail(e.target.value)}
+                      className="bg-white/90 backdrop-blur-sm border-0 h-11 text-sm rounded-xl shadow-sm focus:ring-2 focus:ring-charcoal/20"
+                      disabled={newsletterLoading}
+                      required
+                    />
+                    <Button
+                      type="submit"
+                      size="icon"
+                      className="bg-charcoal text-white hover:bg-charcoal/90 shrink-0 h-11 w-11 rounded-xl shadow-md hover:shadow-lg transition-all"
+                      disabled={newsletterLoading}
+                    >
+                      {newsletterLoading ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <ArrowRight className="w-4 h-4" />
+                      )}
+                    </Button>
+                  </div>
+                  <div className="flex items-start gap-1.5">
+                    <input
+                      type="checkbox"
+                      id="newsletter-consent-contact"
+                      checked={newsletterConsent}
+                      onChange={(e) => setNewsletterConsent(e.target.checked)}
+                      className="mt-0.5 h-3.5 w-3.5 rounded accent-charcoal"
+                      required
+                    />
+                    <label htmlFor="newsletter-consent-contact" className="text-charcoal/50 text-[10px] leading-relaxed">
+                      Aceito a{' '}
+                      <a href="/privacidade" className="underline hover:text-charcoal/80">
+                        Politica de Privacidade
+                      </a>
+                    </label>
+                  </div>
                 </form>
               </CardContent>
             </Card>

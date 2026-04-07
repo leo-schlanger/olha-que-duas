@@ -31,6 +31,7 @@ export default function Newsletter() {
   const [name, setName] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [consentChecked, setConsentChecked] = useState(false);
   const { signup, loading } = useNewsletterSignup();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -190,11 +191,26 @@ export default function Newsletter() {
                       </motion.div>
                     </form>
 
-                    <p className="text-center text-xs text-charcoal/40 mt-6">
-                      Sem spam. Cancela quando quiseres.{' '}
-                      <a href="/privacidade" className="underline hover:text-vermelho">
-                        Política de Privacidade
-                      </a>
+                    {/* Privacy consent */}
+                    <div className="flex items-start gap-2 mt-5 text-left">
+                      <input
+                        type="checkbox"
+                        id="newsletter-consent-page"
+                        checked={consentChecked}
+                        onChange={(e) => setConsentChecked(e.target.checked)}
+                        className="mt-1 h-4 w-4 rounded border-charcoal/30 accent-vermelho"
+                        required
+                      />
+                      <label htmlFor="newsletter-consent-page" className="text-charcoal/50 text-xs leading-relaxed">
+                        Li e aceito a{' '}
+                        <a href="/privacidade" className="text-vermelho underline hover:text-vermelho/80">
+                          Politica de Privacidade
+                        </a>
+                        . Autorizo o tratamento dos meus dados para envio da newsletter.
+                      </label>
+                    </div>
+                    <p className="text-center text-xs text-charcoal/40 mt-3">
+                      Sem spam. Cancela quando quiseres.
                     </p>
                   </motion.div>
 

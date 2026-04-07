@@ -2,8 +2,8 @@ export const config = {
   matcher: ['/viagens', '/servicos', '/loja', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*'],
 };
 
-const SUPABASE_URL = 'https://jjifjbdfpvgeseqbjpkg.supabase.co';
-const SUPABASE_ANON_KEY = '***SUPABASE_ANON_KEY_REMOVED***';
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL || '';
+const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || '';
 
 const CRAWLERS = ['facebookexternalhit', 'Facebot', 'Twitterbot', 'WhatsApp', 'LinkedInBot', 'Slackbot', 'TelegramBot', 'Discordbot'];
 
