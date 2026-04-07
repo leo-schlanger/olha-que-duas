@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
 import { SkipToContent } from "./components/SkipToContent";
 import { CookieConsent } from "./components/CookieConsent";
+import { WhatsAppFloat } from "./components/WhatsAppFloat";
 
 // Lazy load pages (except Index which is the landing page)
 const Servicos = lazy(() => import("./pages/Servicos"));
@@ -62,6 +63,8 @@ const App = () => (
         </Suspense>
         {/* PWA Install Prompt */}
         <PWAInstallPrompt />
+        {/* WhatsApp Channel Float */}
+        <WhatsAppFloat />
         {/* Cookie Consent Banner */}
         <CookieConsent />
       </BrowserRouter>
