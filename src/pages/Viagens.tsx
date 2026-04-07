@@ -231,18 +231,18 @@ const travelJsonLd = [
   },
 ];
 
-// Unsplash images (free to use)
+// Unsplash images (free to use) — auto format for device compatibility
 const images = {
-  hero: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1200&q=80',
-  estadias: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80',
-  passagens: 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?w=800&q=80',
-  gourmet: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80',
-  familia: 'https://images.unsplash.com/photo-1602002418816-5c0aeef426aa?w=600&q=80',
-  luademel: 'https://images.unsplash.com/photo-1439130490301-25e322d88054?w=600&q=80',
-  grupo: 'https://images.unsplash.com/photo-1539635278303-d4002c07eae3?w=600&q=80',
-  corporativo: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80',
-  escapadinha: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80',
-  circuitos: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=600&q=80',
+  hero: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&q=75&auto=format',
+  estadias: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=75&auto=format',
+  passagens: 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?w=600&q=75&auto=format',
+  gourmet: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=75&auto=format',
+  familia: 'https://images.unsplash.com/photo-1602002418816-5c0aeef426aa?w=400&q=75&auto=format',
+  luademel: 'https://images.unsplash.com/photo-1439130490301-25e322d88054?w=400&q=75&auto=format',
+  grupo: 'https://images.unsplash.com/photo-1539635278303-d4002c07eae3?w=400&q=75&auto=format',
+  corporativo: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&q=75&auto=format',
+  escapadinha: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=75&auto=format',
+  circuitos: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=400&q=75&auto=format',
 };
 
 // Main travel services
