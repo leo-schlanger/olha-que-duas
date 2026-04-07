@@ -24,7 +24,8 @@ export function useBlogPosts(filters: BlogFilters = {}, page = 1, limit = 12) {
         countQuery = countQuery.ilike('region', filters.region);
       }
       if (filters.search) {
-        countQuery = countQuery.or(`title.ilike.%${filters.search}%,summary.ilike.%${filters.search}%`);
+        const escapedCount = filters.search.replace(/[\\%_]/g, '\\$&');
+        countQuery = countQuery.or(`title.ilike.%${escapedCount}%,summary.ilike.%${escapedCount}%`);
       }
 
       const { count, error: countError } = await countQuery;
@@ -125,12 +126,21 @@ export function useBlogCategories() {
         .eq('is_published', true);
 
       if (error) {
-
         throw error;
       }
 
-      const categories = [...new Set(data?.map(d => d.category) || [])];
-      return categories.filter(Boolean);
+      // Normalizar: agrupar por lowercase para evitar duplicados com case diferente
+      const rawCategories = data?.map(d => d.category?.trim()).filter(Boolean) || [];
+      const normalizedMap = new Map<string, string>();
+
+      rawCategories.forEach(cat => {
+        const lower = cat.toLowerCase();
+        if (!normalizedMap.has(lower)) {
+          normalizedMap.set(lower, cat);
+        }
+      });
+
+      return Array.from(normalizedMap.values()).sort();
     },
     enabled: isSupabaseConfigured(),
     staleTime: 1000 * 60 * 10, // 10 minutes
