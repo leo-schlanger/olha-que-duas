@@ -61,6 +61,7 @@ export function GalleryAlbumCard({ album, position = 'left', className }: Galler
                 )}
                 loading="lazy"
                 onLoad={() => setIsImageLoaded(true)}
+                onError={() => setIsImageLoaded(true)}
               />
             </>
           ) : (

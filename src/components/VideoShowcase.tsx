@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
 
 const highlights = [
-  { icon: Mic, label: "Podcast", desc: "Entrevistas com proposito" },
-  { icon: Radio, label: "Radio 24h", desc: "Musica e conteudo sem parar" },
+  { icon: Mic, label: "Podcast", desc: "Entrevistas com propósito" },
+  { icon: Radio, label: "Rádio 24h", desc: "Música e conteúdo sem parar" },
   { icon: Users, label: "Comunidade", desc: "Milhares de ouvintes" },
 ];
 
@@ -29,14 +29,14 @@ const VideoShowcase = () => {
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/10 mb-5">
               <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
               <span className="text-[11px] font-semibold uppercase tracking-widest text-primary">
-                Apresentacao
+                Apresentação
               </span>
             </div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-semibold text-foreground mb-4 leading-tight">
               Conheça o nosso <span className="text-gradient-brand">trabalho</span>
             </h2>
             <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-              Descubra como damos voz as historias que merecem ser ouvidas
+              Descubra como damos voz às histórias que merecem ser ouvidas
             </p>
           </div>
 

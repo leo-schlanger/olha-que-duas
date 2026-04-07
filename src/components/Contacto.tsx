@@ -334,7 +334,7 @@ const Contacto = () => {
                     <label htmlFor="newsletter-consent-contact" className="text-charcoal/50 text-[10px] leading-relaxed">
                       Aceito a{' '}
                       <a href="/privacidade" className="underline hover:text-charcoal/80">
-                        Politica de Privacidade
+                        Política de Privacidade
                       </a>
                     </label>
                   </div>

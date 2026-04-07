@@ -62,7 +62,7 @@ const NewsletterSection = () => {
       {/* Description */}
       <p className="text-white/80 text-base sm:text-lg md:text-xl mb-8 max-w-2xl mx-auto leading-relaxed">
         Recebe <span className="text-amarelo font-semibold">novidades em primeira mão</span>,
-        descontos exclusivos dos nossos parceiros e conteudo que não partilhamos em mais lado nenhum.
+        descontos exclusivos dos nossos parceiros e conteúdo que não partilhamos em mais lado nenhum.
       </p>
 
       {/* Mailto CTA */}
@@ -249,7 +249,7 @@ const NewsletterSection = () => {
                 <label htmlFor="newsletter-consent-section" className="text-white/60 text-xs leading-relaxed">
                   Li e aceito a{' '}
                   <a href="/privacidade" className="text-amarelo underline hover:text-amarelo/80">
-                    Politica de Privacidade
+                    Política de Privacidade
                   </a>
                   . Autorizo o tratamento do meu email para envio da newsletter.
                 </label>

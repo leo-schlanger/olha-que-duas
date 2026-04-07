@@ -1,7 +1,7 @@
 // Olha que Duas - Service Worker
 // PWA com cache inteligente
 
-const CACHE_NAME = 'olhaqueduas-v3';
+const CACHE_NAME = 'olhaqueduas-v4';
 const OFFLINE_URL = '/offline.html';
 
 // Assets para cache imediato (instalar)
@@ -33,6 +33,8 @@ const CACHE_PATTERNS = {
     /radio\.olhaqueduas\.com/, // Stream de rádio
     /supabase/, // API de dados
     /umami/, // Analytics
+    /images\.unsplash\.com/, // Unsplash (evitar cache stale)
+    /img\.youtube\.com/, // YouTube thumbnails
   ],
 };
 
@@ -65,8 +67,11 @@ function shouldNotCache(url) {
   return CACHE_PATTERNS.noCache.some((pattern) => pattern.test(url));
 }
 
-// Verificar se é asset estático
+// Verificar se é asset estático (apenas same-origin e CDN confiáveis)
 function isStaticAsset(url) {
+  const isSameOrigin = url.startsWith(self.location.origin);
+  const isTrustedCDN = /res\.cloudinary\.com|fonts\.googleapis\.com|fonts\.gstatic\.com/.test(url);
+  if (!isSameOrigin && !isTrustedCDN) return false;
   return CACHE_PATTERNS.static.some((pattern) => pattern.test(url));
 }
 

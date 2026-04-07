@@ -169,6 +169,7 @@ export function GalleryLightbox({ photos, initialIndex, isOpen, onClose }: Galle
                 isImageLoading ? 'opacity-0' : 'opacity-100'
               )}
               onLoad={() => setIsImageLoading(false)}
+              onError={() => setIsImageLoading(false)}
             />
           </div>
 

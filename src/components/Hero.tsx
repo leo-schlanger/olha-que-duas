@@ -211,6 +211,8 @@ const Hero = () => {
                   src={fotoJuntas}
                   alt="Alexandra e Marluce - Fundadoras do Olha que Duas"
                   className="w-full aspect-[4/5] object-cover transition-transform duration-700 group-hover:scale-105"
+                  loading="eager"
+                  fetchPriority="high"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 via-charcoal/10 to-transparent" />
 

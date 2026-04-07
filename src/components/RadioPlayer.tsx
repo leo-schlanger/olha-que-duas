@@ -136,18 +136,20 @@ const RadioPlayer = () => {
   };
 
   const renderIcon = (show: string, iconUrl: string) => {
-    // Se tem URL de ícone válida, usa a imagem
+    const fallback = FALLBACK_ICONS[show] || <Radio className="w-full h-full p-1.5" />;
+    // Se tem URL de ícone válida, usa a imagem com fallback
     if (iconUrl && !iconUrl.includes('placehold.co')) {
       return (
         <img
           src={iconUrl}
           alt={show}
           className="w-full h-full object-cover rounded-md"
+          loading="lazy"
+          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
         />
       );
     }
-    // Senão, usa o ícone fallback
-    return FALLBACK_ICONS[show] || <Radio className="w-full h-full p-1.5" />;
+    return fallback;
   };
 
   return (
@@ -175,6 +177,7 @@ const RadioPlayer = () => {
                     src={song.art}
                     alt=""
                     className="w-full h-full object-cover scale-150 blur-3xl opacity-30 transition-all duration-300"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-br from-vermelho/80 via-vermelho/70 to-vermelho-dark/90" />
                 </div>
@@ -218,6 +221,7 @@ const RadioPlayer = () => {
                           src={song.art}
                           alt={`${song.title} - ${song.artist}`}
                           className="w-full h-full object-cover transition-all duration-300"
+                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                         />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center p-4">
@@ -379,7 +383,7 @@ const RadioPlayer = () => {
               <div className="border-b border-cream/10 bg-cream/5">
                 <div className="p-4 pb-0 flex items-center gap-3">
                   <Calendar className="w-4 h-4 text-amarelo" />
-                  <h3 className="text-lg font-display font-bold">Programacao Semanal</h3>
+                  <h3 className="text-lg font-display font-bold">Programação Semanal</h3>
                 </div>
 
                 {/* Day tabs */}
@@ -449,7 +453,7 @@ const RadioPlayer = () => {
                                   {item.show}
                                 </h4>
                                 <p className="text-xs text-cream/50 mt-0.5">
-                                  {item.times.length} {item.times.length === 1 ? 'exibicao' : 'exibicoes'} neste dia
+                                  {item.times.length} {item.times.length === 1 ? 'exibição' : 'exibições'} neste dia
                                 </p>
                               </div>
                               <ChevronRight className="w-4 h-4 text-cream/30 group-hover:text-amarelo group-hover:translate-x-1 transition-all shrink-0 mt-1" />
@@ -474,7 +478,7 @@ const RadioPlayer = () => {
                   </div>
                 ) : (
                   <div className="text-center py-8 text-cream/50">
-                    Seleciona um dia para ver a programacao
+                    Selecione um dia para ver a programação
                   </div>
                 )}
               </div>

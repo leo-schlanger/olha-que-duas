@@ -204,7 +204,7 @@ export default function Newsletter() {
                       <label htmlFor="newsletter-consent-page" className="text-charcoal/50 text-xs leading-relaxed">
                         Li e aceito a{' '}
                         <a href="/privacidade" className="text-vermelho underline hover:text-vermelho/80">
-                          Politica de Privacidade
+                          Política de Privacidade
                         </a>
                         . Autorizo o tratamento dos meus dados para envio da newsletter.
                       </label>

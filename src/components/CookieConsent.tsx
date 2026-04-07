@@ -20,12 +20,12 @@ export function CookieConsent() {
               A tua privacidade importa
             </h3>
             <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-              Utilizamos cookies funcionais para melhorar a tua experiencia no site
-              (como guardar preferencias e o estado da instalacao da app).
-              Nao utilizamos cookies de rastreamento ou publicidade.
-              Consulta a nossa{' '}
+              Utilizamos cookies funcionais para melhorar a sua experiência no site
+              (como guardar preferências e o estado da instalação da app).
+              Não utilizamos cookies de rastreamento ou publicidade.
+              Consulte a nossa{' '}
               <Link to="/privacidade" className="text-vermelho underline hover:text-vermelho/80">
-                Politica de Privacidade
+                Política de Privacidade
               </Link>{' '}
               para mais detalhes.
             </p>

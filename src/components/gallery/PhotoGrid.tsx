@@ -91,6 +91,7 @@ function PhotoGridItem({ photo, onClick }: PhotoGridItemProps) {
         )}
         loading="lazy"
         onLoad={() => setIsLoaded(true)}
+        onError={() => setIsLoaded(true)}
       />
 
       {/* Hover overlay */}
