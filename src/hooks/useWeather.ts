@@ -32,7 +32,7 @@ function getWeatherCondition(code: number): string {
 
 // Fetch do tempo de uma cidade
 async function fetchCityWeather(city: CityConfig): Promise<CityWeather> {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${city.latitude}&longitude=${city.longitude}&current_weather=true`;
+  const url = `/api/weather?latitude=${city.latitude}&longitude=${city.longitude}`;
 
   const response = await fetch(url);
   if (!response.ok) {
