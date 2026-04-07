@@ -27,6 +27,9 @@ const Parceiros = () => {
               <img
                 src={partner.logo}
                 alt={partner.name}
+                loading="lazy"
+                width={128}
+                height={128}
                 className="h-24 w-24 md:h-32 md:w-32 object-contain rounded-lg shadow-md group-hover:shadow-lg transition-shadow duration-200"
               />
             </a>
