@@ -1,7 +1,7 @@
 // Olha que Duas - Service Worker
 // PWA com cache inteligente
 
-const CACHE_NAME = 'olhaqueduas-v5';
+const CACHE_NAME = 'olhaqueduas-v6';
 const OFFLINE_URL = '/offline.html';
 
 // Assets para cache imediato (instalar)
@@ -130,6 +130,11 @@ self.addEventListener('fetch', (event) => {
 
   // Ignorar URLs que não são HTTP/HTTPS (ex: chrome-extension://)
   if (!url.startsWith('http')) {
+    return;
+  }
+
+  // Não interceptar requests cross-origin (evita conflitos CSP no SW)
+  if (!url.startsWith(self.location.origin)) {
     return;
   }
 
