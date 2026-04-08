@@ -79,10 +79,17 @@ export default async function middleware(request: Request): Promise<Response | u
 
   // ========== GALERIA ==========
   if (path === '/galeria') {
+    let galleryImage = DEFAULT_IMAGE;
+    try {
+      const albums = await fetchSupabase('gallery_albums', 'is_published=eq.true&order=event_date.desc&limit=1');
+      if (albums?.[0]) {
+        galleryImage = `https://res.cloudinary.com/dfljesvj7/image/upload/w_1200,h_630,c_fill,g_auto,q_auto,f_auto/olhaqueduas/galeria/${albums[0].slug}/01`;
+      }
+    } catch { /* fallback to default */ }
     return html({
       title: 'Galeria de Fotos',
       description: 'Explore a galeria de fotos de entrevistas, eventos e bastidores do Olha que Duas.',
-      image: DEFAULT_IMAGE,
+      image: galleryImage,
       url: 'https://www.olhaqueduas.com/galeria',
     });
   }
@@ -95,10 +102,7 @@ export default async function middleware(request: Request): Promise<Response | u
       const [album] = await fetchSupabase('gallery_albums', `slug=eq.${encodeURIComponent(slug)}&is_published=eq.true`);
       if (!album) return;
 
-      const [photo] = await fetchSupabase('gallery_photos', `album_id=eq.${album.id}&is_cover=eq.true`);
-      const image = photo
-        ? `https://res.cloudinary.com/dfljesvj7/image/upload/w_1200,h_630,c_fill,g_auto,q_auto,f_auto/${photo.cloudinary_public_id}`
-        : DEFAULT_IMAGE;
+      const image = `https://res.cloudinary.com/dfljesvj7/image/upload/w_1200,h_630,c_fill,g_auto,q_auto,f_auto/olhaqueduas/galeria/${slug}/01`;
 
       const date = new Date(album.event_date).toLocaleDateString('pt-PT', {
         day: 'numeric', month: 'long', year: 'numeric',
