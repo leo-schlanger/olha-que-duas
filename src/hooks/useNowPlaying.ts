@@ -47,7 +47,7 @@ function isValidSong(data: {
   return true;
 }
 
-export function useNowPlaying(streamUrl: string | undefined) {
+export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean = true) {
   const [state, setState] = useState<NowPlayingState>({
     song: null,
     isMusic: false,
@@ -141,13 +141,15 @@ export function useNowPlaying(streamUrl: string | undefined) {
   }, [streamUrl]);
 
   useEffect(() => {
+    if (!isPlaying) return;
+
     fetchNowPlaying();
     const interval = setInterval(fetchNowPlaying, POLL_INTERVAL);
 
     return () => {
       clearInterval(interval);
     };
-  }, [fetchNowPlaying]);
+  }, [fetchNowPlaying, isPlaying]);
 
-  return state;
+  return { ...state, refetch: fetchNowPlaying };
 }

@@ -71,7 +71,7 @@ const RadioPlayer = () => {
   const { schedule, loading } = useSchedule();
   const { data: dailySchedule } = useDailySchedule();
   const { radio } = siteConfig;
-  const { song, isMusic, isLiveShow, liveShowName } = useNowPlaying(radio.streamUrl);
+  const { song, isMusic, isLiveShow, liveShowName, refetch } = useNowPlaying(radio.streamUrl, isPlaying);
   const currentPeriod = getCurrentPeriod();
 
   // Agrupar programação por dia
@@ -118,8 +118,12 @@ const RadioPlayer = () => {
         setIsPlaying(false);
       } else {
         try {
+          // Reload stream to get fresh audio (avoids stale buffer after pause)
+          audioRef.current.src = radio.streamUrl;
+          audioRef.current.load();
           await audioRef.current.play();
           setIsPlaying(true);
+          refetch();
         } catch {
           // Browser blocked autoplay — user interaction required
           setIsPlaying(false);
