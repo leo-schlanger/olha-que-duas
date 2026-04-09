@@ -12,6 +12,9 @@ interface NowPlayingState {
   isMusic: boolean;
   isLiveShow: boolean;
   liveShowName: string;
+  isPodcast: boolean;
+  podcastName: string;
+  podcastArt: string;
   loading: boolean;
 }
 
@@ -28,6 +31,14 @@ const JINGLE_PLAYLISTS = [
 
 const MIN_SONG_DURATION = 60;
 const POLL_INTERVAL = 5000; // 5 seconds — faster updates
+
+// Music playlists follow naming patterns — anything else with no valid metadata is likely a podcast
+const MUSIC_PLAYLIST_PATTERNS = [
+  /mix/i, /rotation/i, /playlist/i, /morning/i, /afternoon/i,
+  /sunset/i, /night/i, /madrugada/i, /noite/i, /tarde/i,
+  /manh[ãa]/i, /top\s?\d/i, /hits/i, /chill/i, /lounge/i,
+  /general/i, /default/i, /shuffle/i,
+];
 
 function isValidSong(data: {
   title?: string;
@@ -53,6 +64,9 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
     isMusic: false,
     isLiveShow: false,
     liveShowName: "",
+    isPodcast: false,
+    podcastName: "",
+    podcastArt: "",
     loading: true,
   });
 
@@ -60,7 +74,7 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
 
   const fetchNowPlaying = useCallback(async () => {
     if (!streamUrl) {
-      setState({ song: null, isMusic: false, isLiveShow: false, liveShowName: "", loading: false });
+      setState({ song: null, isMusic: false, isLiveShow: false, liveShowName: "", isPodcast: false, podcastName: "", podcastArt: "", loading: false });
       return;
     }
 
@@ -86,6 +100,9 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
           isMusic: false,
           isLiveShow: true,
           liveShowName: live.streamer_name || "Programa ao Vivo",
+          isPodcast: false,
+          podcastName: "",
+          podcastArt: "",
           loading: false,
         });
         return;
@@ -94,7 +111,7 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
       // 2. No now_playing data
       if (!nowPlaying?.song) {
         lastSongKeyRef.current = null;
-        setState({ song: null, isMusic: false, isLiveShow: false, liveShowName: "", loading: false });
+        setState({ song: null, isMusic: false, isLiveShow: false, liveShowName: "", isPodcast: false, podcastName: "", podcastArt: "", loading: false });
         return;
       }
 
@@ -110,12 +127,37 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
 
       // 3. Jingle/vinheta/transition — clear song immediately, show logo
       if (!isMusic) {
-        // Don't clear lastSongKeyRef so we can detect when the next real song starts
+        // Check if this is a podcast: not music, not a jingle, from a non-music playlist
+        const playlistName = songData.playlist;
+        const isMusicPlaylist = !playlistName || MUSIC_PLAYLIST_PATTERNS.some((p) => p.test(playlistName));
+        const isLongContent = songData.duration >= MIN_SONG_DURATION;
+        const isJingle = JINGLE_PATTERNS.some((p) => p.test(songData.title)) || JINGLE_PATTERNS.some((p) => p.test(songData.artist));
+
+        if (!isMusicPlaylist && !isJingle && isLongContent) {
+          // Podcast detected
+          lastSongKeyRef.current = null;
+          setState({
+            song: null,
+            isMusic: false,
+            isLiveShow: false,
+            liveShowName: "",
+            isPodcast: true,
+            podcastName: playlistName,
+            podcastArt: nowPlaying.song.art || "",
+            loading: false,
+          });
+          return;
+        }
+
+        // Regular jingle/transition
         setState({
           song: null,
           isMusic: false,
           isLiveShow: false,
           liveShowName: "",
+          isPodcast: false,
+          podcastName: "",
+          podcastArt: "",
           loading: false,
         });
         return;
@@ -133,6 +175,9 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
         isMusic: true,
         isLiveShow: false,
         liveShowName: "",
+        isPodcast: false,
+        podcastName: "",
+        podcastArt: "",
         loading: false,
       });
     } catch {
