@@ -45,10 +45,32 @@ const Footer = () => {
             </div>
           </nav>
 
-          {/* Social */}
-          <div className="flex flex-col items-center md:items-end gap-3">
-            <span className="text-xs font-semibold uppercase tracking-widest text-amarelo mb-1">Redes Sociais</span>
-            <div className="flex gap-2">
+          {/* Social + App */}
+          <div className="flex flex-col items-center md:items-end gap-5">
+            {/* App badge */}
+            <div className="flex flex-col items-center md:items-end gap-3">
+              <span className="text-xs font-semibold uppercase tracking-widest text-amarelo">Descarrega a App</span>
+              <a
+                href={siteConfig.app.androidUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Disponível no Google Play"
+                className="inline-block transition-transform duration-300 hover:scale-105"
+              >
+                <img
+                  src="/badges/google-play-pt.png"
+                  alt="Disponível no Google Play"
+                  width={124}
+                  height={48}
+                  className="h-12 w-auto"
+                  loading="lazy"
+                />
+              </a>
+            </div>
+
+            <div className="flex flex-col items-center md:items-end gap-3">
+              <span className="text-xs font-semibold uppercase tracking-widest text-amarelo">Redes Sociais</span>
+              <div className="flex gap-2">
               <a
                 href={siteConfig.social.instagram}
                 target="_blank"
@@ -81,6 +103,7 @@ const Footer = () => {
               >
                 <TikTokIcon className="w-4 h-4" />
               </a>
+              </div>
             </div>
           </div>
         </div>

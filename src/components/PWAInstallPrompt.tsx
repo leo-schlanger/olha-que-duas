@@ -3,13 +3,23 @@ import { X, Download, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePWA } from '@/hooks/usePWA';
 import { hasConsent } from '@/hooks/useCookieConsent';
+import { siteConfig } from '@/config/site';
+
+// Detecta Android de forma fiável (exclui iPadOS que pode reportar como Mac)
+function isAndroid(): boolean {
+  if (typeof navigator === 'undefined') return false;
+  return /android/i.test(navigator.userAgent);
+}
 
 export function PWAInstallPrompt() {
   const { isInstallable, isInstalled, installApp } = usePWA();
   const [isDismissed, setIsDismissed] = useState(false);
   const [showPrompt, setShowPrompt] = useState(false);
+  const [android, setAndroid] = useState(false);
 
   useEffect(() => {
+    setAndroid(isAndroid());
+
     // Check if user dismissed before (only if consent was given)
     if (hasConsent()) {
       const dismissed = localStorage.getItem('pwa-prompt-dismissed');
@@ -44,10 +54,24 @@ export function PWAInstallPrompt() {
     }
   };
 
-  // Don't show if already installed, dismissed, or not installable
-  if (isInstalled || isDismissed || !isInstallable || !showPrompt) {
+  // Não mostrar se já instalado ou dispensado
+  if (isInstalled || isDismissed || !showPrompt) {
     return null;
   }
+
+  // Em Android, mostramos sempre o convite para a app nativa (Play Store).
+  // Nas outras plataformas (desktop, iOS), só mostramos se o PWA for instalável.
+  if (!android && !isInstallable) {
+    return null;
+  }
+
+  // Conteúdo varia consoante a plataforma
+  const isAndroidVariant = android;
+  const title = isAndroidVariant ? 'Temos uma app para ti' : 'Instala a nossa app';
+  const description = isAndroidVariant
+    ? 'Descarrega gratuitamente na Google Play e leva a rádio contigo.'
+    : 'Acede mais rápido e ouve a rádio mesmo offline!';
+  const ctaLabel = isAndroidVariant ? 'Google Play' : 'Instalar';
 
   return (
     <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-96 z-50 animate-fade-in">
@@ -61,21 +85,39 @@ export function PWAInstallPrompt() {
           {/* Content */}
           <div className="flex-1 min-w-0">
             <h3 className="text-base font-semibold text-foreground mb-1">
-              Instala a nossa app
+              {title}
             </h3>
             <p className="text-sm text-muted-foreground mb-3">
-              Acede mais rápido e ouve a rádio mesmo offline!
+              {description}
             </p>
 
             <div className="flex items-center gap-2">
-              <Button
-                size="sm"
-                onClick={handleInstall}
-                className="bg-vermelho hover:bg-vermelho/90 text-white rounded-lg h-11 px-4 text-sm font-medium"
-              >
-                <Download className="w-4 h-4 mr-1.5" />
-                Instalar
-              </Button>
+              {isAndroidVariant ? (
+                <Button
+                  asChild
+                  size="sm"
+                  className="bg-vermelho hover:bg-vermelho/90 text-white rounded-lg h-11 px-4 text-sm font-medium"
+                  onClick={handleDismiss}
+                >
+                  <a
+                    href={siteConfig.app.androidUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Download className="w-4 h-4 mr-1.5" />
+                    {ctaLabel}
+                  </a>
+                </Button>
+              ) : (
+                <Button
+                  size="sm"
+                  onClick={handleInstall}
+                  className="bg-vermelho hover:bg-vermelho/90 text-white rounded-lg h-11 px-4 text-sm font-medium"
+                >
+                  <Download className="w-4 h-4 mr-1.5" />
+                  {ctaLabel}
+                </Button>
+              )}
               <Button
                 size="sm"
                 variant="ghost"
@@ -91,6 +133,7 @@ export function PWAInstallPrompt() {
           <button
             onClick={handleDismiss}
             className="flex-shrink-0 w-8 h-8 rounded-lg hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Fechar"
           >
             <X className="w-4 h-4" />
           </button>

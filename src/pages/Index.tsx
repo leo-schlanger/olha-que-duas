@@ -4,6 +4,7 @@ import VideoShowcase from "@/components/VideoShowcase";
 import SobreNos from "@/components/SobreNos";
 import Podcast from "@/components/Podcast";
 import RadioPlayer from "@/components/RadioPlayer";
+import AppDownload from "@/components/AppDownload";
 import Weather from "@/components/Weather";
 import Parceiros from "@/components/Parceiros";
 import Contacto from "@/components/Contacto";
@@ -33,6 +34,9 @@ const Index = () => {
 
         {/* Podcast - Conteúdo complementar */}
         <Podcast />
+
+        {/* App móvel - Google Play */}
+        <AppDownload />
 
         {/* Widget de clima */}
         <Weather />

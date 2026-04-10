@@ -30,6 +30,14 @@ export const siteConfig = {
     { href: "#contacto", label: "Contacto" },
   ],
 
+  // App móvel
+  app: {
+    androidPackage: "com.olhaqueduas.app",
+    androidUrl: "https://play.google.com/store/apps/details?id=com.olhaqueduas.app",
+    iosAvailable: false, // Em breve
+    iosUrl: "",
+  },
+
   // Informações gerais
   info: {
     name: "Olha que Duas",
