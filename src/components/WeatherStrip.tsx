@@ -5,6 +5,7 @@ import {
   CloudRain,
   CloudSnow,
   CloudLightning,
+  Wind,
 } from "lucide-react";
 import { useWeather } from "@/hooks/useWeather";
 
@@ -49,7 +50,7 @@ const WeatherStrip = () => {
               <div
                 key={city.city}
                 className="shrink-0 snap-start inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cream/5 border border-cream/10 hover:border-amarelo/30 hover:bg-cream/10 transition-colors"
-                title={`${city.city}: ${city.condition}`}
+                title={`${city.city}: ${city.condition} • Vento ${city.windspeed} km/h`}
               >
                 {getWeatherIcon(city.weathercode)}
                 <span className="text-[11px] font-semibold uppercase tracking-wider text-cream/80">
@@ -57,6 +58,12 @@ const WeatherStrip = () => {
                 </span>
                 <span className="text-xs font-mono font-bold text-cream">
                   {city.temperature}°
+                </span>
+                <span className="inline-flex items-center gap-1 pl-2 ml-0.5 border-l border-cream/10 text-cream/50">
+                  <Wind className="w-3 h-3" />
+                  <span className="text-[10px] font-mono font-semibold">
+                    {city.windspeed}
+                  </span>
                 </span>
               </div>
             ))}
