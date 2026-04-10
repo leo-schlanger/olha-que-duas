@@ -12,6 +12,7 @@ import { siteConfig } from "@/config/site";
 import { useSchedule } from "@/hooks/useSchedule";
 import { useNowPlaying } from "@/hooks/useNowPlaying";
 import { useDailySchedule, getCurrentPeriod } from "@/hooks/useDailySchedule";
+import WeatherStrip from "@/components/WeatherStrip";
 import radioLogo from "@/assets/logo-olha-que-duas.png";
 
 // Ícones fallback por nome de programa
@@ -272,6 +273,9 @@ const RadioPlayer = () => {
   return (
     <section id="radio" className="py-12 md:py-20 bg-beige-dark text-cream selection:bg-amarelo selection:text-charcoal">
       <div className="container mx-auto px-4">
+        {/* Faixa de tempo nas principais cidades — utilitário compacto */}
+        <WeatherStrip />
+
         {/* Header Compact */}
         <div className="mb-10 text-left md:text-center max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amarelo/10 border border-amarelo/20 mb-4">

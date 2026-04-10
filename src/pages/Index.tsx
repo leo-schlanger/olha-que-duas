@@ -5,7 +5,6 @@ import SobreNos from "@/components/SobreNos";
 import Podcast from "@/components/Podcast";
 import RadioPlayer from "@/components/RadioPlayer";
 import AppDownload from "@/components/AppDownload";
-import Weather from "@/components/Weather";
 import Parceiros from "@/components/Parceiros";
 import Contacto from "@/components/Contacto";
 import Footer from "@/components/Footer";
@@ -29,17 +28,14 @@ const Index = () => {
         {/* Quem somos */}
         <SobreNos />
 
-        {/* Rádio ao vivo - Destaque principal */}
+        {/* Rádio ao vivo - Destaque principal (inclui faixa de tempo no topo) */}
         <RadioPlayer />
+
+        {/* App móvel - Google Play (CTA logo após experiência da rádio) */}
+        <AppDownload />
 
         {/* Podcast - Conteúdo complementar */}
         <Podcast />
-
-        {/* App móvel - Google Play */}
-        <AppDownload />
-
-        {/* Widget de clima */}
-        <Weather />
 
         {/* Parceiros */}
         <Parceiros />

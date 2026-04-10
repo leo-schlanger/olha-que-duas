@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { ArrowRight, Play, Mic, Radio, Video, Sparkles } from "lucide-react";
+import { ArrowRight, Play, Mic, Radio, Video, Sparkles, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import fotoJuntas from "@/assets/olha-que-duas-foto.jpg";
 
@@ -94,22 +94,35 @@ const Hero = () => {
           <div className="text-cream space-y-6 md:space-y-8 text-center lg:text-left order-2 lg:order-1">
             {/* Enhanced animated label */}
             <div
-              className={`inline-flex items-center gap-3 px-5 py-2.5 rounded-full glass-dark transition-all duration-700 ${
+              className={`flex flex-wrap items-center gap-2 justify-center lg:justify-start transition-all duration-700 ${
                 isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
               }`}
             >
-              <div className="flex items-center gap-1.5">
-                <Radio className="w-3.5 h-3.5 text-amarelo" />
-                <Mic className="w-3.5 h-3.5 text-vermelho-soft" />
-                <Video className="w-3.5 h-3.5 text-amarelo" />
+              <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full glass-dark">
+                <div className="flex items-center gap-1.5">
+                  <Radio className="w-3.5 h-3.5 text-amarelo" />
+                  <Mic className="w-3.5 h-3.5 text-vermelho-soft" />
+                  <Video className="w-3.5 h-3.5 text-amarelo" />
+                </div>
+                <span className="text-[11px] font-semibold uppercase tracking-widest text-cream/80">
+                  Comunicação • Voz • Negócios
+                </span>
+                <span className="flex items-center gap-1.5 pl-2 border-l border-cream/20">
+                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                  <span className="text-[10px] text-green-400 font-medium">AO VIVO</span>
+                </span>
               </div>
-              <span className="text-[11px] font-semibold uppercase tracking-widest text-cream/80">
-                Comunicação • Voz • Negócios
-              </span>
-              <span className="flex items-center gap-1.5 pl-2 border-l border-cream/20">
-                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-[10px] text-green-400 font-medium">AO VIVO</span>
-              </span>
+
+              {/* Mini-chip do app Android — discreto, não compete com os CTAs */}
+              <a
+                href="#app"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amarelo/15 border border-amarelo/30 hover:bg-amarelo/25 hover:border-amarelo/50 transition-all group"
+              >
+                <Smartphone className="w-3 h-3 text-amarelo group-hover:scale-110 transition-transform" />
+                <span className="text-[10px] font-bold uppercase tracking-wider text-amarelo">
+                  App Android
+                </span>
+              </a>
             </div>
 
             {/* Animated headline */}
