@@ -83,6 +83,13 @@ function isValidSong(data: {
  * buffer de stream estimado. A API AzuraCast diz "o que o servidor está a
  * transmitir AGORA", mas o ouvinte ouve com vários segundos de atraso —
  * por isso precisamos olhar para o histórico recente.
+ *
+ * Importante: o `song_history` do AzuraCast NÃO inclui vinhetas/jingles —
+ * só músicas. Isto significa que entre duas faixas há sempre uma "lacuna"
+ * de 5-15s onde tocou uma vinheta que não está em lado nenhum dos dados.
+ * Quando o ouvinte está nessa lacuna, devolvemos `undefined` para a UI
+ * cair no estado neutro (logo) — em vez de mostrar a capa errada da
+ * próxima música prematuramente.
  */
 function pickAudibleEntry(
   nowPlaying: AzuraEntry | undefined,
@@ -100,14 +107,17 @@ function pickAudibleEntry(
   for (const entry of candidates) {
     const playedAt = entry.played_at;
     const duration = entry.duration;
-    if (typeof playedAt !== "number" || typeof duration !== "number") continue;
+    if (typeof playedAt !== "number" || typeof duration !== "number" || duration <= 0) continue;
     if (playedAt <= listenerWallClock && listenerWallClock < playedAt + duration) {
       return entry;
     }
   }
 
-  // Sem match (gap, dados inconsistentes ou início do stream): cair para o now_playing
-  return nowPlaying;
+  // Sem match: o ouvinte está numa lacuna entre faixas conhecidas
+  // (tipicamente uma vinheta que o AzuraCast não inclui no histórico).
+  // Devolver undefined → UI mostra logo, em vez da capa errada da
+  // próxima música antes do ouvinte realmente a receber.
+  return undefined;
 }
 
 export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean = true) {
