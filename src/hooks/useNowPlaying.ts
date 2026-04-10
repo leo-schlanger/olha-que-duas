@@ -22,6 +22,8 @@ interface NowPlayingState {
 interface AzuraEntry {
   played_at?: number;
   duration?: number;
+  elapsed?: number;
+  remaining?: number;
   playlist?: string;
   song?: {
     title?: string;
@@ -49,7 +51,7 @@ const RETRY_DELAY = 2000;   // retry rápido após falha de fetch
 // Buffer típico do ouvinte: icecast burst (~2-3s @ 192kbps) + decode buffer
 // do browser (~3-5s). Ajustar empiricamente se a UI ainda chegar adiantada
 // (subir) ou atrasada (descer) face ao áudio.
-const LISTENER_BUFFER_SECONDS = 6;
+const LISTENER_BUFFER_SECONDS = 4;
 
 // Playlists de música seguem padrões — outras coisas com metadados sem música
 // válida são tratadas como podcast
@@ -134,12 +136,49 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
 
   const lastSongKeyRef = useRef<string | null>(null);
   const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const nextFetchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fetchRef = useRef<() => void>(() => {});
 
   const clearRetry = () => {
     if (retryTimeoutRef.current) {
       clearTimeout(retryTimeoutRef.current);
       retryTimeoutRef.current = null;
     }
+  };
+
+  const clearNextFetch = () => {
+    if (nextFetchTimeoutRef.current) {
+      clearTimeout(nextFetchTimeoutRef.current);
+      nextFetchTimeoutRef.current = null;
+    }
+  };
+
+  /**
+   * Agenda um refetch one-shot exactamente quando o ouvinte terminar a faixa
+   * actual, em vez de esperar pelo próximo poll de 5s. Usa a janela
+   * [played_at, played_at+duration) da entrada audível para calcular quantos
+   * segundos faltam até o ouvinte transicionar. No pior caso isto reduz o
+   * delay de detecção de ~5s (polling) para ~1s (margem). Funciona para
+   * qualquer entry (now_playing ou histórico) já que ambas têm played_at e
+   * duration.
+   */
+  const scheduleSmartRefetch = (audible: AzuraEntry | undefined, listenerWallClock: number) => {
+    clearNextFetch();
+    if (!audible) return;
+    const playedAt = audible.played_at;
+    const duration = audible.duration;
+    if (typeof playedAt !== "number" || typeof duration !== "number" || duration <= 0) return;
+
+    const secondsUntilTransition = playedAt + duration - listenerWallClock;
+    if (secondsUntilTransition <= 0) return;
+
+    // +1s de margem para garantir que a API já reflectiu a próxima faixa
+    const delayMs = (secondsUntilTransition + 1) * 1000;
+
+    nextFetchTimeoutRef.current = setTimeout(() => {
+      nextFetchTimeoutRef.current = null;
+      fetchRef.current();
+    }, delayMs);
   };
 
   const fetchNowPlaying = useCallback(async () => {
@@ -165,6 +204,7 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
       // (live tem prioridade absoluta e não há histórico relevante)
       if (live?.is_live) {
         clearRetry();
+        clearNextFetch();
         lastSongKeyRef.current = null;
         setState({
           song: null,
@@ -183,10 +223,14 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
       // (com base no buffer estimado), em vez de usar o now_playing cru
       const nowPlaying: AzuraEntry | undefined = data.now_playing;
       const history: AzuraEntry[] = Array.isArray(data.song_history) ? data.song_history : [];
+      const listenerWallClock = Date.now() / 1000 - LISTENER_BUFFER_SECONDS;
       const audible = pickAudibleEntry(nowPlaying, history, Date.now() / 1000);
 
       if (!audible?.song) {
         clearRetry();
+        // Lacuna (vinheta) — não temos played_at/duration confiável. Polling
+        // normal trata. Limpamos qualquer smart refetch pendente.
+        clearNextFetch();
         lastSongKeyRef.current = null;
         setState({ song: null, isMusic: false, isLiveShow: false, liveShowName: "", isPodcast: false, podcastName: "", podcastArt: "", loading: false });
         return;
@@ -224,6 +268,8 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
             podcastArt: audible.song.art || "",
             loading: false,
           });
+          // Podcast pode durar bastante; agenda refetch para o seu fim
+          scheduleSmartRefetch(audible, listenerWallClock);
           return;
         }
 
@@ -239,6 +285,7 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
           podcastArt: "",
           loading: false,
         });
+        scheduleSmartRefetch(audible, listenerWallClock);
         return;
       }
 
@@ -260,6 +307,8 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
         podcastArt: "",
         loading: false,
       });
+      // Agenda refetch para o momento exacto da próxima transição
+      scheduleSmartRefetch(audible, listenerWallClock);
     } catch {
       // Falha de fetch (timeout, rede, parse). Retry rápido uma vez para
       // não esperar 5s pelo próximo poll. Não tocamos no estado para evitar
@@ -273,10 +322,17 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
     }
   }, [streamUrl]);
 
+  // Mantém uma ref estável para o smart refetch poder chamar a versão actual
+  // do fetchNowPlaying mesmo após re-renders
+  useEffect(() => {
+    fetchRef.current = fetchNowPlaying;
+  }, [fetchNowPlaying]);
+
   // Polling principal — só corre quando o utilizador está a ouvir
   useEffect(() => {
     if (!isPlaying) {
       clearRetry();
+      clearNextFetch();
       return;
     }
 
@@ -286,6 +342,7 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
     return () => {
       clearInterval(interval);
       clearRetry();
+      clearNextFetch();
     };
   }, [fetchNowPlaying, isPlaying]);
 
