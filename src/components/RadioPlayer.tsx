@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import {
   Calendar, Clock, Music, Radio, Play, Pause,
   Volume2, VolumeX, Sparkles, Zap, ShieldCheck,
@@ -61,12 +61,19 @@ const PERIOD_ICONS: Record<string, typeof Sun> = {
   madrugada: CloudMoon,
 };
 
+// Backoff para tentativas de reconexão após drop do stream (em ms)
+const RECONNECT_BACKOFF = [1000, 2000, 4000, 8000, 15000];
+
 const RadioPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(80);
   const [isMuted, setIsMuted] = useState(false);
+  const [isReconnecting, setIsReconnecting] = useState(false);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const reconnectAttemptsRef = useRef(0);
+  const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isPlayingRef = useRef(false);
 
   const { schedule, loading } = useSchedule();
   const { data: dailySchedule } = useDailySchedule();
@@ -110,12 +117,117 @@ const RadioPlayer = () => {
     }
   }, [volume, isMuted]);
 
+  // Mantém ref sincronizada para uso dentro de listeners do <audio>
+  useEffect(() => {
+    isPlayingRef.current = isPlaying;
+  }, [isPlaying]);
+
+  const clearReconnectTimer = () => {
+    if (reconnectTimeoutRef.current) {
+      clearTimeout(reconnectTimeoutRef.current);
+      reconnectTimeoutRef.current = null;
+    }
+  };
+
+  // Tenta reconectar ao stream com backoff exponencial. Chamada quando o
+  // <audio> dispara error/stalled enquanto o utilizador queria estar a ouvir.
+  const attemptReconnect = useCallback(() => {
+    if (!audioRef.current || !radio.streamUrl) return;
+    if (!isPlayingRef.current) return;
+
+    const attempt = reconnectAttemptsRef.current;
+    if (attempt >= RECONNECT_BACKOFF.length) {
+      // Desistimos: avisamos o utilizador parando o player
+      setIsReconnecting(false);
+      setIsPlaying(false);
+      reconnectAttemptsRef.current = 0;
+      return;
+    }
+
+    const delay = RECONNECT_BACKOFF[attempt];
+    reconnectAttemptsRef.current = attempt + 1;
+    setIsReconnecting(true);
+
+    clearReconnectTimer();
+    reconnectTimeoutRef.current = setTimeout(async () => {
+      reconnectTimeoutRef.current = null;
+      if (!audioRef.current || !isPlayingRef.current) return;
+      try {
+        audioRef.current.src = radio.streamUrl;
+        audioRef.current.load();
+        await audioRef.current.play();
+        // sucesso é confirmado pelo evento "playing" (limpa estado lá)
+      } catch {
+        // Falha — agenda próxima tentativa
+        attemptReconnect();
+      }
+    }, delay);
+  }, [radio.streamUrl]);
+
+  // Listeners de saúde do <audio>: detectar drops e recuperar automaticamente
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const onPlaying = () => {
+      reconnectAttemptsRef.current = 0;
+      clearReconnectTimer();
+      setIsReconnecting(false);
+    };
+    const onWaiting = () => {
+      // Buffering puro — mostra feedback mas não força reconexão
+      if (isPlayingRef.current) setIsReconnecting(true);
+    };
+    const onError = () => {
+      if (isPlayingRef.current) attemptReconnect();
+    };
+    const onStalled = () => {
+      if (isPlayingRef.current) attemptReconnect();
+    };
+    const onEnded = () => {
+      // Live stream não devia "acabar"; tratar como drop
+      if (isPlayingRef.current) attemptReconnect();
+    };
+
+    audio.addEventListener("playing", onPlaying);
+    audio.addEventListener("waiting", onWaiting);
+    audio.addEventListener("error", onError);
+    audio.addEventListener("stalled", onStalled);
+    audio.addEventListener("ended", onEnded);
+
+    return () => {
+      audio.removeEventListener("playing", onPlaying);
+      audio.removeEventListener("waiting", onWaiting);
+      audio.removeEventListener("error", onError);
+      audio.removeEventListener("stalled", onStalled);
+      audio.removeEventListener("ended", onEnded);
+    };
+  }, [attemptReconnect]);
+
+  // Reconexão imediata quando a rede volta após uma quebra
+  useEffect(() => {
+    const onOnline = () => {
+      if (isPlayingRef.current) {
+        reconnectAttemptsRef.current = 0;
+        attemptReconnect();
+      }
+    };
+    window.addEventListener("online", onOnline);
+    return () => window.removeEventListener("online", onOnline);
+  }, [attemptReconnect]);
+
+  // Cleanup do timer ao desmontar
+  useEffect(() => () => clearReconnectTimer(), []);
+
   const togglePlay = async () => {
     if (!radio.isLive || !radio.streamUrl) return;
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
         setIsPlaying(false);
+        clearReconnectTimer();
+        reconnectAttemptsRef.current = 0;
+        setIsReconnecting(false);
       } else {
         try {
           // Reload stream to get fresh audio (avoids stale buffer after pause)
@@ -123,6 +235,7 @@ const RadioPlayer = () => {
           audioRef.current.load();
           await audioRef.current.play();
           setIsPlaying(true);
+          reconnectAttemptsRef.current = 0;
           refetch();
         } catch {
           // Browser blocked autoplay — user interaction required
@@ -278,7 +391,12 @@ const RadioPlayer = () => {
 
                   {/* Now playing info */}
                   <div className="mt-6 text-center w-full min-w-0 px-2">
-                    {isLiveShow ? (
+                    {isReconnecting && isPlaying ? (
+                      <>
+                        <p className="text-base font-display font-bold truncate">{radio.name}</p>
+                        <p className="text-sm opacity-60 mt-1 truncate">A reconectar…</p>
+                      </>
+                    ) : isLiveShow ? (
                       <>
                         <p className="text-base font-display font-bold truncate" title={liveShowName}>{liveShowName}</p>
                         <p className="text-sm opacity-60 mt-1">Programa ao Vivo</p>
