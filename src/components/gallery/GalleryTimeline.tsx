@@ -59,15 +59,12 @@ export function GalleryTimeline({ albumsByYear, className }: GalleryTimelineProp
 
                   {/* Connector line - desktop only */}
                   <div
-                    className={cn(
-                      'hidden md:block absolute top-1/2 h-px bg-border',
-                      isLeft ? 'left-[calc(50%+8px)] right-[calc(50%-8px)] w-8' : 'right-[calc(50%+8px)] left-[calc(50%-8px)] w-8',
-                      isLeft ? 'left-[calc(50%+8px)]' : 'right-[calc(50%+8px)]'
-                    )}
-                    style={{
-                      width: '40px',
-                      [isLeft ? 'right' : 'left']: 'calc(50% + 8px)',
-                    }}
+                    className="hidden md:block absolute top-1/2 h-px w-10 bg-border"
+                    style={
+                      isLeft
+                        ? { right: 'calc(50% + 8px)' }
+                        : { left: 'calc(50% + 8px)' }
+                    }
                   />
 
                   {/* Card container */}
