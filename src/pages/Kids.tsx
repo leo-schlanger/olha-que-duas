@@ -22,6 +22,7 @@ import { useMetaTags } from '@/hooks/useMetaTags';
 import logoKids from '@/assets/kids/logo-kids.png';
 import alexandraCartoon from '@/assets/kids/alexandra-cartoon.png';
 import marluceCartoon from '@/assets/kids/marluce-cartoon.png';
+import leoCartoon from '@/assets/kids/leo-cartoon.png';
 import cantinhoPoster from '@/assets/kids/cantinho-da-pequena.jpg';
 
 // JSON-LD Schema for Kids Page — SEO completo e otimizado
@@ -593,40 +594,75 @@ const Kids = () => {
         </section>
 
         {/* CTA final */}
-        <section className="py-16 md:py-24 bg-background">
+        <section className="py-16 md:py-24 bg-background overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6">
-            <Animated animation="zoom-in">
-              <div
-                className="relative max-w-4xl mx-auto rounded-[2rem] overflow-hidden p-10 md:p-14 text-center border-4 border-white shadow-2xl"
-                style={{
-                  background:
-                    'linear-gradient(135deg, #f472b6 0%, #fb923c 50%, #fde047 100%)',
-                }}
+            <div className="relative max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-6">
+              {/* Leo cartoon — acenando ao lado da box */}
+              <Animated
+                animation="fade-right"
+                delay={100}
+                className="lg:flex-shrink-0 lg:-mr-8 xl:-mr-12 relative z-10"
               >
-                <div className="absolute -top-8 -right-8 w-32 h-32 bg-white/20 rounded-full blur-2xl" />
-                <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-white/20 rounded-full blur-2xl" />
-                <PartyPopper className="w-12 h-12 text-white mx-auto mb-4 animate-bob-fast" />
-                <h2 className="font-display font-bold text-3xl md:text-5xl text-white drop-shadow-md">
-                  Fica atento! O espaço Kids está quase a chegar.
-                </h2>
-                <p className="mt-4 text-lg md:text-xl text-white/95 max-w-2xl mx-auto">
-                  Subscreve a nossa newsletter e recebe em primeira mão o anúncio
-                  oficial da estreia.
-                </p>
-                <div className="mt-8">
-                  <Button
-                    asChild
-                    size="lg"
-                    className="h-14 px-8 text-base font-extrabold rounded-full bg-white hover:bg-yellow-100 text-pink-600 shadow-[0_10px_0_rgba(0,0,0,0.15)] hover:shadow-[0_6px_0_rgba(0,0,0,0.15)] hover:translate-y-1 transition-all border-4 border-yellow-300"
-                  >
-                    <Link to="/newsletter" className="inline-flex items-center gap-2">
-                      <Mail className="w-5 h-5" />
-                      Subscrever Newsletter
-                    </Link>
-                  </Button>
+                <div className="relative animate-greet origin-bottom">
+                  {/* Glow atrás do Leo */}
+                  <div className="absolute -inset-6 rounded-full bg-yellow-200/50 blur-3xl" />
+                  {/* Balão "Olá!" */}
+                  <div className="absolute -top-4 -right-2 md:-top-2 md:-right-6 z-20 animate-bob-fast">
+                    <div className="relative px-4 py-2 rounded-2xl bg-white border-4 border-pink-300 shadow-[0_6px_0_rgba(0,0,0,0.12)]">
+                      <span className="font-display font-extrabold text-pink-600 text-lg md:text-xl">
+                        Olá!
+                      </span>
+                      {/* Cauda do balão */}
+                      <div className="absolute -bottom-2 left-6 w-4 h-4 bg-white border-b-4 border-r-4 border-pink-300 rotate-45" />
+                    </div>
+                  </div>
+                  {/* Estrelinhas ao redor */}
+                  <Star className="absolute top-6 -left-4 w-5 h-5 md:w-6 md:h-6 text-yellow-400 fill-yellow-300 animate-twinkle-1" />
+                  <Sparkles className="absolute top-20 -right-6 w-5 h-5 md:w-6 md:h-6 text-pink-400 fill-pink-300 animate-twinkle-2" />
+                  <Star className="absolute bottom-10 -left-6 w-4 h-4 md:w-5 md:h-5 text-sky-400 fill-sky-300 animate-twinkle-3" />
+                  <img
+                    src={leoCartoon}
+                    alt="Leo a acenar"
+                    className="relative h-56 sm:h-64 md:h-80 lg:h-[26rem] w-auto object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.28)]"
+                    loading="lazy"
+                  />
                 </div>
-              </div>
-            </Animated>
+              </Animated>
+
+              {/* Box "Fica atento!" */}
+              <Animated animation="zoom-in" className="flex-1 w-full max-w-3xl">
+                <div
+                  className="relative rounded-[2rem] overflow-hidden p-10 md:p-14 text-center border-4 border-white shadow-2xl"
+                  style={{
+                    background:
+                      'linear-gradient(135deg, #f472b6 0%, #fb923c 50%, #fde047 100%)',
+                  }}
+                >
+                  <div className="absolute -top-8 -right-8 w-32 h-32 bg-white/20 rounded-full blur-2xl" />
+                  <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-white/20 rounded-full blur-2xl" />
+                  <PartyPopper className="w-12 h-12 text-white mx-auto mb-4 animate-bob-fast" />
+                  <h2 className="font-display font-bold text-3xl md:text-5xl text-white drop-shadow-md">
+                    Fica atento! O espaço Kids está quase a chegar.
+                  </h2>
+                  <p className="mt-4 text-lg md:text-xl text-white/95 max-w-2xl mx-auto">
+                    Subscreve a nossa newsletter e recebe em primeira mão o anúncio
+                    oficial da estreia.
+                  </p>
+                  <div className="mt-8">
+                    <Button
+                      asChild
+                      size="lg"
+                      className="h-14 px-8 text-base font-extrabold rounded-full bg-white hover:bg-yellow-100 text-pink-600 shadow-[0_10px_0_rgba(0,0,0,0.15)] hover:shadow-[0_6px_0_rgba(0,0,0,0.15)] hover:translate-y-1 transition-all border-4 border-yellow-300"
+                    >
+                      <Link to="/newsletter" className="inline-flex items-center gap-2">
+                        <Mail className="w-5 h-5" />
+                        Subscrever Newsletter
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              </Animated>
+            </div>
           </div>
         </section>
       </main>
