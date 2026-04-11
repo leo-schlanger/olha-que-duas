@@ -16,6 +16,8 @@ export interface GalleryAlbum {
 export interface GalleryPhoto {
   cloudinary_public_id: string;
   display_order: number;
+  /** Cloudinary asset version — used to bust CDN cache when a file is replaced or renamed. */
+  version?: number;
 }
 
 export interface GalleryAlbumWithPhotos extends GalleryAlbum {

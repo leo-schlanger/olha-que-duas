@@ -2,8 +2,13 @@ import { useQuery } from '@tanstack/react-query';
 import { getSupabase, isSupabaseConfigured, getSupabaseUrl } from '@/lib/supabase';
 import type { GalleryAlbum, GalleryAlbumWithPhotos, GalleryPhoto, GalleryAlbumsByYear } from '@/types/gallery';
 
+interface CloudinaryPhotoRef {
+  public_id: string;
+  version?: number;
+}
+
 // Fetch photos from Cloudinary via Edge Function
-async function fetchAlbumPhotos(slug: string): Promise<string[]> {
+async function fetchAlbumPhotos(slug: string): Promise<CloudinaryPhotoRef[]> {
   const supabaseUrl = getSupabaseUrl();
   if (!supabaseUrl) return [];
 
@@ -23,7 +28,14 @@ async function fetchAlbumPhotos(slug: string): Promise<string[]> {
   }
 
   const data = await response.json();
-  return data.photos || [];
+  const rawPhotos = data.photos || [];
+  // Edge function returns { public_id, version } objects; older clients
+  // may still receive plain strings, so normalize defensively.
+  return rawPhotos.map((p: unknown): CloudinaryPhotoRef => {
+    if (typeof p === 'string') return { public_id: p };
+    const obj = p as { public_id: string; version?: number };
+    return { public_id: obj.public_id, version: obj.version };
+  });
 }
 
 export function useGalleryAlbums() {
@@ -51,14 +63,27 @@ export function useGalleryAlbums() {
         return [];
       }
 
-      // Cover photo is now the first image (01) in the Cloudinary folder
-      const albumsWithCovers: GalleryAlbum[] = albums.map(album => ({
-        ...album,
-        cover_photo: {
-          cloudinary_public_id: `olhaqueduas/galeria/${album.slug}/01`,
-          display_order: 1,
-        },
-      }));
+      // Fetch cover photo (first sorted photo) with its version from the edge
+      // function so the client can build cache-busted URLs after renames/replaces.
+      const albumsWithCovers: GalleryAlbum[] = await Promise.all(
+        albums.map(async (album) => {
+          const photos = await fetchAlbumPhotos(album.slug);
+          const cover = photos[0];
+          return {
+            ...album,
+            cover_photo: cover
+              ? {
+                  cloudinary_public_id: cover.public_id,
+                  version: cover.version,
+                  display_order: 1,
+                }
+              : {
+                  cloudinary_public_id: `olhaqueduas/galeria/${album.slug}/01`,
+                  display_order: 1,
+                },
+          };
+        }),
+      );
 
       // Group albums by year
       const albumsByYear = albumsWithCovers.reduce<Record<number, GalleryAlbum[]>>((acc, album) => {
@@ -115,17 +140,13 @@ export function useGalleryAlbum(slug: string) {
         return null;
       }
 
-      // Fetch photos from Cloudinary via Edge Function
-      const photoIds = await fetchAlbumPhotos(slug);
-
-      // Sort by public_id so order follows filename (01, 02, 03, ...).
-      // The edge function returns photos in Cloudinary's unsorted order,
-      // which means photos[0] could be any file — breaking the "cover = 01" rule.
-      const sortedPhotoIds = [...photoIds].sort((a, b) => a.localeCompare(b));
+      // Fetch photos from Cloudinary via Edge Function (already sorted by filename)
+      const photoRefs = await fetchAlbumPhotos(slug);
 
       // Convert to GalleryPhoto format with display_order based on position
-      const photos: GalleryPhoto[] = sortedPhotoIds.map((publicId, index) => ({
-        cloudinary_public_id: publicId,
+      const photos: GalleryPhoto[] = photoRefs.map((ref, index) => ({
+        cloudinary_public_id: ref.public_id,
+        version: ref.version,
         display_order: index + 1,
       }));
 

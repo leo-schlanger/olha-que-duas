@@ -70,7 +70,7 @@ function PhotoGridItem({ photo, onClick }: PhotoGridItemProps) {
       {/* Blur placeholder */}
       <img
         key={`blur-${photo.cloudinary_public_id}`}
-        src={getCloudinaryPlaceholder(photo.cloudinary_public_id)}
+        src={getCloudinaryPlaceholder(photo.cloudinary_public_id, photo.version)}
         alt=""
         className={cn(
           'absolute inset-0 w-full h-full object-cover blur-lg scale-110 transition-opacity duration-300',
@@ -82,7 +82,7 @@ function PhotoGridItem({ photo, onClick }: PhotoGridItemProps) {
       {/* Main image */}
       <img
         key={`main-${photo.cloudinary_public_id}`}
-        src={getCloudinaryUrl(photo.cloudinary_public_id, 'grid')}
+        src={getCloudinaryUrl(photo.cloudinary_public_id, 'grid', photo.version)}
         alt=""
         className={cn(
           'w-full h-full object-cover transition-all duration-300',

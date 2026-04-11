@@ -99,15 +99,17 @@ serve(async (req) => {
     const data = await response.json()
 
     // Extract and sort photos by display_name (the name shown in Cloudinary panel)
+    // Include version so the client can build cache-busting URLs
     const photos = (data.resources || [])
       .filter((r: any) => r.public_id.startsWith(folder + '/'))
       .map((r: any) => ({
         public_id: r.public_id,
+        version: r.version,
         // Use display_name if available, otherwise fall back to public_id filename
         display_name: r.display_name || r.public_id.split('/').pop() || '',
       }))
       .sort((a: any, b: any) => a.display_name.localeCompare(b.display_name, undefined, { numeric: true }))
-      .map((r: any) => r.public_id)
+      .map((r: any) => ({ public_id: r.public_id, version: r.version }))
 
     return new Response(
       JSON.stringify({ photos }),

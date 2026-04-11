@@ -76,13 +76,19 @@ function buildTransformString(config: TransformConfig): string {
  * Build a Cloudinary URL with automatic transformations
  * @param publicId - Cloudinary public ID (e.g., 'galeria/entrevista-maria-silva-20240312/foto-01')
  * @param transform - Preset transformation to apply
+ * @param version - Optional Cloudinary asset version for CDN cache busting (e.g. 1775063365)
  * @returns Full Cloudinary URL
  */
-export function getCloudinaryUrl(publicId: string, transform: CloudinaryTransform = 'thumbnail'): string {
+export function getCloudinaryUrl(
+  publicId: string,
+  transform: CloudinaryTransform = 'thumbnail',
+  version?: number,
+): string {
   const config = TRANSFORMS[transform];
   const transformString = buildTransformString(config);
+  const versionSegment = version ? `/v${version}` : '';
 
-  return `${BASE_URL}/${transformString}/${publicId}`;
+  return `${BASE_URL}/${transformString}${versionSegment}/${publicId}`;
 }
 
 /**
@@ -109,10 +115,12 @@ export function getCloudinaryUrlCustom(publicId: string, customConfig: Partial<T
 /**
  * Get a blur placeholder URL for lazy loading
  * @param publicId - Cloudinary public ID
+ * @param version - Optional Cloudinary asset version for CDN cache busting
  * @returns Blurred placeholder URL (very small)
  */
-export function getCloudinaryPlaceholder(publicId: string): string {
-  return `${BASE_URL}/w_50,h_50,q_30,e_blur:1000,f_auto/${publicId}`;
+export function getCloudinaryPlaceholder(publicId: string, version?: number): string {
+  const versionSegment = version ? `/v${version}` : '';
+  return `${BASE_URL}/w_50,h_50,q_30,e_blur:1000,f_auto${versionSegment}/${publicId}`;
 }
 
 /**

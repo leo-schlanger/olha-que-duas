@@ -20,6 +20,7 @@ export function GalleryAlbumCard({ album, position = 'left', className }: Galler
   const eventDate = new Date(album.event_date);
   const formattedDate = format(eventDate, "d 'de' MMMM 'de' yyyy", { locale: pt });
   const coverImageId = album.cover_photo?.cloudinary_public_id;
+  const coverVersion = album.cover_photo?.version;
 
   return (
     <Link
@@ -41,7 +42,7 @@ export function GalleryAlbumCard({ album, position = 'left', className }: Galler
             <>
               {/* Blur placeholder */}
               <img
-                src={getCloudinaryPlaceholder(coverImageId)}
+                src={getCloudinaryPlaceholder(coverImageId, coverVersion)}
                 alt=""
                 className={cn(
                   'absolute inset-0 w-full h-full object-cover blur-lg scale-110 transition-opacity duration-300',
@@ -52,7 +53,7 @@ export function GalleryAlbumCard({ album, position = 'left', className }: Galler
 
               {/* Main image */}
               <img
-                src={getCloudinaryUrl(coverImageId, 'thumbnail')}
+                src={getCloudinaryUrl(coverImageId, 'thumbnail', coverVersion)}
                 alt={album.title}
                 className={cn(
                   'w-full h-full object-cover transition-transform duration-500',
