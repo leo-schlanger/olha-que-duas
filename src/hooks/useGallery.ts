@@ -118,8 +118,13 @@ export function useGalleryAlbum(slug: string) {
       // Fetch photos from Cloudinary via Edge Function
       const photoIds = await fetchAlbumPhotos(slug);
 
+      // Sort by public_id so order follows filename (01, 02, 03, ...).
+      // The edge function returns photos in Cloudinary's unsorted order,
+      // which means photos[0] could be any file — breaking the "cover = 01" rule.
+      const sortedPhotoIds = [...photoIds].sort((a, b) => a.localeCompare(b));
+
       // Convert to GalleryPhoto format with display_order based on position
-      const photos: GalleryPhoto[] = photoIds.map((publicId, index) => ({
+      const photos: GalleryPhoto[] = sortedPhotoIds.map((publicId, index) => ({
         cloudinary_public_id: publicId,
         display_order: index + 1,
       }));

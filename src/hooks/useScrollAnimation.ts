@@ -17,9 +17,17 @@ export function useScrollAnimation<T extends HTMLElement = HTMLDivElement>(
     const element = ref.current;
     if (!element) return;
 
+    // Safety fallback: if the IntersectionObserver never fires
+    // (e.g. layout race on slow loads), force content visible after 1.2s
+    // so the page never stays blank.
+    const fallbackTimer = window.setTimeout(() => {
+      setIsVisible(true);
+    }, 1200);
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
+          window.clearTimeout(fallbackTimer);
           setIsVisible(true);
           if (triggerOnce) {
             observer.unobserve(element);
@@ -33,7 +41,10 @@ export function useScrollAnimation<T extends HTMLElement = HTMLDivElement>(
 
     observer.observe(element);
 
-    return () => observer.disconnect();
+    return () => {
+      window.clearTimeout(fallbackTimer);
+      observer.disconnect();
+    };
   }, [threshold, rootMargin, triggerOnce]);
 
   return { ref, isVisible };
