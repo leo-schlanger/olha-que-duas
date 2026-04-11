@@ -69,6 +69,18 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- Kids (em breve) -->
+  <url>
+    <loc>https://www.olhaqueduas.com/kids</loc>
+    <lastmod>2026-04-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://www.olhaqueduas.com/og-kids.jpg</image:loc>
+      <image:title>Olha que Duas Kids - Espaço Infantil</image:title>
+    </image:image>
+  </url>
+
   <!-- Newsletter -->
   <url>
     <loc>https://www.olhaqueduas.com/newsletter</loc>

@@ -27,7 +27,7 @@ export const siteConfig = {
     { href: "/noticias", label: "Notícias", isRoute: true },
     { href: "/galeria", label: "Trabalhos", isRoute: true },
     { href: "/loja", label: "Loja", isRoute: true },
-    { href: "#contacto", label: "Contacto" },
+    { href: "/kids", label: "Kids", isRoute: true },
   ],
 
   // App móvel

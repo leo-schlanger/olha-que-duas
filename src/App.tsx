@@ -19,6 +19,7 @@ const BlogPost = lazy(() => import("./pages/BlogPost"));
 const Gallery = lazy(() => import("./pages/Gallery"));
 const GalleryAlbum = lazy(() => import("./pages/GalleryAlbum"));
 const Vendas = lazy(() => import("./pages/Vendas"));
+const Kids = lazy(() => import("./pages/Kids"));
 const Newsletter = lazy(() => import("./pages/Newsletter"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
@@ -53,6 +54,7 @@ const App = () => (
             <Route path="/galeria" element={<Gallery />} />
             <Route path="/galeria/:slug" element={<GalleryAlbum />} />
             <Route path="/loja" element={<Vendas />} />
+            <Route path="/kids" element={<Kids />} />
             <Route path="/newsletter" element={<Newsletter />} />
             <Route path="/privacidade" element={<PrivacyPolicy />} />
             <Route path="/termos" element={<TermsOfService />} />
