@@ -272,7 +272,7 @@ const Kids = () => {
             className="absolute inset-0 -z-10"
             style={{
               background:
-                'linear-gradient(180deg, #bdf 0%, #dcf1ff 35%, #f0f8ff 65%, #fff9e6 100%)',
+                'linear-gradient(180deg, #38bdf8 0%, #7dd3fc 40%, #bae6fd 100%)',
             }}
           />
 
@@ -313,7 +313,7 @@ const Kids = () => {
             </Animated>
 
             {/* Hero stage: Alexandra + Logo (above) + Marluce */}
-            <div className="relative flex items-end justify-center gap-0 max-w-6xl mx-auto pt-32 md:pt-40">
+            <div className="relative flex items-end justify-center gap-0 max-w-6xl mx-auto pt-8 md:pt-12">
               {/* Alexandra */}
               <Animated animation="fade-right" delay={150} className="flex justify-center md:justify-end">
                 <div className="relative animate-bob-slow">

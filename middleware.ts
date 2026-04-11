@@ -1,5 +1,5 @@
 export const config = {
-  matcher: ['/viagens', '/servicos', '/loja', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*'],
+  matcher: ['/viagens', '/servicos', '/loja', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*', '/kids'],
 };
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || '';
@@ -54,6 +54,16 @@ export default async function middleware(request: Request): Promise<Response | u
       description: 'Descubra o mundo com a Olha que Duas Trip! Planeamento de viagens à medida, estadias em hotéis de charme, passagens aéreas com as melhores tarifas e experiências gourmet inesquecíveis. Peça já o seu orçamento gratuito e viaje sem preocupações.',
       image: 'https://www.olhaqueduas.com/og-viagens.jpg',
       url: 'https://www.olhaqueduas.com/viagens',
+    });
+  }
+
+  // ========== KIDS ==========
+  if (path === '/kids') {
+    return html({
+      title: 'Olha que Duas Kids — Em Breve | Espaço Infantil de Rádio, Música e Histórias',
+      description: 'Em breve no Olha que Duas: um espaço Kids exclusivo para crianças, com música, histórias, brincadeiras e o novo programa "O Cantinho da Pequenada com a Leonor". Conteúdo seguro e educativo para toda a família.',
+      image: 'https://www.olhaqueduas.com/og-kids.jpg',
+      url: 'https://www.olhaqueduas.com/kids',
     });
   }
 
