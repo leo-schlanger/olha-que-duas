@@ -372,7 +372,7 @@ const Kids = () => {
             {/* Marketing message */}
             <Animated animation="fade-up" delay={500} className="text-center mt-10 md:mt-14 max-w-4xl mx-auto">
               <h1 className="font-display font-bold leading-[0.95] text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
-                <span className="block text-white drop-shadow-[0_4px_0_rgba(244,114,182,0.8)]">
+                <span className="block text-pink-600 drop-shadow-sm">
                   Em breve no Olha que Duas
                 </span>
                 <span
@@ -388,11 +388,11 @@ const Kids = () => {
                   um Espaço Kids!
                 </span>
               </h1>
-              <p className="mt-5 md:mt-7 text-lg md:text-2xl font-medium text-white drop-shadow-md">
+              <p className="mt-5 md:mt-7 text-lg md:text-2xl font-bold text-sky-900 drop-shadow-sm">
                 <span className="inline-flex items-center gap-2">
-                  <PartyPopper className="w-5 h-5 md:w-6 md:h-6 text-yellow-300" />
+                  <PartyPopper className="w-5 h-5 md:w-6 md:h-6 text-pink-500" />
                   Música, histórias, brincadeiras e muita imaginação para a pequenada!
-                  <PartyPopper className="w-5 h-5 md:w-6 md:h-6 text-yellow-300" />
+                  <PartyPopper className="w-5 h-5 md:w-6 md:h-6 text-pink-500" />
                 </span>
               </p>
 
