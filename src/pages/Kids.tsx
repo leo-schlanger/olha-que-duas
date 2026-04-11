@@ -266,13 +266,13 @@ const Kids = () => {
       <Header />
       <main>
         {/* HERO — céu com nuvens, logo + duas mascotes cartoon */}
-        <section className="relative overflow-hidden pt-28 md:pt-36 pb-20 md:pb-28">
+        <section className="relative overflow-hidden pt-20 md:pt-24 pb-20 md:pb-28">
           {/* Sky background */}
           <div
             className="absolute inset-0 -z-10"
             style={{
               background:
-                'linear-gradient(180deg, #7ec8ff 0%, #a5d8ff 35%, #cfe9ff 65%, #fff4d6 100%)',
+                'linear-gradient(180deg, #bdf 0%, #dcf1ff 35%, #f0f8ff 65%, #fff9e6 100%)',
             }}
           />
 
