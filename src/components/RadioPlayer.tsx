@@ -500,13 +500,32 @@ const RadioPlayer = () => {
                             <span className="text-[10px] text-cream/40 ml-1.5">{block.range}</span>
                           </div>
                         </div>
-                        <div className="space-y-1.5">
+                        <div className="space-y-2">
                           {block.slots.map((slot) => (
-                            <div key={slot.time} className="flex items-center gap-2.5 min-w-0">
-                              <span className={`text-xs font-mono w-10 shrink-0 ${isCurrent ? 'text-amarelo/80' : 'text-cream/40'}`}>
-                                {slot.time}
-                              </span>
-                              <span className="text-sm text-cream/80 truncate" title={slot.name}>{slot.name}</span>
+                            <div key={slot.time} className="min-w-0">
+                              <div className="flex items-center gap-2.5">
+                                <span className={`text-xs font-mono w-10 shrink-0 ${isCurrent ? 'text-amarelo/80' : 'text-cream/40'}`}>
+                                  {slot.time}
+                                </span>
+                                <span className="text-sm text-cream/80 truncate" title={slot.name}>{slot.name}</span>
+                                {slot.duration && (
+                                  <span className={`ml-auto text-[10px] font-mono shrink-0 px-1.5 py-0.5 rounded ${
+                                    isCurrent ? 'bg-amarelo/15 text-amarelo/70' : 'bg-cream/5 text-cream/30'
+                                  }`}>
+                                    {slot.duration}
+                                  </span>
+                                )}
+                              </div>
+                              {slot.genres && (
+                                <div className="flex items-center gap-2.5 mt-0.5">
+                                  <span className="w-10 shrink-0" />
+                                  <span className={`text-[10px] leading-tight truncate ${
+                                    isCurrent ? 'text-amarelo/50' : 'text-cream/25'
+                                  }`} title={slot.genres}>
+                                    {slot.genres}
+                                  </span>
+                                </div>
+                              )}
                             </div>
                           ))}
                         </div>
