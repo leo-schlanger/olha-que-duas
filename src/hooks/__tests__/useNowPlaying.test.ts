@@ -52,8 +52,14 @@ describe("isValidSong", () => {
     expect(isValidSong({ title: "X", artist: "", duration: 200 })).toBe(false);
   });
 
-  it("rejeita duração curta (jingle)", () => {
-    expect(isValidSong({ title: "X", artist: "Y", duration: 30 })).toBe(false);
+  it("aceita música curta acima do mínimo (≥25s, ex: faixas infantis)", () => {
+    expect(isValidSong({ title: "X", artist: "Y", duration: 30 })).toBe(true);
+    expect(isValidSong({ title: "X", artist: "Y", duration: 25 })).toBe(true);
+  });
+
+  it("rejeita duração muito curta (provavelmente vinheta)", () => {
+    expect(isValidSong({ title: "X", artist: "Y", duration: 10 })).toBe(false);
+    expect(isValidSong({ title: "X", artist: "Y", duration: 24 })).toBe(false);
   });
 
   it("rejeita títulos que parecem jingles", () => {
@@ -194,6 +200,124 @@ describe("pickCategory", () => {
 
   it("classifica gap quando now_playing ausente", () => {
     expect(pickCategory({}, 1100).kind).toBe("gap");
+  });
+
+  // Casos reais reportados pelo utilizador (Canal Infantil)
+  describe("setup Canal Infantil", () => {
+    // Mesmos defaults do DEFAULT_ANNOUNCEMENT_PLAYLIST_PATTERNS — usa
+    // raízes para cobrir singular e plural em PT
+    const customPatterns = [
+      /an[uú]ncio/i, /especia/i, /destaqu/i, /aviso/i, /evento/i,
+    ];
+
+    it("Canal Infantil — música longa (Smash Mouth - All Star, 200s) → music", () => {
+      const cat = pickCategory({
+        now_playing: {
+          played_at: 1000,
+          duration: 200,
+          playlist: "Canal Infantil",
+          song: { title: "All Star", artist: "Smash Mouth", album: "Astro Lounge", art: "art.jpg" },
+        },
+      }, 1100, customPatterns);
+      expect(cat.kind).toBe("music");
+      if (cat.kind === "music") {
+        expect(cat.song.title).toBe("All Star");
+        expect(cat.song.artist).toBe("Smash Mouth");
+      }
+    });
+
+    it("Canal Infantil — música curta (Clues, 26s) → music (não jingle)", () => {
+      const cat = pickCategory({
+        now_playing: {
+          played_at: 1000,
+          duration: 26,
+          playlist: "Canal Infantil",
+          song: { title: "Clues, Clues, Clues", artist: "Pinkfong", album: "Kids", art: "art.jpg" },
+        },
+      }, 1010, customPatterns);
+      expect(cat.kind).toBe("music");
+    });
+
+    it("Especiais Infantil - Abertura (46s, artist 'Olha Que Duas') → announcement", () => {
+      const cat = pickCategory({
+        now_playing: {
+          played_at: 1000,
+          duration: 46,
+          playlist: "Especiais Infantil - Abertura",
+          song: {
+            title: "Canal Infantil - Abertura",
+            artist: "Olha Que Duas",
+            album: "",
+            art: "abertura.jpg",
+          },
+        },
+      }, 1010, customPatterns);
+      expect(cat.kind).toBe("announcement");
+      if (cat.kind === "announcement") {
+        expect(cat.name).toBe("Canal Infantil - Abertura");
+        expect(cat.art).toBe("abertura.jpg");
+      }
+    });
+
+    it("Especiais Infantil - Identidade (29s) → announcement", () => {
+      const cat = pickCategory({
+        now_playing: {
+          played_at: 1000,
+          duration: 29,
+          playlist: "Especiais Infantil - Identidade",
+          song: { title: "Canal Infantil - Identidade", artist: "Olha Que Duas", art: "id.jpg" },
+        },
+      }, 1010, customPatterns);
+      expect(cat.kind).toBe("announcement");
+    });
+
+    it("Especiais Infantil - Fecho (42s) → announcement", () => {
+      const cat = pickCategory({
+        now_playing: {
+          played_at: 1000,
+          duration: 42,
+          playlist: "Especiais Infantil - Fecho",
+          song: { title: "Canal Infantil - Fecho", artist: "Olha Que Duas", art: "fecho.jpg" },
+        },
+      }, 1010, customPatterns);
+      expect(cat.kind).toBe("announcement");
+    });
+
+    it("vinheta com título 'Jingle XYZ' não escapa via playlist musical", () => {
+      const cat = pickCategory({
+        now_playing: {
+          played_at: 1000,
+          duration: 200,
+          playlist: "Rotation Manhã",
+          song: { title: "Jingle Hora Certa", artist: "Rádio", art: "" },
+        },
+      }, 1100, customPatterns);
+      expect(cat.kind).toBe("jingle");
+    });
+  });
+
+  it("aceita playlists customizadas via parâmetro", () => {
+    // Sem custom patterns: "Cantinho da Pequena" não é announcement
+    const baseCat = pickCategory({
+      now_playing: {
+        played_at: 1000,
+        duration: 100,
+        playlist: "Cantinho da Pequena",
+        song: { title: "T", artist: "A", art: "x.jpg" },
+      },
+    }, 1050);
+    expect(baseCat.kind).toBe("music");
+
+    // Com custom: tratado como announcement
+    const customCat = pickCategory({
+      now_playing: {
+        played_at: 1000,
+        duration: 100,
+        playlist: "Cantinho da Pequena",
+        song: { title: "T", artist: "A", art: "x.jpg" },
+      },
+    }, 1050, [/cantinho/i]);
+    expect(customCat.kind).toBe("announcement");
   });
 });
 

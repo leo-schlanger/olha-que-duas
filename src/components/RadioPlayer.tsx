@@ -97,6 +97,7 @@ const RadioPlayer = () => {
   } = useNowPlaying(radio.streamUrl, isPlaying, {
     audioRef,
     playingStartedAtRef,
+    announcementPlaylists: radio.announcementPlaylists,
   });
 
   // Avisa em dev se o schedule do Supabase falhou (cai no fallback hardcoded)

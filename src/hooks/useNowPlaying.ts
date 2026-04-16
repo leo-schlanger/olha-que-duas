@@ -53,7 +53,12 @@ const JINGLE_PLAYLISTS = [
   /jingle/i, /vinheta/i, /interrup/i, /spot/i, /promo/i,
 ];
 
-const MIN_SONG_DURATION = 60;
+// Duração mínima para considerar uma faixa como "música". Antes era 60s
+// (filtrava jingles típicos), mas isso rejeitava músicas curtas legítimas
+// (interlúdios, intros, faixas infantis curtas como "Clues, Clues, Clues" 26s).
+// O filtro de jingle agora apoia-se em padrões de título/playlist, não só
+// na duração.
+const MIN_SONG_DURATION = 25;
 
 // Polling activo (utilizador a ouvir) vs passivo (página aberta sem play).
 // Activo a 3s: trade-off entre carga na API e tempo até detectar transição.
@@ -110,11 +115,33 @@ const MUSIC_PLAYLIST_PATTERNS = [
 ];
 
 // Playlists de anúncios/conteúdo especial: devem mostrar artwork próprio
-// mesmo quando a faixa é curta (< MIN_SONG_DURATION). Crucial para spots
-// promocionais de eventos, patrocínios e avisos onde importa o retrato.
-const ANNOUNCEMENT_PLAYLIST_PATTERNS = [
-  /an[uú]ncio/i, /especial/i, /destaque/i, /aviso/i, /evento/i,
+// e ter PRIORIDADE sobre a classificação como música — alguns spots têm
+// artist preenchido ("Olha Que Duas") mas queremos mantê-los como
+// anúncio em vez de "música".
+//
+// Estes são os defaults baseline; a config do site pode adicionar mais
+// via `siteConfig.radio.announcementPlaylists` (ver `pickCategory`).
+//
+// Nota sobre plurais: usamos a raiz da palavra (`especia`, `destaqu`)
+// em vez do singular completo (`especial`, `destaque`), porque o
+// plural "Especiais" NÃO contém "especial" como substring (termina
+// em "-iais" não "-ial"). A raiz cobre singular e plural em PT.
+const DEFAULT_ANNOUNCEMENT_PLAYLIST_PATTERNS = [
+  /an[uú]ncio/i, /especia/i, /destaqu/i, /aviso/i, /evento/i,
 ];
+
+/**
+ * Compila uma lista de strings da config em RegExp case-insensitive
+ * (escapando caracteres especiais). Strings vazias são ignoradas.
+ */
+function compileAnnouncementPatterns(extra?: readonly string[]): RegExp[] {
+  if (!extra || extra.length === 0) return DEFAULT_ANNOUNCEMENT_PLAYLIST_PATTERNS;
+  const escaped = extra
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0)
+    .map((s) => new RegExp(s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"));
+  return [...DEFAULT_ANNOUNCEMENT_PLAYLIST_PATTERNS, ...escaped];
+}
 
 // Quanto tempo manter o estado anterior (música/podcast/anúncio) visível
 // durante uma lacuna na API. 0 = não segurar — durante vinhetas/transições
@@ -244,10 +271,25 @@ export function pickAudibleEntry(
 /**
  * Decide a categoria a partir da resposta + offset do ouvinte. Função pura
  * — toda a lógica de classificação testável em isolamento.
+ *
+ * Ordem de decisão (precedência):
+ *  1. Live show (override absoluto)
+ *  2. Sem audible → gap
+ *  3. Title bate em jingle pattern → jingle (intercepta vinhetas mascaradas)
+ *  4. Playlist bate em announcement pattern → announcement
+ *     (testado ANTES de music porque alguns anúncios têm artist preenchido
+ *      e passariam falsamente como música)
+ *  5. Passa em isValidSong → music
+ *  6. Long content + playlist não-musical → podcast
+ *  7. Fallback → jingle
+ *
+ * @param announcementPatterns Override/extensão das playlists tratadas
+ *   como anúncio. Se omitido, usa apenas os defaults.
  */
 export function pickCategory(
   response: AzuraResponse,
   listenerWallClockSec: number,
+  announcementPatterns: RegExp[] = DEFAULT_ANNOUNCEMENT_PLAYLIST_PATTERNS,
 ): NowPlayingCategory {
   // 1. Programa ao vivo — prioridade absoluta
   if (response.live?.is_live) {
@@ -266,6 +308,28 @@ export function pickCategory(
     duration: audible.duration || 0,
   };
 
+  // 3. Jingle por título: intercepta vinhetas que têm artist preenchido
+  // mas o título começa com "Jingle"/"Vinheta"/"Spot"/etc.
+  const isJingleByTitle =
+    JINGLE_PATTERNS.some((p) => p.test(songData.title)) ||
+    JINGLE_PATTERNS.some((p) => p.test(songData.artist));
+  if (isJingleByTitle) return { kind: "jingle", audible };
+
+  // 4. Playlist de anúncio (precede music — alguns anúncios têm metadata
+  // "musical" mas devem ser apresentados como destaque)
+  const playlistName = songData.playlist;
+  const isAnnouncementPlaylist =
+    !!playlistName && announcementPatterns.some((p) => p.test(playlistName));
+  if (isAnnouncementPlaylist) {
+    return {
+      kind: "announcement",
+      audible,
+      name: songData.title || playlistName,
+      art: audible.song.art || "",
+    };
+  }
+
+  // 5. Música regular
   if (isValidSong(songData)) {
     return {
       kind: "music",
@@ -279,13 +343,11 @@ export function pickCategory(
     };
   }
 
-  const playlistName = songData.playlist;
-  const isMusicPlaylist = !playlistName || MUSIC_PLAYLIST_PATTERNS.some((p) => p.test(playlistName));
+  // 6. Conteúdo longo em playlist não-musical → podcast
+  const isMusicPlaylist =
+    !playlistName || MUSIC_PLAYLIST_PATTERNS.some((p) => p.test(playlistName));
   const isLongContent = songData.duration >= MIN_SONG_DURATION;
-  const isJingle = JINGLE_PATTERNS.some((p) => p.test(songData.title)) || JINGLE_PATTERNS.some((p) => p.test(songData.artist));
-  const isAnnouncementPlaylist = !!playlistName && ANNOUNCEMENT_PLAYLIST_PATTERNS.some((p) => p.test(playlistName));
-
-  if (!isMusicPlaylist && !isJingle && isLongContent) {
+  if (!isMusicPlaylist && isLongContent) {
     return {
       kind: "podcast",
       audible,
@@ -294,15 +356,7 @@ export function pickCategory(
     };
   }
 
-  if (isAnnouncementPlaylist && !isJingle) {
-    return {
-      kind: "announcement",
-      audible,
-      name: songData.title || playlistName,
-      art: audible.song.art || "",
-    };
-  }
-
+  // 7. Fallback
   return { kind: "jingle", audible };
 }
 
@@ -397,6 +451,12 @@ interface UseNowPlayingOptions {
    * (que pode disparar várias vezes durante buffering reentrante).
    */
   playingStartedAtRef?: RefObject<number | null>;
+  /**
+   * Lista adicional de nomes de playlist (literal, case-insensitive) a
+   * tratar como anúncio. Combina com os defaults do hook. Permite
+   * configuração via `siteConfig` sem editar a lógica do hook.
+   */
+  announcementPlaylists?: readonly string[];
 }
 
 /**
@@ -492,7 +552,18 @@ export function useNowPlaying(
   isPlaying: boolean = true,
   options: UseNowPlayingOptions = {},
 ) {
-  const { audioRef, playingStartedAtRef } = options;
+  const { audioRef, playingStartedAtRef, announcementPlaylists } = options;
+  // Compila uma vez por mudança da config — evita recriar regex em cada poll
+  const announcementPatternsRef = useRef<RegExp[]>(
+    compileAnnouncementPatterns(announcementPlaylists)
+  );
+  // Recompila se a config externa mudar (raro, mas mantém consistência)
+  useEffect(() => {
+    announcementPatternsRef.current = compileAnnouncementPatterns(announcementPlaylists);
+    // Stable deps via JSON serialization — array literals geralmente mudam
+    // por referência mas não por conteúdo
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(announcementPlaylists ?? [])]);
   const [state, setState] = useState<NowPlayingState>(INITIAL_STATE);
 
   const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -739,7 +810,7 @@ export function useNowPlaying(
 
       // Picka categoria com listenerWallClock atrasado pelo buffer (para
       // saber qual faixa o ouvinte está REALMENTE a ouvir).
-      let category = pickCategory(data, listenerWallClock);
+      let category = pickCategory(data, listenerWallClock, announcementPatternsRef.current);
 
       // Antecipação agressiva: se o servidor passou para uma faixa nova E
       // ela é conteúdo longo (música/podcast/live ≥60s), mostramos JÁ —
@@ -748,7 +819,7 @@ export function useNowPlaying(
       // atrás (sintoma reportado). Para anúncios curtos e jingles
       // mantemos o comportamento normal (esperar pelo ouvinte).
       if (serverTransition && typeof currentPlayedAt === "number") {
-        const futureCategory = pickCategory(data, currentPlayedAt + 0.1);
+        const futureCategory = pickCategory(data, currentPlayedAt + 0.1, announcementPatternsRef.current);
         if (shouldAnticipateTransition(futureCategory)) {
           category = futureCategory;
           // Para o smart refetch saber agendar correctamente

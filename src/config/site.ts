@@ -60,6 +60,26 @@ export const siteConfig = {
     streamUrl: "https://radio.olhaqueduas.com/listen/olha_que_duas/radio.mp3",
     isLive: true, // Rádio ativa
     tagline: "A sua companhia, 24 horas por dia",
+    /**
+     * Padrões de nomes de playlist (case-insensitive, parcial) que devem
+     * ser tratados como ANÚNCIO/DESTAQUE no player — mostram capa + título
+     * sem artista/álbum.
+     *
+     * Adicionar aqui sempre que criares uma playlist no AzuraCast cujo
+     * conteúdo seja institucional (vinhetas longas, identidades de programa,
+     * promos especiais, etc) em vez de música regular.
+     *
+     * Exemplos que cobrem o setup actual:
+     *  - "Especiais Infantil - Abertura/Identidade/Fecho" → bate "Especiais"
+     *  - "Anúncios Eventos" → bate "Anúncios"
+     */
+    announcementPlaylists: [
+      "Anúncios",
+      "Especiais",
+      "Destaques",
+      "Eventos",
+      "Aviso",
+    ],
   },
 
   // Parceiros
