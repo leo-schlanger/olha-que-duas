@@ -75,33 +75,37 @@ const Footer = () => {
                 href={siteConfig.social.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Instagram (abre numa nova aba)"
                 className="w-11 h-11 bg-cream/10 rounded-xl flex items-center justify-center hover:bg-gradient-to-br hover:from-pink-500 hover:to-orange-500 hover:text-white transition-all duration-300 shadow-sm"
               >
-                <Instagram className="w-4 h-4" />
+                <Instagram className="w-4 h-4" aria-hidden="true" />
               </a>
               <a
                 href={siteConfig.social.youtube}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="YouTube (abre numa nova aba)"
                 className="w-11 h-11 bg-cream/10 rounded-xl flex items-center justify-center hover:bg-[#FF0000] hover:text-white transition-all duration-300 shadow-sm"
               >
-                <Youtube className="w-4 h-4" />
+                <Youtube className="w-4 h-4" aria-hidden="true" />
               </a>
               <a
                 href={siteConfig.social.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Facebook (abre numa nova aba)"
                 className="w-11 h-11 bg-cream/10 rounded-xl flex items-center justify-center hover:bg-[#1877F2] hover:text-white transition-all duration-300 shadow-sm"
               >
-                <Facebook className="w-4 h-4" />
+                <Facebook className="w-4 h-4" aria-hidden="true" />
               </a>
               <a
                 href={siteConfig.social.tiktok}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="TikTok (abre numa nova aba)"
                 className="w-11 h-11 bg-cream/10 rounded-xl flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300 shadow-sm"
               >
-                <TikTokIcon className="w-4 h-4" />
+                <TikTokIcon className="w-4 h-4" aria-hidden="true" />
               </a>
               </div>
             </div>

@@ -10,6 +10,7 @@ import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
 import { SkipToContent } from "./components/SkipToContent";
 import { CookieConsent } from "./components/CookieConsent";
 import { WhatsAppFloat } from "./components/WhatsAppFloat";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 
 // Lazy load pages (except Index which is the landing page)
 const Servicos = lazy(() => import("./pages/Servicos"));
@@ -44,25 +45,27 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <SkipToContent />
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/servicos" element={<Servicos />} />
-            <Route path="/viagens" element={<Viagens />} />
-            <Route path="/noticias" element={<Blog />} />
-            <Route path="/noticias/:slug" element={<BlogPost />} />
-            <Route path="/galeria" element={<Gallery />} />
-            <Route path="/galeria/:slug" element={<GalleryAlbum />} />
-            <Route path="/loja" element={<Vendas />} />
-            <Route path="/kids" element={<Kids />} />
-            <Route path="/newsletter" element={<Newsletter />} />
-            <Route path="/privacidade" element={<PrivacyPolicy />} />
-            <Route path="/termos" element={<TermsOfService />} />
-            <Route path="/faq" element={<FAQ />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/servicos" element={<Servicos />} />
+              <Route path="/viagens" element={<Viagens />} />
+              <Route path="/noticias" element={<Blog />} />
+              <Route path="/noticias/:slug" element={<BlogPost />} />
+              <Route path="/galeria" element={<Gallery />} />
+              <Route path="/galeria/:slug" element={<GalleryAlbum />} />
+              <Route path="/loja" element={<Vendas />} />
+              <Route path="/kids" element={<Kids />} />
+              <Route path="/newsletter" element={<Newsletter />} />
+              <Route path="/privacidade" element={<PrivacyPolicy />} />
+              <Route path="/termos" element={<TermsOfService />} />
+              <Route path="/faq" element={<FAQ />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </ErrorBoundary>
         {/* PWA Install Prompt */}
         <PWAInstallPrompt />
         {/* WhatsApp Channel Float */}

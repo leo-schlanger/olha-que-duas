@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, afterEach } from "vitest";
 import {
   isValidSong,
   pickAudibleEntry,
@@ -7,6 +7,8 @@ import {
   estimateServerOffsetSeconds,
   smoothServerOffset,
   readAudioBufferAhead,
+  readBufferOverride,
+  detectServerTransition,
   statesEqual,
   type AzuraEntry,
   type AzuraResponse,
@@ -376,5 +378,64 @@ describe("statesEqual", () => {
     const a: NowPlayingState = { ...NEUTRAL, isPodcast: true, podcastName: "P" };
     const b: NowPlayingState = { ...NEUTRAL, isPodcast: true, podcastName: "P" };
     expect(statesEqual(a, b)).toBe(true);
+  });
+});
+
+describe("readBufferOverride", () => {
+  afterEach(() => {
+    localStorage.removeItem("radio.bufferSec");
+  });
+
+  it("devolve null sem chave definida", () => {
+    expect(readBufferOverride()).toBeNull();
+  });
+
+  it("devolve número parseado quando válido", () => {
+    localStorage.setItem("radio.bufferSec", "4.5");
+    expect(readBufferOverride()).toBe(4.5);
+  });
+
+  it("aceita zero", () => {
+    localStorage.setItem("radio.bufferSec", "0");
+    expect(readBufferOverride()).toBe(0);
+  });
+
+  it("rejeita valores inválidos", () => {
+    localStorage.setItem("radio.bufferSec", "abc");
+    expect(readBufferOverride()).toBeNull();
+  });
+
+  it("rejeita negativos", () => {
+    localStorage.setItem("radio.bufferSec", "-1");
+    expect(readBufferOverride()).toBeNull();
+  });
+
+  it("rejeita valores absurdos (> 30s)", () => {
+    localStorage.setItem("radio.bufferSec", "100");
+    expect(readBufferOverride()).toBeNull();
+  });
+});
+
+describe("detectServerTransition", () => {
+  it("detecta mudança entre dois played_at diferentes", () => {
+    expect(detectServerTransition(2000, 1000)).toBe(true);
+  });
+
+  it("não detecta mudança quando played_at igual", () => {
+    expect(detectServerTransition(1000, 1000)).toBe(false);
+  });
+
+  it("não detecta no primeiro fetch (previous = null)", () => {
+    expect(detectServerTransition(1000, null)).toBe(false);
+  });
+
+  it("não detecta quando current ausente", () => {
+    expect(detectServerTransition(undefined, 1000)).toBe(false);
+    expect(detectServerTransition(null, 1000)).toBe(false);
+  });
+
+  it("é direccional — qualquer mudança conta como transição", () => {
+    // Mesmo retroceder (caso AzuraCast reordene) é considerado transição
+    expect(detectServerTransition(1000, 2000)).toBe(true);
   });
 });

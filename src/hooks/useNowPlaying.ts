@@ -56,10 +56,32 @@ const JINGLE_PLAYLISTS = [
 const MIN_SONG_DURATION = 60;
 
 // Polling activo (utilizador a ouvir) vs passivo (página aberta sem play).
-// Mantemos polling passivo para mostrar "agora a tocar" antes do play —
-// melhor hook de UX e evita um flash de conteúdo no primeiro fetch.
-const POLL_INTERVAL_ACTIVE = 5000;
+// Activo a 3s: trade-off entre carga na API e tempo até detectar transição.
+// AzuraCast publica o now_playing com ~1-3s de delay próprio, então 3s é
+// o sweet spot prático.
+const POLL_INTERVAL_ACTIVE = 3000;
 const POLL_INTERVAL_PASSIVE = 15_000;
+
+// Chave de localStorage para override manual do buffer estimado. Permite
+// calibração ao vivo sem deploy: `localStorage.setItem('radio.bufferSec','3')`
+const LS_BUFFER_OVERRIDE_KEY = "radio.bufferSec";
+
+/**
+ * Lê override de buffer do localStorage. Devolve `null` se não definido,
+ * inválido, ou em ambiente sem `localStorage` (SSR/sandbox).
+ */
+export function readBufferOverride(): number | null {
+  try {
+    if (typeof localStorage === "undefined") return null;
+    const raw = localStorage.getItem(LS_BUFFER_OVERRIDE_KEY);
+    if (raw === null) return null;
+    const num = Number(raw);
+    if (!Number.isFinite(num) || num < 0 || num > 30) return null;
+    return num;
+  } catch {
+    return null;
+  }
+}
 
 // Backoff exponencial após falhas de fetch — cap em 30s para não
 // drenar bateria em mobile quando a rede está persistentemente offline.
@@ -376,6 +398,54 @@ interface UseNowPlayingOptions {
   playingStartedAtRef?: RefObject<number | null>;
 }
 
+/**
+ * Snapshot lido pelo `<RadioDebugOverlay>` quando `?debug=radio`. Toda a
+ * informação útil para diagnosticar atrasos na sincronização áudio↔imagem.
+ * Refrescado a cada fetch com sucesso.
+ */
+export interface DebugSnapshot {
+  /** Wall clock do servidor estimado (epoch s) */
+  serverNow: number;
+  /** Posição efectiva do ouvinte (epoch s) */
+  listenerWallClock: number;
+  /** Buffer total estimado (segundos) */
+  bufferEst: number;
+  /** Offset servidor↔cliente após smoothing (segundos) */
+  serverOffsetSec: number;
+  /** Origem do buffer: 'override' | 'real' | 'default' */
+  bufferSource: "override" | "real" | "default";
+  /** Buffer real lido do `<audio>.buffered`, se disponível */
+  bufferReal: number | null;
+  /** Categoria classificada nesta iteração */
+  category: NowPlayingCategory["kind"];
+  /** Título da faixa audível, se aplicável */
+  audibleTitle: string | null;
+  /** played_at da faixa audível, se aplicável */
+  audiblePlayedAt: number | null;
+  /** Segundos até o ouvinte transicionar (negativo = passado) */
+  secondsUntilTransition: number | null;
+  /** Detectou mudança de played_at face ao último fetch? */
+  serverTransition: boolean;
+  /** Timestamp do snapshot */
+  timestamp: number;
+}
+
+/**
+ * Compara o `now_playing.played_at` actual com o último visto. Se mudou,
+ * o servidor passou para uma faixa nova — sinal de que devemos forçar
+ * transição na UI mesmo que o `listenerWallClock` ainda aponte para a
+ * janela da faixa anterior. Compensa o delay próprio do AzuraCast
+ * a publicar o `now_playing` (~1-3s).
+ */
+export function detectServerTransition(
+  current: number | null | undefined,
+  previous: number | null,
+): boolean {
+  if (typeof current !== "number") return false;
+  if (previous === null) return false;
+  return current !== previous;
+}
+
 export function useNowPlaying(
   streamUrl: string | undefined,
   isPlaying: boolean = true,
@@ -401,6 +471,12 @@ export function useNowPlaying(
   // Marca da última faixa para a qual já fizemos warmup (evita prefetches
   // repetidos durante a janela final da mesma faixa)
   const warmupDoneForRef = useRef<string | null>(null);
+  // Último `now_playing.played_at` visto. Quando muda entre fetches, o
+  // servidor passou para uma faixa nova — forçamos transição imediata.
+  const lastSeenPlayedAtRef = useRef<number | null>(null);
+  // Último snapshot de debug (lido pelo overlay). Ref para não causar
+  // re-renders quando o overlay não está montado.
+  const debugSnapshotRef = useRef<DebugSnapshot | null>(null);
   // Refs estáveis para opções variáveis (evita recriar fetchNowPlaying)
   const audioRefRef = useRef(audioRef);
   audioRefRef.current = audioRef;
@@ -443,16 +519,15 @@ export function useNowPlaying(
   /**
    * Estima o delay total do ouvinte (segundos atrás do "now" do servidor).
    *
-   * Duas vias:
-   *  - Sem leitura real do `<audio>`: usa o default fixo (5s) — já inclui
-   *    burst icecast, decoder buffer e RTT. NÃO somar burst por cima.
-   *  - Com leitura real (`buffered.end - currentTime`): essa leitura mede
-   *    apenas o decoder buffer não-consumido, sub-contando o burst que já
-   *    foi reproduzido. Aqui sim somamos `burst * decay` durante os
-   *    primeiros 15s pós-play. Floor no default para garantir que o
-   *    delay nunca aparenta ser menor que a realidade típica.
+   * Ordem de precedência:
+   *  1. Override manual via `localStorage.radio.bufferSec` (calibração).
+   *  2. Leitura real do `<audio>` + burst compensation.
+   *  3. Default constante (5s) que já inclui burst+decoder+RTT.
    */
   const estimateListenerBufferSeconds = (): number => {
+    const override = readBufferOverride();
+    if (override !== null) return override;
+
     const real = readAudioBufferAhead(audioRefRef.current?.current);
     if (real === null) return DEFAULT_LISTENER_BUFFER_SECONDS;
 
@@ -592,10 +667,61 @@ export function useNowPlaying(
       }
 
       // Calcula posição efectiva do ouvinte
+      const bufferSource: "override" | "real" | "default" =
+        readBufferOverride() !== null ? "override"
+        : readAudioBufferAhead(audioRefRef.current?.current) !== null ? "real"
+        : "default";
+      const bufferReal = readAudioBufferAhead(audioRefRef.current?.current);
       const bufferSec = estimateListenerBufferSeconds();
-      const listenerWallClock = Date.now() / 1000 + serverOffsetSecRef.current - bufferSec;
+      const serverNow = Date.now() / 1000 + serverOffsetSecRef.current;
+      let listenerWallClock = serverNow - bufferSec;
+
+      // Detecta mudança de faixa no servidor face ao último fetch. Se mudou,
+      // significa que o AzuraCast começou uma faixa nova — empurramos o
+      // listenerWallClock para dentro da nova janela mesmo que o buffer
+      // estimado ainda aponte para a anterior. Compensa o delay próprio
+      // do AzuraCast a publicar o now_playing (~1-3s).
+      const currentPlayedAt = data.now_playing?.played_at;
+      const serverTransition = detectServerTransition(
+        currentPlayedAt,
+        lastSeenPlayedAtRef.current,
+      );
+      if (serverTransition && typeof currentPlayedAt === "number") {
+        // Salta para o início da nova janela + 0.1s (dentro da janela)
+        listenerWallClock = Math.max(listenerWallClock, currentPlayedAt + 0.1);
+      }
+      if (typeof currentPlayedAt === "number") {
+        lastSeenPlayedAtRef.current = currentPlayedAt;
+      }
 
       const category = pickCategory(data, listenerWallClock);
+
+      // Snapshot para o overlay de debug (não causa re-render)
+      const audibleEntry =
+        category.kind === "music" || category.kind === "podcast" ||
+        category.kind === "announcement" || category.kind === "jingle"
+          ? category.audible : null;
+      debugSnapshotRef.current = {
+        serverNow,
+        listenerWallClock,
+        bufferEst: bufferSec,
+        serverOffsetSec: serverOffsetSecRef.current,
+        bufferSource,
+        bufferReal,
+        category: category.kind,
+        audibleTitle:
+          category.kind === "music" ? category.song.title
+          : category.kind === "podcast" || category.kind === "announcement" ? category.name
+          : category.kind === "live" ? category.name
+          : null,
+        audiblePlayedAt: audibleEntry?.played_at ?? null,
+        secondsUntilTransition:
+          audibleEntry && typeof audibleEntry.played_at === "number" && typeof audibleEntry.duration === "number"
+            ? audibleEntry.played_at + audibleEntry.duration - listenerWallClock
+            : null,
+        serverTransition,
+        timestamp: Date.now(),
+      };
 
       // 1. Live show
       if (category.kind === "live") {
@@ -692,5 +818,10 @@ export function useNowPlaying(
     return () => document.removeEventListener("visibilitychange", onVisibility);
   }, [fetchNowPlaying]);
 
-  return { ...state, refetch: fetchNowPlaying };
+  return {
+    ...state,
+    refetch: fetchNowPlaying,
+    /** Ref para o snapshot de debug — leitura on-demand (não causa re-render) */
+    debugRef: debugSnapshotRef,
+  };
 }

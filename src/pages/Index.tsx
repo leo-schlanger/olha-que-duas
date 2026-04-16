@@ -10,6 +10,7 @@ import Contacto from "@/components/Contacto";
 import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
 import { useHashScroll } from "@/hooks/useHashScroll";
+import { useMetaTags } from "@/hooks/useMetaTags";
 
 // Lazy: RadioPlayer puxa Slider/Card Radix, vários ícones Lucide e os 2
 // painéis de schedule. Adiar reduz TBT/LCP do Hero. Pré-carregamos no idle
@@ -17,6 +18,16 @@ import { useHashScroll } from "@/hooks/useHashScroll";
 const RadioPlayer = lazy(() => import("@/components/RadioPlayer"));
 
 const Index = () => {
+  // SEO — assegura que ao voltar à home por navegação interna os metas são
+  // restaurados (sem isto ficavam os da última página visitada).
+  useMetaTags({
+    title: "Olha que Duas | Podcast, Rádio e Comunicação em Portugal",
+    description:
+      "Somos comunicadoras com propósito. Podcast, Rádio 24h, Assessoria de Imprensa e Estratégia de Marca em Portugal.",
+    url: "https://www.olhaqueduas.com/",
+    type: "website",
+  });
+
   // Scroll automático para secções quando URL tem hash (ex: /#sobre)
   useHashScroll();
 

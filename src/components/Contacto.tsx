@@ -323,9 +323,14 @@ const Contacto = () => {
                 </p>
                 <form onSubmit={handleNewsletterSubmit} className="space-y-2">
                   <div className="flex gap-2">
+                    <label htmlFor="newsletter-email" className="sr-only">
+                      Email para a newsletter
+                    </label>
                     <Input
+                      id="newsletter-email"
                       type="email"
                       placeholder="O teu email"
+                      aria-label="Email para a newsletter"
                       value={newsletterEmail}
                       onChange={(e) => setNewsletterEmail(e.target.value)}
                       className="bg-white/90 backdrop-blur-sm border-0 h-11 text-sm rounded-xl shadow-sm focus:ring-2 focus:ring-charcoal/20"
@@ -335,6 +340,7 @@ const Contacto = () => {
                     <Button
                       type="submit"
                       size="icon"
+                      aria-label={newsletterLoading ? "A enviar inscrição" : "Subscrever newsletter"}
                       className="bg-charcoal text-white hover:bg-charcoal/90 shrink-0 h-11 w-11 rounded-xl shadow-md hover:shadow-lg transition-all"
                       disabled={newsletterLoading}
                     >

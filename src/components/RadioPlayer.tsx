@@ -18,6 +18,7 @@ import { useClockTick } from "@/hooks/useClockTick";
 import WeatherStrip from "@/components/WeatherStrip";
 import DailySoundtrackPanel from "@/components/radio/DailySoundtrackPanel";
 import WeeklySchedulePanel from "@/components/radio/WeeklySchedulePanel";
+import RadioDebugOverlay from "@/components/radio/RadioDebugOverlay";
 import radioLogo from "@/assets/logo-olha-que-duas.png";
 
 // Backoff para tentativas de reconexão após drop do stream (em ms)
@@ -92,6 +93,7 @@ const RadioPlayer = () => {
     song, isMusic, isLiveShow, liveShowName,
     isPodcast, podcastName, podcastArt,
     isAnnouncement, announcementName, announcementArt,
+    debugRef,
   } = useNowPlaying(radio.streamUrl, isPlaying, {
     audioRef,
     playingStartedAtRef,
@@ -520,6 +522,9 @@ const RadioPlayer = () => {
 
         </div>
       </div>
+
+      {/* Overlay diagnóstico — só renderiza com ?debug=radio na URL */}
+      <RadioDebugOverlay debugRef={debugRef} />
     </section>
   );
 };
