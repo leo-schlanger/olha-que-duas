@@ -16,12 +16,16 @@ const ROOT = path.resolve(__dirname, "..");
  * - logos têm alpha → WebP suporta isso, qualidade 92 dá boa fidelidade
  * - cartoons: maxWidth 800 cobre uso real (display ~400-600px @2x)
  */
+// maxWidth deve cobrir Retina @2x do maior display real:
+//   - logos pequenos (Footer h-28 = 112px → 224 retina) → 512 chega de sobra
+//   - logos/cartoons da Kids (display até ~480-640px lg) → 1024 dá folga
+//   - merch (cards ~300px) → 1200 dá folga
 const TARGETS = [
   { source: "src/assets/logo-olha-que-duas.png", maxWidth: 512, quality: 92 },
-  { source: "src/assets/kids/logo-kids.png", maxWidth: 512, quality: 92 },
-  { source: "src/assets/kids/alexandra-cartoon.png", maxWidth: 800, quality: 88 },
-  { source: "src/assets/kids/marluce-cartoon.png", maxWidth: 800, quality: 88 },
-  { source: "src/assets/kids/leo-cartoon.png", maxWidth: 800, quality: 88 },
+  { source: "src/assets/kids/logo-kids.png", maxWidth: 1024, quality: 92 },
+  { source: "src/assets/kids/alexandra-cartoon.png", maxWidth: 1024, quality: 90 },
+  { source: "src/assets/kids/marluce-cartoon.png", maxWidth: 1024, quality: 90 },
+  { source: "src/assets/kids/leo-cartoon.png", maxWidth: 1024, quality: 90 },
 ];
 
 (async () => {
