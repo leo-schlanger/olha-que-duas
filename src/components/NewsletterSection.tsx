@@ -7,9 +7,11 @@ import { Input } from '@/components/ui/input';
 import { useNewsletterSignup } from '@/hooks/useNewsletterSignup';
 import { isSupabaseConfigured } from '@/lib/supabase';
 import { siteConfig } from '@/config/site';
+import { emailSchema } from '@/lib/validation';
 
 const NewsletterSection = () => {
   const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState<string | null>(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [consentChecked, setConsentChecked] = useState(false);
   const { signup, loading } = useNewsletterSignup();
@@ -17,9 +19,15 @@ const NewsletterSection = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) return;
+    setEmailError(null);
 
-    const result = await signup(email);
+    const parsed = emailSchema.safeParse(email);
+    if (!parsed.success) {
+      setEmailError(parsed.error.issues[0]?.message ?? 'Email inválido');
+      return;
+    }
+
+    const result = await signup(parsed.data);
 
     if (result.success) {
       setIsSubscribed(true);
@@ -205,11 +213,22 @@ const NewsletterSection = () => {
               >
                 <div className="flex-1 relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-charcoal/40" />
+                  <label htmlFor="newsletter-section-email" className="sr-only">
+                    Email para a newsletter
+                  </label>
                   <Input
+                    id="newsletter-section-email"
                     type="email"
                     placeholder="Introduz o teu email"
+                    aria-label="Email para a newsletter"
+                    aria-required="true"
+                    aria-invalid={!!emailError}
+                    aria-describedby={emailError ? "newsletter-section-email-error" : undefined}
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (emailError) setEmailError(null);
+                    }}
                     className="h-14 pl-12 pr-4 bg-white border-0 rounded-2xl text-charcoal placeholder:text-charcoal/40 text-base shadow-xl shadow-black/10 focus:ring-4 focus:ring-amarelo/30"
                     disabled={loading}
                     required
@@ -235,6 +254,16 @@ const NewsletterSection = () => {
                   </Button>
                 </motion.div>
               </motion.form>
+
+              {emailError && (
+                <p
+                  id="newsletter-section-email-error"
+                  role="alert"
+                  className="text-sm text-amarelo mt-3 max-w-xl mx-auto"
+                >
+                  {emailError}
+                </p>
+              )}
 
               {/* Privacy consent */}
               <div className="flex items-start gap-2 mt-5 max-w-xl mx-auto text-left">

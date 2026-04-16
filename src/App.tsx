@@ -27,11 +27,29 @@ const TermsOfService = lazy(() => import("./pages/TermsOfService"));
 const FAQ = lazy(() => import("./pages/FAQ"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
-// Loading component for lazy-loaded pages
+/**
+ * Skeleton para páginas em lazy-load. Mostra um esqueleto aproximado da
+ * página típica (header + hero + body) em vez de div vazio — reduz layout
+ * shift quando a página real monta. min-h-screen garante que o footer não
+ * salta para cima durante o load.
+ */
 const PageLoader = () => (
-  <div className="min-h-screen flex items-center justify-center">
-    <div className="w-16 h-16 rounded-2xl bg-vermelho/10 flex items-center justify-center">
-      <Loader2 className="w-8 h-8 animate-spin text-vermelho" />
+  <div className="min-h-screen bg-background" aria-busy="true" aria-live="polite">
+    {/* Header placeholder */}
+    <div className="h-16 md:h-20 border-b border-border/50 bg-cream/5 backdrop-blur-sm" />
+    {/* Hero placeholder */}
+    <div className="container mx-auto px-4 py-12 md:py-20">
+      <div className="max-w-2xl mx-auto space-y-4">
+        <div className="h-4 w-24 mx-auto bg-cream/10 rounded animate-pulse" />
+        <div className="h-12 md:h-16 bg-cream/10 rounded-xl animate-pulse" />
+        <div className="h-4 w-3/4 mx-auto bg-cream/10 rounded animate-pulse" />
+        <div className="h-4 w-2/3 mx-auto bg-cream/10 rounded animate-pulse" />
+      </div>
+      {/* Spinner discreto no centro */}
+      <div className="flex justify-center mt-12">
+        <Loader2 className="w-8 h-8 animate-spin text-vermelho/60" />
+        <span className="sr-only">A carregar página…</span>
+      </div>
     </div>
   </div>
 );

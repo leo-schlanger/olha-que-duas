@@ -1,6 +1,6 @@
 import { Instagram, Facebook, Heart, Youtube } from "lucide-react";
 import { Link } from "react-router-dom";
-import logo from "@/assets/logo-olha-que-duas.png";
+import logo from "@/assets/logo-olha-que-duas.webp";
 import { siteConfig } from "@/config/site";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
 

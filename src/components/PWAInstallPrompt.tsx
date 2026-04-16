@@ -20,15 +20,21 @@ export function PWAInstallPrompt() {
   useEffect(() => {
     setAndroid(isAndroid());
 
-    // Check if user dismissed before (only if consent was given)
+    // Check if user dismissed before (only if consent was given). localStorage
+    // pode lançar SecurityError em iframes/private mode e QuotaExceededError
+    // em raros casos — engolimos silenciosamente, dismiss não é crítico.
     if (hasConsent()) {
-      const dismissed = localStorage.getItem('pwa-prompt-dismissed');
-      if (dismissed) {
-        const dismissedTime = parseInt(dismissed, 10);
-        // Show again after 7 days
-        if (Date.now() - dismissedTime < 7 * 24 * 60 * 60 * 1000) {
-          setIsDismissed(true);
+      try {
+        const dismissed = localStorage.getItem('pwa-prompt-dismissed');
+        if (dismissed) {
+          const dismissedTime = parseInt(dismissed, 10);
+          // Show again after 7 days
+          if (Number.isFinite(dismissedTime) && Date.now() - dismissedTime < 7 * 24 * 60 * 60 * 1000) {
+            setIsDismissed(true);
+          }
         }
+      } catch {
+        // localStorage indisponível — assume não-dismissed e segue
       }
     }
 
@@ -43,7 +49,12 @@ export function PWAInstallPrompt() {
   const handleDismiss = () => {
     setIsDismissed(true);
     if (hasConsent()) {
-      localStorage.setItem('pwa-prompt-dismissed', Date.now().toString());
+      try {
+        localStorage.setItem('pwa-prompt-dismissed', Date.now().toString());
+      } catch {
+        // QuotaExceededError ou SecurityError — dismiss in-memory já
+        // funciona para esta sessão; reaparece no próximo load (aceitável).
+      }
     }
   };
 

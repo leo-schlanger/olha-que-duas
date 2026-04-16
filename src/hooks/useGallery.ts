@@ -23,7 +23,12 @@ async function fetchAlbumPhotos(slug: string): Promise<CloudinaryPhotoRef[]> {
   });
 
   if (!response.ok) {
-
+    // Falha de fetch agora é visível em DevTools — antes era silenciosa.
+    // Não lançamos para não derrubar a página inteira da galeria; apenas
+    // marcamos o álbum como sem fotos (cobertura cai para fallback).
+    console.warn(
+      `[useGallery] failed to list photos for "${slug}": HTTP ${response.status}`
+    );
     return [];
   }
 

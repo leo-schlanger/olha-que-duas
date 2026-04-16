@@ -19,10 +19,10 @@ import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import { Animated } from '@/components/ui/animated';
 import { useMetaTags } from '@/hooks/useMetaTags';
-import logoKids from '@/assets/kids/logo-kids.png';
-import alexandraCartoon from '@/assets/kids/alexandra-cartoon.png';
-import marluceCartoon from '@/assets/kids/marluce-cartoon.png';
-import leoCartoon from '@/assets/kids/leo-cartoon.png';
+import logoKids from '@/assets/kids/logo-kids.webp';
+import alexandraCartoon from '@/assets/kids/alexandra-cartoon.webp';
+import marluceCartoon from '@/assets/kids/marluce-cartoon.webp';
+import leoCartoon from '@/assets/kids/leo-cartoon.webp';
 import cantinhoPoster from '@/assets/kids/cantinho-da-pequena.jpg';
 
 // JSON-LD Schema for Kids Page — SEO completo e otimizado

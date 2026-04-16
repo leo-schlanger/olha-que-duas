@@ -19,7 +19,7 @@ import WeatherStrip from "@/components/WeatherStrip";
 import DailySoundtrackPanel from "@/components/radio/DailySoundtrackPanel";
 import WeeklySchedulePanel from "@/components/radio/WeeklySchedulePanel";
 import RadioDebugOverlay from "@/components/radio/RadioDebugOverlay";
-import radioLogo from "@/assets/logo-olha-que-duas.png";
+import radioLogo from "@/assets/logo-olha-que-duas.webp";
 
 // Backoff para tentativas de reconexão após drop do stream (em ms)
 const RECONNECT_BACKOFF = [1000, 2000, 4000, 8000, 15000];

@@ -9,31 +9,31 @@ import { useMetaTags, getPageBreadcrumbJsonLd } from "@/hooks/useMetaTags";
 import { Animated, AnimatedGrid, AnimatedCounter } from "@/components/ui/animated";
 
 // Imagem destaque
-import canecaDestaque from "@/assets/merch/caneca-cenario-destaque.jpg";
+import canecaDestaque from "@/assets/merch/caneca-cenario-destaque.webp";
 
 // Canecas principais - visibilidade importante
-import caneca01 from "@/assets/merch/caneca-olha-que-duas-01.jpg";
-import caneca02 from "@/assets/merch/caneca-olha-que-duas-02.jpg";
-import caneca03 from "@/assets/merch/caneca-olha-que-duas-03.jpg";
-import caneca04 from "@/assets/merch/caneca-olha-que-duas-04.jpg";
+import caneca01 from "@/assets/merch/caneca-olha-que-duas-01.webp";
+import caneca02 from "@/assets/merch/caneca-olha-que-duas-02.webp";
+import caneca03 from "@/assets/merch/caneca-olha-que-duas-03.webp";
+import caneca04 from "@/assets/merch/caneca-olha-que-duas-04.webp";
 
 // Preview da loja
-import preview1 from "@/assets/merch/preview-1.jpg";
-import preview2 from "@/assets/merch/preview-2.jpg";
-import preview3 from "@/assets/merch/preview-3.jpg";
-import preview4 from "@/assets/merch/preview-4.jpg";
-import preview5 from "@/assets/merch/preview-5.jpg";
-import preview6 from "@/assets/merch/preview-6.jpg";
-import preview7 from "@/assets/merch/preview-7.jpg";
-import preview8 from "@/assets/merch/preview-8.jpg";
-import preview9 from "@/assets/merch/preview-9.jpg";
-import preview10 from "@/assets/merch/preview-10.jpg";
-import preview11 from "@/assets/merch/preview-11.jpg";
-import preview12 from "@/assets/merch/preview-12.jpg";
-import preview13 from "@/assets/merch/preview-13.jpg";
-import preview14 from "@/assets/merch/preview-14.jpg";
-import preview15 from "@/assets/merch/preview-15.jpg";
-import preview16 from "@/assets/merch/preview-16.jpg";
+import preview1 from "@/assets/merch/preview-1.webp";
+import preview2 from "@/assets/merch/preview-2.webp";
+import preview3 from "@/assets/merch/preview-3.webp";
+import preview4 from "@/assets/merch/preview-4.webp";
+import preview5 from "@/assets/merch/preview-5.webp";
+import preview6 from "@/assets/merch/preview-6.webp";
+import preview7 from "@/assets/merch/preview-7.webp";
+import preview8 from "@/assets/merch/preview-8.webp";
+import preview9 from "@/assets/merch/preview-9.webp";
+import preview10 from "@/assets/merch/preview-10.webp";
+import preview11 from "@/assets/merch/preview-11.webp";
+import preview12 from "@/assets/merch/preview-12.webp";
+import preview13 from "@/assets/merch/preview-13.webp";
+import preview14 from "@/assets/merch/preview-14.webp";
+import preview15 from "@/assets/merch/preview-15.webp";
+import preview16 from "@/assets/merch/preview-16.webp";
 
 // Galeria de produtos
 const produtos = [

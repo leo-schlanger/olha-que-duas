@@ -8,19 +8,30 @@ const Hero = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Parallax effect
+  // Parallax effect — coalescido via requestAnimationFrame para 1 update por
+  // frame em vez de 1 setState por evento de scroll (que pode disparar várias
+  // vezes por frame em mobile). Sem isto, o componente re-renderizava ~60×/s.
   useEffect(() => {
+    let rafId: number | null = null;
+
     const handleScroll = () => {
-      if (sectionRef.current) {
-        const rect = sectionRef.current.getBoundingClientRect();
-        if (rect.bottom > 0) {
-          setScrollY(window.scrollY * 0.3);
+      if (rafId !== null) return; // já há um update agendado para este frame
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        if (sectionRef.current) {
+          const rect = sectionRef.current.getBoundingClientRect();
+          if (rect.bottom > 0) {
+            setScrollY(window.scrollY * 0.3);
+          }
         }
-      }
+      });
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   // Trigger entrance animations
@@ -223,6 +234,8 @@ const Hero = () => {
                 <img
                   src={fotoJuntas}
                   alt="Alexandra e Marluce - Fundadoras do Olha que Duas"
+                  width={1024}
+                  height={1536}
                   className="w-full aspect-[4/5] object-cover transition-transform duration-700 group-hover:scale-105"
                   loading="eager"
                   fetchPriority="high"

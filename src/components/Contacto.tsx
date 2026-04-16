@@ -16,6 +16,50 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  contactFormSchema,
+  emailSchema,
+  getFieldErrors,
+} from "@/lib/validation";
+
+// Timeout do submit do form de contacto. FormSubmit costuma responder em
+// <2s; 10s deixa margem para redes lentas sem bloquear o utilizador para
+// sempre se a rede cair a meio.
+const CONTACT_SUBMIT_TIMEOUT_MS = 10_000;
+
+/**
+ * fetch com timeout via AbortController + 1 retry automático em falhas
+ * transitórias (rede caída, 5xx). Erros 4xx não são retentados — são
+ * problema do cliente.
+ */
+async function fetchWithRetry(
+  url: string,
+  init: RequestInit,
+  { timeoutMs, retries = 1 }: { timeoutMs: number; retries?: number },
+): Promise<Response> {
+  let lastError: unknown;
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const response = await fetch(url, { ...init, signal: controller.signal });
+      clearTimeout(timeout);
+      // 4xx: não retenta (problema do request, não da rede)
+      if (response.status >= 400 && response.status < 500) return response;
+      // 5xx: retenta se ainda há tentativas
+      if (!response.ok && attempt < retries) {
+        lastError = new Error(`HTTP ${response.status}`);
+        continue;
+      }
+      return response;
+    } catch (err) {
+      clearTimeout(timeout);
+      lastError = err;
+      if (attempt >= retries) throw err;
+    }
+  }
+  throw lastError ?? new Error("fetch falhou");
+}
 
 const Contacto = () => {
   const [formData, setFormData] = useState({
@@ -24,6 +68,8 @@ const Contacto = () => {
     assunto: "",
     mensagem: "",
   });
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [newsletterError, setNewsletterError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [newsletterConsent, setNewsletterConsent] = useState(false);
@@ -31,9 +77,15 @@ const Contacto = () => {
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newsletterEmail.trim()) return;
+    setNewsletterError(null);
 
-    const result = await signupNewsletter(newsletterEmail);
+    const parsed = emailSchema.safeParse(newsletterEmail);
+    if (!parsed.success) {
+      setNewsletterError(parsed.error.issues[0]?.message ?? "Email inválido");
+      return;
+    }
+
+    const result = await signupNewsletter(parsed.data);
 
     if (result.success) {
       toast.success("Inscrição realizada!", {
@@ -49,33 +101,47 @@ const Contacto = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    setFieldErrors({});
 
+    // Validação Zod antes do fetch — feedback inline em vez de só toast
+    const parsed = contactFormSchema.safeParse(formData);
+    if (!parsed.success) {
+      setFieldErrors(getFieldErrors(parsed.error));
+      toast.error("Verifica os campos do formulário");
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
+      const data = parsed.data;
       const payload = {
         // Dados do remetente
-        Nome: formData.nome,
-        Email: formData.email,
-        Assunto: formData.assunto || "Geral",
-        Mensagem: formData.mensagem,
+        Nome: data.nome,
+        Email: data.email,
+        Assunto: data.assunto || "Geral",
+        Mensagem: data.mensagem,
 
         // Metadata fields for FormSubmit
-        _subject: `[Olha que Duas] ${formData.assunto || "Contacto"} - ${formData.nome}`,
-        _replyto: formData.email,
+        _subject: `[Olha que Duas] ${data.assunto || "Contacto"} - ${data.nome}`,
+        _replyto: data.email,
         _template: "table",
         _captcha: "false",
       };
 
-      const response = await fetch(`https://formsubmit.co/ajax/${siteConfig.contact.email}`, {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+      const response = await fetchWithRetry(
+        `https://formsubmit.co/ajax/${siteConfig.contact.email}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+          },
+          body: JSON.stringify(payload),
         },
-        body: JSON.stringify(payload)
-      });
+        { timeoutMs: CONTACT_SUBMIT_TIMEOUT_MS, retries: 1 },
+      );
 
-      if (!response.ok) throw new Error("Falha no envio");
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
       toast.success("Mensagem enviada com sucesso!", {
         description: "Entraremos em contacto brevemente.",
@@ -83,8 +149,11 @@ const Contacto = () => {
 
       setFormData({ nome: "", email: "", assunto: "", mensagem: "" });
     } catch (error) {
+      const isAbort = error instanceof DOMException && error.name === "AbortError";
       toast.error("Erro ao enviar mensagem", {
-        description: "Por favor tenta novamente ou envia email direto.",
+        description: isAbort
+          ? "Tempo limite excedido. Verifica a tua ligação."
+          : "Por favor tenta novamente ou envia email direto.",
       });
     } finally {
       setIsSubmitting(false);
@@ -94,7 +163,16 @@ const Contacto = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    // Limpa o erro deste campo ao editar — feedback imediato
+    if (fieldErrors[name]) {
+      setFieldErrors((prev) => {
+        const next = { ...prev };
+        delete next[name];
+        return next;
+      });
+    }
   };
 
   return (
@@ -140,9 +218,17 @@ const Contacto = () => {
                         onChange={handleChange}
                         placeholder="O teu nome"
                         required
+                        aria-required="true"
+                        aria-invalid={!!fieldErrors.nome}
+                        aria-describedby={fieldErrors.nome ? "nome-error" : undefined}
                         className="h-12 sm:h-10"
                         disabled={isSubmitting}
                       />
+                      {fieldErrors.nome && (
+                        <p id="nome-error" role="alert" className="text-xs text-destructive mt-1">
+                          {fieldErrors.nome}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-1.5">
                       <Label htmlFor="email" className="text-sm">
@@ -156,9 +242,17 @@ const Contacto = () => {
                         onChange={handleChange}
                         placeholder="o.teu@email.com"
                         required
+                        aria-required="true"
+                        aria-invalid={!!fieldErrors.email}
+                        aria-describedby={fieldErrors.email ? "email-error" : undefined}
                         className="h-12 sm:h-10"
                         disabled={isSubmitting}
                       />
+                      {fieldErrors.email && (
+                        <p id="email-error" role="alert" className="text-xs text-destructive mt-1">
+                          {fieldErrors.email}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -199,9 +293,17 @@ const Contacto = () => {
                       placeholder="Conta-nos mais sobre o teu projeto..."
                       rows={4}
                       required
+                      aria-required="true"
+                      aria-invalid={!!fieldErrors.mensagem}
+                      aria-describedby={fieldErrors.mensagem ? "mensagem-error" : undefined}
                       className="resize-none"
                       disabled={isSubmitting}
                     />
+                    {fieldErrors.mensagem && (
+                      <p id="mensagem-error" role="alert" className="text-xs text-destructive mt-1">
+                        {fieldErrors.mensagem}
+                      </p>
+                    )}
                   </div>
 
                   <Button
@@ -331,8 +433,13 @@ const Contacto = () => {
                       type="email"
                       placeholder="O teu email"
                       aria-label="Email para a newsletter"
+                      aria-invalid={!!newsletterError}
+                      aria-describedby={newsletterError ? "newsletter-email-error" : undefined}
                       value={newsletterEmail}
-                      onChange={(e) => setNewsletterEmail(e.target.value)}
+                      onChange={(e) => {
+                        setNewsletterEmail(e.target.value);
+                        if (newsletterError) setNewsletterError(null);
+                      }}
                       className="bg-white/90 backdrop-blur-sm border-0 h-11 text-sm rounded-xl shadow-sm focus:ring-2 focus:ring-charcoal/20"
                       disabled={newsletterLoading}
                       required
@@ -351,6 +458,11 @@ const Contacto = () => {
                       )}
                     </Button>
                   </div>
+                  {newsletterError && (
+                    <p id="newsletter-email-error" role="alert" className="text-[11px] text-destructive">
+                      {newsletterError}
+                    </p>
+                  )}
                   <div className="flex items-start gap-1.5">
                     <input
                       type="checkbox"

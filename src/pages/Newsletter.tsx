@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useNewsletterSignup } from '@/hooks/useNewsletterSignup';
 import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
-import logoImage from '@/assets/logo-olha-que-duas.png';
+import logoImage from '@/assets/logo-olha-que-duas.webp';
 
 export default function Newsletter() {
   // SEO Meta Tags

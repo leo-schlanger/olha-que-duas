@@ -1,6 +1,6 @@
 import { Smartphone, Bell, Radio, Headphones, Sparkles, Apple, Check } from "lucide-react";
 import { siteConfig } from "@/config/site";
-import logo from "@/assets/logo-olha-que-duas.png";
+import logo from "@/assets/logo-olha-que-duas.webp";
 
 // Badge oficial Google Play (PT) — servido localmente para performance
 // Guidelines: https://partnermarketinghub.withgoogle.com/brands/google-play/visual-identity/badge-guidelines/
