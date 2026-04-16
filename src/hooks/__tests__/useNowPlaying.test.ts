@@ -9,6 +9,8 @@ import {
   readAudioBufferAhead,
   readBufferOverride,
   detectServerTransition,
+  trackKey,
+  shouldAnticipateTransition,
   statesEqual,
   type AzuraEntry,
   type AzuraResponse,
@@ -437,5 +439,78 @@ describe("detectServerTransition", () => {
   it("é direccional — qualquer mudança conta como transição", () => {
     // Mesmo retroceder (caso AzuraCast reordene) é considerado transição
     expect(detectServerTransition(1000, 2000)).toBe(true);
+  });
+});
+
+describe("trackKey", () => {
+  it("devolve title|artist", () => {
+    expect(trackKey({ song: { title: "Hit", artist: "Queen" } })).toBe("Hit|Queen");
+  });
+
+  it("trims whitespace", () => {
+    expect(trackKey({ song: { title: "  Hit  ", artist: " Queen " } })).toBe("Hit|Queen");
+  });
+
+  it("aceita só title", () => {
+    expect(trackKey({ song: { title: "Jingle", artist: "" } })).toBe("Jingle|");
+  });
+
+  it("devolve null sem song", () => {
+    expect(trackKey(undefined)).toBeNull();
+    expect(trackKey({})).toBeNull();
+  });
+
+  it("devolve null se title E artist vazios", () => {
+    expect(trackKey({ song: { title: "", artist: "" } })).toBeNull();
+    expect(trackKey({ song: { title: "  ", artist: "  " } })).toBeNull();
+  });
+});
+
+describe("shouldAnticipateTransition", () => {
+  it("antecipa para live show", () => {
+    expect(shouldAnticipateTransition({ kind: "live", name: "DJ" })).toBe(true);
+  });
+
+  it("antecipa para música ≥ 60s", () => {
+    expect(shouldAnticipateTransition({
+      kind: "music",
+      audible: { played_at: 0, duration: 200 },
+      song: { title: "T", artist: "A", album: "", art: "" },
+    })).toBe(true);
+  });
+
+  it("NÃO antecipa para música < 60s", () => {
+    expect(shouldAnticipateTransition({
+      kind: "music",
+      audible: { played_at: 0, duration: 30 },
+      song: { title: "T", artist: "A", album: "", art: "" },
+    })).toBe(false);
+  });
+
+  it("antecipa para podcast longo", () => {
+    expect(shouldAnticipateTransition({
+      kind: "podcast",
+      audible: { played_at: 0, duration: 1800 },
+      name: "P", art: "",
+    })).toBe(true);
+  });
+
+  it("NÃO antecipa para anúncio (curto, ofusca durante 30% da faixa)", () => {
+    expect(shouldAnticipateTransition({
+      kind: "announcement",
+      audible: { played_at: 0, duration: 15 },
+      name: "Ad", art: "",
+    })).toBe(false);
+  });
+
+  it("NÃO antecipa para jingle", () => {
+    expect(shouldAnticipateTransition({
+      kind: "jingle",
+      audible: { played_at: 0, duration: 5 },
+    })).toBe(false);
+  });
+
+  it("NÃO antecipa para gap", () => {
+    expect(shouldAnticipateTransition({ kind: "gap" })).toBe(false);
   });
 });

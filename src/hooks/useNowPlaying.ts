@@ -117,10 +117,11 @@ const ANNOUNCEMENT_PLAYLIST_PATTERNS = [
 ];
 
 // Quanto tempo manter o estado anterior (música/podcast/anúncio) visível
-// durante uma lacuna na API. Cobre vinhetas reais curtas (≤3s) — valores
-// maiores arriscam segurar a capa anterior depois de a faixa nova já estar
-// audível, gerando o efeito de "capa atrasada".
-const HOLD_PREVIOUS_ON_GAP_SECONDS = 3;
+// durante uma lacuna na API. 0 = não segurar — durante vinhetas/transições
+// cai para neutro (logo). Antes seguramos para evitar piscar entre faixas,
+// mas combinado com o delay próprio do AzuraCast a publicar now_playing,
+// isto contribuía para o efeito de "capa atrasada por 10-15s".
+const HOLD_PREVIOUS_ON_GAP_SECONDS = 0;
 
 // Smoothing do offset estimado entre relógio servidor↔cliente. Sem isto,
 // jitter de rede oscila o offset entre polls (5s) e pode empurrar a UI
@@ -431,7 +432,7 @@ export interface DebugSnapshot {
 }
 
 /**
- * Compara o `now_playing.played_at` actual com o último visto. Se mudou,
+ * Compara `now_playing.played_at` actual com o último visto. Se mudou,
  * o servidor passou para uma faixa nova — sinal de que devemos forçar
  * transição na UI mesmo que o `listenerWallClock` ainda aponte para a
  * janela da faixa anterior. Compensa o delay próprio do AzuraCast
@@ -444,6 +445,46 @@ export function detectServerTransition(
   if (typeof current !== "number") return false;
   if (previous === null) return false;
   return current !== previous;
+}
+
+/**
+ * Identidade de uma faixa para comparação entre fetches. Usa título +
+ * artista — `played_at` por si só pode falhar se o AzuraCast republica
+ * a mesma faixa com timestamp ligeiramente diferente, ou se a faixa
+ * actual é actualizada antes do `played_at` (acontece em alguns setups).
+ */
+export function trackKey(entry: AzuraEntry | undefined): string | null {
+  if (!entry?.song) return null;
+  const t = entry.song.title?.trim() ?? "";
+  const a = entry.song.artist?.trim() ?? "";
+  if (!t && !a) return null;
+  return `${t}|${a}`;
+}
+
+/**
+ * Decide se devemos antecipar a transição na UI (mostrar a nova faixa
+ * imediatamente, ignorando o buffer do ouvinte) com base na categoria e
+ * duração da nova faixa.
+ *
+ * SIM para conteúdo longo (música, podcast, live) — capa antecipa em
+ * ~5s mas depois fica certa por minutos. Trade-off bom.
+ *
+ * NÃO para anúncios curtos e jingles — antecipar 5s numa faixa de 15s
+ * deixaria a UI errada em ~30% da duração. Melhor esperar pelo ouvinte.
+ */
+export function shouldAnticipateTransition(category: NowPlayingCategory): boolean {
+  switch (category.kind) {
+    case "live":
+      return true;
+    case "music":
+      return (category.audible.duration ?? 0) >= 60;
+    case "podcast":
+      return (category.audible.duration ?? 0) >= 60;
+    case "announcement":
+    case "jingle":
+    case "gap":
+      return false;
+  }
 }
 
 export function useNowPlaying(
@@ -474,6 +515,10 @@ export function useNowPlaying(
   // Último `now_playing.played_at` visto. Quando muda entre fetches, o
   // servidor passou para uma faixa nova — forçamos transição imediata.
   const lastSeenPlayedAtRef = useRef<number | null>(null);
+  // Último trackKey (title|artist) visto. Sinal complementar ao played_at:
+  // alguns AzuraCast actualizam o título antes do timestamp, ou re-publicam
+  // o mesmo played_at com canção diferente.
+  const lastSeenTrackKeyRef = useRef<string | null>(null);
   // Último snapshot de debug (lido pelo overlay). Ref para não causar
   // re-renders quando o overlay não está montado.
   const debugSnapshotRef = useRef<DebugSnapshot | null>(null);
@@ -676,25 +721,47 @@ export function useNowPlaying(
       const serverNow = Date.now() / 1000 + serverOffsetSecRef.current;
       let listenerWallClock = serverNow - bufferSec;
 
-      // Detecta mudança de faixa no servidor face ao último fetch. Se mudou,
-      // significa que o AzuraCast começou uma faixa nova — empurramos o
-      // listenerWallClock para dentro da nova janela mesmo que o buffer
-      // estimado ainda aponte para a anterior. Compensa o delay próprio
-      // do AzuraCast a publicar o now_playing (~1-3s).
+      // Detecta mudança de faixa no servidor por DOIS sinais independentes:
+      //  - played_at: timestamp do início no servidor (mudou = faixa nova)
+      //  - trackKey: title+artist (alguns AzuraCast actualizam isto primeiro)
+      // Qualquer um a disparar é suficiente — captura mais transições.
       const currentPlayedAt = data.now_playing?.played_at;
-      const serverTransition = detectServerTransition(
+      const currentTrackKey = trackKey(data.now_playing);
+      const playedAtChanged = detectServerTransition(
         currentPlayedAt,
         lastSeenPlayedAtRef.current,
       );
+      const trackKeyChanged =
+        currentTrackKey !== null &&
+        lastSeenTrackKeyRef.current !== null &&
+        currentTrackKey !== lastSeenTrackKeyRef.current;
+      const serverTransition = playedAtChanged || trackKeyChanged;
+
+      // Picka categoria com listenerWallClock atrasado pelo buffer (para
+      // saber qual faixa o ouvinte está REALMENTE a ouvir).
+      let category = pickCategory(data, listenerWallClock);
+
+      // Antecipação agressiva: se o servidor passou para uma faixa nova E
+      // ela é conteúdo longo (música/podcast/live ≥60s), mostramos JÁ —
+      // mesmo que o ouvinte ainda esteja a ouvir a anterior. A capa pode
+      // ir 4-5s à frente do áudio, mas é muito melhor que ficar 10-15s
+      // atrás (sintoma reportado). Para anúncios curtos e jingles
+      // mantemos o comportamento normal (esperar pelo ouvinte).
       if (serverTransition && typeof currentPlayedAt === "number") {
-        // Salta para o início da nova janela + 0.1s (dentro da janela)
-        listenerWallClock = Math.max(listenerWallClock, currentPlayedAt + 0.1);
+        const futureCategory = pickCategory(data, currentPlayedAt + 0.1);
+        if (shouldAnticipateTransition(futureCategory)) {
+          category = futureCategory;
+          // Para o smart refetch saber agendar correctamente
+          listenerWallClock = currentPlayedAt + 0.1;
+        }
       }
+
       if (typeof currentPlayedAt === "number") {
         lastSeenPlayedAtRef.current = currentPlayedAt;
       }
-
-      const category = pickCategory(data, listenerWallClock);
+      if (currentTrackKey !== null) {
+        lastSeenTrackKeyRef.current = currentTrackKey;
+      }
 
       // Snapshot para o overlay de debug (não causa re-render)
       const audibleEntry =
