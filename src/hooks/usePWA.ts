@@ -12,7 +12,8 @@ export function usePWA() {
 
   useEffect(() => {
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-    const isIOSStandalone = (window.navigator as any).standalone === true;
+    // iOS Safari não-standard: `navigator.standalone` indica modo PWA
+    const isIOSStandalone = (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
     setIsInstalled(isStandalone || isIOSStandalone);
 
     const handleBeforeInstallPrompt = (e: Event) => {
@@ -64,7 +65,11 @@ export function registerServiceWorker() {
         const reg = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
         // Force update check on every page load
         reg.update();
-      } catch {}
+      } catch (err) {
+        // SW registration failure não é crítico — site continua a funcionar
+        // sem PWA. Logar para diagnóstico.
+        console.warn('[PWA] service worker registration failed:', err);
+      }
     });
   }
 }

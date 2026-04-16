@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Newspaper, Globe, TrendingUp, Clock, Sparkles } from 'lucide-react';
+import { ArrowLeft, Newspaper, Globe, TrendingUp, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BlogList } from '@/components/blog/BlogList';
 import Header from '@/components/Header';

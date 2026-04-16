@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 
 export type ConsentState = 'pending' | 'accepted' | 'rejected';
 
@@ -8,7 +8,9 @@ function getStoredConsent(): ConsentState {
   try {
     const value = localStorage.getItem(CONSENT_KEY);
     if (value === 'accepted' || value === 'rejected') return value;
-  } catch {}
+  } catch {
+    // localStorage indisponível (private mode/SecurityError) — assume pending
+  }
   return 'pending';
 }
 

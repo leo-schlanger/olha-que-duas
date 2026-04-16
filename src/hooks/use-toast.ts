@@ -12,6 +12,9 @@ type ToasterToast = ToastProps & {
   action?: ToastActionElement;
 };
 
+// Mapa de tipos de acção do reducer; lido apenas via `typeof actionTypes`
+// (regra de no-unused-vars não detecta uso via typeof — silenciamos).
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const actionTypes = {
   ADD_TOAST: "ADD_TOAST",
   UPDATE_TOAST: "UPDATE_TOAST",

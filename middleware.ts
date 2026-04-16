@@ -7,7 +7,7 @@ const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || '';
 
 const CRAWLERS = ['facebookexternalhit', 'Facebot', 'Twitterbot', 'WhatsApp', 'LinkedInBot', 'Slackbot', 'TelegramBot', 'Discordbot'];
 
-const SLUG_REGEX = /^[a-z0-9][a-z0-9\-]*[a-z0-9]$/;
+const SLUG_REGEX = /^[a-z0-9][a-z0-9-]*[a-z0-9]$/;
 
 const DEFAULT_IMAGE = 'https://www.olhaqueduas.com/og-image.jpg';
 
