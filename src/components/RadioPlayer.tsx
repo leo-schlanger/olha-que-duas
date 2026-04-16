@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback, memo } from "react";
 import {
   Music, Radio, Play, Pause,
   Volume2, VolumeX,
@@ -27,15 +27,51 @@ const RECONNECT_BACKOFF = [1000, 2000, 4000, 8000, 15000];
 // e forçamos um reload. Pauses mais curtos retomam sem destruir o pipeline.
 const STALE_BUFFER_MS = 30_000;
 
+// Quantidade de barras do equalizer. 8 dá a mesma percepção visual que 12
+// e reduz layers no compositor (cada barra é uma layer animada).
+const EQUALIZER_BARS = 8;
+
+/**
+ * Background blur da album art — extraído e memoizado por `artSrc`. O blur
+ * (`blur-3xl`) é caro de pintar, então só repintamos quando a capa muda
+ * de verdade — re-renders por polling do now-playing não disparam repaint.
+ */
+const AlbumArtBackground = memo(function AlbumArtBackground({ artSrc }: { artSrc: string | null }) {
+  if (!artSrc) {
+    return (
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-20 -right-20 w-40 h-40 bg-amarelo/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
+      </div>
+    );
+  }
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <img
+        src={artSrc}
+        alt=""
+        aria-hidden="true"
+        decoding="async"
+        loading="eager"
+        className="w-full h-full object-cover scale-150 blur-3xl opacity-30 transition-all duration-300 will-change-transform"
+        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-br from-vermelho/80 via-vermelho/70 to-vermelho-dark/90" />
+    </div>
+  );
+});
+
 const RadioPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(80);
   const [isMuted, setIsMuted] = useState(false);
   const [isReconnecting, setIsReconnecting] = useState(false);
   // Epoch (ms) em que o stream realmente começou a tocar (do evento `playing`).
-  // null quando não está a tocar. Usado pelo useNowPlaying para decair o
-  // burst do icecast e estimar o offset real do ouvinte.
-  const [playingStartedAtMs, setPlayingStartedAtMs] = useState<number | null>(null);
+  // null quando não está a tocar. Ref em vez de state — re-renders no
+  // playing event seriam cosméticos (nada visual depende deste valor) mas
+  // disparariam jank durante buffering reentrante. O useNowPlaying lê via
+  // ref no momento do fetch.
+  const playingStartedAtRef = useRef<number | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const reconnectAttemptsRef = useRef(0);
   const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -58,7 +94,7 @@ const RadioPlayer = () => {
     isAnnouncement, announcementName, announcementArt,
   } = useNowPlaying(radio.streamUrl, isPlaying, {
     audioRef,
-    playingStartedAtMs,
+    playingStartedAtRef,
   });
 
   // Avisa em dev se o schedule do Supabase falhou (cai no fallback hardcoded)
@@ -90,8 +126,25 @@ const RadioPlayer = () => {
   // a cada render fazia as barras "saltarem" entre polls (5s) em vez de
   // animarem suavemente via CSS, criando uma sensação de tilt visual.
   const equalizerHeights = useMemo(
-    () => Array.from({ length: 12 }, () => 20 + Math.random() * 80),
+    () => Array.from({ length: EQUALIZER_BARS }, () => 20 + Math.random() * 80),
     []
+  );
+
+  // JSX do equalizer memoizado — re-renders por polling não devem recriar
+  // os 8 elementos animados (cada um é uma layer no compositor).
+  const equalizerElements = useMemo(
+    () => equalizerHeights.map((h, i) => (
+      <div
+        key={i}
+        className="w-[3px] rounded-full bg-amarelo/70"
+        style={{
+          height: `${h}%`,
+          animation: `equalizer 0.4s ease-in-out infinite`,
+          animationDelay: `${i * 0.05}s`,
+        }}
+      />
+    )),
+    [equalizerHeights]
   );
 
   useEffect(() => {
@@ -125,7 +178,7 @@ const RadioPlayer = () => {
       // Desistimos: avisamos o utilizador parando o player
       setIsReconnecting(false);
       setIsPlaying(false);
-      setPlayingStartedAtMs(null);
+      playingStartedAtRef.current = null;
       reconnectAttemptsRef.current = 0;
       return;
     }
@@ -160,7 +213,7 @@ const RadioPlayer = () => {
       clearReconnectTimer();
       setIsReconnecting(false);
       // Marca o início real da reprodução — o useNowPlaying usa para o burst
-      setPlayingStartedAtMs(Date.now());
+      playingStartedAtRef.current = Date.now();
     };
     const onWaiting = () => {
       // Buffering puro — mostra feedback mas não força reconexão
@@ -185,7 +238,7 @@ const RadioPlayer = () => {
       }
       if (isPlayingRef.current) {
         setIsPlaying(false);
-        setPlayingStartedAtMs(null);
+        playingStartedAtRef.current = null;
         clearReconnectTimer();
         reconnectAttemptsRef.current = 0;
         setIsReconnecting(false);
@@ -234,7 +287,7 @@ const RadioPlayer = () => {
       audio.pause();
       lastPauseAtRef.current = Date.now();
       setIsPlaying(false);
-      setPlayingStartedAtMs(null);
+      playingStartedAtRef.current = null;
       clearReconnectTimer();
       reconnectAttemptsRef.current = 0;
       setIsReconnecting(false);
@@ -259,12 +312,12 @@ const RadioPlayer = () => {
       await audio.play();
       setIsPlaying(true);
       reconnectAttemptsRef.current = 0;
-      // playingStartedAtMs é setado no listener `onPlaying` (mais preciso
+      // playingStartedAtRef é setado no listener `onPlaying` (mais preciso
       // que aqui — `play()` resolve antes de o áudio começar de facto).
     } catch {
       // Browser blocked autoplay — user interaction required
       setIsPlaying(false);
-      setPlayingStartedAtMs(null);
+      playingStartedAtRef.current = null;
     }
   };
 
@@ -296,26 +349,8 @@ const RadioPlayer = () => {
 
           <div className="lg:col-span-4 flex flex-col lg:sticky lg:top-24">
             <Card className="bg-gradient-to-br from-vermelho via-vermelho to-vermelho-dark border-0 text-cream shadow-2xl overflow-hidden relative group">
-              {/* Album art / podcast art / announcement art background blur */}
-              {artSrc ? (
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                  <img
-                    src={artSrc}
-                    alt=""
-                    aria-hidden="true"
-                    decoding="async"
-                    loading="eager"
-                    className="w-full h-full object-cover scale-150 blur-3xl opacity-30 transition-all duration-300 will-change-transform"
-                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-br from-vermelho/80 via-vermelho/70 to-vermelho-dark/90" />
-                </div>
-              ) : (
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                  <div className="absolute -top-20 -right-20 w-40 h-40 bg-amarelo/10 rounded-full blur-3xl" />
-                  <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
-                </div>
-              )}
+              {/* Album art / podcast art / announcement art background blur (memoizado) */}
+              <AlbumArtBackground artSrc={artSrc} />
               <div className="absolute inset-0 bg-black/10 opacity-40 group-hover:opacity-20 transition-opacity duration-500" />
 
               <CardContent className="p-6 md:p-8 flex flex-col h-full relative z-10">
@@ -404,17 +439,7 @@ const RadioPlayer = () => {
                     {/* Equalizer dots around the art */}
                     {isPlaying && (
                       <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-end gap-[2px] h-4">
-                        {equalizerHeights.map((h, i) => (
-                          <div
-                            key={i}
-                            className="w-[3px] rounded-full bg-amarelo/70"
-                            style={{
-                              height: `${h}%`,
-                              animation: `equalizer 0.4s ease-in-out infinite`,
-                              animationDelay: `${i * 0.05}s`,
-                            }}
-                          />
-                        ))}
+                        {equalizerElements}
                       </div>
                     )}
                   </div>

@@ -5,6 +5,7 @@ import {
   pickCategory,
   buildState,
   estimateServerOffsetSeconds,
+  smoothServerOffset,
   readAudioBufferAhead,
   statesEqual,
   type AzuraEntry,
@@ -252,23 +253,55 @@ describe("estimateServerOffsetSeconds", () => {
       now_playing: { played_at: clientNow - 40, elapsed: 50, duration: 200 },
     };
     const offset = estimateServerOffsetSeconds(response);
+    expect(offset).not.toBeNull();
     // Servidor 'now' = (clientNow - 40) + 50 = clientNow + 10 → offset ≈ 10
-    expect(offset).toBeGreaterThan(8);
-    expect(offset).toBeLessThan(12);
+    expect(offset!).toBeGreaterThan(8);
+    expect(offset!).toBeLessThan(12);
   });
 
-  it("devolve 0 quando dados ausentes", () => {
-    expect(estimateServerOffsetSeconds({})).toBe(0);
+  it("devolve null quando dados ausentes (vs 0 = valor legítimo)", () => {
+    expect(estimateServerOffsetSeconds({})).toBeNull();
     expect(estimateServerOffsetSeconds({
       now_playing: { played_at: 100 },
-    })).toBe(0);
+    })).toBeNull();
   });
 
   it("rejeita offsets absurdos (> 1h) — sanity check", () => {
     const response: AzuraResponse = {
       now_playing: { played_at: 0, elapsed: 100 }, // → server now ≈ 100 (epoch)
     };
-    expect(estimateServerOffsetSeconds(response)).toBe(0);
+    expect(estimateServerOffsetSeconds(response)).toBeNull();
+  });
+});
+
+describe("smoothServerOffset", () => {
+  it("aplica EMA quando delta excede o threshold", () => {
+    const next = smoothServerOffset(0, 10, 0.3, 0.5);
+    // 0 + 0.3 * (10 - 0) = 3
+    expect(next).toBeCloseTo(3, 5);
+  });
+
+  it("ignora samples próximos do current (jitter)", () => {
+    expect(smoothServerOffset(5, 5.2, 0.3, 0.5)).toBe(5);
+    expect(smoothServerOffset(5, 4.8, 0.3, 0.5)).toBe(5);
+  });
+
+  it("aceita o sample quando excede threshold positivo", () => {
+    expect(smoothServerOffset(5, 6.5, 0.5, 0.5)).toBeCloseTo(5.75, 5);
+  });
+
+  it("aceita o sample quando excede threshold negativo", () => {
+    expect(smoothServerOffset(5, 3.5, 0.5, 0.5)).toBeCloseTo(4.25, 5);
+  });
+
+  it("mantém o current quando sample é null", () => {
+    expect(smoothServerOffset(7, null, 0.3, 0.5)).toBe(7);
+  });
+
+  it("converge para o sample com aplicações sucessivas", () => {
+    let v = 0;
+    for (let i = 0; i < 50; i++) v = smoothServerOffset(v, 10, 0.3, 0.01);
+    expect(v).toBeCloseTo(10, 1);
   });
 });
 

@@ -65,14 +65,18 @@ const POLL_INTERVAL_PASSIVE = 15_000;
 // drenar bateria em mobile quando a rede está persistentemente offline.
 const FETCH_BACKOFF_MS = [2_000, 4_000, 8_000, 15_000, 30_000];
 
-// Buffer base estimado quando não conseguimos medir do `<audio>`.
-// Inclui icecast burst (~2-3s @ 192kbps) + decode buffer do browser.
-const DEFAULT_LISTENER_BUFFER_SECONDS = 4;
+// Buffer base estimado quando não conseguimos medir do `<audio>`. Esta
+// constante representa o delay TOTAL do ouvinte: burst icecast (~3s @
+// 192kbps) + decoder buffer do browser (~1-2s) + RTT (~0.3s). Não somar
+// nada por cima — é a estimativa completa quando não há leitura real.
+const DEFAULT_LISTENER_BUFFER_SECONDS = 5;
 
-// Burst extra ao iniciar — icecast envia ~3s de uma só vez. Decai
-// linearmente ao longo de BURST_DECAY_MS após o primeiro `playing` event.
-const BURST_INITIAL_SECONDS = 3;
-const BURST_DECAY_MS = 30_000;
+// Burst extra ao iniciar — só usado COMO COMPLEMENTO quando temos leitura
+// real de `audio.buffered`, que sub-conta o burst (mede só o que está
+// pré-carregado mas não consumido). Sem leitura real, o default já cobre
+// tudo. Decay agressivo (15s) — o burst esvazia rápido na realidade.
+const BURST_COMPENSATION_SECONDS = 3;
+const BURST_DECAY_MS = 15_000;
 
 // Playlists de música seguem padrões — outras coisas com metadados sem música
 // válida são tratadas como podcast
@@ -91,9 +95,21 @@ const ANNOUNCEMENT_PLAYLIST_PATTERNS = [
 ];
 
 // Quanto tempo manter o estado anterior (música/podcast/anúncio) visível
-// durante uma lacuna na API. Cobre jingles curtos típicos (5-8s) sem
-// mostrar logo a piscar. Se a lacuna exceder este valor, cai para neutro.
-const HOLD_PREVIOUS_ON_GAP_SECONDS = 8;
+// durante uma lacuna na API. Cobre vinhetas reais curtas (≤3s) — valores
+// maiores arriscam segurar a capa anterior depois de a faixa nova já estar
+// audível, gerando o efeito de "capa atrasada".
+const HOLD_PREVIOUS_ON_GAP_SECONDS = 3;
+
+// Smoothing do offset estimado entre relógio servidor↔cliente. Sem isto,
+// jitter de rede oscila o offset entre polls (5s) e pode empurrar a UI
+// para trás/frente em torno das transições.
+const SERVER_OFFSET_EMA_ALPHA = 0.3;
+const SERVER_OFFSET_MIN_DELTA_SEC = 0.5;
+
+// Quando faltam menos do que este valor para o fim da faixa actual,
+// fazemos um "warmup" da API sem actualizar o estado — garante que o
+// próximo fetch de transição responde rápido (cache TCP/DNS quente).
+const PREFETCH_WARMUP_SECONDS = 5;
 
 const INITIAL_STATE: NowPlayingState = {
   song: null,
@@ -292,17 +308,40 @@ export function buildState(category: NowPlayingCategory): NowPlayingState {
  * agora). Útil quando o relógio do cliente está dessincronizado.
  *
  * Devolve segundos a SOMAR ao `Date.now()` local para obter o tempo do
- * servidor. Se não houver dados confiáveis, devolve 0.
+ * servidor. `null` quando não há dados confiáveis (vs 0, que é um valor
+ * legítimo). Permite ao caller decidir se mantém o offset anterior em vez
+ * de saltar para 0.
  */
-export function estimateServerOffsetSeconds(response: AzuraResponse): number {
+export function estimateServerOffsetSeconds(response: AzuraResponse): number | null {
   const np = response.now_playing;
-  if (!np || typeof np.played_at !== "number" || typeof np.elapsed !== "number") return 0;
+  if (!np || typeof np.played_at !== "number" || typeof np.elapsed !== "number") return null;
   const serverNow = np.played_at + np.elapsed;
   const clientNow = Date.now() / 1000;
   const offset = serverNow - clientNow;
   // Sanity check — offsets > 1h são quase certamente erro
-  if (Math.abs(offset) > 3600) return 0;
+  if (Math.abs(offset) > 3600) return null;
   return offset;
+}
+
+/**
+ * Smoothing EMA do offset servidor↔cliente para evitar oscilação por
+ * jitter de rede. Pequenos deltas (< 0.5s) são ignorados — a maior fonte
+ * de "saltos" da UI nas transições é o offset a balançar entre polls.
+ *
+ * @param current valor actual mantido em ref
+ * @param sample novo sample (resultado de estimateServerOffsetSeconds)
+ * @param alpha factor EMA (0-1). Maior = mais peso ao novo sample.
+ * @param minDelta deltas absolutos abaixo deste valor são ignorados.
+ */
+export function smoothServerOffset(
+  current: number,
+  sample: number | null,
+  alpha: number = SERVER_OFFSET_EMA_ALPHA,
+  minDelta: number = SERVER_OFFSET_MIN_DELTA_SEC,
+): number {
+  if (sample === null) return current;
+  if (Math.abs(sample - current) < minDelta) return current;
+  return current + alpha * (sample - current);
 }
 
 /**
@@ -329,8 +368,12 @@ export function readAudioBufferAhead(audio: HTMLAudioElement | null | undefined)
 interface UseNowPlayingOptions {
   /** Ref para o `<audio>` — usada para ler buffer real do browser. */
   audioRef?: RefObject<HTMLAudioElement | null>;
-  /** Epoch (ms) do último `playing` event do <audio>. Usado para decair o burst. */
-  playingStartedAtMs?: number | null;
+  /**
+   * Ref para epoch (ms) do último `playing` event do <audio>. Ref em vez
+   * de prop para evitar re-render do RadioPlayer em cada playing event
+   * (que pode disparar várias vezes durante buffering reentrante).
+   */
+  playingStartedAtRef?: RefObject<number | null>;
 }
 
 export function useNowPlaying(
@@ -338,7 +381,7 @@ export function useNowPlaying(
   isPlaying: boolean = true,
   options: UseNowPlayingOptions = {},
 ) {
-  const { audioRef, playingStartedAtMs } = options;
+  const { audioRef, playingStartedAtRef } = options;
   const [state, setState] = useState<NowPlayingState>(INITIAL_STATE);
 
   const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -349,14 +392,20 @@ export function useNowPlaying(
   const apiUrlRef = useRef<{ source: string | undefined; api: string | null }>({ source: undefined, api: null });
   // Offset estimado entre relógio do servidor e local (segundos)
   const serverOffsetSecRef = useRef(0);
+  // Marcador para o primeiro sample válido (evita ficar preso em 0 enquanto
+  // o EMA converge — saltamos directamente ao primeiro valor real)
+  const serverOffsetSeededRef = useRef(false);
   // Epoch (s) em que a última entrada válida termina segundo o servidor.
   // Usado para segurar a UI durante lacunas curtas (jingles sem metadados).
   const lastAudibleEndAtRef = useRef<number | null>(null);
+  // Marca da última faixa para a qual já fizemos warmup (evita prefetches
+  // repetidos durante a janela final da mesma faixa)
+  const warmupDoneForRef = useRef<string | null>(null);
   // Refs estáveis para opções variáveis (evita recriar fetchNowPlaying)
   const audioRefRef = useRef(audioRef);
   audioRefRef.current = audioRef;
-  const playingStartedAtMsRef = useRef(playingStartedAtMs ?? null);
-  playingStartedAtMsRef.current = playingStartedAtMs ?? null;
+  const playingStartedAtRefRef = useRef(playingStartedAtRef);
+  playingStartedAtRefRef.current = playingStartedAtRef;
 
   const clearRetry = () => {
     if (retryTimeoutRef.current) {
@@ -392,25 +441,33 @@ export function useNowPlaying(
   };
 
   /**
-   * Estima o buffer total do ouvinte: leitura real do `<audio>` se
-   * disponível, somada ao "burst" inicial do icecast que decai com o tempo.
+   * Estima o delay total do ouvinte (segundos atrás do "now" do servidor).
+   *
+   * Duas vias:
+   *  - Sem leitura real do `<audio>`: usa o default fixo (5s) — já inclui
+   *    burst icecast, decoder buffer e RTT. NÃO somar burst por cima.
+   *  - Com leitura real (`buffered.end - currentTime`): essa leitura mede
+   *    apenas o decoder buffer não-consumido, sub-contando o burst que já
+   *    foi reproduzido. Aqui sim somamos `burst * decay` durante os
+   *    primeiros 15s pós-play. Floor no default para garantir que o
+   *    delay nunca aparenta ser menor que a realidade típica.
    */
   const estimateListenerBufferSeconds = (): number => {
     const real = readAudioBufferAhead(audioRefRef.current?.current);
-    let base = real ?? DEFAULT_LISTENER_BUFFER_SECONDS;
+    if (real === null) return DEFAULT_LISTENER_BUFFER_SECONDS;
 
-    // Burst inicial: icecast envia ~3s logo no start. Decai linearmente
-    // ao longo de BURST_DECAY_MS desde o `playing` event.
-    const startedAt = playingStartedAtMsRef.current;
+    let total = real;
+    const startedAt = playingStartedAtRefRef.current?.current ?? null;
     if (startedAt !== null) {
       const elapsed = Date.now() - startedAt;
       if (elapsed >= 0 && elapsed < BURST_DECAY_MS) {
         const decay = 1 - elapsed / BURST_DECAY_MS;
-        base += BURST_INITIAL_SECONDS * decay;
+        total += BURST_COMPENSATION_SECONDS * decay;
       }
     }
-
-    return base;
+    // Floor no default — não deixar a estimativa cair abaixo da realidade
+    // típica mesmo com leitura real magra.
+    return Math.max(total, DEFAULT_LISTENER_BUFFER_SECONDS);
   };
 
   const shouldHoldPrevious = (): boolean => {
@@ -429,6 +486,11 @@ export function useNowPlaying(
     const duration = audible.duration;
     if (typeof playedAt === "number" && typeof duration === "number" && duration > 0) {
       lastAudibleEndAtRef.current = playedAt + duration;
+      // Marca a faixa actual; warmup será re-permitido para a próxima.
+      const newKey = `${playedAt}-${duration}`;
+      if (warmupDoneForRef.current !== newKey) {
+        warmupDoneForRef.current = null;
+      }
     }
   };
 
@@ -446,8 +508,27 @@ export function useNowPlaying(
     const secondsUntilTransition = playedAt + duration - listenerWallClock;
     if (secondsUntilTransition <= 0) return;
 
-    // +1s de margem para garantir que a API já reflectiu a próxima faixa
-    const delayMs = (secondsUntilTransition + 1) * 1000;
+    // Warmup HEAD request a PREFETCH_WARMUP_SECONDS antes do fim — aquece
+    // DNS/TCP/TLS para o fetch de transição responder imediatamente. Só
+    // uma vez por faixa.
+    const audibleKey = `${playedAt}-${duration}`;
+    if (
+      secondsUntilTransition > PREFETCH_WARMUP_SECONDS &&
+      warmupDoneForRef.current !== audibleKey
+    ) {
+      const warmupDelayMs = (secondsUntilTransition - PREFETCH_WARMUP_SECONDS) * 1000;
+      setTimeout(() => {
+        if (warmupDoneForRef.current === audibleKey) return;
+        warmupDoneForRef.current = audibleKey;
+        const apiUrl = apiUrlRef.current.api;
+        if (!apiUrl) return;
+        // Fire-and-forget — não actualiza estado, só "aquece" a ligação
+        fetch(apiUrl, { method: "HEAD" }).catch(() => {});
+      }, warmupDelayMs);
+    }
+
+    // +0.3s de margem — antes era 1s, atrasava a UI no momento da transição
+    const delayMs = (secondsUntilTransition + 0.3) * 1000;
 
     nextFetchTimeoutRef.current = setTimeout(() => {
       nextFetchTimeoutRef.current = null;
@@ -496,9 +577,19 @@ export function useNowPlaying(
       failureCountRef.current = 0;
       clearRetry();
 
-      // Actualiza offset do relógio servidor (corrige drift do cliente)
-      const offset = estimateServerOffsetSeconds(data);
-      if (offset !== 0) serverOffsetSecRef.current = offset;
+      // Actualiza offset do relógio servidor com smoothing (EMA). No
+      // primeiro sample válido, salta directamente para o valor (sem
+      // smoothing) — evita estado transiente de 0 enquanto o EMA converge.
+      const offsetSample = estimateServerOffsetSeconds(data);
+      if (!serverOffsetSeededRef.current && offsetSample !== null) {
+        serverOffsetSecRef.current = offsetSample;
+        serverOffsetSeededRef.current = true;
+      } else {
+        serverOffsetSecRef.current = smoothServerOffset(
+          serverOffsetSecRef.current,
+          offsetSample,
+        );
+      }
 
       // Calcula posição efectiva do ouvinte
       const bufferSec = estimateListenerBufferSeconds();

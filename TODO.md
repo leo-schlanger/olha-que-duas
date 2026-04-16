@@ -9,10 +9,11 @@
 - [ ] Testar contraste e acessibilidade em modo escuro
 
 ### Performance
-- [ ] Implementar lazy loading para imagens
-- [ ] Code splitting para componentes pesados
-- [ ] Otimizar imagens (WebP, compression)
-- [ ] Adicionar loading skeletons
+- [x] Code splitting para componentes pesados (RadioPlayer, páginas via lazy)
+- [ ] Implementar lazy loading para imagens fora do viewport
+- [ ] Otimizar imagens (WebP, compression) — galeria já usa Cloudinary com transforms
+- [x] Adicionar loading skeletons (RadioPlayer painéis, WeatherStrip, etc.)
+- [ ] Reduzir bundle inicial (`index.js` ~660KB) — code-split mais agressivo no Hero/SobreNos
 
 ### SEO & Analytics
 - [ ] Adicionar Google Analytics 4
@@ -36,9 +37,19 @@
 ### Integrações
 - [ ] Integrar Mailchimp/Brevo para newsletter
 - [ ] Configurar backend próprio para formulários
-- [ ] Integrar calendário de programação da rádio
+- [x] Integrar calendário de programação da rádio (Supabase + fallback hardcoded)
 - [ ] Adicionar chat ao vivo (Crisp/Intercom)
+
+### Rádio
+- [x] Sincronização áudio↔imagem com drift do relógio servidor + buffer real do `<audio>` + burst do icecast
+- [x] Backoff exponencial em falhas de fetch do now-playing
+- [x] Auto-refresh do período/dia ao virar a hora (sem polling de minuto)
+- [x] Reconexão automática com backoff em quebras de stream
+- [x] Detectar pause externo (mobile/SO) e sincronizar UI
+- [x] Testes unitários para `pickCategory`, `pickAudibleEntry`, `addDurations`, etc.
+- [ ] Pre-cache de artwork da próxima faixa quando duração ≥ 60s (eliminar flash)
+- [ ] Modo "só metadata" sem áudio (já temos polling passivo, falta UI)
 
 ---
 
-**Última atualização:** Março 2026
+**Última atualização:** Abril 2026
