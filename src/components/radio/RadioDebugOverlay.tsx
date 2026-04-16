@@ -84,6 +84,10 @@ export function RadioDebugOverlay({ debugRef }: Props) {
           <dd className={snapshot.serverTransition ? "text-amarelo" : ""}>
             {snapshot.serverTransition ? "YES" : "no"}
           </dd>
+          <dt className="text-green-400/60">anticipated</dt>
+          <dd className={snapshot.anticipated ? "text-amarelo" : ""}>
+            {snapshot.anticipated ? "LOCKED" : "no"}
+          </dd>
           <dt className="text-green-400/60">snapAge</dt>
           <dd>{((Date.now() - snapshot.timestamp) / 1000).toFixed(1)}s</dd>
         </dl>

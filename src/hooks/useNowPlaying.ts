@@ -487,6 +487,8 @@ export interface DebugSnapshot {
   secondsUntilTransition: number | null;
   /** Detectou mudança de played_at face ao último fetch? */
   serverTransition: boolean;
+  /** Lock de antecipação activo? (evita piscar enquanto listener real não chega) */
+  anticipated: boolean;
   /** Timestamp do snapshot */
   timestamp: number;
 }
@@ -592,6 +594,12 @@ export function useNowPlaying(
   // alguns AzuraCast actualizam o título antes do timestamp, ou re-publicam
   // o mesmo played_at com canção diferente.
   const lastSeenTrackKeyRef = useRef<string | null>(null);
+  // Lock após antecipação. Quando antecipamos a faixa B (mostramos antes
+  // do listener real chegar), guardamos `played_at` de B e o tempo até
+  // o qual deve permanecer fixa. Os polls seguintes usam um listenerWallClock
+  // ajustado para B, evitando que `pickAudibleEntry` retorne para A
+  // (= efeito de piscar A→B→A→B durante a janela de buffer).
+  const anticipatedRef = useRef<{ playedAt: number; untilEpochSec: number } | null>(null);
   // Último snapshot de debug (lido pelo overlay). Ref para não causar
   // re-renders quando o overlay não está montado.
   const debugSnapshotRef = useRef<DebugSnapshot | null>(null);
@@ -794,6 +802,22 @@ export function useNowPlaying(
       const serverNow = Date.now() / 1000 + serverOffsetSecRef.current;
       let listenerWallClock = serverNow - bufferSec;
 
+      // ANTI-PISCAR: se há um lock de antecipação activo, garante que o
+      // listenerWallClock fica DENTRO da janela da faixa antecipada. Sem
+      // isto, o poll seguinte à antecipação volta a "ver" a faixa anterior
+      // (porque o listener real ainda não a alcançou pelo buffer) e a UI
+      // pisca A→B→A→B até o listener real chegar a B.
+      const lock = anticipatedRef.current;
+      if (lock !== null) {
+        if (serverNow >= lock.untilEpochSec) {
+          // Listener real já chegou à faixa antecipada — liberta o lock
+          anticipatedRef.current = null;
+        } else {
+          // Mantém o listenerWallClock dentro da janela da faixa antecipada
+          listenerWallClock = Math.max(listenerWallClock, lock.playedAt + 0.1);
+        }
+      }
+
       // Detecta mudança de faixa no servidor por DOIS sinais independentes:
       //  - played_at: timestamp do início no servidor (mudou = faixa nova)
       //  - trackKey: title+artist (alguns AzuraCast actualizam isto primeiro)
@@ -810,22 +834,26 @@ export function useNowPlaying(
         currentTrackKey !== lastSeenTrackKeyRef.current;
       const serverTransition = playedAtChanged || trackKeyChanged;
 
-      // Picka categoria com listenerWallClock atrasado pelo buffer (para
-      // saber qual faixa o ouvinte está REALMENTE a ouvir).
+      // Picka categoria com listenerWallClock (já ajustado pelo lock acima
+      // se aplicável).
       let category = pickCategory(data, listenerWallClock, announcementPatternsRef.current);
 
       // Antecipação agressiva: se o servidor passou para uma faixa nova E
-      // ela é conteúdo longo (música/podcast/live ≥60s), mostramos JÁ —
-      // mesmo que o ouvinte ainda esteja a ouvir a anterior. A capa pode
-      // ir 4-5s à frente do áudio, mas é muito melhor que ficar 10-15s
-      // atrás (sintoma reportado). Para anúncios curtos e jingles
-      // mantemos o comportamento normal (esperar pelo ouvinte).
+      // ela é conteúdo longo (música/podcast/live), mostramos JÁ — mesmo
+      // que o ouvinte ainda esteja a ouvir a anterior. A capa pode ir 5s
+      // à frente do áudio, mas é muito melhor que ficar 10s+ atrás. Para
+      // anúncios curtos e jingles mantemos o comportamento normal.
       if (serverTransition && typeof currentPlayedAt === "number") {
         const futureCategory = pickCategory(data, currentPlayedAt + 0.1, announcementPatternsRef.current);
         if (shouldAnticipateTransition(futureCategory)) {
           category = futureCategory;
-          // Para o smart refetch saber agendar correctamente
           listenerWallClock = currentPlayedAt + 0.1;
+          // Activa o lock — válido até o listener real entrar na janela
+          // (= até serverNow chegar a played_at + bufferSec)
+          anticipatedRef.current = {
+            playedAt: currentPlayedAt,
+            untilEpochSec: currentPlayedAt + bufferSec,
+          };
         }
       }
 
@@ -860,6 +888,7 @@ export function useNowPlaying(
             ? audibleEntry.played_at + audibleEntry.duration - listenerWallClock
             : null,
         serverTransition,
+        anticipated: anticipatedRef.current !== null,
         timestamp: Date.now(),
       };
 
@@ -937,11 +966,13 @@ export function useNowPlaying(
     };
   }, [fetchNowPlaying, isPlaying]);
 
-  // Reset do hold quando o utilizador pausa — evita usar timestamp velho
-  // ao retomar (a UI pode ter ficado "segura" numa faixa que já passou).
+  // Reset do hold + lock de antecipação quando o utilizador pausa —
+  // evita usar timestamps velhos ao retomar (UI poderia ficar "segura"
+  // ou bloqueada numa faixa que já passou).
   useEffect(() => {
     if (!isPlaying) {
       lastAudibleEndAtRef.current = null;
+      anticipatedRef.current = null;
     }
   }, [isPlaying]);
 
