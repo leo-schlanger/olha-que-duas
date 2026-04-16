@@ -48,10 +48,13 @@ export function BlogFilters({
       <div className="flex flex-col md:flex-row gap-4">
         {/* Search */}
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <label htmlFor="blog-search" className="sr-only">Pesquisar notícias</label>
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
           <Input
-            type="text"
+            id="blog-search"
+            type="search"
             placeholder="Pesquisar notícias..."
+            aria-label="Pesquisar notícias"
             value={filters.search || ''}
             onChange={(e) =>
               onFiltersChange({ ...filters, search: e.target.value || undefined })
@@ -70,8 +73,11 @@ export function BlogFilters({
             })
           }
         >
-          <SelectTrigger className="w-full md:w-[200px] h-11 rounded-xl bg-background/50 border-border/50 focus:border-primary/50 focus:ring-primary/20">
-            <Filter className="w-4 h-4 mr-2 text-muted-foreground" />
+          <SelectTrigger
+            aria-label="Filtrar por categoria"
+            className="w-full md:w-[200px] h-11 rounded-xl bg-background/50 border-border/50 focus:border-primary/50 focus:ring-primary/20"
+          >
+            <Filter className="w-4 h-4 mr-2 text-muted-foreground" aria-hidden="true" />
             <SelectValue placeholder="Categoria" />
           </SelectTrigger>
           <SelectContent className="rounded-xl border-border/50">
@@ -96,7 +102,10 @@ export function BlogFilters({
             })
           }
         >
-          <SelectTrigger className="w-full md:w-[180px] h-11 rounded-xl bg-background/50 border-border/50 focus:border-primary/50 focus:ring-primary/20">
+          <SelectTrigger
+            aria-label="Filtrar por região"
+            className="w-full md:w-[180px] h-11 rounded-xl bg-background/50 border-border/50 focus:border-primary/50 focus:ring-primary/20"
+          >
             <SelectValue placeholder="Região" />
           </SelectTrigger>
           <SelectContent className="rounded-xl border-border/50">

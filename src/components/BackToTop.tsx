@@ -39,7 +39,7 @@ export default function BackToTop({ showAfter = 400, className }: BackToTopProps
         "flex items-center justify-center",
         "transition-all duration-500 ease-out",
         "hover:bg-vermelho-soft hover:scale-110 hover:shadow-xl hover:shadow-vermelho/40",
-        "focus:outline-none focus:ring-2 focus:ring-amarelo focus:ring-offset-2 focus:ring-offset-background",
+        "focus:outline-none focus-visible:ring-2 focus-visible:ring-amarelo focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         "btn-magnetic",
         isVisible
           ? "opacity-100 translate-y-0 pointer-events-auto"

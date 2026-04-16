@@ -313,9 +313,11 @@ const Vendas = () => {
               animation="fade-up"
             >
               {produtos.map((produto) => (
-                <div
+                <button
+                  type="button"
                   key={produto.id}
-                  className={`group relative rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 cursor-pointer bg-card border border-border/50 hover:border-primary/30 card-3d ${
+                  aria-label={`Ver imagem ampliada do produto ${produto.id}`}
+                  className={`group relative rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 cursor-pointer bg-card border border-border/50 hover:border-primary/30 card-3d text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
                     produto.featured ? 'ring-2 ring-amarelo/30' : ''
                   }`}
                   onClick={() => setSelectedImage(produto.img)}
@@ -324,7 +326,7 @@ const Vendas = () => {
                   {produto.featured && (
                     <div className="absolute top-3 left-3 z-10">
                       <span className="inline-flex items-center gap-1 px-2 py-1 text-[10px] font-bold uppercase tracking-wider bg-amarelo text-charcoal rounded-full shadow-lg">
-                        <Star className="w-3 h-3 fill-current" />
+                        <Star className="w-3 h-3 fill-current" aria-hidden="true" />
                         Destaque
                       </span>
                     </div>
@@ -349,7 +351,7 @@ const Vendas = () => {
 
                   {/* Hover glow */}
                   <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 blur-xl bg-primary/10" />
-                </div>
+                </button>
               ))}
             </AnimatedGrid>
 
@@ -471,6 +473,9 @@ const Vendas = () => {
         <div
           className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
           onClick={() => setSelectedImage(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Imagem ampliada do produto"
         >
           <div className="relative w-full max-w-4xl animate-zoom-in">
             <img

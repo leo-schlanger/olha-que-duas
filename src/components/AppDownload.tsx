@@ -155,7 +155,7 @@ const AppDownload = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Descarregar Olha que Duas na Google Play Store"
-                  className="inline-block transition-transform duration-300 hover:scale-105 focus:scale-105 focus:outline-none focus:ring-2 focus:ring-amarelo/50 rounded-lg"
+                  className="inline-block transition-transform duration-300 hover:scale-105 focus:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-amarelo/50 rounded-lg"
                 >
                   <img
                     src={GOOGLE_PLAY_BADGE}

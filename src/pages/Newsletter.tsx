@@ -142,9 +142,14 @@ export default function Newsletter() {
                         animate={{ scale: focusedField === 'name' ? 1.02 : 1 }}
                         transition={{ type: 'spring', stiffness: 300 }}
                       >
+                        <label htmlFor="newsletter-page-name" className="sr-only">
+                          Nome (opcional)
+                        </label>
                         <Input
+                          id="newsletter-page-name"
                           type="text"
                           placeholder="O teu nome (opcional)"
+                          aria-label="Nome (opcional)"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                           onFocus={() => setFocusedField('name')}
@@ -157,9 +162,15 @@ export default function Newsletter() {
                         animate={{ scale: focusedField === 'email' ? 1.02 : 1 }}
                         transition={{ type: 'spring', stiffness: 300 }}
                       >
+                        <label htmlFor="newsletter-page-email" className="sr-only">
+                          Email
+                        </label>
                         <Input
+                          id="newsletter-page-email"
                           type="email"
                           placeholder="O teu melhor email"
+                          aria-label="Email"
+                          aria-required="true"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           onFocus={() => setFocusedField('email')}
