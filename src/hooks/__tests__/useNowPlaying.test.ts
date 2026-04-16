@@ -595,7 +595,7 @@ describe("shouldAnticipateTransition", () => {
     expect(shouldAnticipateTransition({ kind: "live", name: "DJ" })).toBe(true);
   });
 
-  it("antecipa para música ≥ 60s", () => {
+  it("antecipa para música longa", () => {
     expect(shouldAnticipateTransition({
       kind: "music",
       audible: { played_at: 0, duration: 200 },
@@ -603,15 +603,17 @@ describe("shouldAnticipateTransition", () => {
     })).toBe(true);
   });
 
-  it("NÃO antecipa para música < 60s", () => {
+  it("antecipa para música curta (faixas infantis legítimas <60s)", () => {
+    // Filtros prévios (jingle, announcement, isValidSong) já apanharam
+    // vinhetas; música curta classificada como music é música a sério.
     expect(shouldAnticipateTransition({
       kind: "music",
       audible: { played_at: 0, duration: 30 },
       song: { title: "T", artist: "A", album: "", art: "" },
-    })).toBe(false);
+    })).toBe(true);
   });
 
-  it("antecipa para podcast longo", () => {
+  it("antecipa para podcast", () => {
     expect(shouldAnticipateTransition({
       kind: "podcast",
       audible: { played_at: 0, duration: 1800 },

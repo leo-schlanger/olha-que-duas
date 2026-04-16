@@ -523,23 +523,25 @@ export function trackKey(entry: AzuraEntry | undefined): string | null {
 
 /**
  * Decide se devemos antecipar a transição na UI (mostrar a nova faixa
- * imediatamente, ignorando o buffer do ouvinte) com base na categoria e
- * duração da nova faixa.
+ * imediatamente, ignorando o buffer do ouvinte) com base na categoria.
  *
- * SIM para conteúdo longo (música, podcast, live) — capa antecipa em
- * ~5s mas depois fica certa por minutos. Trade-off bom.
+ * SIM para música, podcast e live — todos têm classificadores prévios
+ * (jingle-by-title, announcement-playlist, isValidSong com title+artist)
+ * que filtram falsos positivos. Música curta legítima (ex: faixas
+ * infantis 26s) deve antecipar como qualquer outra.
  *
- * NÃO para anúncios curtos e jingles — antecipar 5s numa faixa de 15s
- * deixaria a UI errada em ~30% da duração. Melhor esperar pelo ouvinte.
+ * NÃO para anúncios curtos e jingles — anúncios são tipicamente 10-30s,
+ * antecipar 5s deixaria a UI errada em 30%+ da duração. Esperamos o
+ * ouvinte chegar lá. Jingles não mudam a UI de qualquer forma.
  */
 export function shouldAnticipateTransition(category: NowPlayingCategory): boolean {
   switch (category.kind) {
     case "live":
       return true;
     case "music":
-      return (category.audible.duration ?? 0) >= 60;
+      return true;
     case "podcast":
-      return (category.audible.duration ?? 0) >= 60;
+      return true;
     case "announcement":
     case "jingle":
     case "gap":
