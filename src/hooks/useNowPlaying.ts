@@ -1,13 +1,13 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, type RefObject } from "react";
 
-interface NowPlayingSong {
+export interface NowPlayingSong {
   title: string;
   artist: string;
   album: string;
   art: string;
 }
 
-interface NowPlayingState {
+export interface NowPlayingState {
   song: NowPlayingSong | null;
   isMusic: boolean;
   isLiveShow: boolean;
@@ -22,7 +22,7 @@ interface NowPlayingState {
 }
 
 // Forma de uma entrada now_playing / song_history vinda da API AzuraCast
-interface AzuraEntry {
+export interface AzuraEntry {
   played_at?: number;
   duration?: number;
   elapsed?: number;
@@ -34,6 +34,12 @@ interface AzuraEntry {
     album?: string;
     art?: string;
   };
+}
+
+export interface AzuraResponse {
+  now_playing?: AzuraEntry;
+  song_history?: AzuraEntry[];
+  live?: { is_live?: boolean; streamer_name?: string };
 }
 
 // Padrões que indicam jingles/interrupções
@@ -48,13 +54,25 @@ const JINGLE_PLAYLISTS = [
 ];
 
 const MIN_SONG_DURATION = 60;
-const POLL_INTERVAL = 5000; // 5 segundos — actualizações rápidas
-const RETRY_DELAY = 2000;   // retry rápido após falha de fetch
 
-// Buffer típico do ouvinte: icecast burst (~2-3s @ 192kbps) + decode buffer
-// do browser (~3-5s). Ajustar empiricamente se a UI ainda chegar adiantada
-// (subir) ou atrasada (descer) face ao áudio.
-const LISTENER_BUFFER_SECONDS = 4;
+// Polling activo (utilizador a ouvir) vs passivo (página aberta sem play).
+// Mantemos polling passivo para mostrar "agora a tocar" antes do play —
+// melhor hook de UX e evita um flash de conteúdo no primeiro fetch.
+const POLL_INTERVAL_ACTIVE = 5000;
+const POLL_INTERVAL_PASSIVE = 15_000;
+
+// Backoff exponencial após falhas de fetch — cap em 30s para não
+// drenar bateria em mobile quando a rede está persistentemente offline.
+const FETCH_BACKOFF_MS = [2_000, 4_000, 8_000, 15_000, 30_000];
+
+// Buffer base estimado quando não conseguimos medir do `<audio>`.
+// Inclui icecast burst (~2-3s @ 192kbps) + decode buffer do browser.
+const DEFAULT_LISTENER_BUFFER_SECONDS = 4;
+
+// Burst extra ao iniciar — icecast envia ~3s de uma só vez. Decai
+// linearmente ao longo de BURST_DECAY_MS após o primeiro `playing` event.
+const BURST_INITIAL_SECONDS = 3;
+const BURST_DECAY_MS = 30_000;
 
 // Playlists de música seguem padrões — outras coisas com metadados sem música
 // válida são tratadas como podcast
@@ -77,13 +95,41 @@ const ANNOUNCEMENT_PLAYLIST_PATTERNS = [
 // mostrar logo a piscar. Se a lacuna exceder este valor, cai para neutro.
 const HOLD_PREVIOUS_ON_GAP_SECONDS = 8;
 
+const INITIAL_STATE: NowPlayingState = {
+  song: null,
+  isMusic: false,
+  isLiveShow: false,
+  liveShowName: "",
+  isPodcast: false,
+  podcastName: "",
+  podcastArt: "",
+  isAnnouncement: false,
+  announcementName: "",
+  announcementArt: "",
+  loading: true,
+};
+
+const NEUTRAL_STATE: NowPlayingState = { ...INITIAL_STATE, loading: false };
+
 /**
- * Compara dois estados do now-playing campo a campo, incluindo os 4
- * campos da música. Permite saltar setState quando o resultado do poll
- * é idêntico ao actual — evita re-render do RadioPlayer (e do schedule
- * inteiro) a cada 5s mesmo quando nada mudou.
+ * Categoria do que está a ser ouvido — discriminated union. Permite separar
+ * a decisão (`pickCategory`) do efeito (`buildState`/setState) e testar a
+ * lógica isolada.
  */
-function statesEqual(a: NowPlayingState, b: NowPlayingState): boolean {
+export type NowPlayingCategory =
+  | { kind: "live"; name: string }
+  | { kind: "gap" }
+  | { kind: "music"; song: NowPlayingSong; audible: AzuraEntry }
+  | { kind: "podcast"; name: string; art: string; audible: AzuraEntry }
+  | { kind: "announcement"; name: string; art: string; audible: AzuraEntry }
+  | { kind: "jingle"; audible: AzuraEntry };
+
+/**
+ * Compara dois estados do now-playing campo a campo. Permite saltar setState
+ * quando o resultado do poll é idêntico ao actual — evita re-render do
+ * RadioPlayer (e do schedule inteiro) a cada 5s mesmo quando nada mudou.
+ */
+export function statesEqual(a: NowPlayingState, b: NowPlayingState): boolean {
   if (a.loading !== b.loading) return false;
   if (a.isMusic !== b.isMusic) return false;
   if (a.isLiveShow !== b.isLiveShow) return false;
@@ -104,7 +150,7 @@ function statesEqual(a: NowPlayingState, b: NowPlayingState): boolean {
   );
 }
 
-function isValidSong(data: {
+export function isValidSong(data: {
   title?: string;
   artist?: string;
   playlist?: string;
@@ -125,68 +171,192 @@ function isValidSong(data: {
 /**
  * Devolve a entrada que o ouvinte está realmente a ouvir agora, dado o
  * buffer de stream estimado. A API AzuraCast diz "o que o servidor está a
- * transmitir AGORA", mas o ouvinte ouve com vários segundos de atraso —
- * por isso precisamos olhar para o histórico recente.
+ * transmitir AGORA", mas o ouvinte ouve com vários segundos de atraso.
  *
  * Importante: o `song_history` do AzuraCast NÃO inclui vinhetas/jingles —
- * só músicas. Isto significa que entre duas faixas há sempre uma "lacuna"
- * de 5-15s onde tocou uma vinheta que não está em lado nenhum dos dados.
- * Quando o ouvinte está nessa lacuna, devolvemos `undefined` para a UI
- * cair no estado neutro (logo) — em vez de mostrar a capa errada da
- * próxima música prematuramente.
+ * só músicas. Entre duas faixas há sempre uma "lacuna" de 5-15s onde tocou
+ * uma vinheta que não está nos dados. Quando o ouvinte está nessa lacuna,
+ * devolvemos `undefined` para a UI cair no estado neutro (logo) — em vez de
+ * mostrar a capa errada da próxima música prematuramente.
  */
-function pickAudibleEntry(
+export function pickAudibleEntry(
   nowPlaying: AzuraEntry | undefined,
   history: AzuraEntry[],
-  nowEpoch: number,
+  listenerWallClockSec: number,
 ): AzuraEntry | undefined {
   if (!nowPlaying) return undefined;
 
-  // Posição (em wall-clock) onde o ouvinte está agora
-  const listenerWallClock = nowEpoch - LISTENER_BUFFER_SECONDS;
-
-  // Constrói lista por ordem cronológica decrescente: mais recente primeiro
+  // Lista por ordem cronológica decrescente: mais recente primeiro
   const candidates: AzuraEntry[] = [nowPlaying, ...history];
 
   for (const entry of candidates) {
     const playedAt = entry.played_at;
     const duration = entry.duration;
     if (typeof playedAt !== "number" || typeof duration !== "number" || duration <= 0) continue;
-    if (playedAt <= listenerWallClock && listenerWallClock < playedAt + duration) {
+    if (playedAt <= listenerWallClockSec && listenerWallClockSec < playedAt + duration) {
       return entry;
     }
   }
 
   // Sem match: o ouvinte está numa lacuna entre faixas conhecidas
-  // (tipicamente uma vinheta que o AzuraCast não inclui no histórico).
-  // Devolver undefined → UI mostra logo, em vez da capa errada da
-  // próxima música antes do ouvinte realmente a receber.
   return undefined;
 }
 
-export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean = true) {
-  const [state, setState] = useState<NowPlayingState>({
-    song: null,
-    isMusic: false,
-    isLiveShow: false,
-    liveShowName: "",
-    isPodcast: false,
-    podcastName: "",
-    podcastArt: "",
-    isAnnouncement: false,
-    announcementName: "",
-    announcementArt: "",
-    loading: true,
-  });
+/**
+ * Decide a categoria a partir da resposta + offset do ouvinte. Função pura
+ * — toda a lógica de classificação testável em isolamento.
+ */
+export function pickCategory(
+  response: AzuraResponse,
+  listenerWallClockSec: number,
+): NowPlayingCategory {
+  // 1. Programa ao vivo — prioridade absoluta
+  if (response.live?.is_live) {
+    return { kind: "live", name: response.live.streamer_name || "Programa ao Vivo" };
+  }
 
-  const lastSongKeyRef = useRef<string | null>(null);
+  const history = Array.isArray(response.song_history) ? response.song_history : [];
+  const audible = pickAudibleEntry(response.now_playing, history, listenerWallClockSec);
+
+  if (!audible?.song) return { kind: "gap" };
+
+  const songData = {
+    title: audible.song.title || "",
+    artist: audible.song.artist || "",
+    playlist: audible.playlist || "",
+    duration: audible.duration || 0,
+  };
+
+  if (isValidSong(songData)) {
+    return {
+      kind: "music",
+      audible,
+      song: {
+        title: songData.title,
+        artist: songData.artist,
+        album: audible.song.album || "",
+        art: audible.song.art || "",
+      },
+    };
+  }
+
+  const playlistName = songData.playlist;
+  const isMusicPlaylist = !playlistName || MUSIC_PLAYLIST_PATTERNS.some((p) => p.test(playlistName));
+  const isLongContent = songData.duration >= MIN_SONG_DURATION;
+  const isJingle = JINGLE_PATTERNS.some((p) => p.test(songData.title)) || JINGLE_PATTERNS.some((p) => p.test(songData.artist));
+  const isAnnouncementPlaylist = !!playlistName && ANNOUNCEMENT_PLAYLIST_PATTERNS.some((p) => p.test(playlistName));
+
+  if (!isMusicPlaylist && !isJingle && isLongContent) {
+    return {
+      kind: "podcast",
+      audible,
+      name: playlistName,
+      art: audible.song.art || "",
+    };
+  }
+
+  if (isAnnouncementPlaylist && !isJingle) {
+    return {
+      kind: "announcement",
+      audible,
+      name: songData.title || playlistName,
+      art: audible.song.art || "",
+    };
+  }
+
+  return { kind: "jingle", audible };
+}
+
+/**
+ * Constrói o `NowPlayingState` final a partir da categoria. Função pura.
+ */
+export function buildState(category: NowPlayingCategory): NowPlayingState {
+  switch (category.kind) {
+    case "live":
+      return { ...NEUTRAL_STATE, isLiveShow: true, liveShowName: category.name };
+    case "music":
+      return { ...NEUTRAL_STATE, isMusic: true, song: category.song };
+    case "podcast":
+      return { ...NEUTRAL_STATE, isPodcast: true, podcastName: category.name, podcastArt: category.art };
+    case "announcement":
+      return { ...NEUTRAL_STATE, isAnnouncement: true, announcementName: category.name, announcementArt: category.art };
+    case "gap":
+    case "jingle":
+      return NEUTRAL_STATE;
+  }
+}
+
+/**
+ * Estima o offset entre o relógio do servidor AzuraCast e o relógio local
+ * a partir do `now_playing.played_at + elapsed` (= "wall clock" do servidor
+ * agora). Útil quando o relógio do cliente está dessincronizado.
+ *
+ * Devolve segundos a SOMAR ao `Date.now()` local para obter o tempo do
+ * servidor. Se não houver dados confiáveis, devolve 0.
+ */
+export function estimateServerOffsetSeconds(response: AzuraResponse): number {
+  const np = response.now_playing;
+  if (!np || typeof np.played_at !== "number" || typeof np.elapsed !== "number") return 0;
+  const serverNow = np.played_at + np.elapsed;
+  const clientNow = Date.now() / 1000;
+  const offset = serverNow - clientNow;
+  // Sanity check — offsets > 1h são quase certamente erro
+  if (Math.abs(offset) > 3600) return 0;
+  return offset;
+}
+
+/**
+ * Lê o buffer real do `<audio>` element, em segundos à frente do
+ * `currentTime`. Para livestreams o `currentTime` cresce continuamente
+ * a partir do start; o buffer indica quanto está pré-carregado adiante.
+ * Se não disponível, devolve null.
+ */
+export function readAudioBufferAhead(audio: HTMLAudioElement | null | undefined): number | null {
+  if (!audio) return null;
+  const buffered = audio.buffered;
+  if (!buffered || buffered.length === 0) return null;
+  try {
+    const lastEnd = buffered.end(buffered.length - 1);
+    const currentTime = audio.currentTime;
+    const ahead = lastEnd - currentTime;
+    if (!Number.isFinite(ahead) || ahead < 0) return null;
+    return ahead;
+  } catch {
+    return null;
+  }
+}
+
+interface UseNowPlayingOptions {
+  /** Ref para o `<audio>` — usada para ler buffer real do browser. */
+  audioRef?: RefObject<HTMLAudioElement | null>;
+  /** Epoch (ms) do último `playing` event do <audio>. Usado para decair o burst. */
+  playingStartedAtMs?: number | null;
+}
+
+export function useNowPlaying(
+  streamUrl: string | undefined,
+  isPlaying: boolean = true,
+  options: UseNowPlayingOptions = {},
+) {
+  const { audioRef, playingStartedAtMs } = options;
+  const [state, setState] = useState<NowPlayingState>(INITIAL_STATE);
+
   const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const nextFetchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fetchRef = useRef<() => void>(() => {});
-  // Epoch (s) em que a última entrada válida (música/podcast/anúncio)
-  // termina segundo o servidor. Usado para segurar a UI durante lacunas
-  // curtas (jingles sem metadados) em vez de cair logo para neutro.
+  const failureCountRef = useRef(0);
+  // Cache do parsing da URL — evita re-construir/re-validar em cada fetch
+  const apiUrlRef = useRef<{ source: string | undefined; api: string | null }>({ source: undefined, api: null });
+  // Offset estimado entre relógio do servidor e local (segundos)
+  const serverOffsetSecRef = useRef(0);
+  // Epoch (s) em que a última entrada válida termina segundo o servidor.
+  // Usado para segurar a UI durante lacunas curtas (jingles sem metadados).
   const lastAudibleEndAtRef = useRef<number | null>(null);
+  // Refs estáveis para opções variáveis (evita recriar fetchNowPlaying)
+  const audioRefRef = useRef(audioRef);
+  audioRefRef.current = audioRef;
+  const playingStartedAtMsRef = useRef(playingStartedAtMs ?? null);
+  playingStartedAtMsRef.current = playingStartedAtMs ?? null;
 
   const clearRetry = () => {
     if (retryTimeoutRef.current) {
@@ -203,24 +373,53 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
   };
 
   /**
-   * Devolve true se ainda estamos dentro da janela de graça após o fim da
-   * última entrada válida — e portanto devemos manter o estado actual
-   * (capa/título da música ou podcast/anúncio anterior) em vez de cair
-   * para o logo da rádio durante uma lacuna curta.
+   * Resolve a URL da API AzuraCast a partir do streamUrl do `<audio>`.
+   * Cacheia o resultado e devolve null sem lançar se a URL for inválida.
    */
-  const shouldHoldPrevious = (): boolean => {
-    const endsAt = lastAudibleEndAtRef.current;
-    if (endsAt === null) return false;
-    const nowEpoch = Date.now() / 1000;
-    return nowEpoch < endsAt + HOLD_PREVIOUS_ON_GAP_SECONDS;
+  const resolveApiUrl = (source: string | undefined): string | null => {
+    if (apiUrlRef.current.source === source) return apiUrlRef.current.api;
+    let api: string | null = null;
+    if (source) {
+      try {
+        const url = new URL(source);
+        api = `${url.protocol}//${url.host}/api/nowplaying/olha_que_duas`;
+      } catch {
+        api = null;
+      }
+    }
+    apiUrlRef.current = { source, api };
+    return api;
   };
 
   /**
-   * Wrapper sobre setState que só dispara um update se algum campo
-   * relevante mudou face ao estado actual. Evita re-renders silenciosos
-   * do RadioPlayer (e dos painéis de schedule abaixo) a cada poll de 5s
-   * quando o conteúdo é o mesmo.
+   * Estima o buffer total do ouvinte: leitura real do `<audio>` se
+   * disponível, somada ao "burst" inicial do icecast que decai com o tempo.
    */
+  const estimateListenerBufferSeconds = (): number => {
+    const real = readAudioBufferAhead(audioRefRef.current?.current);
+    let base = real ?? DEFAULT_LISTENER_BUFFER_SECONDS;
+
+    // Burst inicial: icecast envia ~3s logo no start. Decai linearmente
+    // ao longo de BURST_DECAY_MS desde o `playing` event.
+    const startedAt = playingStartedAtMsRef.current;
+    if (startedAt !== null) {
+      const elapsed = Date.now() - startedAt;
+      if (elapsed >= 0 && elapsed < BURST_DECAY_MS) {
+        const decay = 1 - elapsed / BURST_DECAY_MS;
+        base += BURST_INITIAL_SECONDS * decay;
+      }
+    }
+
+    return base;
+  };
+
+  const shouldHoldPrevious = (): boolean => {
+    const endsAt = lastAudibleEndAtRef.current;
+    if (endsAt === null) return false;
+    const nowEpoch = Date.now() / 1000 + serverOffsetSecRef.current;
+    return nowEpoch < endsAt + HOLD_PREVIOUS_ON_GAP_SECONDS;
+  };
+
   const setStateIfChanged = (next: NowPlayingState) => {
     setState((prev) => (statesEqual(prev, next) ? prev : next));
   };
@@ -235,12 +434,7 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
 
   /**
    * Agenda um refetch one-shot exactamente quando o ouvinte terminar a faixa
-   * actual, em vez de esperar pelo próximo poll de 5s. Usa a janela
-   * [played_at, played_at+duration) da entrada audível para calcular quantos
-   * segundos faltam até o ouvinte transicionar. No pior caso isto reduz o
-   * delay de detecção de ~5s (polling) para ~1s (margem). Funciona para
-   * qualquer entry (now_playing ou histórico) já que ambas têm played_at e
-   * duration.
+   * actual. Reduz o delay de detecção de ~5s (polling) para ~1s (margem).
    */
   const scheduleSmartRefetch = (audible: AzuraEntry | undefined, listenerWallClock: number) => {
     clearNextFetch();
@@ -261,215 +455,123 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
     }, delayMs);
   };
 
+  /**
+   * Agenda refetch para quando a janela de hold expirar — evita esperar
+   * pelo poll de 5/15s para sair do estado "segurado" da última faixa.
+   */
+  const scheduleHoldExpiryRefetch = () => {
+    const endsAt = lastAudibleEndAtRef.current;
+    if (endsAt === null) return;
+    const expiresAt = endsAt + HOLD_PREVIOUS_ON_GAP_SECONDS;
+    const nowEpoch = Date.now() / 1000 + serverOffsetSecRef.current;
+    const secsUntil = expiresAt - nowEpoch;
+    if (secsUntil <= 0) return;
+    clearNextFetch();
+    nextFetchTimeoutRef.current = setTimeout(() => {
+      nextFetchTimeoutRef.current = null;
+      fetchRef.current();
+    }, (secsUntil + 0.5) * 1000);
+  };
+
   const fetchNowPlaying = useCallback(async () => {
-    if (!streamUrl) {
-      setStateIfChanged({ song: null, isMusic: false, isLiveShow: false, liveShowName: "", isPodcast: false, podcastName: "", podcastArt: "", isAnnouncement: false, announcementName: "", announcementArt: "", loading: false });
+    const apiUrl = resolveApiUrl(streamUrl);
+    if (!apiUrl) {
+      // streamUrl ausente ou inválido — sai sem retry
+      clearRetry();
+      clearNextFetch();
+      setStateIfChanged({ ...NEUTRAL_STATE });
       return;
     }
 
     try {
-      const url = new URL(streamUrl);
-      const apiUrl = `${url.protocol}//${url.host}/api/nowplaying/olha_que_duas`;
-
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 6000);
       const response = await fetch(apiUrl, { signal: controller.signal });
       clearTimeout(timeout);
-      if (!response.ok) throw new Error("Failed to fetch");
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-      const data = await response.json();
-      const live = data.live;
+      const data: AzuraResponse = await response.json();
 
-      // 1. Programa ao vivo — streamer está a transmitir; ignora buffer offset
-      // (live tem prioridade absoluta e não há histórico relevante)
-      if (live?.is_live) {
-        clearRetry();
-        clearNextFetch();
-        lastSongKeyRef.current = null;
-        lastAudibleEndAtRef.current = null;
-        setStateIfChanged({
-          song: null,
-          isMusic: false,
-          isLiveShow: true,
-          liveShowName: live.streamer_name || "Programa ao Vivo",
-          isPodcast: false,
-          podcastName: "",
-          podcastArt: "",
-          isAnnouncement: false,
-          announcementName: "",
-          announcementArt: "",
-          loading: false,
-        });
-        return;
-      }
-
-      // 2. Calcula a entrada que o ouvinte está realmente a ouvir agora
-      // (com base no buffer estimado), em vez de usar o now_playing cru
-      const nowPlaying: AzuraEntry | undefined = data.now_playing;
-      const history: AzuraEntry[] = Array.isArray(data.song_history) ? data.song_history : [];
-      const listenerWallClock = Date.now() / 1000 - LISTENER_BUFFER_SECONDS;
-      const audible = pickAudibleEntry(nowPlaying, history, Date.now() / 1000);
-
-      if (!audible?.song) {
-        clearRetry();
-        // Lacuna (vinheta) — não temos played_at/duration confiável. Se a
-        // última entrada válida terminou há pouco tempo, seguramos o estado
-        // actual (capa da música/podcast/anúncio anterior) em vez de cair
-        // para o logo — elimina o piscar entre faixas.
-        if (shouldHoldPrevious()) {
-          // Não tocamos no setState. O próximo poll (5s) resolve.
-          return;
-        }
-        clearNextFetch();
-        lastSongKeyRef.current = null;
-        lastAudibleEndAtRef.current = null;
-        setStateIfChanged({ song: null, isMusic: false, isLiveShow: false, liveShowName: "", isPodcast: false, podcastName: "", podcastArt: "", isAnnouncement: false, announcementName: "", announcementArt: "", loading: false });
-        return;
-      }
-
-      const songData = {
-        title: audible.song.title || "",
-        artist: audible.song.artist || "",
-        playlist: audible.playlist || "",
-        duration: audible.duration || 0,
-      };
-
-      const isMusic = isValidSong(songData);
-      const songKey = `${songData.title}-${songData.artist}`;
-
-      // 3. Jingle/vinheta/transição — limpa música, mostra logo
-      if (!isMusic) {
-        // Verifica se é podcast: não é música, não é jingle, playlist não é de música
-        const playlistName = songData.playlist;
-        const isMusicPlaylist = !playlistName || MUSIC_PLAYLIST_PATTERNS.some((p) => p.test(playlistName));
-        const isLongContent = songData.duration >= MIN_SONG_DURATION;
-        const isJingle = JINGLE_PATTERNS.some((p) => p.test(songData.title)) || JINGLE_PATTERNS.some((p) => p.test(songData.artist));
-        const isAnnouncementPlaylist = !!playlistName && ANNOUNCEMENT_PLAYLIST_PATTERNS.some((p) => p.test(playlistName));
-
-        if (!isMusicPlaylist && !isJingle && isLongContent) {
-          // Podcast detectado
-          clearRetry();
-          lastSongKeyRef.current = null;
-          recordAudibleEnd(audible);
-          setStateIfChanged({
-            song: null,
-            isMusic: false,
-            isLiveShow: false,
-            liveShowName: "",
-            isPodcast: true,
-            podcastName: playlistName,
-            podcastArt: audible.song.art || "",
-            isAnnouncement: false,
-            announcementName: "",
-            announcementArt: "",
-            loading: false,
-          });
-          // Podcast pode durar bastante; agenda refetch para o seu fim
-          scheduleSmartRefetch(audible, listenerWallClock);
-          return;
-        }
-
-        // Anúncio/spot especial — playlist dedicada com artwork próprio,
-        // sem restrição de duração mínima (spots podem ter 10-30s).
-        if (isAnnouncementPlaylist && !isJingle) {
-          clearRetry();
-          lastSongKeyRef.current = null;
-          recordAudibleEnd(audible);
-          setStateIfChanged({
-            song: null,
-            isMusic: false,
-            isLiveShow: false,
-            liveShowName: "",
-            isPodcast: false,
-            podcastName: "",
-            podcastArt: "",
-            isAnnouncement: true,
-            announcementName: songData.title || playlistName,
-            announcementArt: audible.song.art || "",
-            loading: false,
-          });
-          scheduleSmartRefetch(audible, listenerWallClock);
-          return;
-        }
-
-        // Jingle/transição normal — se a faixa válida anterior acabou há
-        // pouco, seguramos o estado; caso contrário cai para logo.
-        clearRetry();
-        if (shouldHoldPrevious()) {
-          scheduleSmartRefetch(audible, listenerWallClock);
-          return;
-        }
-        lastAudibleEndAtRef.current = null;
-        setStateIfChanged({
-          song: null,
-          isMusic: false,
-          isLiveShow: false,
-          liveShowName: "",
-          isPodcast: false,
-          podcastName: "",
-          podcastArt: "",
-          isAnnouncement: false,
-          announcementName: "",
-          announcementArt: "",
-          loading: false,
-        });
-        scheduleSmartRefetch(audible, listenerWallClock);
-        return;
-      }
-
-      // 4. Música válida — actualiza info
+      // Sucesso → reset backoff
+      failureCountRef.current = 0;
       clearRetry();
-      lastSongKeyRef.current = songKey;
-      recordAudibleEnd(audible);
-      setStateIfChanged({
-        song: {
-          title: songData.title,
-          artist: songData.artist,
-          album: audible.song.album || "",
-          art: audible.song.art || "",
-        },
-        isMusic: true,
-        isLiveShow: false,
-        liveShowName: "",
-        isPodcast: false,
-        podcastName: "",
-        podcastArt: "",
-        isAnnouncement: false,
-        announcementName: "",
-        announcementArt: "",
-        loading: false,
-      });
-      // Agenda refetch para o momento exacto da próxima transição
-      scheduleSmartRefetch(audible, listenerWallClock);
+
+      // Actualiza offset do relógio servidor (corrige drift do cliente)
+      const offset = estimateServerOffsetSeconds(data);
+      if (offset !== 0) serverOffsetSecRef.current = offset;
+
+      // Calcula posição efectiva do ouvinte
+      const bufferSec = estimateListenerBufferSeconds();
+      const listenerWallClock = Date.now() / 1000 + serverOffsetSecRef.current - bufferSec;
+
+      const category = pickCategory(data, listenerWallClock);
+
+      // 1. Live show
+      if (category.kind === "live") {
+        clearNextFetch();
+        lastAudibleEndAtRef.current = null;
+        setStateIfChanged(buildState(category));
+        return;
+      }
+
+      // 2. Lacuna entre faixas (sem now_playing válido OU vinheta sem metadata)
+      if (category.kind === "gap") {
+        if (shouldHoldPrevious()) {
+          // Não tocamos no setState — agendamos refetch para quando o hold expirar
+          scheduleHoldExpiryRefetch();
+          return;
+        }
+        clearNextFetch();
+        lastAudibleEndAtRef.current = null;
+        setStateIfChanged(NEUTRAL_STATE);
+        return;
+      }
+
+      // 3. Jingle (com metadata mas que classificamos como interrupção)
+      if (category.kind === "jingle") {
+        if (shouldHoldPrevious()) {
+          scheduleSmartRefetch(category.audible, listenerWallClock);
+          return;
+        }
+        lastAudibleEndAtRef.current = null;
+        setStateIfChanged(NEUTRAL_STATE);
+        scheduleSmartRefetch(category.audible, listenerWallClock);
+        return;
+      }
+
+      // 4. Música, podcast ou anúncio — actualiza UI e agenda próxima transição
+      recordAudibleEnd(category.audible);
+      setStateIfChanged(buildState(category));
+      scheduleSmartRefetch(category.audible, listenerWallClock);
     } catch {
-      // Falha de fetch (timeout, rede, parse). Retry rápido uma vez para
-      // não esperar 5s pelo próximo poll. Não tocamos no estado para evitar
-      // flicker — a UI mantém os últimos metadados válidos.
+      // Falha de fetch (timeout, rede, parse). Backoff exponencial com cap.
+      failureCountRef.current += 1;
       setState((prev) => (prev.loading ? { ...prev, loading: false } : prev));
       clearRetry();
+      const idx = Math.min(failureCountRef.current - 1, FETCH_BACKOFF_MS.length - 1);
+      const delay = FETCH_BACKOFF_MS[idx];
       retryTimeoutRef.current = setTimeout(() => {
         retryTimeoutRef.current = null;
         fetchNowPlaying();
-      }, RETRY_DELAY);
+      }, delay);
     }
+    // scheduleSmartRefetch / scheduleHoldExpiryRefetch são closures definidas
+    // no body do hook que apenas leem refs — não precisam de ser deps (não
+    // mudam de identidade que importe; reincluí-las invalidaria o callback
+    // a cada render sem benefício).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [streamUrl]);
 
   // Mantém uma ref estável para o smart refetch poder chamar a versão actual
-  // do fetchNowPlaying mesmo após re-renders
   useEffect(() => {
     fetchRef.current = fetchNowPlaying;
   }, [fetchNowPlaying]);
 
-  // Polling principal — só corre quando o utilizador está a ouvir
+  // Polling principal — sempre activo (taxa varia conforme isPlaying)
   useEffect(() => {
-    if (!isPlaying) {
-      clearRetry();
-      clearNextFetch();
-      return;
-    }
-
     fetchNowPlaying();
-    const interval = setInterval(fetchNowPlaying, POLL_INTERVAL);
+    const intervalMs = isPlaying ? POLL_INTERVAL_ACTIVE : POLL_INTERVAL_PASSIVE;
+    const interval = setInterval(fetchNowPlaying, intervalMs);
 
     return () => {
       clearInterval(interval);
@@ -478,11 +580,17 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
     };
   }, [fetchNowPlaying, isPlaying]);
 
+  // Reset do hold quando o utilizador pausa — evita usar timestamp velho
+  // ao retomar (a UI pode ter ficado "segura" numa faixa que já passou).
+  useEffect(() => {
+    if (!isPlaying) {
+      lastAudibleEndAtRef.current = null;
+    }
+  }, [isPlaying]);
+
   // Refetch imediato quando a aba volta a ficar visível — recupera de
   // throttling do setInterval em background (Chrome limita a ~1/min)
   useEffect(() => {
-    if (!isPlaying) return;
-
     const onVisibility = () => {
       if (!document.hidden) {
         fetchNowPlaying();
@@ -491,7 +599,7 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
 
     document.addEventListener("visibilitychange", onVisibility);
     return () => document.removeEventListener("visibilitychange", onVisibility);
-  }, [fetchNowPlaying, isPlaying]);
+  }, [fetchNowPlaying]);
 
   return { ...state, refetch: fetchNowPlaying };
 }

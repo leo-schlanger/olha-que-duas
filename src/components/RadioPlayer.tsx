@@ -9,7 +9,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { siteConfig } from "@/config/site";
 import { useSchedule } from "@/hooks/useSchedule";
 import { useNowPlaying } from "@/hooks/useNowPlaying";
-import { useDailySchedule, getCurrentPeriod } from "@/hooks/useDailySchedule";
+import {
+  useDailySchedule,
+  getCurrentPeriodFromSchedule,
+  getPeriodBoundaries,
+} from "@/hooks/useDailySchedule";
+import { useClockTick } from "@/hooks/useClockTick";
 import WeatherStrip from "@/components/WeatherStrip";
 import DailySoundtrackPanel from "@/components/radio/DailySoundtrackPanel";
 import WeeklySchedulePanel from "@/components/radio/WeeklySchedulePanel";
@@ -27,19 +32,59 @@ const RadioPlayer = () => {
   const [volume, setVolume] = useState(80);
   const [isMuted, setIsMuted] = useState(false);
   const [isReconnecting, setIsReconnecting] = useState(false);
+  // Epoch (ms) em que o stream realmente começou a tocar (do evento `playing`).
+  // null quando não está a tocar. Usado pelo useNowPlaying para decair o
+  // burst do icecast e estimar o offset real do ouvinte.
+  const [playingStartedAtMs, setPlayingStartedAtMs] = useState<number | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const reconnectAttemptsRef = useRef(0);
   const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isPlayingRef = useRef(false);
+  // Flag para distinguir pause iniciado pelo utilizador (togglePlay) de
+  // pause externo do browser (chamada recebida, perda de foco em mobile,
+  // outro app a tomar audio focus). No segundo caso queremos sincronizar
+  // o estado para não ficarmos com um botão "pause" sem áudio a sair.
+  const userActionRef = useRef(false);
   // Epoch (ms) do último pause. Usado para decidir se ao retomar precisamos
   // de reassinar src + load() (buffer estagnado) ou se basta um play() directo.
   const lastPauseAtRef = useRef<number>(0);
 
-  const { schedule, loading } = useSchedule();
+  const { schedule, loading, error: scheduleError } = useSchedule();
   const { data: dailySchedule } = useDailySchedule();
   const { radio } = siteConfig;
-  const { song, isMusic, isLiveShow, liveShowName, isPodcast, podcastName, podcastArt, isAnnouncement, announcementName, announcementArt } = useNowPlaying(radio.streamUrl, isPlaying);
-  const currentPeriod = getCurrentPeriod();
+  const {
+    song, isMusic, isLiveShow, liveShowName,
+    isPodcast, podcastName, podcastArt,
+    isAnnouncement, announcementName, announcementArt,
+  } = useNowPlaying(radio.streamUrl, isPlaying, {
+    audioRef,
+    playingStartedAtMs,
+  });
+
+  // Avisa em dev se o schedule do Supabase falhou (cai no fallback hardcoded)
+  useEffect(() => {
+    if (scheduleError) {
+      console.warn("[RadioPlayer] schedule fetch failed, using fallback:", scheduleError);
+    }
+  }, [scheduleError]);
+
+  // Período actual derivado do dailySchedule (não mais hardcoded). Re-render
+  // automático nas viragens de período via useClockTick.
+  const periodBoundaries = useMemo(
+    () => getPeriodBoundaries(dailySchedule),
+    [dailySchedule]
+  );
+  useClockTick(periodBoundaries);
+  const currentPeriod = getCurrentPeriodFromSchedule(dailySchedule);
+
+  // Centraliza a verificação de "podemos tocar" — usado em vários sítios
+  const canPlay = !!radio.isLive && !!radio.streamUrl;
+
+  // Há artwork de algum tipo para mostrar como fundo / disc?
+  const artSrc = isMusic && song?.art ? song.art
+    : isPodcast && podcastArt ? podcastArt
+    : isAnnouncement && announcementArt ? announcementArt
+    : null;
 
   // Alturas estáveis do equalizer — geradas uma vez por mount. Recalcular
   // a cada render fazia as barras "saltarem" entre polls (5s) em vez de
@@ -80,6 +125,7 @@ const RadioPlayer = () => {
       // Desistimos: avisamos o utilizador parando o player
       setIsReconnecting(false);
       setIsPlaying(false);
+      setPlayingStartedAtMs(null);
       reconnectAttemptsRef.current = 0;
       return;
     }
@@ -113,6 +159,8 @@ const RadioPlayer = () => {
       reconnectAttemptsRef.current = 0;
       clearReconnectTimer();
       setIsReconnecting(false);
+      // Marca o início real da reprodução — o useNowPlaying usa para o burst
+      setPlayingStartedAtMs(Date.now());
     };
     const onWaiting = () => {
       // Buffering puro — mostra feedback mas não força reconexão
@@ -128,12 +176,28 @@ const RadioPlayer = () => {
       // Live stream não devia "acabar"; tratar como drop
       if (isPlayingRef.current) attemptReconnect();
     };
+    const onPause = () => {
+      // Distingue pause externo (browser/SO) do pause iniciado pelo utilizador.
+      // Se foi externo enquanto isPlayingRef ainda é true, sincroniza o estado.
+      if (userActionRef.current) {
+        userActionRef.current = false;
+        return;
+      }
+      if (isPlayingRef.current) {
+        setIsPlaying(false);
+        setPlayingStartedAtMs(null);
+        clearReconnectTimer();
+        reconnectAttemptsRef.current = 0;
+        setIsReconnecting(false);
+      }
+    };
 
     audio.addEventListener("playing", onPlaying);
     audio.addEventListener("waiting", onWaiting);
     audio.addEventListener("error", onError);
     audio.addEventListener("stalled", onStalled);
     audio.addEventListener("ended", onEnded);
+    audio.addEventListener("pause", onPause);
 
     return () => {
       audio.removeEventListener("playing", onPlaying);
@@ -141,6 +205,7 @@ const RadioPlayer = () => {
       audio.removeEventListener("error", onError);
       audio.removeEventListener("stalled", onStalled);
       audio.removeEventListener("ended", onEnded);
+      audio.removeEventListener("pause", onPause);
     };
   }, [attemptReconnect]);
 
@@ -160,14 +225,16 @@ const RadioPlayer = () => {
   useEffect(() => () => clearReconnectTimer(), []);
 
   const togglePlay = async () => {
-    if (!radio.isLive || !radio.streamUrl) return;
+    if (!canPlay) return;
     const audio = audioRef.current;
     if (!audio) return;
 
     if (isPlaying) {
+      userActionRef.current = true;
       audio.pause();
       lastPauseAtRef.current = Date.now();
       setIsPlaying(false);
+      setPlayingStartedAtMs(null);
       clearReconnectTimer();
       reconnectAttemptsRef.current = 0;
       setIsReconnecting(false);
@@ -175,10 +242,10 @@ const RadioPlayer = () => {
     }
 
     try {
-      // Só reassinar src + load() se o buffer está estagnado (pause longo,
-      // primeira reprodução ou erro pendente). Em pause/play rápido evita
-      // destruir o pipeline de áudio — eliminando a "trinca" no momento
-      // do play e o tilt visual que ela provocava.
+      // Reload obrigatório se: nunca tocou, deu erro, pause longo. Em
+      // pause/play rápido evita destruir o pipeline (eliminando a "trinca"
+      // do play e o tilt visual). Erro pendente sempre força reload —
+      // antes podia ficar em loop sem reload com `currentSrc` setado.
       const sincePause = Date.now() - lastPauseAtRef.current;
       const needsReload =
         !audio.currentSrc ||
@@ -192,11 +259,12 @@ const RadioPlayer = () => {
       await audio.play();
       setIsPlaying(true);
       reconnectAttemptsRef.current = 0;
-      // Não chamar refetch() aqui: o useEffect[isPlaying] no useNowPlaying
-      // já dispara um fetch imediato — chamadas paralelas eram redundantes.
+      // playingStartedAtMs é setado no listener `onPlaying` (mais preciso
+      // que aqui — `play()` resolve antes de o áudio começar de facto).
     } catch {
       // Browser blocked autoplay — user interaction required
       setIsPlaying(false);
+      setPlayingStartedAtMs(null);
     }
   };
 
@@ -229,22 +297,20 @@ const RadioPlayer = () => {
           <div className="lg:col-span-4 flex flex-col lg:sticky lg:top-24">
             <Card className="bg-gradient-to-br from-vermelho via-vermelho to-vermelho-dark border-0 text-cream shadow-2xl overflow-hidden relative group">
               {/* Album art / podcast art / announcement art background blur */}
-              {((isMusic && song?.art) || (isPodcast && podcastArt) || (isAnnouncement && announcementArt)) && (
+              {artSrc ? (
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                   <img
-                    src={isMusic ? song!.art : isPodcast ? podcastArt : announcementArt}
+                    src={artSrc}
                     alt=""
                     aria-hidden="true"
                     decoding="async"
-                    loading="lazy"
+                    loading="eager"
                     className="w-full h-full object-cover scale-150 blur-3xl opacity-30 transition-all duration-300 will-change-transform"
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-br from-vermelho/80 via-vermelho/70 to-vermelho-dark/90" />
                 </div>
-              )}
-              {/* Decorative background elements (fallback when no art) */}
-              {!((isMusic && song?.art) || (isPodcast && podcastArt) || (isAnnouncement && announcementArt)) && (
+              ) : (
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                   <div className="absolute -top-20 -right-20 w-40 h-40 bg-amarelo/10 rounded-full blur-3xl" />
                   <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
@@ -253,7 +319,14 @@ const RadioPlayer = () => {
               <div className="absolute inset-0 bg-black/10 opacity-40 group-hover:opacity-20 transition-opacity duration-500" />
 
               <CardContent className="p-6 md:p-8 flex flex-col h-full relative z-10">
-                {radio.streamUrl && <audio ref={audioRef} src={radio.streamUrl} preload="none" />}
+                {radio.streamUrl && (
+                  <audio
+                    ref={audioRef}
+                    src={radio.streamUrl}
+                    preload="none"
+                    aria-label={`Stream da ${radio.name}`}
+                  />
+                )}
 
                 {/* Header */}
                 <div className="flex items-center justify-between mb-5">
@@ -309,13 +382,16 @@ const RadioPlayer = () => {
                       {/* Play/Pause overlay */}
                       <button
                         onClick={togglePlay}
+                        disabled={!canPlay}
                         aria-label={isPlaying ? "Pausar rádio" : "Ouvir rádio"}
-                        className="absolute inset-0 flex items-center justify-center bg-black/0 hover:bg-black/30 transition-all duration-300 group/play"
+                        className="absolute inset-0 flex items-center justify-center bg-black/0 hover:bg-black/30 disabled:hover:bg-black/0 disabled:cursor-not-allowed transition-all duration-300 group/play"
                       >
                         <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
-                          isPlaying
-                            ? 'bg-white/0 group-hover/play:bg-white/90 text-transparent group-hover/play:text-vermelho'
-                            : 'bg-white/90 text-vermelho shadow-xl'
+                          !canPlay
+                            ? 'bg-white/40 text-vermelho/60'
+                            : isPlaying
+                              ? 'bg-white/0 group-hover/play:bg-white/90 text-transparent group-hover/play:text-vermelho'
+                              : 'bg-white/90 text-vermelho shadow-xl'
                         }`}>
                           {isPlaying
                             ? <Pause className="w-7 h-7" fill="currentColor" />

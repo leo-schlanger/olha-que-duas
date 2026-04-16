@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
 
 interface ScheduleEvent {
@@ -16,7 +16,7 @@ interface ScheduleItemRaw {
   event: ScheduleEvent | ScheduleEvent[] | null;
 }
 
-interface GroupedSchedule {
+export interface GroupedSchedule {
   day: string;
   dayNumber: number;
   show: string;
@@ -44,83 +44,71 @@ const fallbackSchedule: GroupedSchedule[] = [
   { day: 'Sábado', dayNumber: 6, show: 'Olha que Duas!', times: ['11:00', '19:00', '00:00'], iconUrl: '' },
 ];
 
-export function useSchedule() {
-  const [schedule, setSchedule] = useState<GroupedSchedule[]>(fallbackSchedule);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+/**
+ * Agrupa as linhas raw de `schedule` por (dia, programa), juntando os
+ * múltiplos horários do mesmo programa no mesmo dia. Função pura — exposta
+ * para testes.
+ */
+export function groupScheduleRows(rows: ScheduleItemRaw[]): GroupedSchedule[] {
+  const grouped = new Map<string, GroupedSchedule>();
 
-  useEffect(() => {
-    async function fetchSchedule() {
-      if (!isSupabaseConfigured()) {
-        setLoading(false);
-        return;
-      }
+  for (const item of rows) {
+    const event = Array.isArray(item.event) ? item.event[0] : item.event;
+    if (!event) continue;
 
-      const supabase = getSupabase();
-      if (!supabase) {
-        setLoading(false);
-        return;
-      }
+    const key = `${item.day_of_week}-${event.name}`;
+    const time = item.time.slice(0, 5); // HH:mm
 
-      try {
-        const { data, error: fetchError } = await supabase
-          .from('schedule')
-          .select(`
-            id,
-            event_id,
-            day_of_week,
-            time,
-            event:events!inner(id, name, description, icon_url, is_active)
-          `)
-          .eq('is_active', true)
-          .eq('events.is_active', true)
-          .order('day_of_week', { ascending: true })
-          .order('time', { ascending: true });
-
-        if (fetchError) throw fetchError;
-
-        if (data && data.length > 0) {
-          // Group by day and event
-          const grouped = new Map<string, GroupedSchedule>();
-
-          for (const item of data as ScheduleItemRaw[]) {
-            // Handle event being array or object
-            const event = Array.isArray(item.event) ? item.event[0] : item.event;
-            if (!event) continue;
-
-            const key = `${item.day_of_week}-${event.name}`;
-            const time = item.time.slice(0, 5); // HH:mm
-
-            if (grouped.has(key)) {
-              grouped.get(key)!.times.push(time);
-            } else {
-              grouped.set(key, {
-                day: DAYS_MAP[item.day_of_week],
-                dayNumber: item.day_of_week,
-                show: event.name,
-                times: [time],
-                iconUrl: event.icon_url,
-              });
-            }
-          }
-
-          // Sort by day
-          const sortedSchedule = Array.from(grouped.values()).sort(
-            (a, b) => a.dayNumber - b.dayNumber
-          );
-
-          setSchedule(sortedSchedule);
-        }
-      } catch (err) {
-
-        setError(err instanceof Error ? err.message : 'Error fetching schedule');
-      } finally {
-        setLoading(false);
-      }
+    if (grouped.has(key)) {
+      grouped.get(key)!.times.push(time);
+    } else {
+      grouped.set(key, {
+        day: DAYS_MAP[item.day_of_week],
+        dayNumber: item.day_of_week,
+        show: event.name,
+        times: [time],
+        iconUrl: event.icon_url,
+      });
     }
+  }
 
-    fetchSchedule();
-  }, []);
+  return Array.from(grouped.values()).sort((a, b) => a.dayNumber - b.dayNumber);
+}
 
-  return { schedule, loading, error };
+export function useSchedule() {
+  const query = useQuery({
+    queryKey: ['weekly-schedule'],
+    queryFn: async (): Promise<GroupedSchedule[]> => {
+      if (!isSupabaseConfigured()) return fallbackSchedule;
+      const supabase = getSupabase();
+      if (!supabase) return fallbackSchedule;
+
+      const { data, error: fetchError } = await supabase
+        .from('schedule')
+        .select(`
+          id,
+          event_id,
+          day_of_week,
+          time,
+          event:events!inner(id, name, description, icon_url, is_active)
+        `)
+        .eq('is_active', true)
+        .eq('events.is_active', true)
+        .order('day_of_week', { ascending: true })
+        .order('time', { ascending: true });
+
+      if (fetchError) throw fetchError;
+      if (!data || data.length === 0) return fallbackSchedule;
+
+      return groupScheduleRows(data as ScheduleItemRaw[]);
+    },
+    staleTime: 1000 * 60 * 30, // 30 minutos — programação raramente muda
+    placeholderData: fallbackSchedule,
+  });
+
+  return {
+    schedule: query.data ?? fallbackSchedule,
+    loading: query.isLoading,
+    error: query.error instanceof Error ? query.error.message : null,
+  };
 }

@@ -1,34 +1,76 @@
 import { useQuery } from '@tanstack/react-query';
 import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
 
-interface DailySlot {
+export interface DailySlot {
   time: string;
   name: string;
   genres?: string;
   duration?: string;
 }
 
-interface DailyPeriod {
+export interface DailyPeriod {
   period: string;
   label: string;
   range: string;
   slots: DailySlot[];
 }
 
+/**
+ * Parse "07H - 12H" → { start: 420, end: 720 } (minutos desde a meia-noite).
+ * Devolve null se a string não bater com o formato esperado.
+ */
+export function parsePeriodRange(range: string): { start: number; end: number } | null {
+  const match = range.match(/^\s*(\d{1,2})\s*[Hh]\s*-\s*(\d{1,2})\s*[Hh]\s*$/);
+  if (!match) return null;
+  const start = parseInt(match[1], 10) * 60;
+  let end = parseInt(match[2], 10) * 60;
+  // 00H no fim significa fim do dia (1440), não 0
+  if (end === 0) end = 24 * 60;
+  return { start, end };
+}
+
+/**
+ * Devolve a key do período actual com base no `time_range` de cada período.
+ * Se nenhum período match, devolve o primeiro período disponível (fallback).
+ * Lida com períodos que cruzam a meia-noite (ex: madrugada 00H-07H — start 0).
+ */
+export function getCurrentPeriodFromSchedule(
+  periods: DailyPeriod[] | undefined,
+  now: Date = new Date(),
+): string {
+  if (!periods || periods.length === 0) return 'manha';
+  const minutesNow = now.getHours() * 60 + now.getMinutes();
+  for (const p of periods) {
+    const range = parsePeriodRange(p.range);
+    if (!range) continue;
+    if (minutesNow >= range.start && minutesNow < range.end) return p.period;
+  }
+  return periods[0].period;
+}
+
+/**
+ * Devolve as fronteiras de início de cada período (em minutos desde
+ * meia-noite). Útil para `useClockTick` agendar re-renders nas viragens.
+ */
+export function getPeriodBoundaries(periods: DailyPeriod[] | undefined): number[] {
+  if (!periods || periods.length === 0) return [];
+  const out: number[] = [];
+  for (const p of periods) {
+    const range = parsePeriodRange(p.range);
+    if (range) out.push(range.start);
+  }
+  return out;
+}
+
 /** Parse "07h" → 420, "10h30" → 630 (minutes from midnight) */
-function parseSlotTime(t: string): number {
+export function parseSlotTime(t: string): number {
   const match = t.match(/^(\d{1,2})h(\d{2})?$/);
   if (!match) return 0;
   return parseInt(match[1]) * 60 + (match[2] ? parseInt(match[2]) : 0);
 }
 
-/** Parse "12H" → 720 (minutes from midnight) */
-function parseRangeHour(h: string): number {
-  return parseInt(h) * 60;
-}
-
 /** Format a duration in minutes as e.g. "2h", "1h30" */
-function formatDuration(minutes: number): string {
+export function formatDuration(minutes: number): string {
   if (minutes <= 0) return '';
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;
@@ -37,9 +79,10 @@ function formatDuration(minutes: number): string {
 }
 
 /** Calculate duration for each slot based on the next slot or period end time */
-function addDurations(periods: DailyPeriod[]): DailyPeriod[] {
+export function addDurations(periods: DailyPeriod[]): DailyPeriod[] {
   return periods.map((period) => {
-    const rangeEnd = parseRangeHour(period.range.split('-')[1].trim().replace('H', ''));
+    const range = parsePeriodRange(period.range);
+    const rangeEnd = range ? range.end : 24 * 60;
     const slots = period.slots.map((slot, i) => {
       const start = parseSlotTime(slot.time);
       let end: number;
@@ -144,10 +187,3 @@ export function useDailySchedule() {
   });
 }
 
-export function getCurrentPeriod(): string {
-  const hour = new Date().getHours();
-  if (hour >= 7 && hour < 12) return 'manha';
-  if (hour >= 12 && hour < 18) return 'tarde';
-  if (hour >= 18) return 'noite';
-  return 'madrugada';
-}

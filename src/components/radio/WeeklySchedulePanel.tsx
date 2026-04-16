@@ -1,9 +1,10 @@
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import {
   Calendar, Clock, Radio, ChevronRight,
   Apple, Target, Heart, Footprints, MessageSquare, Users,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { useClockTick } from "@/hooks/useClockTick";
 
 interface ScheduleItem {
   day: string;
@@ -38,21 +39,31 @@ const DAYS_SHORT: Record<string, string> = {
   'Domingo': 'Dom',
 };
 
-function renderIcon(show: string, iconUrl: string) {
+const DAY_NAME_BY_INDEX = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+
+/**
+ * Renderiza o ícone do programa: tenta a `iconUrl`, e em caso de erro
+ * substitui pelo fallback do mapa (ou ícone Radio genérico). Usa estado
+ * local em vez de esconder o `<img>` cegamente — antes o erro deixava
+ * uma caixa vazia.
+ */
+function ProgramIcon({ show, iconUrl }: { show: string; iconUrl: string }) {
+  const [errored, setErrored] = useState(false);
   const fallback = FALLBACK_ICONS[show] || <Radio className="w-full h-full p-1.5" />;
-  if (iconUrl && !iconUrl.includes('placehold.co')) {
-    return (
-      <img
-        src={iconUrl}
-        alt={show}
-        className="w-full h-full object-cover rounded-md"
-        loading="lazy"
-        decoding="async"
-        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-      />
-    );
-  }
-  return fallback;
+  const hasUrl = iconUrl && !iconUrl.includes('placehold.co');
+
+  if (!hasUrl || errored) return <>{fallback}</>;
+
+  return (
+    <img
+      src={iconUrl}
+      alt={show}
+      className="w-full h-full object-cover rounded-md"
+      loading="lazy"
+      decoding="async"
+      onError={() => setErrored(true)}
+    />
+  );
 }
 
 /**
@@ -60,12 +71,23 @@ function renderIcon(show: string, iconUrl: string) {
  * selectedDay para que o polling de now-playing no RadioPlayer pai não force
  * re-renders aqui (a UI da programação é praticamente estática durante uma
  * sessão).
+ *
+ * Auto-segue o "hoje" via `useClockTick([0])` (re-render à meia-noite),
+ * mas se o utilizador escolher um dia manualmente respeitamos a escolha.
  */
 const WeeklySchedulePanel = memo(function WeeklySchedulePanel({
   schedule,
   loading,
 }: Props) {
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  // Distingue selecção manual de auto-selecção (today). Quando o utilizador
+  // clica num dia, congelamos o auto-follow para não saltar à meia-noite.
+  const userPickedRef = useRef(false);
+
+  // Re-render à meia-noite — actualiza `today` para o dia novo. O tick é
+  // incluído como dep do `today` para forçar recálculo (caso contrário o
+  // memo congela porque `availableDays` não mudou).
+  const tick = useClockTick([0]);
 
   // Agrupar programação por dia
   const scheduleByDay = useMemo(() => {
@@ -83,13 +105,25 @@ const WeeklySchedulePanel = memo(function WeeklySchedulePanel({
     [scheduleByDay]
   );
 
-  // Selecionar dia atual por padrão
+  // Hoje (ou primeiro dia disponível). Recalculado a cada tick do relógio
+  // (meia-noite) e quando `availableDays` muda.
+  const today = useMemo(() => {
+    const todayName = DAY_NAME_BY_INDEX[new Date().getDay()];
+    return availableDays.includes(todayName) ? todayName : availableDays[0] ?? null;
+    // tick é dep intencional — sinaliza nova data
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [availableDays, tick]);
+
+  // Sincroniza selectedDay com `today` enquanto o utilizador não escolher
   useEffect(() => {
-    if (availableDays.length === 0 || selectedDay) return;
-    const today = new Date().getDay();
-    const todayName = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'][today];
-    setSelectedDay(availableDays.includes(todayName) ? todayName : availableDays[0]);
-  }, [availableDays, selectedDay]);
+    if (userPickedRef.current) return;
+    if (today && today !== selectedDay) setSelectedDay(today);
+  }, [today, selectedDay]);
+
+  const handlePickDay = (day: string) => {
+    userPickedRef.current = true;
+    setSelectedDay(day);
+  };
 
   return (
     <Card className="bg-cream/5 backdrop-blur-sm border border-cream/10 text-cream overflow-hidden shadow-lg">
@@ -115,7 +149,7 @@ const WeeklySchedulePanel = memo(function WeeklySchedulePanel({
               return (
                 <button
                   key={day}
-                  onClick={() => setSelectedDay(day)}
+                  onClick={() => handlePickDay(day)}
                   className={`relative px-4 py-2.5 text-sm font-medium rounded-t-lg transition-all whitespace-nowrap ${
                     isActive
                       ? 'bg-vermelho text-cream'
@@ -156,7 +190,7 @@ const WeeklySchedulePanel = memo(function WeeklySchedulePanel({
                 <div className="flex items-start gap-4">
                   {/* Program icon */}
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-vermelho/20 to-amarelo/10 border border-cream/10 flex items-center justify-center text-amarelo shrink-0 group-hover:scale-105 transition-transform overflow-hidden">
-                    {renderIcon(item.show, item.iconUrl)}
+                    <ProgramIcon show={item.show} iconUrl={item.iconUrl} />
                   </div>
 
                   {/* Program info */}
