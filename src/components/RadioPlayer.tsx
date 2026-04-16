@@ -79,7 +79,7 @@ const RadioPlayer = () => {
   const { schedule, loading } = useSchedule();
   const { data: dailySchedule } = useDailySchedule();
   const { radio } = siteConfig;
-  const { song, isMusic, isLiveShow, liveShowName, isPodcast, podcastName, podcastArt, refetch } = useNowPlaying(radio.streamUrl, isPlaying);
+  const { song, isMusic, isLiveShow, liveShowName, isPodcast, podcastName, podcastArt, isAnnouncement, announcementName, announcementArt, refetch } = useNowPlaying(radio.streamUrl, isPlaying);
   const currentPeriod = getCurrentPeriod();
 
   // Agrupar programação por dia
@@ -291,11 +291,11 @@ const RadioPlayer = () => {
 
           <div className="lg:col-span-4 flex flex-col lg:sticky lg:top-24">
             <Card className="bg-gradient-to-br from-vermelho via-vermelho to-vermelho-dark border-0 text-cream shadow-2xl overflow-hidden relative group">
-              {/* Album art / podcast art background blur */}
-              {((isMusic && song?.art) || (isPodcast && podcastArt)) && (
+              {/* Album art / podcast art / announcement art background blur */}
+              {((isMusic && song?.art) || (isPodcast && podcastArt) || (isAnnouncement && announcementArt)) && (
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                   <img
-                    src={isMusic ? song!.art : podcastArt}
+                    src={isMusic ? song!.art : isPodcast ? podcastArt : announcementArt}
                     alt=""
                     className="w-full h-full object-cover scale-150 blur-3xl opacity-30 transition-all duration-300"
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
@@ -304,7 +304,7 @@ const RadioPlayer = () => {
                 </div>
               )}
               {/* Decorative background elements (fallback when no art) */}
-              {!((isMusic && song?.art) || (isPodcast && podcastArt)) && (
+              {!((isMusic && song?.art) || (isPodcast && podcastArt) || (isAnnouncement && announcementArt)) && (
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                   <div className="absolute -top-20 -right-20 w-40 h-40 bg-amarelo/10 rounded-full blur-3xl" />
                   <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
@@ -348,6 +348,13 @@ const RadioPlayer = () => {
                         <img
                           src={podcastArt}
                           alt={podcastName}
+                          className="w-full h-full object-cover transition-all duration-300"
+                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                        />
+                      ) : isAnnouncement && announcementArt ? (
+                        <img
+                          src={announcementArt}
+                          alt={announcementName}
                           className="w-full h-full object-cover transition-all duration-300"
                           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                         />
@@ -409,6 +416,11 @@ const RadioPlayer = () => {
                       <>
                         <p className="text-base font-display font-bold truncate" title={podcastName}>{podcastName}</p>
                         <p className="text-sm opacity-60 mt-1">Podcast</p>
+                      </>
+                    ) : isAnnouncement ? (
+                      <>
+                        <p className="text-base font-display font-bold truncate" title={announcementName}>{announcementName}</p>
+                        <p className="text-sm opacity-60 mt-1">Anúncio</p>
                       </>
                     ) : isMusic && song ? (
                       <>

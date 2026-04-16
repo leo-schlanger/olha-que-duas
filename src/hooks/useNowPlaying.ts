@@ -15,6 +15,9 @@ interface NowPlayingState {
   isPodcast: boolean;
   podcastName: string;
   podcastArt: string;
+  isAnnouncement: boolean;
+  announcementName: string;
+  announcementArt: string;
   loading: boolean;
 }
 
@@ -61,6 +64,18 @@ const MUSIC_PLAYLIST_PATTERNS = [
   /manh[ãa]/i, /top\s?\d/i, /hits/i, /chill/i, /lounge/i,
   /general/i, /default/i, /shuffle/i,
 ];
+
+// Playlists de anúncios/conteúdo especial: devem mostrar artwork próprio
+// mesmo quando a faixa é curta (< MIN_SONG_DURATION). Crucial para spots
+// promocionais de eventos, patrocínios e avisos onde importa o retrato.
+const ANNOUNCEMENT_PLAYLIST_PATTERNS = [
+  /an[uú]ncio/i, /especial/i, /destaque/i, /aviso/i, /evento/i,
+];
+
+// Quanto tempo manter o estado anterior (música/podcast/anúncio) visível
+// durante uma lacuna na API. Cobre jingles curtos típicos (5-8s) sem
+// mostrar logo a piscar. Se a lacuna exceder este valor, cai para neutro.
+const HOLD_PREVIOUS_ON_GAP_SECONDS = 8;
 
 function isValidSong(data: {
   title?: string;
@@ -131,6 +146,9 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
     isPodcast: false,
     podcastName: "",
     podcastArt: "",
+    isAnnouncement: false,
+    announcementName: "",
+    announcementArt: "",
     loading: true,
   });
 
@@ -138,6 +156,10 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
   const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const nextFetchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fetchRef = useRef<() => void>(() => {});
+  // Epoch (s) em que a última entrada válida (música/podcast/anúncio)
+  // termina segundo o servidor. Usado para segurar a UI durante lacunas
+  // curtas (jingles sem metadados) em vez de cair logo para neutro.
+  const lastAudibleEndAtRef = useRef<number | null>(null);
 
   const clearRetry = () => {
     if (retryTimeoutRef.current) {
@@ -150,6 +172,27 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
     if (nextFetchTimeoutRef.current) {
       clearTimeout(nextFetchTimeoutRef.current);
       nextFetchTimeoutRef.current = null;
+    }
+  };
+
+  /**
+   * Devolve true se ainda estamos dentro da janela de graça após o fim da
+   * última entrada válida — e portanto devemos manter o estado actual
+   * (capa/título da música ou podcast/anúncio anterior) em vez de cair
+   * para o logo da rádio durante uma lacuna curta.
+   */
+  const shouldHoldPrevious = (): boolean => {
+    const endsAt = lastAudibleEndAtRef.current;
+    if (endsAt === null) return false;
+    const nowEpoch = Date.now() / 1000;
+    return nowEpoch < endsAt + HOLD_PREVIOUS_ON_GAP_SECONDS;
+  };
+
+  const recordAudibleEnd = (audible: AzuraEntry) => {
+    const playedAt = audible.played_at;
+    const duration = audible.duration;
+    if (typeof playedAt === "number" && typeof duration === "number" && duration > 0) {
+      lastAudibleEndAtRef.current = playedAt + duration;
     }
   };
 
@@ -183,7 +226,7 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
 
   const fetchNowPlaying = useCallback(async () => {
     if (!streamUrl) {
-      setState({ song: null, isMusic: false, isLiveShow: false, liveShowName: "", isPodcast: false, podcastName: "", podcastArt: "", loading: false });
+      setState({ song: null, isMusic: false, isLiveShow: false, liveShowName: "", isPodcast: false, podcastName: "", podcastArt: "", isAnnouncement: false, announcementName: "", announcementArt: "", loading: false });
       return;
     }
 
@@ -206,6 +249,7 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
         clearRetry();
         clearNextFetch();
         lastSongKeyRef.current = null;
+        lastAudibleEndAtRef.current = null;
         setState({
           song: null,
           isMusic: false,
@@ -214,6 +258,9 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
           isPodcast: false,
           podcastName: "",
           podcastArt: "",
+          isAnnouncement: false,
+          announcementName: "",
+          announcementArt: "",
           loading: false,
         });
         return;
@@ -228,11 +275,18 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
 
       if (!audible?.song) {
         clearRetry();
-        // Lacuna (vinheta) — não temos played_at/duration confiável. Polling
-        // normal trata. Limpamos qualquer smart refetch pendente.
+        // Lacuna (vinheta) — não temos played_at/duration confiável. Se a
+        // última entrada válida terminou há pouco tempo, seguramos o estado
+        // actual (capa da música/podcast/anúncio anterior) em vez de cair
+        // para o logo — elimina o piscar entre faixas.
+        if (shouldHoldPrevious()) {
+          // Não tocamos no setState. O próximo poll (5s) resolve.
+          return;
+        }
         clearNextFetch();
         lastSongKeyRef.current = null;
-        setState({ song: null, isMusic: false, isLiveShow: false, liveShowName: "", isPodcast: false, podcastName: "", podcastArt: "", loading: false });
+        lastAudibleEndAtRef.current = null;
+        setState({ song: null, isMusic: false, isLiveShow: false, liveShowName: "", isPodcast: false, podcastName: "", podcastArt: "", isAnnouncement: false, announcementName: "", announcementArt: "", loading: false });
         return;
       }
 
@@ -253,11 +307,13 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
         const isMusicPlaylist = !playlistName || MUSIC_PLAYLIST_PATTERNS.some((p) => p.test(playlistName));
         const isLongContent = songData.duration >= MIN_SONG_DURATION;
         const isJingle = JINGLE_PATTERNS.some((p) => p.test(songData.title)) || JINGLE_PATTERNS.some((p) => p.test(songData.artist));
+        const isAnnouncementPlaylist = !!playlistName && ANNOUNCEMENT_PLAYLIST_PATTERNS.some((p) => p.test(playlistName));
 
         if (!isMusicPlaylist && !isJingle && isLongContent) {
           // Podcast detectado
           clearRetry();
           lastSongKeyRef.current = null;
+          recordAudibleEnd(audible);
           setState({
             song: null,
             isMusic: false,
@@ -266,6 +322,9 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
             isPodcast: true,
             podcastName: playlistName,
             podcastArt: audible.song.art || "",
+            isAnnouncement: false,
+            announcementName: "",
+            announcementArt: "",
             loading: false,
           });
           // Podcast pode durar bastante; agenda refetch para o seu fim
@@ -273,8 +332,37 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
           return;
         }
 
-        // Jingle/transição normal
+        // Anúncio/spot especial — playlist dedicada com artwork próprio,
+        // sem restrição de duração mínima (spots podem ter 10-30s).
+        if (isAnnouncementPlaylist && !isJingle) {
+          clearRetry();
+          lastSongKeyRef.current = null;
+          recordAudibleEnd(audible);
+          setState({
+            song: null,
+            isMusic: false,
+            isLiveShow: false,
+            liveShowName: "",
+            isPodcast: false,
+            podcastName: "",
+            podcastArt: "",
+            isAnnouncement: true,
+            announcementName: songData.title || playlistName,
+            announcementArt: audible.song.art || "",
+            loading: false,
+          });
+          scheduleSmartRefetch(audible, listenerWallClock);
+          return;
+        }
+
+        // Jingle/transição normal — se a faixa válida anterior acabou há
+        // pouco, seguramos o estado; caso contrário cai para logo.
         clearRetry();
+        if (shouldHoldPrevious()) {
+          scheduleSmartRefetch(audible, listenerWallClock);
+          return;
+        }
+        lastAudibleEndAtRef.current = null;
         setState({
           song: null,
           isMusic: false,
@@ -283,6 +371,9 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
           isPodcast: false,
           podcastName: "",
           podcastArt: "",
+          isAnnouncement: false,
+          announcementName: "",
+          announcementArt: "",
           loading: false,
         });
         scheduleSmartRefetch(audible, listenerWallClock);
@@ -292,6 +383,7 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
       // 4. Música válida — actualiza info
       clearRetry();
       lastSongKeyRef.current = songKey;
+      recordAudibleEnd(audible);
       setState({
         song: {
           title: songData.title,
@@ -305,6 +397,9 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
         isPodcast: false,
         podcastName: "",
         podcastArt: "",
+        isAnnouncement: false,
+        announcementName: "",
+        announcementArt: "",
         loading: false,
       });
       // Agenda refetch para o momento exacto da próxima transição
