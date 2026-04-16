@@ -1,9 +1,7 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import {
-  Calendar, Clock, Music, Radio, Play, Pause,
-  Volume2, VolumeX, Sparkles, Zap, ShieldCheck,
-  Apple, Target, Heart, Footprints, MessageSquare, Users, ChevronRight,
-  Sun, Sunset, Moon, CloudMoon
+  Music, Radio, Play, Pause,
+  Volume2, VolumeX,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -13,104 +11,43 @@ import { useSchedule } from "@/hooks/useSchedule";
 import { useNowPlaying } from "@/hooks/useNowPlaying";
 import { useDailySchedule, getCurrentPeriod } from "@/hooks/useDailySchedule";
 import WeatherStrip from "@/components/WeatherStrip";
+import DailySoundtrackPanel from "@/components/radio/DailySoundtrackPanel";
+import WeeklySchedulePanel from "@/components/radio/WeeklySchedulePanel";
 import radioLogo from "@/assets/logo-olha-que-duas.png";
-
-// Ícones fallback por nome de programa
-const FALLBACK_ICONS: Record<string, React.ReactNode> = {
-  'Nutrição': <Apple className="w-full h-full p-1.5" />,
-  'Motivar': <Target className="w-full h-full p-1.5" />,
-  'Prazer Feminino': <Heart className="w-full h-full p-1.5" />,
-  'Companheiros de Caminhada': <Footprints className="w-full h-full p-1.5" />,
-  'Dizem que...': <MessageSquare className="w-full h-full p-1.5" />,
-  'Olha que Duas!': <Users className="w-full h-full p-1.5" />,
-};
-
-const DAYS_ORDER = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
-const DAYS_SHORT: Record<string, string> = {
-  'Segunda': 'Seg',
-  'Terça': 'Ter',
-  'Quarta': 'Qua',
-  'Quinta': 'Qui',
-  'Sexta': 'Sex',
-  'Sábado': 'Sáb',
-  'Domingo': 'Dom',
-};
-
-const radioInfo = [
-  {
-    title: "Alta Qualidade",
-    desc: "192kbps cristalino.",
-    icon: <Zap className="w-4 h-4 text-amarelo" />,
-  },
-  {
-    title: "Sempre no Ar",
-    desc: "Companhia 24/7.",
-    icon: <ShieldCheck className="w-4 h-4 text-amarelo" />,
-  },
-  {
-    title: "Conteúdo Exclusivo",
-    desc: "Música e conversas.",
-    icon: <Sparkles className="w-4 h-4 text-amarelo" />,
-  },
-];
-
-// Mapping period key → icon
-const PERIOD_ICONS: Record<string, typeof Sun> = {
-  manha: Sun,
-  tarde: Sunset,
-  noite: Moon,
-  madrugada: CloudMoon,
-};
 
 // Backoff para tentativas de reconexão após drop do stream (em ms)
 const RECONNECT_BACKOFF = [1000, 2000, 4000, 8000, 15000];
+
+// Limite (ms) acima do qual consideramos o buffer do stream como estagnado
+// e forçamos um reload. Pauses mais curtos retomam sem destruir o pipeline.
+const STALE_BUFFER_MS = 30_000;
 
 const RadioPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(80);
   const [isMuted, setIsMuted] = useState(false);
   const [isReconnecting, setIsReconnecting] = useState(false);
-  const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const reconnectAttemptsRef = useRef(0);
   const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isPlayingRef = useRef(false);
+  // Epoch (ms) do último pause. Usado para decidir se ao retomar precisamos
+  // de reassinar src + load() (buffer estagnado) ou se basta um play() directo.
+  const lastPauseAtRef = useRef<number>(0);
 
   const { schedule, loading } = useSchedule();
   const { data: dailySchedule } = useDailySchedule();
   const { radio } = siteConfig;
-  const { song, isMusic, isLiveShow, liveShowName, isPodcast, podcastName, podcastArt, isAnnouncement, announcementName, announcementArt, refetch } = useNowPlaying(radio.streamUrl, isPlaying);
+  const { song, isMusic, isLiveShow, liveShowName, isPodcast, podcastName, podcastArt, isAnnouncement, announcementName, announcementArt } = useNowPlaying(radio.streamUrl, isPlaying);
   const currentPeriod = getCurrentPeriod();
 
-  // Agrupar programação por dia
-  const scheduleByDay = useMemo(() => {
-    const grouped: Record<string, typeof schedule> = {};
-    for (const item of schedule) {
-      if (!grouped[item.day]) {
-        grouped[item.day] = [];
-      }
-      grouped[item.day].push(item);
-    }
-    return grouped;
-  }, [schedule]);
-
-  // Dias disponíveis ordenados
-  const availableDays = useMemo(() => {
-    return DAYS_ORDER.filter(day => scheduleByDay[day]?.length > 0);
-  }, [scheduleByDay]);
-
-  // Selecionar dia atual por padrão
-  useEffect(() => {
-    if (availableDays.length > 0 && !selectedDay) {
-      const today = new Date().getDay();
-      const todayName = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'][today];
-      if (availableDays.includes(todayName)) {
-        setSelectedDay(todayName);
-      } else {
-        setSelectedDay(availableDays[0]);
-      }
-    }
-  }, [availableDays]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Alturas estáveis do equalizer — geradas uma vez por mount. Recalcular
+  // a cada render fazia as barras "saltarem" entre polls (5s) em vez de
+  // animarem suavemente via CSS, criando uma sensação de tilt visual.
+  const equalizerHeights = useMemo(
+    () => Array.from({ length: 12 }, () => 20 + Math.random() * 80),
+    []
+  );
 
   useEffect(() => {
     if (audioRef.current) {
@@ -132,7 +69,9 @@ const RadioPlayer = () => {
 
   // Tenta reconectar ao stream com backoff exponencial. Chamada quando o
   // <audio> dispara error/stalled enquanto o utilizador queria estar a ouvir.
-  const attemptReconnect = useCallback(() => {
+  // Quando `immediate` é true, pula o delay da primeira tentativa — útil
+  // ao recuperar de um evento `online` (a rede acabou de voltar).
+  const attemptReconnect = useCallback((immediate = false) => {
     if (!audioRef.current || !radio.streamUrl) return;
     if (!isPlayingRef.current) return;
 
@@ -145,7 +84,7 @@ const RadioPlayer = () => {
       return;
     }
 
-    const delay = RECONNECT_BACKOFF[attempt];
+    const delay = immediate && attempt === 0 ? 0 : RECONNECT_BACKOFF[attempt];
     reconnectAttemptsRef.current = attempt + 1;
     setIsReconnecting(true);
 
@@ -210,7 +149,7 @@ const RadioPlayer = () => {
     const onOnline = () => {
       if (isPlayingRef.current) {
         reconnectAttemptsRef.current = 0;
-        attemptReconnect();
+        attemptReconnect(true);
       }
     };
     window.addEventListener("online", onOnline);
@@ -222,27 +161,42 @@ const RadioPlayer = () => {
 
   const togglePlay = async () => {
     if (!radio.isLive || !radio.streamUrl) return;
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-        setIsPlaying(false);
-        clearReconnectTimer();
-        reconnectAttemptsRef.current = 0;
-        setIsReconnecting(false);
-      } else {
-        try {
-          // Reload stream to get fresh audio (avoids stale buffer after pause)
-          audioRef.current.src = radio.streamUrl;
-          audioRef.current.load();
-          await audioRef.current.play();
-          setIsPlaying(true);
-          reconnectAttemptsRef.current = 0;
-          refetch();
-        } catch {
-          // Browser blocked autoplay — user interaction required
-          setIsPlaying(false);
-        }
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (isPlaying) {
+      audio.pause();
+      lastPauseAtRef.current = Date.now();
+      setIsPlaying(false);
+      clearReconnectTimer();
+      reconnectAttemptsRef.current = 0;
+      setIsReconnecting(false);
+      return;
+    }
+
+    try {
+      // Só reassinar src + load() se o buffer está estagnado (pause longo,
+      // primeira reprodução ou erro pendente). Em pause/play rápido evita
+      // destruir o pipeline de áudio — eliminando a "trinca" no momento
+      // do play e o tilt visual que ela provocava.
+      const sincePause = Date.now() - lastPauseAtRef.current;
+      const needsReload =
+        !audio.currentSrc ||
+        audio.error !== null ||
+        (lastPauseAtRef.current > 0 && sincePause > STALE_BUFFER_MS);
+
+      if (needsReload) {
+        audio.src = radio.streamUrl;
+        audio.load();
       }
+      await audio.play();
+      setIsPlaying(true);
+      reconnectAttemptsRef.current = 0;
+      // Não chamar refetch() aqui: o useEffect[isPlaying] no useNowPlaying
+      // já dispara um fetch imediato — chamadas paralelas eram redundantes.
+    } catch {
+      // Browser blocked autoplay — user interaction required
+      setIsPlaying(false);
     }
   };
 
@@ -251,23 +205,6 @@ const RadioPlayer = () => {
   const handleVolumeChange = (value: number[]) => {
     setVolume(value[0]);
     if (value[0] > 0 && isMuted) setIsMuted(false);
-  };
-
-  const renderIcon = (show: string, iconUrl: string) => {
-    const fallback = FALLBACK_ICONS[show] || <Radio className="w-full h-full p-1.5" />;
-    // Se tem URL de ícone válida, usa a imagem com fallback
-    if (iconUrl && !iconUrl.includes('placehold.co')) {
-      return (
-        <img
-          src={iconUrl}
-          alt={show}
-          className="w-full h-full object-cover rounded-md"
-          loading="lazy"
-          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-        />
-      );
-    }
-    return fallback;
   };
 
   return (
@@ -297,7 +234,10 @@ const RadioPlayer = () => {
                   <img
                     src={isMusic ? song!.art : isPodcast ? podcastArt : announcementArt}
                     alt=""
-                    className="w-full h-full object-cover scale-150 blur-3xl opacity-30 transition-all duration-300"
+                    aria-hidden="true"
+                    decoding="async"
+                    loading="lazy"
+                    className="w-full h-full object-cover scale-150 blur-3xl opacity-30 transition-all duration-300 will-change-transform"
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-br from-vermelho/80 via-vermelho/70 to-vermelho-dark/90" />
@@ -341,6 +281,7 @@ const RadioPlayer = () => {
                         <img
                           src={song.art}
                           alt={`${song.title} - ${song.artist}`}
+                          decoding="async"
                           className="w-full h-full object-cover transition-all duration-300"
                           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                         />
@@ -348,6 +289,7 @@ const RadioPlayer = () => {
                         <img
                           src={podcastArt}
                           alt={podcastName}
+                          decoding="async"
                           className="w-full h-full object-cover transition-all duration-300"
                           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                         />
@@ -355,12 +297,13 @@ const RadioPlayer = () => {
                         <img
                           src={announcementArt}
                           alt={announcementName}
+                          decoding="async"
                           className="w-full h-full object-cover transition-all duration-300"
                           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                         />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center p-4">
-                          <img src={radioLogo} alt={radio.name} className="w-full h-full object-contain opacity-70" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                          <img src={radioLogo} alt={radio.name} decoding="async" className="w-full h-full object-contain opacity-70" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                         </div>
                       )}
                       {/* Play/Pause overlay */}
@@ -385,12 +328,12 @@ const RadioPlayer = () => {
                     {/* Equalizer dots around the art */}
                     {isPlaying && (
                       <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-end gap-[2px] h-4">
-                        {[...Array(12)].map((_, i) => (
+                        {equalizerHeights.map((h, i) => (
                           <div
                             key={i}
                             className="w-[3px] rounded-full bg-amarelo/70"
                             style={{
-                              height: `${20 + Math.random() * 80}%`,
+                              height: `${h}%`,
                               animation: `equalizer 0.4s ease-in-out infinite`,
                               animationDelay: `${i * 0.05}s`,
                             }}
@@ -467,193 +410,11 @@ const RadioPlayer = () => {
 
           {/* Schedule Section */}
           <div className="lg:col-span-8 flex flex-col gap-5">
-
-            {/* Daily Schedule - A Tua Soundtrack Do Dia (priority: what's on now) */}
-            <Card className="bg-cream/5 backdrop-blur-sm border border-cream/10 text-cream overflow-hidden shadow-lg">
-              <div className="p-4 pb-3 border-b border-cream/10 bg-cream/5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Music className="w-4 h-4 text-amarelo" />
-                    <h3 className="text-lg font-display font-bold">A Tua Soundtrack do Dia</h3>
-                  </div>
-                  <span className="text-[10px] font-semibold text-amarelo uppercase tracking-widest">24H Non-Stop</span>
-                </div>
-              </div>
-              <div className="p-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {(dailySchedule || []).map((block) => {
-                    const isCurrent = currentPeriod === block.period;
-                    const Icon = PERIOD_ICONS[block.period] || Music;
-                    return (
-                      <div
-                        key={block.period}
-                        className={`relative rounded-xl p-3.5 transition-all duration-300 border ${
-                          isCurrent
-                            ? 'bg-gradient-to-br from-vermelho/20 to-amarelo/10 border-amarelo/30 shadow-lg shadow-amarelo/5'
-                            : 'bg-cream/5 border-cream/5 hover:border-cream/10 hover:bg-cream/8'
-                        }`}
-                      >
-                        {isCurrent && (
-                          <span className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-full bg-amarelo/20 border border-amarelo/30">
-                            <span className="w-1.5 h-1.5 rounded-full bg-amarelo animate-pulse" />
-                            <span className="text-[9px] font-bold text-amarelo uppercase">Agora</span>
-                          </span>
-                        )}
-                        <div className="flex items-center gap-2 mb-3 min-w-0">
-                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
-                            isCurrent ? 'bg-amarelo/20 text-amarelo' : 'bg-cream/10 text-cream/50'
-                          }`}>
-                            <Icon className="w-3.5 h-3.5" />
-                          </div>
-                          <div className="min-w-0">
-                            <span className={`text-sm font-display font-bold ${isCurrent ? 'text-amarelo' : 'text-cream'}`}>
-                              {block.label}
-                            </span>
-                            <span className="text-[10px] text-cream/40 ml-1.5">{block.range}</span>
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          {block.slots.map((slot) => (
-                            <div key={slot.time} className="min-w-0">
-                              <div className="flex items-center gap-2.5">
-                                <span className={`text-xs font-mono w-10 shrink-0 ${isCurrent ? 'text-amarelo/80' : 'text-cream/40'}`}>
-                                  {slot.time}
-                                </span>
-                                <span className="text-sm text-cream/80 truncate" title={slot.name}>{slot.name}</span>
-                                {slot.duration && (
-                                  <span className={`ml-auto text-[10px] font-mono shrink-0 px-1.5 py-0.5 rounded ${
-                                    isCurrent ? 'bg-amarelo/15 text-amarelo/70' : 'bg-cream/5 text-cream/30'
-                                  }`}>
-                                    {slot.duration}
-                                  </span>
-                                )}
-                              </div>
-                              {slot.genres && (
-                                <div className="flex items-center gap-2.5 mt-0.5">
-                                  <span className="w-10 shrink-0" />
-                                  <span className={`text-[10px] leading-tight truncate ${
-                                    isCurrent ? 'text-amarelo/50' : 'text-cream/25'
-                                  }`} title={slot.genres}>
-                                    {slot.genres}
-                                  </span>
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </Card>
-
-            {/* Weekly Schedule */}
-            <Card className="bg-cream/5 backdrop-blur-sm border border-cream/10 text-cream overflow-hidden shadow-lg">
-              {/* Header with day tabs */}
-              <div className="border-b border-cream/10 bg-cream/5">
-                <div className="p-4 pb-0 flex items-center gap-3">
-                  <Calendar className="w-4 h-4 text-amarelo" />
-                  <h3 className="text-lg font-display font-bold">Programação Semanal</h3>
-                </div>
-
-                {/* Day tabs */}
-                <div className="flex gap-1 px-4 pt-4 pb-0 overflow-x-auto scrollbar-hide">
-                  {loading ? (
-                    <div className="flex gap-2">
-                      {[1, 2, 3, 4, 5].map(i => (
-                        <div key={i} className="h-9 w-16 bg-cream/10 rounded-t-lg animate-pulse" />
-                      ))}
-                    </div>
-                  ) : (
-                    availableDays.map((day) => {
-                      const isActive = selectedDay === day;
-                      const programCount = scheduleByDay[day]?.length || 0;
-                      return (
-                        <button
-                          key={day}
-                          onClick={() => setSelectedDay(day)}
-                          className={`relative px-4 py-2.5 text-sm font-medium rounded-t-lg transition-all whitespace-nowrap ${
-                            isActive
-                              ? 'bg-vermelho text-cream'
-                              : 'text-cream/60 hover:text-cream hover:bg-cream/10'
-                          }`}
-                        >
-                          <span className="hidden sm:inline">{day}</span>
-                          <span className="sm:hidden">{DAYS_SHORT[day]}</span>
-                          {programCount > 1 && (
-                            <span className={`ml-1.5 text-[10px] px-1.5 py-0.5 rounded-full ${
-                              isActive ? 'bg-cream/20' : 'bg-amarelo/20 text-amarelo'
-                            }`}>
-                              {programCount}
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })
-                  )}
-                </div>
-              </div>
-
-              {/* Programs list for selected day */}
-              <div className="p-4 max-h-[420px] overflow-y-auto scrollbar-hide">
-                {loading ? (
-                  <div className="space-y-3">
-                    {[1, 2].map(i => (
-                      <div key={i} className="h-20 bg-cream/5 rounded-xl animate-pulse" />
-                    ))}
-                  </div>
-                ) : selectedDay && scheduleByDay[selectedDay] ? (
-                  <div className="space-y-3">
-                    {scheduleByDay[selectedDay].map((item, idx) => (
-                      <div
-                        key={`${item.day}-${item.show}-${idx}`}
-                        className="group relative bg-gradient-to-r from-cream/5 to-transparent rounded-xl p-4 hover:from-cream/10 transition-all border border-cream/5 hover:border-cream/10"
-                      >
-                        <div className="flex items-start gap-4">
-                          {/* Program icon */}
-                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-vermelho/20 to-amarelo/10 border border-cream/10 flex items-center justify-center text-amarelo shrink-0 group-hover:scale-105 transition-transform overflow-hidden">
-                            {renderIcon(item.show, item.iconUrl)}
-                          </div>
-
-                          {/* Program info */}
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between gap-2">
-                              <div className="min-w-0 flex-1">
-                                <h4 className="font-display font-bold text-base text-cream group-hover:text-amarelo transition-colors truncate" title={item.show}>
-                                  {item.show}
-                                </h4>
-                                <p className="text-xs text-cream/50 mt-0.5">
-                                  {item.times.length} {item.times.length === 1 ? 'exibição' : 'exibições'} neste dia
-                                </p>
-                              </div>
-                              <ChevronRight className="w-4 h-4 text-cream/30 group-hover:text-amarelo group-hover:translate-x-1 transition-all shrink-0 mt-1" />
-                            </div>
-
-                            {/* Times */}
-                            <div className="flex gap-2 mt-3 flex-wrap">
-                              {item.times.map((time, timeIdx) => (
-                                <span
-                                  key={`${time}-${timeIdx}`}
-                                  className="inline-flex items-center gap-1.5 text-xs font-mono text-cream bg-black/30 px-3 py-1.5 rounded-lg border border-cream/10 group-hover:border-amarelo/20 transition-colors"
-                                >
-                                  <Clock className="w-3 h-3 text-amarelo" />
-                                  {time}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-cream/50">
-                    Selecione um dia para ver a programação
-                  </div>
-                )}
-              </div>
-            </Card>
+            <DailySoundtrackPanel
+              dailySchedule={dailySchedule}
+              currentPeriod={currentPeriod}
+            />
+            <WeeklySchedulePanel schedule={schedule} loading={loading} />
           </div>
 
         </div>

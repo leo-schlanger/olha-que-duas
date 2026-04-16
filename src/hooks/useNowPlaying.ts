@@ -77,6 +77,33 @@ const ANNOUNCEMENT_PLAYLIST_PATTERNS = [
 // mostrar logo a piscar. Se a lacuna exceder este valor, cai para neutro.
 const HOLD_PREVIOUS_ON_GAP_SECONDS = 8;
 
+/**
+ * Compara dois estados do now-playing campo a campo, incluindo os 4
+ * campos da música. Permite saltar setState quando o resultado do poll
+ * é idêntico ao actual — evita re-render do RadioPlayer (e do schedule
+ * inteiro) a cada 5s mesmo quando nada mudou.
+ */
+function statesEqual(a: NowPlayingState, b: NowPlayingState): boolean {
+  if (a.loading !== b.loading) return false;
+  if (a.isMusic !== b.isMusic) return false;
+  if (a.isLiveShow !== b.isLiveShow) return false;
+  if (a.isPodcast !== b.isPodcast) return false;
+  if (a.isAnnouncement !== b.isAnnouncement) return false;
+  if (a.liveShowName !== b.liveShowName) return false;
+  if (a.podcastName !== b.podcastName) return false;
+  if (a.podcastArt !== b.podcastArt) return false;
+  if (a.announcementName !== b.announcementName) return false;
+  if (a.announcementArt !== b.announcementArt) return false;
+  if (a.song === b.song) return true;
+  if (!a.song || !b.song) return false;
+  return (
+    a.song.title === b.song.title &&
+    a.song.artist === b.song.artist &&
+    a.song.album === b.song.album &&
+    a.song.art === b.song.art
+  );
+}
+
 function isValidSong(data: {
   title?: string;
   artist?: string;
@@ -188,6 +215,16 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
     return nowEpoch < endsAt + HOLD_PREVIOUS_ON_GAP_SECONDS;
   };
 
+  /**
+   * Wrapper sobre setState que só dispara um update se algum campo
+   * relevante mudou face ao estado actual. Evita re-renders silenciosos
+   * do RadioPlayer (e dos painéis de schedule abaixo) a cada poll de 5s
+   * quando o conteúdo é o mesmo.
+   */
+  const setStateIfChanged = (next: NowPlayingState) => {
+    setState((prev) => (statesEqual(prev, next) ? prev : next));
+  };
+
   const recordAudibleEnd = (audible: AzuraEntry) => {
     const playedAt = audible.played_at;
     const duration = audible.duration;
@@ -226,7 +263,7 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
 
   const fetchNowPlaying = useCallback(async () => {
     if (!streamUrl) {
-      setState({ song: null, isMusic: false, isLiveShow: false, liveShowName: "", isPodcast: false, podcastName: "", podcastArt: "", isAnnouncement: false, announcementName: "", announcementArt: "", loading: false });
+      setStateIfChanged({ song: null, isMusic: false, isLiveShow: false, liveShowName: "", isPodcast: false, podcastName: "", podcastArt: "", isAnnouncement: false, announcementName: "", announcementArt: "", loading: false });
       return;
     }
 
@@ -250,7 +287,7 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
         clearNextFetch();
         lastSongKeyRef.current = null;
         lastAudibleEndAtRef.current = null;
-        setState({
+        setStateIfChanged({
           song: null,
           isMusic: false,
           isLiveShow: true,
@@ -286,7 +323,7 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
         clearNextFetch();
         lastSongKeyRef.current = null;
         lastAudibleEndAtRef.current = null;
-        setState({ song: null, isMusic: false, isLiveShow: false, liveShowName: "", isPodcast: false, podcastName: "", podcastArt: "", isAnnouncement: false, announcementName: "", announcementArt: "", loading: false });
+        setStateIfChanged({ song: null, isMusic: false, isLiveShow: false, liveShowName: "", isPodcast: false, podcastName: "", podcastArt: "", isAnnouncement: false, announcementName: "", announcementArt: "", loading: false });
         return;
       }
 
@@ -314,7 +351,7 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
           clearRetry();
           lastSongKeyRef.current = null;
           recordAudibleEnd(audible);
-          setState({
+          setStateIfChanged({
             song: null,
             isMusic: false,
             isLiveShow: false,
@@ -338,7 +375,7 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
           clearRetry();
           lastSongKeyRef.current = null;
           recordAudibleEnd(audible);
-          setState({
+          setStateIfChanged({
             song: null,
             isMusic: false,
             isLiveShow: false,
@@ -363,7 +400,7 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
           return;
         }
         lastAudibleEndAtRef.current = null;
-        setState({
+        setStateIfChanged({
           song: null,
           isMusic: false,
           isLiveShow: false,
@@ -384,7 +421,7 @@ export function useNowPlaying(streamUrl: string | undefined, isPlaying: boolean 
       clearRetry();
       lastSongKeyRef.current = songKey;
       recordAudibleEnd(audible);
-      setState({
+      setStateIfChanged({
         song: {
           title: songData.title,
           artist: songData.artist,
