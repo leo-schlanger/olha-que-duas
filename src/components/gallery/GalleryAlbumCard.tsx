@@ -10,11 +10,10 @@ import type { GalleryAlbum } from '@/types/gallery';
 
 interface GalleryAlbumCardProps {
   album: GalleryAlbum;
-  position?: 'left' | 'right';
   className?: string;
 }
 
-export function GalleryAlbumCard({ album, position = 'left', className }: GalleryAlbumCardProps) {
+export function GalleryAlbumCard({ album, className }: GalleryAlbumCardProps) {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const eventDate = new Date(album.event_date);

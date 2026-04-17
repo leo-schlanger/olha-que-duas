@@ -6,7 +6,6 @@ const WHATSAPP_CHANNEL_URL = 'https://whatsapp.com/channel/0029VbC46l1FXUuaCr0kT
 
 export function WhatsAppFloat() {
   const [isVisible, setIsVisible] = useState(false);
-  const [isDismissed, setIsDismissed] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
@@ -21,13 +20,11 @@ export function WhatsAppFloat() {
 
   // Show tooltip after 3 seconds of button being visible
   useEffect(() => {
-    if (!isVisible || isDismissed) return;
+    if (!isVisible) return;
 
     const timer = setTimeout(() => setShowTooltip(true), 3000);
     return () => clearTimeout(timer);
-  }, [isVisible, isDismissed]);
-
-  if (isDismissed) return null;
+  }, [isVisible]);
 
   return (
     <div

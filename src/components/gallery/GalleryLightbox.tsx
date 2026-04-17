@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useState } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Dialog, DialogContent, DialogOverlay, DialogPortal, DialogClose } from '@/components/ui/dialog';
+import { Dialog, DialogOverlay, DialogPortal, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { getCloudinaryUrl, getCloudinaryPlaceholder } from '@/lib/cloudinary';

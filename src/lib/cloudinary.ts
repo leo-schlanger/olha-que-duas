@@ -92,27 +92,6 @@ export function getCloudinaryUrl(
 }
 
 /**
- * Build a Cloudinary URL with custom transformations
- * @param publicId - Cloudinary public ID
- * @param customConfig - Custom transformation config
- * @returns Full Cloudinary URL
- */
-export function getCloudinaryUrlCustom(publicId: string, customConfig: Partial<TransformConfig>): string {
-  const config: TransformConfig = {
-    width: customConfig.width || 800,
-    height: customConfig.height || 600,
-    quality: customConfig.quality || 'auto',
-    crop: customConfig.crop || 'fill',
-    gravity: customConfig.gravity || 'auto',
-    format: customConfig.format || 'auto',
-  };
-
-  const transformString = buildTransformString(config);
-
-  return `${BASE_URL}/${transformString}/${publicId}`;
-}
-
-/**
  * Get a blur placeholder URL for lazy loading
  * @param publicId - Cloudinary public ID
  * @param version - Optional Cloudinary asset version for CDN cache busting
@@ -121,22 +100,6 @@ export function getCloudinaryUrlCustom(publicId: string, customConfig: Partial<T
 export function getCloudinaryPlaceholder(publicId: string, version?: number): string {
   const versionSegment = version ? `/v${version}` : '';
   return `${BASE_URL}/w_50,h_50,q_30,e_blur:1000,f_auto${versionSegment}/${publicId}`;
-}
-
-/**
- * Get srcSet for responsive images
- * @param publicId - Cloudinary public ID
- * @returns srcSet string for responsive loading
- */
-export function getCloudinarySrcSet(publicId: string): string {
-  const widths = [400, 600, 800, 1200, 1600];
-
-  return widths
-    .map(w => {
-      const url = `${BASE_URL}/w_${w},q_auto,f_auto/${publicId}`;
-      return `${url} ${w}w`;
-    })
-    .join(', ');
 }
 
 export { CLOUD_NAME, BASE_URL };

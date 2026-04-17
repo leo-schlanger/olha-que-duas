@@ -1,4 +1,4 @@
-import { MessageCircle, ExternalLink, Headphones, Mic, Youtube, Users, Sparkles, CheckCircle2, ArrowRight } from "lucide-react";
+import { Headphones, Mic, Youtube, Users, Sparkles, CheckCircle2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
 import { Animated, AnimatedCounter } from "@/components/ui/animated";
