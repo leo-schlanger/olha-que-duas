@@ -78,11 +78,14 @@ const Header = () => {
             <img
               src={logo}
               alt="Olha que Duas"
+              width={80}
+              height={80}
               className={cn(
                 "w-auto shrink-0 object-contain transition-all duration-300 group-hover:scale-105",
                 isScrolled ? "h-14 md:h-16" : "h-16 md:h-20"
               )}
               loading="eager"
+              fetchPriority="high"
             />
           </Link>
 

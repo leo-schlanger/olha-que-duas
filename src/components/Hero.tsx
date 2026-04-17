@@ -8,14 +8,19 @@ const Hero = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Parallax effect — coalescido via requestAnimationFrame para 1 update por
-  // frame em vez de 1 setState por evento de scroll (que pode disparar várias
-  // vezes por frame em mobile). Sem isto, o componente re-renderizava ~60×/s.
+  // Parallax APENAS em desktop (lg+). Em mobile o scroll listener causa:
+  //  1. Re-renders a cada frame → jank
+  //  2. Interação com a address bar do Chrome Android que muda viewport
+  //  3. Layout shifts visíveis ao fazer scroll-up manual
+  // Em mobile scrollY fica em 0 → transforms estáticos → zero re-renders.
   useEffect(() => {
+    const mql = window.matchMedia("(min-width: 1024px)");
+    if (!mql.matches) return; // mobile/tablet → sem parallax
+
     let rafId: number | null = null;
 
     const handleScroll = () => {
-      if (rafId !== null) return; // já há um update agendado para este frame
+      if (rafId !== null) return;
       rafId = requestAnimationFrame(() => {
         rafId = null;
         if (sectionRef.current) {
