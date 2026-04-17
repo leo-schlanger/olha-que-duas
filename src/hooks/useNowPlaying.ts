@@ -38,8 +38,40 @@ export interface AzuraEntry {
 
 export interface AzuraResponse {
   now_playing?: AzuraEntry;
+  playing_next?: AzuraEntry;
   song_history?: AzuraEntry[];
   live?: { is_live?: boolean; streamer_name?: string };
+}
+
+/**
+ * Parseia "Artist - Title" de ICY StreamTitle. Formato típico do AzuraCast.
+ * Devolve null se o formato não bater.
+ */
+export function parseIcyStreamTitle(raw: string | undefined): { artist: string; title: string } | null {
+  if (!raw) return null;
+  const match = raw.match(/^(.+?)\s*-\s+(.+)$/);
+  if (!match) return { artist: "", title: raw.trim() };
+  return { artist: match[1].trim(), title: match[2].trim() };
+}
+
+/**
+ * Verifica se o `playing_next` pré-carregado corresponde ao `now_playing`
+ * actual (transição confirmada). Compara por `song.id` (mais fiável que
+ * title/artist que podem ter normalização diferente).
+ */
+export function matchPlayingNext(
+  nowPlaying: AzuraEntry | undefined,
+  playingNext: AzuraEntry | undefined,
+): boolean {
+  if (!nowPlaying?.song || !playingNext?.song) return false;
+  const npId = (nowPlaying.song as { id?: string }).id;
+  const pnId = (playingNext.song as { id?: string }).id;
+  if (npId && pnId) return npId === pnId;
+  // Fallback por title+artist se id não disponível
+  return (
+    nowPlaying.song.title === playingNext.song.title &&
+    nowPlaying.song.artist === playingNext.song.artist
+  );
 }
 
 // Padrões que indicam jingles/interrupções
@@ -600,6 +632,11 @@ export function useNowPlaying(
   // ajustado para B, evitando que `pickAudibleEntry` retorne para A
   // (= efeito de piscar A→B→A→B durante a janela de buffer).
   const anticipatedRef = useRef<{ playedAt: number; untilEpochSec: number } | null>(null);
+  // Próxima faixa pré-carregada — artwork já em cache do browser quando
+  // a transição acontece, eliminando o "flash" de capa em branco.
+  const playingNextRef = useRef<AzuraEntry | null>(null);
+  // Flag para só pré-carregar artwork uma vez por faixa
+  const prefetchedArtRef = useRef<string | null>(null);
   // Último snapshot de debug (lido pelo overlay). Ref para não causar
   // re-renders quando o overlay não está montado.
   const debugSnapshotRef = useRef<DebugSnapshot | null>(null);
@@ -839,21 +876,28 @@ export function useNowPlaying(
       let category = pickCategory(data, listenerWallClock, announcementPatternsRef.current);
 
       // Antecipação agressiva: se o servidor passou para uma faixa nova E
-      // ela é conteúdo longo (música/podcast/live), mostramos JÁ — mesmo
-      // que o ouvinte ainda esteja a ouvir a anterior. A capa pode ir 5s
-      // à frente do áudio, mas é muito melhor que ficar 10s+ atrás. Para
-      // anúncios curtos e jingles mantemos o comportamento normal.
+      // ela é conteúdo (música/podcast/live), mostramos JÁ — mesmo que o
+      // ouvinte ainda esteja a ouvir a anterior. Para anúncios curtos e
+      // jingles mantemos o comportamento normal.
+      //
+      // Boost: se temos `playing_next` pré-carregado e bate com o novo
+      // `now_playing`, a artwork já está no cache do browser → a troca
+      // visual é instantânea (sem flash de capa em branco).
       if (serverTransition && typeof currentPlayedAt === "number") {
         const futureCategory = pickCategory(data, currentPlayedAt + 0.1, announcementPatternsRef.current);
-        if (shouldAnticipateTransition(futureCategory)) {
+        const hasPreloadedArt = matchPlayingNext(data.now_playing, playingNextRef.current ?? undefined);
+        if (shouldAnticipateTransition(futureCategory) || hasPreloadedArt) {
           category = futureCategory;
           listenerWallClock = currentPlayedAt + 0.1;
-          // Activa o lock — válido até o listener real entrar na janela
-          // (= até serverNow chegar a played_at + bufferSec)
           anticipatedRef.current = {
             playedAt: currentPlayedAt,
             untilEpochSec: currentPlayedAt + bufferSec,
           };
+        }
+        // Reset prefetch para a nova faixa
+        if (hasPreloadedArt) {
+          prefetchedArtRef.current = null;
+          playingNextRef.current = null;
         }
       }
 
@@ -929,6 +973,23 @@ export function useNowPlaying(
       recordAudibleEnd(category.audible);
       setStateIfChanged(buildState(category));
       scheduleSmartRefetch(category.audible, listenerWallClock);
+
+      // 5. playing_next — pré-carregar artwork da próxima faixa quando se
+      // aproxima do fim da actual. Quando a transição acontecer, a imagem
+      // já está no cache do browser → troca visual instantânea.
+      playingNextRef.current = data.playing_next ?? null;
+      const remaining = category.audible.remaining ?? category.audible.duration;
+      if (
+        data.playing_next?.song?.art &&
+        typeof remaining === "number" &&
+        remaining < 15 &&
+        remaining > 0 &&
+        prefetchedArtRef.current !== data.playing_next.song.art
+      ) {
+        prefetchedArtRef.current = data.playing_next.song.art;
+        const img = new Image();
+        img.src = data.playing_next.song.art;
+      }
     } catch {
       // Falha de fetch (timeout, rede, parse). Backoff exponencial com cap.
       failureCountRef.current += 1;
