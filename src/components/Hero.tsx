@@ -44,7 +44,7 @@ const Hero = () => {
     <section
       ref={sectionRef}
       id="inicio"
-      className="relative min-h-screen bg-hero-gradient overflow-hidden"
+      className="relative min-h-dvh bg-hero-gradient overflow-hidden"
     >
       {/* Animated background with parallax */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -100,7 +100,7 @@ const Hero = () => {
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
-        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-screen pt-32 pb-20 md:pt-28 md:pb-16">
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-dvh pt-32 pb-20 md:pt-28 md:pb-16">
           {/* Content - Mobile first, stacks on top */}
           <div className="text-cream space-y-6 md:space-y-8 text-center lg:text-left order-2 lg:order-1">
             {/* Enhanced animated label */}
