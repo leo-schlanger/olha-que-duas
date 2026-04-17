@@ -11,6 +11,8 @@ import {
   detectServerTransition,
   trackKey,
   shouldAnticipateTransition,
+  parseIcyStreamTitle,
+  matchPlayingNext,
   statesEqual,
   type AzuraEntry,
   type AzuraResponse,
@@ -638,5 +640,70 @@ describe("shouldAnticipateTransition", () => {
 
   it("NÃO antecipa para gap", () => {
     expect(shouldAnticipateTransition({ kind: "gap" })).toBe(false);
+  });
+});
+
+describe("parseIcyStreamTitle", () => {
+  it("parseia 'Artist - Title'", () => {
+    expect(parseIcyStreamTitle("Gusttavo Lima - Falando de Amor")).toEqual({
+      artist: "Gusttavo Lima",
+      title: "Falando de Amor",
+    });
+  });
+
+  it("parseia com múltiplos hífens no título", () => {
+    expect(parseIcyStreamTitle("AC/DC - Back In Black - Remastered")).toEqual({
+      artist: "AC/DC",
+      title: "Back In Black - Remastered",
+    });
+  });
+
+  it("trata StreamTitle sem separador como title só", () => {
+    expect(parseIcyStreamTitle("Jingle da Rádio")).toEqual({
+      artist: "",
+      title: "Jingle da Rádio",
+    });
+  });
+
+  it("devolve null para undefined/vazio", () => {
+    expect(parseIcyStreamTitle(undefined)).toBeNull();
+    expect(parseIcyStreamTitle("")).toBeNull();
+  });
+
+  it("trims whitespace", () => {
+    expect(parseIcyStreamTitle("  Queen  -  Bohemian Rhapsody  ")).toEqual({
+      artist: "Queen",
+      title: "Bohemian Rhapsody",
+    });
+  });
+});
+
+describe("matchPlayingNext", () => {
+  const withId = (id: string, title = "T", artist = "A"): AzuraEntry => ({
+    song: { title, artist, art: "x.jpg" },
+    ...({ song: { title, artist, art: "x.jpg", id } } as Record<string, unknown>),
+  });
+
+  it("match por song.id quando ambos têm", () => {
+    const a = { song: { title: "X", artist: "Y", id: "abc" } } as unknown as AzuraEntry;
+    const b = { song: { title: "X", artist: "Y", id: "abc" } } as unknown as AzuraEntry;
+    expect(matchPlayingNext(a, b)).toBe(true);
+  });
+
+  it("no match por id diferente", () => {
+    const a = { song: { title: "X", artist: "Y", id: "abc" } } as unknown as AzuraEntry;
+    const b = { song: { title: "X", artist: "Y", id: "def" } } as unknown as AzuraEntry;
+    expect(matchPlayingNext(a, b)).toBe(false);
+  });
+
+  it("fallback por title+artist quando sem id", () => {
+    const a: AzuraEntry = { song: { title: "Hit", artist: "Queen" } };
+    const b: AzuraEntry = { song: { title: "Hit", artist: "Queen" } };
+    expect(matchPlayingNext(a, b)).toBe(true);
+  });
+
+  it("false quando um dos dois é undefined", () => {
+    expect(matchPlayingNext(undefined, { song: { title: "X" } })).toBe(false);
+    expect(matchPlayingNext({ song: { title: "X" } }, undefined)).toBe(false);
   });
 });

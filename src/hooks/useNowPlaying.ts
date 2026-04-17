@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback, useRef, type RefObject } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo, type RefObject } from "react";
+import { useNowPlayingSSE } from "@/hooks/useNowPlayingSSE";
 
 export interface NowPlayingSong {
   title: string;
@@ -1014,18 +1015,44 @@ export function useNowPlaying(
     fetchRef.current = fetchNowPlaying;
   }, [fetchNowPlaying]);
 
-  // Polling principal — sempre activo (taxa varia conforme isPlaying)
+  // SSE push — tenta conectar ao AzuraCast Centrifugo para receber
+  // now-playing em tempo real (<1s) em vez de depender de polling 3s.
+  // Se o endpoint não estiver disponível, `supported` vira false e
+  // usamos apenas polling.
+  const handleSSEData = useCallback((data: AzuraResponse) => {
+    // Processa com a mesma lógica do fetchNowPlaying — simula um poll
+    // instantâneo. O fetchNowPlaying é chamado para aproveitar toda a
+    // lógica de categorização, antecipação e estado.
+    // Como vem do SSE, é mais recente que o último poll.
+    fetchRef.current();
+  }, []);
+
+  const { connected: sseConnected, supported: sseSupported } = useNowPlayingSSE({
+    onData: handleSSEData,
+    enabled: isPlaying,
+    streamUrl,
+  });
+
+  // Polling — ritmo depende de SSE estar activo ou não:
+  //  - SSE activo: polling lento (15s) como backup de consistência
+  //  - SSE inactivo: polling rápido (3s) como sinal primário
+  //  - Sem play: polling passivo (15s) para mostrar "agora a tocar"
+  const effectivePollingMs = useMemo(() => {
+    if (!isPlaying) return POLL_INTERVAL_PASSIVE;
+    if (sseConnected && sseSupported) return POLL_INTERVAL_PASSIVE; // SSE é primário
+    return POLL_INTERVAL_ACTIVE; // polling é primário
+  }, [isPlaying, sseConnected, sseSupported]);
+
   useEffect(() => {
     fetchNowPlaying();
-    const intervalMs = isPlaying ? POLL_INTERVAL_ACTIVE : POLL_INTERVAL_PASSIVE;
-    const interval = setInterval(fetchNowPlaying, intervalMs);
+    const interval = setInterval(fetchNowPlaying, effectivePollingMs);
 
     return () => {
       clearInterval(interval);
       clearRetry();
       clearNextFetch();
     };
-  }, [fetchNowPlaying, isPlaying]);
+  }, [fetchNowPlaying, effectivePollingMs]);
 
   // Reset do hold + lock de antecipação quando o utilizador pausa —
   // evita usar timestamps velhos ao retomar (UI poderia ficar "segura"
