@@ -206,10 +206,10 @@ describe("pickCategory", () => {
 
   // Casos reais reportados pelo utilizador (Canal Infantil)
   describe("setup Canal Infantil", () => {
-    // Mesmos defaults do DEFAULT_ANNOUNCEMENT_PLAYLIST_PATTERNS — usa
-    // raízes para cobrir singular e plural em PT
+    // Defaults + "Especiais Infantil" via siteConfig (como em produção)
     const customPatterns = [
-      /an[uú]ncio/i, /especia/i, /destaqu/i, /aviso/i, /evento/i,
+      /an[uú]ncio/i, /destaqu/i, /aviso/i, /evento/i,
+      /Especiais Infantil/i,
     ];
 
     it("Canal Infantil — música longa (Smash Mouth - All Star, 200s) → music", () => {
@@ -283,6 +283,22 @@ describe("pickCategory", () => {
         },
       }, 1010, customPatterns);
       expect(cat.kind).toBe("announcement");
+    });
+
+    it("Especial do Dia — música real, NÃO anúncio (regression)", () => {
+      const cat = pickCategory({
+        now_playing: {
+          played_at: 1000,
+          duration: 200,
+          playlist: "Especial do Dia",
+          song: { title: "Tua Infinita Graça", artist: "Gerson Cardozo", art: "art.jpg" },
+        },
+      }, 1100, customPatterns);
+      expect(cat.kind).toBe("music");
+      if (cat.kind === "music") {
+        expect(cat.song.title).toBe("Tua Infinita Graça");
+        expect(cat.song.artist).toBe("Gerson Cardozo");
+      }
     });
 
     it("vinheta com título 'Jingle XYZ' não escapa via playlist musical", () => {

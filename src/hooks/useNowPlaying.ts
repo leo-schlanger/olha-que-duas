@@ -155,12 +155,12 @@ const MUSIC_PLAYLIST_PATTERNS = [
 // Estes são os defaults baseline; a config do site pode adicionar mais
 // via `siteConfig.radio.announcementPlaylists` (ver `pickCategory`).
 //
-// Nota sobre plurais: usamos a raiz da palavra (`especia`, `destaqu`)
-// em vez do singular completo (`especial`, `destaque`), porque o
-// plural "Especiais" NÃO contém "especial" como substring (termina
-// em "-iais" não "-ial"). A raiz cobre singular e plural em PT.
+// Defaults restritivos — apenas patterns que SÓ produzem conteúdo
+// institucional. `/especia/i` foi REMOVIDO porque batia em "Especial
+// do Dia" (rotation de música real). Playlists específicas como
+// "Especiais Infantil" vão via siteConfig.radio.announcementPlaylists.
 const DEFAULT_ANNOUNCEMENT_PLAYLIST_PATTERNS = [
-  /an[uú]ncio/i, /especia/i, /destaqu/i, /aviso/i, /evento/i,
+  /an[uú]ncio/i, /destaqu/i, /aviso/i, /evento/i,
 ];
 
 /**

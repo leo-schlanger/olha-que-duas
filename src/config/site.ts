@@ -74,11 +74,9 @@ export const siteConfig = {
      *  - "Anúncios Eventos" → bate "Anúncios"
      */
     announcementPlaylists: [
-      "Anúncios",
-      "Especiais",
-      "Destaques",
-      "Eventos",
-      "Aviso",
+      "Especiais Infantil",  // cobre Abertura/Identidade/Fecho (54/55/56)
+      // NÃO incluir "Especial" genérico — "Especial do Dia" é rotation
+      // de música real, não anúncio.
     ],
   },
 
