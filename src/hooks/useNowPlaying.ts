@@ -885,6 +885,11 @@ export function useNowPlaying(
       // `now_playing`, a artwork já está no cache do browser → a troca
       // visual é instantânea (sem flash de capa em branco).
       if (serverTransition && typeof currentPlayedAt === "number") {
+        // Libertar lock da faixa anterior — a transição do servidor é
+        // autoridade. Sem isto, jingles entre músicas ficam "presos" na
+        // capa da música anterior porque o lock impede a mudança.
+        anticipatedRef.current = null;
+
         const futureCategory = pickCategory(data, currentPlayedAt + 0.1, announcementPatternsRef.current);
         const hasPreloadedArt = matchPlayingNext(data.now_playing, playingNextRef.current ?? undefined);
         if (shouldAnticipateTransition(futureCategory) || hasPreloadedArt) {
