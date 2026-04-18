@@ -605,7 +605,7 @@ export function useNowPlaying(
 
   const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const nextFetchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const fetchRef = useRef<() => void>(() => {});
+  const fetchRef = useRef<(preloaded?: AzuraResponse) => void>(() => {});
   const failureCountRef = useRef(0);
   // Cache do parsing da URL — evita re-construir/re-validar em cada fetch
   const apiUrlRef = useRef<{ source: string | undefined; api: string | null }>({ source: undefined, api: null });
@@ -620,6 +620,8 @@ export function useNowPlaying(
   // Marca da última faixa para a qual já fizemos warmup (evita prefetches
   // repetidos durante a janela final da mesma faixa)
   const warmupDoneForRef = useRef<string | null>(null);
+  // Timer do warmup HEAD request — guardado para cleanup no unmount
+  const warmupTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Último `now_playing.played_at` visto. Quando muda entre fetches, o
   // servidor passou para uma faixa nova — forçamos transição imediata.
   const lastSeenPlayedAtRef = useRef<number | null>(null);
@@ -756,7 +758,9 @@ export function useNowPlaying(
       warmupDoneForRef.current !== audibleKey
     ) {
       const warmupDelayMs = (secondsUntilTransition - PREFETCH_WARMUP_SECONDS) * 1000;
-      setTimeout(() => {
+      if (warmupTimerRef.current) clearTimeout(warmupTimerRef.current);
+      warmupTimerRef.current = setTimeout(() => {
+        warmupTimerRef.current = null;
         if (warmupDoneForRef.current === audibleKey) return;
         warmupDoneForRef.current = audibleKey;
         const apiUrl = apiUrlRef.current.api;
@@ -793,9 +797,9 @@ export function useNowPlaying(
     }, (secsUntil + 0.5) * 1000);
   };
 
-  const fetchNowPlaying = useCallback(async () => {
+  const fetchNowPlaying = useCallback(async (preloadedData?: AzuraResponse) => {
     const apiUrl = resolveApiUrl(streamUrl);
-    if (!apiUrl) {
+    if (!apiUrl && !preloadedData) {
       // streamUrl ausente ou inválido — sai sem retry
       clearRetry();
       clearNextFetch();
@@ -804,13 +808,18 @@ export function useNowPlaying(
     }
 
     try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 6000);
-      const response = await fetch(apiUrl, { signal: controller.signal });
-      clearTimeout(timeout);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-      const data: AzuraResponse = await response.json();
+      let data: AzuraResponse;
+      if (preloadedData) {
+        // Dados pré-carregados (SSE push) — sem fetch HTTP
+        data = preloadedData;
+      } else {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 6000);
+        const response = await fetch(apiUrl!, { signal: controller.signal });
+        clearTimeout(timeout);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        data = await response.json();
+      }
 
       // Sucesso → reset backoff
       failureCountRef.current = 0;
@@ -1025,11 +1034,11 @@ export function useNowPlaying(
   // Se o endpoint não estiver disponível, `supported` vira false e
   // usamos apenas polling.
   const handleSSEData = useCallback((data: AzuraResponse) => {
-    // Processa com a mesma lógica do fetchNowPlaying — simula um poll
-    // instantâneo. O fetchNowPlaying é chamado para aproveitar toda a
-    // lógica de categorização, antecipação e estado.
-    // Como vem do SSE, é mais recente que o último poll.
-    fetchRef.current();
+    // Processa dados do SSE directamente — sem round-trip HTTP extra.
+    // Os dados SSE são completos (now_playing, playing_next, live, etc).
+    // Passa o JSON como preloaded ao fetchNowPlaying, que aplica toda a
+    // lógica de categorização/antecipação sem fazer fetch à API.
+    fetchRef.current(data);
   }, []);
 
   const { connected: sseConnected, supported: sseSupported } = useNowPlayingSSE({
@@ -1056,6 +1065,10 @@ export function useNowPlaying(
       clearInterval(interval);
       clearRetry();
       clearNextFetch();
+      if (warmupTimerRef.current) {
+        clearTimeout(warmupTimerRef.current);
+        warmupTimerRef.current = null;
+      }
     };
   }, [fetchNowPlaying, effectivePollingMs]);
 

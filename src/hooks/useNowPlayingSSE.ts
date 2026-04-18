@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { AzuraResponse } from "@/hooks/useNowPlaying";
 
 /**
@@ -8,10 +8,14 @@ import type { AzuraResponse } from "@/hooks/useNowPlaying";
  *
  * Se o endpoint não estiver disponível (CORS, não habilitado, erro de
  * rede), retorna `supported: false` e o caller deve usar polling.
+ *
+ * Fixes vs versão anterior:
+ *  - `connected`/`supported` são agora state (não refs) → re-render do
+ *    caller quando SSE conecta/desconecta → polling interval ajusta-se.
+ *  - `reconnectKey` state força reconexão após heartbeat timeout —
+ *    antes, `cleanup()` não disparava re-run do useEffect.
  */
 
-// AzuraCast usa Centrifugo para SSE. O endpoint padrão é:
-// /api/live/nowplaying/sse?cf_connect={"subs":{"station:<name>":{}}}
 function buildSSEUrl(streamUrl: string): string | null {
   try {
     const url = new URL(streamUrl);
@@ -48,78 +52,71 @@ export function useNowPlayingSSE({
   enabled,
   streamUrl,
 }: UseNowPlayingSSEOptions): UseNowPlayingSSEReturn {
-  const connectedRef = useRef(false);
-  const supportedRef = useRef(true);
-  const esRef = useRef<EventSource | null>(null);
-  const heartbeatRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const connectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [connected, setConnected] = useState(false);
+  const [supported, setSupported] = useState(true);
+  // Incrementar para forçar reconexão (heartbeat timeout). Adicionado
+  // como dep do useEffect — quando muda, o efeito limpa o EventSource
+  // antigo e cria um novo.
+  const [reconnectKey, setReconnectKey] = useState(0);
+
   const onDataRef = useRef(onData);
   onDataRef.current = onData;
 
-  const cleanup = useCallback(() => {
-    if (esRef.current) {
-      esRef.current.close();
-      esRef.current = null;
-    }
-    if (heartbeatRef.current) {
-      clearTimeout(heartbeatRef.current);
-      heartbeatRef.current = null;
-    }
-    if (connectTimeoutRef.current) {
-      clearTimeout(connectTimeoutRef.current);
-      connectTimeoutRef.current = null;
-    }
-    connectedRef.current = false;
-  }, []);
-
   useEffect(() => {
     if (!enabled || !streamUrl) {
-      cleanup();
+      setConnected(false);
       return;
     }
 
     const sseUrl = buildSSEUrl(streamUrl);
     if (!sseUrl) {
-      supportedRef.current = false;
+      setSupported(false);
       return;
     }
 
-    // Tenta abrir o EventSource
     let es: EventSource;
     try {
       es = new EventSource(sseUrl);
     } catch {
-      // Browser não suporta EventSource ou URL inválida
-      supportedRef.current = false;
+      setSupported(false);
       return;
     }
-    esRef.current = es;
+
+    let heartbeatTimer: ReturnType<typeof setTimeout> | null = null;
+    let connectTimer: ReturnType<typeof setTimeout> | null = null;
+    let cleaned = false;
+
+    const clearTimers = () => {
+      if (heartbeatTimer) { clearTimeout(heartbeatTimer); heartbeatTimer = null; }
+      if (connectTimer) { clearTimeout(connectTimer); connectTimer = null; }
+    };
 
     // Timeout: se não receber nenhum evento em 10s, SSE provavelmente
     // não é suportado neste servidor. Marca como não-suportado e fecha.
-    connectTimeoutRef.current = setTimeout(() => {
-      if (!connectedRef.current) {
+    connectTimer = setTimeout(() => {
+      if (!cleaned && es.readyState !== EventSource.OPEN) {
         console.warn("[SSE] connect timeout — falling back to polling");
-        supportedRef.current = false;
-        cleanup();
+        setSupported(false);
+        es.close();
       }
     }, SSE_CONNECT_TIMEOUT_MS);
 
     const resetHeartbeat = () => {
-      if (heartbeatRef.current) clearTimeout(heartbeatRef.current);
-      heartbeatRef.current = setTimeout(() => {
-        console.warn("[SSE] heartbeat timeout — reconnecting");
-        cleanup();
-        // O useEffect vai re-executar e reconectar
+      if (heartbeatTimer) clearTimeout(heartbeatTimer);
+      heartbeatTimer = setTimeout(() => {
+        if (!cleaned) {
+          console.warn("[SSE] heartbeat timeout — reconnecting");
+          es.close();
+          setConnected(false);
+          // Incrementar key → useEffect cleanup + re-run → novo EventSource
+          setReconnectKey(k => k + 1);
+        }
       }, SSE_HEARTBEAT_TIMEOUT_MS);
     };
 
     es.onopen = () => {
-      connectedRef.current = true;
-      if (connectTimeoutRef.current) {
-        clearTimeout(connectTimeoutRef.current);
-        connectTimeoutRef.current = null;
-      }
+      setConnected(true);
+      if (connectTimer) { clearTimeout(connectTimer); connectTimer = null; }
       resetHeartbeat();
     };
 
@@ -164,16 +161,18 @@ export function useNowPlayingSSE({
       // Se o endpoint não existe (404), fecha definitivamente.
       if (es.readyState === EventSource.CLOSED) {
         console.warn("[SSE] connection closed permanently — falling back to polling");
-        supportedRef.current = false;
-        cleanup();
+        setSupported(false);
+        setConnected(false);
       }
     };
 
-    return cleanup;
-  }, [enabled, streamUrl, cleanup]);
+    return () => {
+      cleaned = true;
+      clearTimers();
+      es.close();
+      setConnected(false);
+    };
+  }, [enabled, streamUrl, reconnectKey]);
 
-  return {
-    connected: connectedRef.current,
-    supported: supportedRef.current,
-  };
+  return { connected, supported };
 }

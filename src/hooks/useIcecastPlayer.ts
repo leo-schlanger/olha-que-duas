@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import IcecastMetadataPlayer from "icecast-metadata-player";
 import { parseIcyStreamTitle } from "@/hooks/useNowPlaying";
+import type { RefObject } from "react";
 
 export interface IcyMeta {
   artist: string;
@@ -32,12 +33,32 @@ interface UseIcecastPlayerReturn {
   setVolume: (v: number) => void;
   isMuted: boolean;
   toggleMute: () => void;
-  /** Audio element para leitura de buffered, etc */
+  /** Audio element para leitura pontual (pode ser null no primeiro render) */
   audioElement: HTMLAudioElement | null;
+  /** Ref estável para o audio element — disponível logo após o efeito de criação */
+  audioElementRef: RefObject<HTMLAudioElement | null>;
   /** Player state string */
   state: string;
   /** Se o browser suporta a lib (false = usar fallback <audio>) */
   supported: boolean;
+}
+
+// Persistência de volume no localStorage
+const LS_VOLUME_KEY = "radio.volume";
+const LS_MUTED_KEY = "radio.muted";
+
+function readStoredVolume(fallback: number): number {
+  try {
+    const raw = localStorage.getItem(LS_VOLUME_KEY);
+    if (raw === null) return fallback;
+    const num = Number(raw);
+    return Number.isFinite(num) && num >= 0 && num <= 100 ? num : fallback;
+  } catch { return fallback; }
+}
+
+function readStoredMuted(): boolean {
+  try { return localStorage.getItem(LS_MUTED_KEY) === "true"; }
+  catch { return false; }
 }
 
 /**
@@ -47,8 +68,11 @@ interface UseIcecastPlayerReturn {
  * áudio — o título muda no instante exacto em que a faixa muda nos
  * auriculares.
  *
- * Se o browser não suportar a lib (raro), `supported` é false e o
- * caller deve usar `<audio>` como fallback.
+ * Se o browser não suportar a lib (raro), `supported` é false e um
+ * `<audio>` HTML nativo é criado como fallback (sem ICY metadata, mas
+ * com áudio funcional).
+ *
+ * Volume e mute são persistidos em localStorage — sobrevivem a reloads.
  */
 export function useIcecastPlayer({
   streamUrl,
@@ -60,18 +84,29 @@ export function useIcecastPlayer({
   const [isBuffering, setIsBuffering] = useState(false);
   const [isReconnecting, setIsReconnecting] = useState(false);
   const [icyMeta, setIcyMeta] = useState<IcyMeta | null>(null);
-  const [volume, setVolumeState] = useState(initialVolume);
-  const [isMuted, setIsMuted] = useState(false);
+  const [volume, setVolumeState] = useState(() => readStoredVolume(initialVolume));
+  const [isMuted, setIsMuted] = useState(readStoredMuted);
   const [state, setState] = useState("stopped");
   const [supported, setSupported] = useState(true);
 
   const playerRef = useRef<IcecastMetadataPlayer | null>(null);
+  const audioElementRef = useRef<HTMLAudioElement | null>(null);
+  const fallbackAudioRef = useRef<HTMLAudioElement | null>(null);
   const onMetadataRef = useRef(onMetadata);
   onMetadataRef.current = onMetadata;
   const onErrorRef = useRef(onError);
   onErrorRef.current = onError;
   // Guardar volume anterior para restore no unmute
-  const prevVolumeRef = useRef(initialVolume);
+  const prevVolumeRef = useRef(volume);
+
+  // Persistir volume no localStorage
+  useEffect(() => {
+    try { localStorage.setItem(LS_VOLUME_KEY, String(volume)); } catch {}
+  }, [volume]);
+
+  useEffect(() => {
+    try { localStorage.setItem(LS_MUTED_KEY, String(isMuted)); } catch {}
+  }, [isMuted]);
 
   // Verificar suporte do browser
   useEffect(() => {
@@ -87,7 +122,7 @@ export function useIcecastPlayer({
     }
   }, []);
 
-  // Criar player quando streamUrl muda
+  // Criar ICY player quando streamUrl muda (se suportado)
   useEffect(() => {
     if (!streamUrl || !supported) return;
 
@@ -149,37 +184,91 @@ export function useIcecastPlayer({
     });
 
     playerRef.current = player;
+    audioElementRef.current = player.audioElement;
 
     return () => {
       player.stop().catch(() => {});
       player.detachAudioElement().catch(() => {});
       playerRef.current = null;
+      audioElementRef.current = null;
     };
   }, [streamUrl, supported]);
 
-  // Sync volume com o audio element
+  // Fallback <audio> para browsers que não suportam icecast-metadata-player.
+  // Sem ICY metadata, mas o utilizador consegue ouvir a rádio.
   useEffect(() => {
-    const audio = playerRef.current?.audioElement;
+    if (!streamUrl || supported) return;
+
+    const audio = new Audio();
+    audio.preload = "none";
+    fallbackAudioRef.current = audio;
+    audioElementRef.current = audio;
+
+    const onPlayEvt = () => { setIsPlaying(true); setIsBuffering(false); setState("playing"); };
+    const onPauseEvt = () => { setIsPlaying(false); setState("stopped"); };
+    const onWaitingEvt = () => { setIsBuffering(true); };
+    const onPlayingEvt = () => { setIsBuffering(false); setState("playing"); };
+
+    audio.addEventListener("play", onPlayEvt);
+    audio.addEventListener("pause", onPauseEvt);
+    audio.addEventListener("waiting", onWaitingEvt);
+    audio.addEventListener("playing", onPlayingEvt);
+
+    return () => {
+      audio.removeEventListener("play", onPlayEvt);
+      audio.removeEventListener("pause", onPauseEvt);
+      audio.removeEventListener("waiting", onWaitingEvt);
+      audio.removeEventListener("playing", onPlayingEvt);
+      audio.pause();
+      audio.removeAttribute("src");
+      audio.load();
+      fallbackAudioRef.current = null;
+      audioElementRef.current = null;
+    };
+  }, [streamUrl, supported]);
+
+  // Sync volume com o audio element (ICY player ou fallback)
+  useEffect(() => {
+    const audio = playerRef.current?.audioElement ?? fallbackAudioRef.current;
     if (audio) {
       audio.volume = isMuted ? 0 : volume / 100;
     }
   }, [volume, isMuted]);
 
   const play = useCallback(async () => {
-    if (!playerRef.current) return;
-    try {
+    if (playerRef.current) {
+      // ICY player
       setIsBuffering(true);
       setState("loading");
-      await playerRef.current.play();
-    } catch {
-      setIsPlaying(false);
-      setIsBuffering(false);
-      setState("stopped");
+      try {
+        await playerRef.current.play();
+      } catch {
+        setIsPlaying(false);
+        setIsBuffering(false);
+        setState("stopped");
+      }
+    } else if (fallbackAudioRef.current && streamUrl) {
+      // Fallback <audio> nativo
+      setIsBuffering(true);
+      setState("loading");
+      try {
+        fallbackAudioRef.current.src = streamUrl;
+        await fallbackAudioRef.current.play();
+      } catch {
+        setIsPlaying(false);
+        setIsBuffering(false);
+        setState("stopped");
+      }
     }
-  }, []);
+  }, [streamUrl]);
 
   const stop = useCallback(() => {
     playerRef.current?.stop().catch(() => {});
+    if (fallbackAudioRef.current) {
+      fallbackAudioRef.current.pause();
+      fallbackAudioRef.current.removeAttribute("src");
+      fallbackAudioRef.current.load();
+    }
     setIsPlaying(false);
     setIsBuffering(false);
     setIsReconnecting(false);
@@ -209,7 +298,8 @@ export function useIcecastPlayer({
     setVolume,
     isMuted,
     toggleMute,
-    audioElement: playerRef.current?.audioElement ?? null,
+    audioElement: playerRef.current?.audioElement ?? fallbackAudioRef.current ?? null,
+    audioElementRef,
     state,
     supported,
   };

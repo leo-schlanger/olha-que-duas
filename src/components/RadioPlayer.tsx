@@ -1,4 +1,4 @@
-import { useEffect, useMemo, memo } from "react";
+import { useEffect, useMemo, useState, memo, type ReactNode } from "react";
 import {
   Music, Radio, Play, Pause,
   Volume2, VolumeX,
@@ -25,30 +25,112 @@ import radioLogo from "@/assets/logo-olha-que-duas.webp";
 const EQUALIZER_BARS = 8;
 
 /**
- * Background blur da album art — memoizado por `artSrc`. O blur-3xl é
- * caro de pintar, então só repintamos quando a capa realmente muda.
+ * Background blur da album art com crossfade. Quando a capa muda, o
+ * background anterior faz fade-out enquanto o novo faz fade-in (600ms).
  */
 const AlbumArtBackground = memo(function AlbumArtBackground({ artSrc }: { artSrc: string | null }) {
-  if (!artSrc) {
+  const [current, setCurrent] = useState(artSrc);
+  const [prev, setPrev] = useState<string | null | false>(false);
+
+  if (artSrc !== current) {
+    setPrev(current);
+    setCurrent(artSrc);
+  }
+
+  useEffect(() => {
+    if (prev === false) return;
+    const t = setTimeout(() => setPrev(false), 700);
+    return () => clearTimeout(t);
+  }, [prev]);
+
+  const renderBg = (src: string | null, animClass: string) => {
+    if (!src) {
+      return (
+        <div className={`absolute inset-0 overflow-hidden pointer-events-none ${animClass}`}>
+          <div className="absolute -top-20 -right-20 w-40 h-40 bg-amarelo/10 rounded-full blur-3xl" />
+          <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
+        </div>
+      );
+    }
     return (
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-20 -right-20 w-40 h-40 bg-amarelo/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
+      <div className={`absolute inset-0 overflow-hidden pointer-events-none ${animClass}`}>
+        <img
+          src={src}
+          alt=""
+          aria-hidden="true"
+          decoding="async"
+          loading="eager"
+          className="w-full h-full object-cover scale-150 blur-3xl opacity-30 will-change-transform"
+          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-vermelho/80 via-vermelho/70 to-vermelho-dark/90" />
       </div>
     );
-  }
+  };
+
+  const isTransitioning = prev !== false;
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <img
-        src={artSrc}
-        alt=""
-        aria-hidden="true"
-        decoding="async"
-        loading="eager"
-        className="w-full h-full object-cover scale-150 blur-3xl opacity-30 transition-all duration-300 will-change-transform"
-        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-br from-vermelho/80 via-vermelho/70 to-vermelho-dark/90" />
+    <>
+      {renderBg(current, isTransitioning ? "animate-[fadeIn_600ms_ease-in-out]" : "")}
+      {prev !== false && renderBg(prev, "animate-[fadeOut_600ms_ease-in-out_forwards]")}
+    </>
+  );
+});
+
+/**
+ * Crossfade suave entre artwork. Quando `src` muda, a imagem anterior
+ * faz fade-out (por cima) enquanto a nova faz fade-in (por baixo) — 500ms.
+ * Quando `src` é null, mostra o `fallback` (logo da rádio).
+ */
+const ArtCrossfade = memo(function ArtCrossfade({
+  src,
+  alt,
+  fallback,
+}: {
+  src: string | null;
+  alt: string;
+  fallback: ReactNode;
+}) {
+  const [current, setCurrent] = useState(src);
+  const [prev, setPrev] = useState<string | null | false>(false);
+
+  if (src !== current) {
+    setPrev(current);
+    setCurrent(src);
+  }
+
+  useEffect(() => {
+    if (prev === false) return;
+    const t = setTimeout(() => setPrev(false), 600);
+    return () => clearTimeout(t);
+  }, [prev]);
+
+  const renderLayer = (layerSrc: string | null, isMain: boolean, animClass: string) => {
+    if (layerSrc) {
+      return (
+        <img
+          key={layerSrc}
+          src={layerSrc}
+          alt={isMain ? alt : ""}
+          aria-hidden={!isMain}
+          decoding="async"
+          className={`absolute inset-0 w-full h-full object-cover ${animClass}`}
+          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+        />
+      );
+    }
+    return (
+      <div key="fallback" className={`absolute inset-0 w-full h-full ${animClass}`}>
+        {fallback}
+      </div>
+    );
+  };
+
+  const isTransitioning = prev !== false;
+  return (
+    <div className="relative w-full h-full">
+      {renderLayer(current, true, isTransitioning ? "animate-[fadeIn_500ms_ease-in-out]" : "")}
+      {prev !== false && renderLayer(prev, false, "animate-[fadeOut_500ms_ease-in-out_forwards]")}
     </div>
   );
 });
@@ -104,6 +186,11 @@ const RadioPlayer = () => {
     : isPodcast && podcastArt ? podcastArt
     : isAnnouncement && announcementArt ? announcementArt
     : null;
+
+  const artAlt = isMusic && song ? `${song.title} - ${song.artist}`
+    : isPodcast ? podcastName
+    : isAnnouncement ? announcementName
+    : radio.name;
 
   // Equalizer estável
   const equalizerHeights = useMemo(
@@ -187,41 +274,21 @@ const RadioPlayer = () => {
                 <div className="flex-1 flex flex-col items-center justify-center py-4">
                   <div className="relative">
                     <div className={`w-36 h-36 md:w-40 md:h-40 rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border-2 border-white/10 transition-all duration-300 ${isPlaying ? 'scale-100' : 'scale-95 opacity-90'}`}>
-                      {isMusic && song?.art ? (
-                        <img
-                          src={song.art}
-                          alt={`${song.title} - ${song.artist}`}
-                          decoding="async"
-                          className="w-full h-full object-cover transition-all duration-300"
-                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                        />
-                      ) : isPodcast && podcastArt ? (
-                        <img
-                          src={podcastArt}
-                          alt={podcastName}
-                          decoding="async"
-                          className="w-full h-full object-cover transition-all duration-300"
-                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                        />
-                      ) : isAnnouncement && announcementArt ? (
-                        <img
-                          src={announcementArt}
-                          alt={announcementName}
-                          decoding="async"
-                          className="w-full h-full object-cover transition-all duration-300"
-                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center p-4">
-                          <img src={radioLogo} alt={radio.name} decoding="async" className="w-full h-full object-contain opacity-70" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-                        </div>
-                      )}
+                      <ArtCrossfade
+                        src={artSrc}
+                        alt={artAlt}
+                        fallback={
+                          <div className="w-full h-full bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center p-4">
+                            <img src={radioLogo} alt={radio.name} decoding="async" className="w-full h-full object-contain opacity-70" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                          </div>
+                        }
+                      />
                       {/* Play/Pause overlay */}
                       <button
                         onClick={togglePlay}
                         disabled={!canPlay}
                         aria-label={isPlaying ? "Pausar rádio" : "Ouvir rádio"}
-                        className="absolute inset-0 flex items-center justify-center bg-black/0 hover:bg-black/30 disabled:hover:bg-black/0 disabled:cursor-not-allowed transition-all duration-300 group/play"
+                        className="absolute inset-0 z-10 flex items-center justify-center bg-black/0 hover:bg-black/30 disabled:hover:bg-black/0 disabled:cursor-not-allowed transition-all duration-300 group/play"
                       >
                         <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
                           !canPlay

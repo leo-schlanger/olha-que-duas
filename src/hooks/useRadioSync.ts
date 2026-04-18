@@ -83,7 +83,7 @@ export function useRadioSync(
   // Quando ICY está activo, o polling baixa para 15s (backup). Quando
   // ICY muda metadata, forçamos refetch imediato.
   const nowPlaying = useNowPlaying(streamUrl, icyPlayer.isPlaying, {
-    audioRef: { current: icyPlayer.audioElement },
+    audioRef: icyPlayer.audioElementRef,
     playingStartedAtRef,
     announcementPlaylists,
   });
@@ -106,19 +106,15 @@ export function useRadioSync(
   // Se ICY não suportado, usamos fallback (useNowPlaying já faz polling)
   const syncSource = icyPlayer.supported ? "icy" as const : "polling" as const;
 
-  // Play/Stop que controla o ICY player
+  // Play/Stop — useIcecastPlayer gere tanto o ICY player como o
+  // fallback <audio> nativo (quando ICY não suportado).
   const play = useCallback(async () => {
-    if (icyPlayer.supported) {
-      await icyPlayer.play();
-    }
-    // Se não suportado, o RadioPlayer vai precisar de fallback <audio>
-    // — mas como useRadioSync encapsula tudo, isso é tratado no
-    // RadioPlayer que verifica `supported`.
-  }, [icyPlayer]);
+    await icyPlayer.play();
+  }, [icyPlayer.play]);
 
   const stop = useCallback(() => {
     icyPlayer.stop();
-  }, [icyPlayer]);
+  }, [icyPlayer.stop]);
 
   return {
     // NowPlaying state (artwork, classificação, etc)
