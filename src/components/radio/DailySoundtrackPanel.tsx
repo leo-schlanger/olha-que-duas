@@ -1,20 +1,10 @@
-import { memo } from "react";
-import { Music, Sun, Sunset, Moon, CloudMoon } from "lucide-react";
+import { memo, useState } from "react";
+import {
+  Music, Sun, Sunset, Moon, CloudMoon, Radio,
+  Apple, Target, Heart, Footprints, MessageSquare, Users,
+} from "lucide-react";
 import { Card } from "@/components/ui/card";
-
-interface DailySlot {
-  time: string;
-  name: string;
-  genres?: string;
-  duration?: string;
-}
-
-interface DailyPeriod {
-  period: string;
-  label: string;
-  range: string;
-  slots: DailySlot[];
-}
+import type { DailyPeriod } from "@/hooks/useDailySchedule";
 
 interface Props {
   dailySchedule: DailyPeriod[] | undefined;
@@ -28,6 +18,35 @@ const PERIOD_ICONS: Record<string, typeof Sun> = {
   noite: Moon,
   madrugada: CloudMoon,
 };
+
+// Fallback icons for known special programs
+const FALLBACK_ICONS: Record<string, React.ReactNode> = {
+  'Nutrição': <Apple className="w-full h-full p-0.5" />,
+  'Motivar': <Target className="w-full h-full p-0.5" />,
+  'Prazer Feminino': <Heart className="w-full h-full p-0.5" />,
+  'Companheiros de Caminhada': <Footprints className="w-full h-full p-0.5" />,
+  'Dizem que...': <MessageSquare className="w-full h-full p-0.5" />,
+  'Olha que Duas!': <Users className="w-full h-full p-0.5" />,
+};
+
+function ProgramIcon({ show, iconUrl }: { show: string; iconUrl: string }) {
+  const [errored, setErrored] = useState(false);
+  const fallback = FALLBACK_ICONS[show] || <Radio className="w-full h-full p-0.5" />;
+  const hasUrl = iconUrl && !iconUrl.includes('placehold.co');
+
+  if (!hasUrl || errored) return <>{fallback}</>;
+
+  return (
+    <img
+      src={iconUrl}
+      alt={show}
+      className="w-full h-full object-cover rounded"
+      loading="lazy"
+      decoding="async"
+      onError={() => setErrored(true)}
+    />
+  );
+}
 
 /**
  * Painel "A Tua Soundtrack do Dia". Memoizado porque só depende do
@@ -84,33 +103,43 @@ const DailySoundtrackPanel = memo(function DailySoundtrackPanel({
                   </div>
                 </div>
                 <div className="space-y-2">
-                  {block.slots.map((slot) => (
-                    <div key={slot.time} className="min-w-0">
-                      <div className="flex items-center gap-2.5">
-                        <span className={`text-xs font-mono w-10 shrink-0 ${isCurrent ? 'text-amarelo/80' : 'text-cream/40'}`}>
-                          {slot.time}
-                        </span>
-                        <span className="text-sm text-cream/80 truncate" title={slot.name}>{slot.name}</span>
-                        {slot.duration && (
-                          <span className={`ml-auto text-[10px] font-mono shrink-0 px-1.5 py-0.5 rounded ${
-                            isCurrent ? 'bg-amarelo/15 text-amarelo/70' : 'bg-cream/5 text-cream/30'
-                          }`}>
-                            {slot.duration}
+                  {block.slots.map((slot) => {
+                    const isSpecial = !!slot.iconUrl;
+                    return (
+                      <div key={slot.time} className={`min-w-0 ${isSpecial ? 'rounded-lg px-2 py-1.5 -mx-2 bg-amarelo/5 border border-amarelo/10' : ''}`}>
+                        <div className="flex items-center gap-2.5">
+                          <span className={`text-xs font-mono w-10 shrink-0 ${isCurrent ? 'text-amarelo/80' : 'text-cream/40'}`}>
+                            {slot.time}
                           </span>
+                          {isSpecial && (
+                            <div className="w-5 h-5 rounded shrink-0 overflow-hidden text-amarelo">
+                              <ProgramIcon show={slot.name} iconUrl={slot.iconUrl!} />
+                            </div>
+                          )}
+                          <span className={`text-sm truncate ${isSpecial ? 'text-amarelo font-semibold' : 'text-cream/80'}`} title={slot.name}>
+                            {slot.name}
+                          </span>
+                          {slot.duration && (
+                            <span className={`ml-auto text-[10px] font-mono shrink-0 px-1.5 py-0.5 rounded ${
+                              isCurrent ? 'bg-amarelo/15 text-amarelo/70' : 'bg-cream/5 text-cream/30'
+                            }`}>
+                              {slot.duration}
+                            </span>
+                          )}
+                        </div>
+                        {slot.genres && (
+                          <div className="flex items-center gap-2.5 mt-0.5">
+                            <span className={`shrink-0 ${isSpecial ? 'w-[3.75rem]' : 'w-10'}`} />
+                            <span className={`text-[10px] leading-tight truncate ${
+                              isCurrent ? 'text-amarelo/50' : 'text-cream/25'
+                            }`} title={slot.genres}>
+                              {slot.genres}
+                            </span>
+                          </div>
                         )}
                       </div>
-                      {slot.genres && (
-                        <div className="flex items-center gap-2.5 mt-0.5">
-                          <span className="w-10 shrink-0" />
-                          <span className={`text-[10px] leading-tight truncate ${
-                            isCurrent ? 'text-amarelo/50' : 'text-cream/25'
-                          }`} title={slot.genres}>
-                            {slot.genres}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             );

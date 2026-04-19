@@ -12,14 +12,77 @@ import {
   useDailySchedule,
   getCurrentPeriodFromSchedule,
   getPeriodBoundaries,
+  parsePeriodRange,
+  parseSlotTime,
+  addDurations,
 } from "@/hooks/useDailySchedule";
+import type { DailyPeriod } from "@/hooks/useDailySchedule";
+import type { GroupedSchedule } from "@/hooks/useSchedule";
 import { useClockTick } from "@/hooks/useClockTick";
 import { useRadioSync } from "@/hooks/useRadioSync";
 import WeatherStrip from "@/components/WeatherStrip";
 import DailySoundtrackPanel from "@/components/radio/DailySoundtrackPanel";
-import WeeklySchedulePanel from "@/components/radio/WeeklySchedulePanel";
 import RadioDebugOverlay from "@/components/radio/RadioDebugOverlay";
 import radioLogo from "@/assets/logo-olha-que-duas.webp";
+
+const DAY_NAMES = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+
+/**
+ * Merge today's special programs (from weekly schedule) into the daily
+ * periods. Special programs get an `iconUrl` to render their logo; routine
+ * slots remain icon-less.
+ */
+function mergeTodayPrograms(
+  periods: DailyPeriod[],
+  weekly: GroupedSchedule[],
+): DailyPeriod[] {
+  const todayName = DAY_NAMES[new Date().getDay()];
+  const todayPrograms = weekly.filter((p) => p.day === todayName);
+  if (todayPrograms.length === 0) return periods;
+
+  // Clone periods to avoid mutating the original
+  const merged: DailyPeriod[] = periods.map((p) => ({
+    ...p,
+    slots: [...p.slots],
+  }));
+
+  for (const prog of todayPrograms) {
+    for (const rawTime of prog.times) {
+      // "12:00" → minutes from midnight
+      const [h, m] = rawTime.split(':').map(Number);
+      const mins = h * 60 + (m || 0);
+
+      // Find which period this time belongs to
+      const target = merged.find((p) => {
+        const range = parsePeriodRange(p.range);
+        return range ? mins >= range.start && mins < range.end : false;
+      });
+      if (!target) continue;
+
+      // Format time as "12h" or "12h30" to match daily slot format
+      const formatted = m ? `${String(h).padStart(2, '0')}h${String(m).padStart(2, '0')}` : `${String(h).padStart(2, '0')}h`;
+
+      // Replace routine slot at the same time, or add new
+      const existingIdx = target.slots.findIndex((s) => parseSlotTime(s.time) === mins);
+      const specialSlot = {
+        time: formatted,
+        name: prog.show,
+        iconUrl: prog.iconUrl,
+      };
+
+      if (existingIdx >= 0) {
+        target.slots[existingIdx] = specialSlot;
+      } else {
+        target.slots.push(specialSlot);
+      }
+
+      // Sort slots by time
+      target.slots.sort((a, b) => parseSlotTime(a.time) - parseSlotTime(b.time));
+    }
+  }
+
+  return addDurations(merged);
+}
 
 // Quantidade de barras do equalizer.
 const EQUALIZER_BARS = 8;
@@ -161,7 +224,7 @@ const RadioPlayer = () => {
     announcementPlaylists: radio.announcementPlaylists,
   });
 
-  const { schedule, loading, error: scheduleError } = useSchedule();
+  const { schedule, error: scheduleError } = useSchedule();
   const { data: dailySchedule } = useDailySchedule();
 
   // Avisa em dev se o schedule do Supabase falhou
@@ -170,6 +233,12 @@ const RadioPlayer = () => {
       console.warn("[RadioPlayer] schedule fetch failed, using fallback:", scheduleError);
     }
   }, [scheduleError]);
+
+  // Merge today's special programs into daily schedule
+  const mergedSchedule = useMemo(
+    () => dailySchedule ? mergeTodayPrograms(dailySchedule, schedule) : undefined,
+    [dailySchedule, schedule],
+  );
 
   // Período actual derivado do dailySchedule. Re-render nas viragens de período.
   const periodBoundaries = useMemo(
@@ -383,10 +452,9 @@ const RadioPlayer = () => {
           {/* Schedule Section */}
           <div className="lg:col-span-8 flex flex-col gap-5">
             <DailySoundtrackPanel
-              dailySchedule={dailySchedule}
+              dailySchedule={mergedSchedule}
               currentPeriod={currentPeriod}
             />
-            <WeeklySchedulePanel schedule={schedule} loading={loading} />
           </div>
 
         </div>
