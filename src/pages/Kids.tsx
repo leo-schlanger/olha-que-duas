@@ -42,9 +42,9 @@ const kidsJsonLd = [
     '@type': 'WebPage',
     '@id': 'https://www.olhaqueduas.com/kids#webpage',
     url: 'https://www.olhaqueduas.com/kids',
-    name: 'Olha que Duas Kids — Espaço Infantil de Rádio, Música e Histórias (Em Breve)',
+    name: 'Olha que Duas Kids — Espaço Infantil de Rádio, Música e Histórias',
     description:
-      'Em breve no Olha que Duas: um espaço Kids exclusivo para crianças, com música, histórias, brincadeiras e o novo programa "O Cantinho da Pequenada com a Leonor". Diversão segura e educativa para toda a família em Portugal.',
+      'O espaço Kids do Olha que Duas já está no ar! Um espaço exclusivo para crianças, com música, histórias, brincadeiras e o programa "O Cantinho da Pequenada com a Leonor". Diversão segura e educativa para toda a família em Portugal.',
     isPartOf: { '@id': 'https://www.olhaqueduas.com/#website' },
     about: { '@id': 'https://www.olhaqueduas.com/kids#service' },
     primaryImageOfPage: {
@@ -55,7 +55,7 @@ const kidsJsonLd = [
       caption: 'Olha que Duas Kids — Espaço Infantil',
     },
     inLanguage: 'pt-PT',
-    dateModified: '2026-04-11',
+    dateModified: '2026-04-19',
     audience: {
       '@type': 'PeopleAudience',
       suggestedMinAge: 3,
@@ -91,11 +91,11 @@ const kidsJsonLd = [
     },
     offers: {
       '@type': 'Offer',
-      availability: 'https://schema.org/PreOrder',
+      availability: 'https://schema.org/InStock',
       price: '0',
       priceCurrency: 'EUR',
       validFrom: '2026-04-11',
-      description: 'Lançamento em breve — acesso gratuito para todas as famílias.',
+      description: 'Acesso gratuito para todas as famílias. Mais novidades estão por vir!',
     },
   },
   // RadioSeries — O Cantinho da Pequenada com a Leonor
@@ -106,7 +106,7 @@ const kidsJsonLd = [
     name: 'O Cantinho da Pequenada com a Leonor',
     alternateName: 'Cantinho da Pequenada',
     description:
-      'Programa de rádio infantil apresentado pela Leonor: música, histórias, convidados especiais e brincadeiras para entreter, divertir e educar as crianças. Estreia em breve na rádio Olha que Duas.',
+      'Programa de rádio infantil apresentado pela Leonor: música, histórias, convidados especiais e brincadeiras para entreter, divertir e educar as crianças. Já no ar na rádio Olha que Duas!',
     inLanguage: 'pt-PT',
     image: 'https://www.olhaqueduas.com/og-cantinho-pequenada.jpg',
     creator: {
@@ -129,8 +129,8 @@ const kidsJsonLd = [
   {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'O que vem aí no Olha que Duas Kids',
-    description: 'Aventuras, programas e atividades em preparação para o espaço Kids.',
+    name: 'O que há no Olha que Duas Kids',
+    description: 'Aventuras, programas e atividades disponíveis e por vir no espaço Kids.',
     itemListOrder: 'https://schema.org/ItemListOrderAscending',
     numberOfItems: 4,
     itemListElement: [
@@ -179,10 +179,10 @@ const kidsJsonLd = [
     mainEntity: [
       {
         '@type': 'Question',
-        name: 'Quando estreia o espaço Kids do Olha que Duas?',
+        name: 'O espaço Kids do Olha que Duas já está no ar?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'O espaço Kids está em preparação e será lançado em breve. Subscreve a nossa newsletter para receberes em primeira mão a data oficial da estreia.',
+          text: 'Sim! O espaço Kids já está no ar com o programa "O Cantinho da Pequenada com a Leonor". Mais novidades estão por vir — subscreve a nossa newsletter para não perderes nada!',
         },
       },
       {
@@ -242,11 +242,11 @@ const upcoming = [
 
 const Kids = () => {
   useMetaTags({
-    title: 'Olha que Duas Kids — Em Breve | Espaço Infantil de Rádio, Música e Histórias',
+    title: 'Olha que Duas Kids | Espaço Infantil de Rádio, Música e Histórias',
     description:
-      'Em breve no Olha que Duas: um espaço Kids exclusivo para crianças, com música, histórias, brincadeiras e o novo programa "O Cantinho da Pequenada com a Leonor". Conteúdo seguro e educativo para toda a família.',
+      'O espaço Kids do Olha que Duas já está no ar! Um espaço exclusivo para crianças, com música, histórias, brincadeiras e o programa "O Cantinho da Pequenada com a Leonor". Conteúdo seguro e educativo para toda a família.',
     image: 'https://www.olhaqueduas.com/og-kids.jpg',
-    imageAlt: 'Olha que Duas Kids — Em breve, espaço infantil com música e histórias',
+    imageAlt: 'Olha que Duas Kids — Espaço infantil com música e histórias',
     url: 'https://www.olhaqueduas.com/kids',
     type: 'website',
     tags: [
@@ -298,16 +298,16 @@ const Kids = () => {
           <FloatingDot className="top-[60%] left-[55%] text-white animate-float-3" />
           <FloatingDot className="top-[40%] right-[12%] text-amber-300 animate-float-1" />
 
-          {/* Top "Em breve" ribbon */}
+          {/* Top "Já no Ar" ribbon */}
           <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <Animated animation="fade-down" className="text-center mb-6 md:mb-10">
               <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/90 backdrop-blur-sm border-2 border-yellow-300 shadow-[0_8px_30px_rgba(0,0,0,0.12)]">
                 <span className="relative flex h-3 w-3">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75 animate-ping" />
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-pink-500" />
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
                 </span>
                 <span className="text-xs md:text-sm font-extrabold uppercase tracking-widest text-pink-600">
-                  Em Breve · Coming Soon
+                  Já no Ar!
                 </span>
                 <Sparkles className="w-4 h-4 text-amber-500" />
               </div>
@@ -374,7 +374,7 @@ const Kids = () => {
             <Animated animation="fade-up" delay={500} className="text-center mt-10 md:mt-14 max-w-4xl mx-auto">
               <h1 className="font-display font-bold leading-[0.95] text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
                 <span className="block text-pink-600 drop-shadow-sm">
-                  Em breve no Olha que Duas
+                  O Olha que Duas
                 </span>
                 <span
                   className="block mt-2 md:mt-3 text-5xl sm:text-6xl md:text-7xl lg:text-8xl"
@@ -386,7 +386,7 @@ const Kids = () => {
                     filter: 'drop-shadow(0 6px 0 rgba(0,0,0,0.15))',
                   }}
                 >
-                  um Espaço Kids!
+                  tem Espaço Kids!
                 </span>
               </h1>
               <p className="mt-5 md:mt-7 text-lg md:text-2xl font-bold text-sky-900 drop-shadow-sm">
@@ -405,7 +405,7 @@ const Kids = () => {
                 >
                   <a href="#cantinho" className="inline-flex items-center gap-2">
                     <Bell className="w-5 h-5" />
-                    Espreita o spoiler
+                    Conhece o programa
                   </a>
                 </Button>
                 <Button
@@ -438,7 +438,7 @@ const Kids = () => {
           </div>
         </section>
 
-        {/* SPOILER — Cantinho da Pequenada */}
+        {/* Cantinho da Pequenada */}
         <section
           id="cantinho"
           className="relative py-20 md:py-28 overflow-hidden"
@@ -455,15 +455,15 @@ const Kids = () => {
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-500 text-white shadow-lg mb-6 border-4 border-white">
                 <Radio className="w-4 h-4" />
                 <span className="text-xs font-extrabold uppercase tracking-widest">
-                  Spoiler · Programa Novo
+                  No Ar · Programa Infantil
                 </span>
               </div>
               <h2 className="font-display font-bold text-4xl md:text-5xl lg:text-6xl text-charcoal">
-                Aí vem aí... <span className="text-gradient-brand">um canal só para crianças!</span>
+                Chegou <span className="text-gradient-brand">um canal só para crianças!</span>
               </h2>
               <p className="mt-4 text-lg md:text-xl text-charcoal/75 max-w-2xl mx-auto">
-                Estamos a preparar um cantinho especial cheio de música, histórias e
-                surpresas. Espreita o primeiro programa que está a caminho:
+                Um cantinho especial cheio de música, histórias e
+                surpresas. Conhece o primeiro programa que já está no ar:
               </p>
             </Animated>
 
@@ -496,10 +496,10 @@ const Kids = () => {
               {/* Info */}
               <Animated animation="fade-left" delay={150}>
                 <div className="space-y-6">
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-300 border-2 border-yellow-400 shadow-md">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-300 border-2 border-emerald-400 shadow-md">
                     <Headphones className="w-4 h-4 text-pink-600" />
                     <span className="text-xs font-extrabold uppercase tracking-wide text-pink-700">
-                      Estreia em breve
+                      Já no Ar
                     </span>
                   </div>
 
@@ -544,7 +544,7 @@ const Kids = () => {
                     >
                       <Link to="/#contacto" className="inline-flex items-center gap-2">
                         <Bell className="w-5 h-5" />
-                        Avisem-me na estreia!
+                        Fale connosco
                       </Link>
                     </Button>
                   </div>
@@ -568,8 +568,8 @@ const Kids = () => {
                 Um mundo de <span className="text-gradient-brand">diversão</span> à espera
               </h2>
               <p className="mt-4 text-lg text-charcoal/70 max-w-2xl mx-auto">
-                O espaço Kids está a ganhar forma. Aqui ficam algumas das aventuras
-                que estamos a preparar:
+                O espaço Kids já está no ar e mais novidades estão por vir!
+                Espreita o que temos preparado:
               </p>
             </Animated>
 
@@ -642,11 +642,11 @@ const Kids = () => {
                   <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-white/20 rounded-full blur-2xl" />
                   <PartyPopper className="w-12 h-12 text-white mx-auto mb-4 animate-bob-fast" />
                   <h2 className="font-display font-bold text-3xl md:text-5xl text-white drop-shadow-md">
-                    Fica atento! O espaço Kids está quase a chegar.
+                    O espaço Kids já está no ar!
                   </h2>
                   <p className="mt-4 text-lg md:text-xl text-white/95 max-w-2xl mx-auto">
-                    Subscreve a nossa newsletter e recebe em primeira mão o anúncio
-                    oficial da estreia.
+                    Mais novidades estão por vir. Subscreve a nossa newsletter
+                    para não perderes nada!
                   </p>
                   <div className="mt-8">
                     <Button

@@ -60,8 +60,8 @@ export default async function middleware(request: Request): Promise<Response | u
   // ========== KIDS ==========
   if (path === '/kids') {
     return html({
-      title: 'Olha que Duas Kids — Em Breve | Espaço Infantil de Rádio, Música e Histórias',
-      description: 'Em breve no Olha que Duas: um espaço Kids exclusivo para crianças, com música, histórias, brincadeiras e o novo programa "O Cantinho da Pequenada com a Leonor". Conteúdo seguro e educativo para toda a família.',
+      title: 'Olha que Duas Kids | Espaço Infantil de Rádio, Música e Histórias',
+      description: 'O espaço Kids do Olha que Duas já está no ar! Um espaço exclusivo para crianças, com música, histórias, brincadeiras e o programa "O Cantinho da Pequenada com a Leonor". Conteúdo seguro e educativo para toda a família.',
       image: 'https://www.olhaqueduas.com/og-kids.jpg',
       url: 'https://www.olhaqueduas.com/kids',
     });
