@@ -106,17 +106,17 @@ const DailySoundtrackPanel = memo(function DailySoundtrackPanel({
                   {block.slots.map((slot) => {
                     const isSpecial = !!slot.iconUrl;
                     return (
-                      <div key={slot.time} className={`min-w-0 ${isSpecial ? 'rounded-lg px-2 py-1.5 -mx-2 bg-amarelo/5 border border-amarelo/10' : ''}`}>
+                      <div key={slot.time} className={`min-w-0 ${isSpecial ? 'rounded-lg px-2.5 py-2 -mx-2 bg-amarelo/5 border border-amarelo/10' : ''}`}>
                         <div className="flex items-center gap-2.5">
-                          <span className={`text-xs font-mono w-10 shrink-0 ${isCurrent ? 'text-amarelo/80' : 'text-cream/40'}`}>
+                          <span className={`font-mono shrink-0 ${isSpecial ? 'text-sm w-12' : 'text-xs w-10'} ${isCurrent ? 'text-amarelo/80' : 'text-cream/40'}`}>
                             {slot.time}
                           </span>
                           {isSpecial && (
-                            <div className="w-5 h-5 rounded shrink-0 overflow-hidden text-amarelo">
+                            <div className="w-8 h-8 rounded-md shrink-0 overflow-hidden text-amarelo shadow-sm shadow-amarelo/20">
                               <ProgramIcon show={slot.name} iconUrl={slot.iconUrl!} />
                             </div>
                           )}
-                          <span className={`text-sm truncate ${isSpecial ? 'text-amarelo font-semibold' : 'text-cream/80'}`} title={slot.name}>
+                          <span className={`truncate ${isSpecial ? 'text-base text-amarelo font-bold' : 'text-sm text-cream/80'}`} title={slot.name}>
                             {slot.name}
                           </span>
                           {slot.duration && (
