@@ -16,7 +16,7 @@ import {
   parseSlotTime,
   addDurations,
 } from "@/hooks/useDailySchedule";
-import type { DailyPeriod } from "@/hooks/useDailySchedule";
+import type { DailyPeriod, DailySlot } from "@/hooks/useDailySchedule";
 import type { GroupedSchedule } from "@/hooks/useSchedule";
 import { useClockTick } from "@/hooks/useClockTick";
 import { useRadioSync } from "@/hooks/useRadioSync";
@@ -47,7 +47,24 @@ function mergeTodayPrograms(
   }));
 
   for (const prog of todayPrograms) {
-    for (const rawTime of prog.times) {
+    // All-day events: add as "base" entry at the top of every period
+    if (prog.isAllDay) {
+      const allDaySlot: DailySlot = {
+        time: '—',
+        name: prog.show,
+        iconUrl: prog.iconUrl,
+        isAllDay: true,
+      };
+      for (const period of merged) {
+        period.slots.unshift({ ...allDaySlot });
+      }
+      continue;
+    }
+
+    for (let i = 0; i < prog.times.length; i++) {
+      const rawTime = prog.times[i];
+      const rawEndTime = prog.endTimes?.[i] ?? null;
+
       // "12:00" → minutes from midnight
       const [h, m] = rawTime.split(':').map(Number);
       const mins = h * 60 + (m || 0);
@@ -62,12 +79,25 @@ function mergeTodayPrograms(
       // Format time as "12h" or "12h30" to match daily slot format
       const formatted = m ? `${String(h).padStart(2, '0')}h${String(m).padStart(2, '0')}` : `${String(h).padStart(2, '0')}h`;
 
+      // Compute duration from end_time if available
+      let duration: string | undefined;
+      if (rawEndTime) {
+        const [eh, em] = rawEndTime.split(':').map(Number);
+        const endMins = eh * 60 + (em || 0);
+        let diff = endMins - mins;
+        if (diff <= 0) diff += 24 * 60;
+        const dh = Math.floor(diff / 60);
+        const dm = diff % 60;
+        duration = dh === 0 ? `${dm}min` : dm > 0 ? `${dh}h${String(dm).padStart(2, '0')}` : `${dh}h`;
+      }
+
       // Replace routine slot at the same time, or add new
       const existingIdx = target.slots.findIndex((s) => parseSlotTime(s.time) === mins);
-      const specialSlot = {
+      const specialSlot: DailySlot = {
         time: formatted,
         name: prog.show,
         iconUrl: prog.iconUrl,
+        ...(duration && { duration }),
       };
 
       if (existingIdx >= 0) {
@@ -76,8 +106,12 @@ function mergeTodayPrograms(
         target.slots.push(specialSlot);
       }
 
-      // Sort slots by time
-      target.slots.sort((a, b) => parseSlotTime(a.time) - parseSlotTime(b.time));
+      // Sort slots by time (all-day slots stay at top)
+      target.slots.sort((a, b) => {
+        if (a.isAllDay) return -1;
+        if (b.isAllDay) return 1;
+        return parseSlotTime(a.time) - parseSlotTime(b.time);
+      });
     }
   }
 

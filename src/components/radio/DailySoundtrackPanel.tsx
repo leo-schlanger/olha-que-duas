@@ -103,23 +103,32 @@ const DailySoundtrackPanel = memo(function DailySoundtrackPanel({
                   </div>
                 </div>
                 <div className="space-y-2">
-                  {block.slots.map((slot) => {
+                  {block.slots.map((slot, slotIdx) => {
                     const isSpecial = !!slot.iconUrl;
+                    const isAllDay = !!slot.isAllDay;
                     return (
-                      <div key={slot.time} className={`min-w-0 ${isSpecial ? 'rounded-lg px-2.5 py-2 -mx-2 bg-amarelo/5 border border-amarelo/10' : ''}`}>
+                      <div key={isAllDay ? `allday-${slotIdx}` : slot.time} className={`min-w-0 ${isSpecial || isAllDay ? 'rounded-lg px-2.5 py-2 -mx-2 bg-amarelo/5 border border-amarelo/10' : ''}`}>
                         <div className="flex items-center gap-2.5">
-                          <span className={`font-mono shrink-0 ${isSpecial ? 'text-sm w-12' : 'text-xs w-10'} ${isCurrent ? 'text-amarelo/80' : 'text-cream/40'}`}>
-                            {slot.time}
-                          </span>
+                          {isAllDay ? (
+                            <span className={`text-[10px] font-bold uppercase tracking-wider shrink-0 px-2 py-0.5 rounded-full ${
+                              isCurrent ? 'bg-purple-500/20 text-purple-300 border border-purple-400/30' : 'bg-cream/10 text-cream/50'
+                            }`}>
+                              Dia inteiro
+                            </span>
+                          ) : (
+                            <span className={`font-mono shrink-0 ${isSpecial ? 'text-sm w-12' : 'text-xs w-10'} ${isCurrent ? 'text-amarelo/80' : 'text-cream/40'}`}>
+                              {slot.time}
+                            </span>
+                          )}
                           {isSpecial && (
                             <div className="w-8 h-8 rounded-md shrink-0 overflow-hidden text-amarelo shadow-sm shadow-amarelo/20">
                               <ProgramIcon show={slot.name} iconUrl={slot.iconUrl!} />
                             </div>
                           )}
-                          <span className={`truncate ${isSpecial ? 'text-base text-amarelo font-bold' : 'text-sm text-cream/80'}`} title={slot.name}>
+                          <span className={`truncate ${isSpecial || isAllDay ? 'text-base text-amarelo font-bold' : 'text-sm text-cream/80'}`} title={slot.name}>
                             {slot.name}
                           </span>
-                          {slot.duration && (
+                          {slot.duration && !isAllDay && (
                             <span className={`ml-auto text-[10px] font-mono shrink-0 px-1.5 py-0.5 rounded ${
                               isCurrent ? 'bg-amarelo/15 text-amarelo/70' : 'bg-cream/5 text-cream/30'
                             }`}>

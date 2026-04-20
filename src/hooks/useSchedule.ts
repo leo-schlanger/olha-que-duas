@@ -13,6 +13,8 @@ interface ScheduleItemRaw {
   event_id: string;
   day_of_week: number;
   time: string;
+  end_time: string | null;
+  is_all_day: boolean;
   event: ScheduleEvent | ScheduleEvent[] | null;
 }
 
@@ -21,6 +23,8 @@ export interface GroupedSchedule {
   dayNumber: number;
   show: string;
   times: string[];
+  endTimes: (string | null)[];
+  isAllDay: boolean;
   iconUrl: string;
 }
 
@@ -36,12 +40,12 @@ const DAYS_MAP: Record<number, string> = {
 
 // Fallback schedule for when Supabase is not configured
 const fallbackSchedule: GroupedSchedule[] = [
-  { day: 'Segunda', dayNumber: 1, show: 'Nutrição', times: ['12:00', '19:00'], iconUrl: '' },
-  { day: 'Terça', dayNumber: 2, show: 'Motivar', times: ['12:00', '19:00'], iconUrl: '' },
-  { day: 'Quarta', dayNumber: 3, show: 'Prazer Feminino', times: ['21:00', '00:00'], iconUrl: '' },
-  { day: 'Quinta', dayNumber: 4, show: 'Companheiros de Caminhada', times: ['12:00', '19:00'], iconUrl: '' },
-  { day: 'Sexta', dayNumber: 5, show: 'Dizem que...', times: ['12:00', '19:00'], iconUrl: '' },
-  { day: 'Sábado', dayNumber: 6, show: 'Olha que Duas!', times: ['11:00', '19:00', '00:00'], iconUrl: '' },
+  { day: 'Segunda', dayNumber: 1, show: 'Nutrição', times: ['12:00', '19:00'], endTimes: [null, null], isAllDay: false, iconUrl: '' },
+  { day: 'Terça', dayNumber: 2, show: 'Motivar', times: ['12:00', '19:00'], endTimes: [null, null], isAllDay: false, iconUrl: '' },
+  { day: 'Quarta', dayNumber: 3, show: 'Prazer Feminino', times: ['21:00', '00:00'], endTimes: [null, null], isAllDay: false, iconUrl: '' },
+  { day: 'Quinta', dayNumber: 4, show: 'Companheiros de Caminhada', times: ['12:00', '19:00'], endTimes: [null, null], isAllDay: false, iconUrl: '' },
+  { day: 'Sexta', dayNumber: 5, show: 'Dizem que...', times: ['12:00', '19:00'], endTimes: [null, null], isAllDay: false, iconUrl: '' },
+  { day: 'Sábado', dayNumber: 6, show: 'Olha que Duas!', times: ['11:00', '19:00', '00:00'], endTimes: [null, null, null], isAllDay: false, iconUrl: '' },
 ];
 
 /**
@@ -57,16 +61,23 @@ export function groupScheduleRows(rows: ScheduleItemRaw[]): GroupedSchedule[] {
     if (!event) continue;
 
     const key = `${item.day_of_week}-${event.name}`;
+    const isAllDay = item.is_all_day ?? false;
     const time = item.time.slice(0, 5); // HH:mm
+    const endTime = item.end_time ? item.end_time.slice(0, 5) : null;
 
     if (grouped.has(key)) {
-      grouped.get(key)!.times.push(time);
+      if (!isAllDay) {
+        grouped.get(key)!.times.push(time);
+        grouped.get(key)!.endTimes.push(endTime);
+      }
     } else {
       grouped.set(key, {
         day: DAYS_MAP[item.day_of_week],
         dayNumber: item.day_of_week,
         show: event.name,
-        times: [time],
+        times: isAllDay ? [] : [time],
+        endTimes: isAllDay ? [] : [endTime],
+        isAllDay,
         iconUrl: event.icon_url,
       });
     }
@@ -90,6 +101,8 @@ export function useSchedule() {
           event_id,
           day_of_week,
           time,
+          end_time,
+          is_all_day,
           event:events!inner(id, name, description, icon_url, is_active)
         `)
         .eq('is_active', true)
