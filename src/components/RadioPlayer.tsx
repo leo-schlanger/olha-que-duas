@@ -32,6 +32,15 @@ const DAY_NAMES = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 
  * periods. Special programs get an `iconUrl` to render their logo; routine
  * slots remain icon-less.
  */
+/** Format minutes-from-midnight as "12h" or "12h30" */
+function formatMinsToSlotTime(totalMins: number): string {
+  const h = Math.floor(totalMins / 60) % 24;
+  const m = totalMins % 60;
+  return m
+    ? `${String(h).padStart(2, '0')}h${String(m).padStart(2, '0')}`
+    : `${String(h).padStart(2, '0')}h`;
+}
+
 function mergeTodayPrograms(
   periods: DailyPeriod[],
   weekly: GroupedSchedule[],
@@ -39,6 +48,9 @@ function mergeTodayPrograms(
   const todayName = DAY_NAMES[new Date().getDay()];
   const todayPrograms = weekly.filter((p) => p.day === todayName);
   if (todayPrograms.length === 0) return periods;
+
+  // Keep original periods for gap-filling (find what routine was playing at a given time)
+  const originalPeriods = periods;
 
   // Clone periods to avoid mutating the original
   const merged: DailyPeriod[] = periods.map((p) => ({
@@ -49,8 +61,7 @@ function mergeTodayPrograms(
   // Check if there's an all-day event today
   const allDayProg = todayPrograms.find((p) => p.isAllDay);
 
-  // If all-day event exists, remove routine slots (non-special) from all periods
-  // Only keep the all-day base + special programs (those with iconUrl from weekly schedule)
+  // If all-day event exists, remove routine slots from all periods
   if (allDayProg) {
     const allDaySlot: DailySlot = {
       time: '—',
@@ -59,12 +70,13 @@ function mergeTodayPrograms(
       isAllDay: true,
     };
     for (const period of merged) {
-      // Remove all routine slots (those without iconUrl = not special programs)
       period.slots = period.slots.filter((s) => !!s.iconUrl);
-      // Add all-day base at top
       period.slots.unshift({ ...allDaySlot });
     }
   }
+
+  // Collect all specials with their end times for gap-filling later
+  const specialsWithEnd: { periodIdx: number; endMins: number }[] = [];
 
   for (const prog of todayPrograms) {
     if (prog.isAllDay) continue;
@@ -73,25 +85,24 @@ function mergeTodayPrograms(
       const rawTime = prog.times[i];
       const rawEndTime = prog.endTimes?.[i] ?? null;
 
-      // "12:00" → minutes from midnight
       const [h, m] = rawTime.split(':').map(Number);
       const mins = h * 60 + (m || 0);
 
-      // Find which period this time belongs to
-      const target = merged.find((p) => {
+      const periodIdx = merged.findIndex((p) => {
         const range = parsePeriodRange(p.range);
         return range ? mins >= range.start && mins < range.end : false;
       });
-      if (!target) continue;
+      if (periodIdx < 0) continue;
+      const target = merged[periodIdx];
 
-      // Format time as "12h" or "12h30" to match daily slot format
-      const formatted = m ? `${String(h).padStart(2, '0')}h${String(m).padStart(2, '0')}` : `${String(h).padStart(2, '0')}h`;
+      const formatted = formatMinsToSlotTime(mins);
 
       // Compute duration from end_time if available
       let duration: string | undefined;
+      let endMins: number | undefined;
       if (rawEndTime) {
         const [eh, em] = rawEndTime.split(':').map(Number);
-        const endMins = eh * 60 + (em || 0);
+        endMins = eh * 60 + (em || 0);
         let diff = endMins - mins;
         if (diff <= 0) diff += 24 * 60;
         const dh = Math.floor(diff / 60);
@@ -100,7 +111,7 @@ function mergeTodayPrograms(
       }
 
       // Replace routine slot at the same time, or add new
-      const existingIdx = target.slots.findIndex((s) => parseSlotTime(s.time) === mins);
+      const existingIdx = target.slots.findIndex((s) => !s.isAllDay && parseSlotTime(s.time) === mins);
       const specialSlot: DailySlot = {
         time: formatted,
         name: prog.show,
@@ -114,13 +125,74 @@ function mergeTodayPrograms(
         target.slots.push(specialSlot);
       }
 
-      // Sort slots by time (all-day slots stay at top)
-      target.slots.sort((a, b) => {
-        if (a.isAllDay) return -1;
-        if (b.isAllDay) return 1;
-        return parseSlotTime(a.time) - parseSlotTime(b.time);
-      });
+      if (endMins !== undefined) {
+        specialsWithEnd.push({ periodIdx, endMins });
+      }
     }
+  }
+
+  // Sort all periods
+  for (const period of merged) {
+    period.slots.sort((a, b) => {
+      if (a.isAllDay) return -1;
+      if (b.isAllDay) return 1;
+      return parseSlotTime(a.time) - parseSlotTime(b.time);
+    });
+  }
+
+  // Gap-fill: after each special with end_time, insert a "resume" slot if there's dead air
+  for (const { periodIdx, endMins } of specialsWithEnd) {
+    const target = merged[periodIdx];
+    const range = parsePeriodRange(target.range);
+    if (!range) continue;
+
+    // Check if endMins falls outside this period (crosses into next)
+    if (endMins >= range.end || endMins < range.start) continue;
+
+    // Check if there's already a slot at endMins
+    const alreadyExists = target.slots.some((s) => !s.isAllDay && parseSlotTime(s.time) === endMins);
+    if (alreadyExists) continue;
+
+    // Find the next slot after endMins
+    const nextSlot = target.slots.find((s) => !s.isAllDay && parseSlotTime(s.time) > endMins);
+    const nextStart = nextSlot ? parseSlotTime(nextSlot.time) : range.end;
+
+    // Only insert if there's actually a gap
+    if (endMins >= nextStart) continue;
+
+    // Determine what should resume
+    let resumeSlot: DailySlot;
+    if (allDayProg) {
+      resumeSlot = {
+        time: formatMinsToSlotTime(endMins),
+        name: allDayProg.show,
+        iconUrl: allDayProg.iconUrl,
+      };
+    } else {
+      // Find original routine slot that was playing at this time
+      const origPeriod = originalPeriods.find((p) => {
+        const r = parsePeriodRange(p.range);
+        return r ? endMins >= r.start && endMins < r.end : false;
+      });
+      const origSlots = origPeriod?.slots ?? [];
+      const covering = origSlots.filter((s) => parseSlotTime(s.time) <= endMins);
+      const origSlot = covering[covering.length - 1];
+
+      resumeSlot = {
+        time: formatMinsToSlotTime(endMins),
+        name: origSlot?.name ?? 'Programação',
+        ...(origSlot?.genres && { genres: origSlot.genres }),
+      };
+    }
+
+    target.slots.push(resumeSlot);
+
+    // Re-sort after insertion
+    target.slots.sort((a, b) => {
+      if (a.isAllDay) return -1;
+      if (b.isAllDay) return 1;
+      return parseSlotTime(a.time) - parseSlotTime(b.time);
+    });
   }
 
   return addDurations(merged);
