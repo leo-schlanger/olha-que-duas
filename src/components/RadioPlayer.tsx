@@ -46,20 +46,28 @@ function mergeTodayPrograms(
     slots: [...p.slots],
   }));
 
-  for (const prog of todayPrograms) {
-    // All-day events: add as "base" entry at the top of every period
-    if (prog.isAllDay) {
-      const allDaySlot: DailySlot = {
-        time: '—',
-        name: prog.show,
-        iconUrl: prog.iconUrl,
-        isAllDay: true,
-      };
-      for (const period of merged) {
-        period.slots.unshift({ ...allDaySlot });
-      }
-      continue;
+  // Check if there's an all-day event today
+  const allDayProg = todayPrograms.find((p) => p.isAllDay);
+
+  // If all-day event exists, remove routine slots (non-special) from all periods
+  // Only keep the all-day base + special programs (those with iconUrl from weekly schedule)
+  if (allDayProg) {
+    const allDaySlot: DailySlot = {
+      time: '—',
+      name: allDayProg.show,
+      iconUrl: allDayProg.iconUrl,
+      isAllDay: true,
+    };
+    for (const period of merged) {
+      // Remove all routine slots (those without iconUrl = not special programs)
+      period.slots = period.slots.filter((s) => !!s.iconUrl);
+      // Add all-day base at top
+      period.slots.unshift({ ...allDaySlot });
     }
+  }
+
+  for (const prog of todayPrograms) {
+    if (prog.isAllDay) continue;
 
     for (let i = 0; i < prog.times.length; i++) {
       const rawTime = prog.times[i];
