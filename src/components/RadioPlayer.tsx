@@ -52,10 +52,10 @@ function mergeTodayPrograms(
   // Keep original periods for gap-filling (find what routine was playing at a given time)
   const originalPeriods = periods;
 
-  // Clone periods to avoid mutating the original
+  // Clone periods and strip routine durations (recalculated by addDurations at end)
   const merged: DailyPeriod[] = periods.map((p) => ({
     ...p,
-    slots: [...p.slots],
+    slots: p.slots.map(({ duration, ...rest }) => rest),
   }));
 
   // Check if there's an all-day event today
@@ -76,7 +76,7 @@ function mergeTodayPrograms(
   }
 
   // Collect all specials with their end times for gap-filling later
-  const specialsWithEnd: { periodIdx: number; endMins: number }[] = [];
+  const specialsWithEnd: { periodIdx: number; startMins: number; endMins: number }[] = [];
 
   for (const prog of todayPrograms) {
     if (prog.isAllDay) continue;
@@ -126,9 +126,18 @@ function mergeTodayPrograms(
       }
 
       if (endMins !== undefined) {
-        specialsWithEnd.push({ periodIdx, endMins });
+        specialsWithEnd.push({ periodIdx, startMins: mins, endMins });
       }
     }
+  }
+
+  // Remove routine slots that fall inside a special's time range
+  for (const period of merged) {
+    period.slots = period.slots.filter((slot) => {
+      if (slot.iconUrl) return true;
+      const t = parseSlotTime(slot.time);
+      return !specialsWithEnd.some((r) => t > r.startMins && t < r.endMins);
+    });
   }
 
   // Sort all periods

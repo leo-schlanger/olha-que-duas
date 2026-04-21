@@ -125,7 +125,7 @@ const DailySoundtrackPanel = memo(function DailySoundtrackPanel({
                               <ProgramIcon show={slot.name} iconUrl={slot.iconUrl!} />
                             </div>
                           )}
-                          <span className={`truncate ${isSpecial || isAllDay ? 'text-base text-amarelo font-bold' : 'text-sm text-cream/80'}`} title={slot.name}>
+                          <span className={`${isSpecial || isAllDay ? 'text-base text-amarelo font-bold min-w-0' : 'text-sm text-cream/80 truncate'}`} title={slot.name}>
                             {slot.name}
                           </span>
                           {slot.duration && !isAllDay && (
