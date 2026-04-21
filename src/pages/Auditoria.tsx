@@ -25,9 +25,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
+import logo from "@/assets/logo-olha-que-duas.webp";
 import { Animated } from "@/components/ui/animated";
 import { useMetaTags, getPageBreadcrumbJsonLd } from "@/hooks/useMetaTags";
 import { siteConfig } from "@/config/site";
@@ -231,7 +230,23 @@ const Auditoria = () => {
 
   return (
     <div className="min-h-screen">
-      <Header />
+      {/* Mini-header — só logo + CTA, sem navegação (landing page focada) */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-charcoal/80 backdrop-blur-md border-b border-cream/5">
+        <div className="container mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+          <a href="/" aria-label="Olha que Duas — Página principal">
+            <img src={logo} alt="Olha que Duas" className="h-10 w-auto" />
+          </a>
+          <Button
+            onClick={scrollToForm}
+            size="sm"
+            className="btn-primary-glow font-medium rounded-xl text-sm h-10 px-5 border-none"
+          >
+            Auditoria Gratuita
+            <ArrowRight className="w-4 h-4 ml-1.5" />
+          </Button>
+        </div>
+      </header>
+
       <main id="main-content">
         {/* ═══════════════════════════════════════════
             HERO — Full viewport, dark, musical pulse
@@ -381,6 +396,52 @@ const Auditoria = () => {
                 <div className="w-1.5 h-3 bg-current rounded-full animate-bounce group-hover:bg-amarelo" style={{ animationDuration: "1.5s" }} />
               </div>
             </a>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════
+            VÍDEO — Apresentação com áudio
+        ═══════════════════════════════════════════ */}
+        <section className="py-16 md:py-24 bg-charcoal relative overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-vermelho/20 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amarelo/15 to-transparent" />
+          </div>
+
+          <div className="container mx-auto px-4 sm:px-6 relative z-10">
+            <Animated>
+              <div className="max-w-2xl mx-auto text-center mb-10">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cream/5 border border-cream/10 mb-5">
+                  <Play className="w-3.5 h-3.5 text-vermelho-soft" />
+                  <span className="text-[11px] font-semibold uppercase tracking-widest text-cream/70">
+                    Conheça-nos
+                  </span>
+                </div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-semibold text-cream leading-tight mb-4">
+                  Veja quem <span className="text-amarelo">somos</span>
+                </h2>
+                <p className="text-base md:text-lg text-cream/50">
+                  Descubra o nosso propósito e como podemos dar voz à sua marca.
+                </p>
+              </div>
+            </Animated>
+
+            <Animated delay={200}>
+              <div className="max-w-4xl mx-auto">
+                <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border border-cream/10">
+                  <video
+                    className="w-full aspect-video bg-black"
+                    src="/landing-video.mp4"
+                    controls
+                    playsInline
+                    preload="metadata"
+                    poster="/og-auditoria.jpg"
+                  >
+                    O seu navegador não suporta vídeo HTML5.
+                  </video>
+                </div>
+              </div>
+            </Animated>
           </div>
         </section>
 
@@ -888,7 +949,16 @@ const Auditoria = () => {
           </div>
         </section>
       </main>
-      <Footer />
+      {/* Mini-footer — sem navegação, apenas legal */}
+      <footer className="bg-charcoal text-cream/30 py-6 border-t border-cream/5">
+        <div className="container mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+          <span>&copy; {new Date().getFullYear()} {siteConfig.info.name}. Todos os direitos reservados.</span>
+          <div className="flex items-center gap-4">
+            <a href="/privacidade" className="hover:text-cream/60 transition-colors">Política de Privacidade</a>
+            <a href="/termos" className="hover:text-cream/60 transition-colors">Termos</a>
+          </div>
+        </div>
+      </footer>
       <BackToTop />
     </div>
   );
