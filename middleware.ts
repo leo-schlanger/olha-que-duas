@@ -1,5 +1,5 @@
 export const config = {
-  matcher: ['/viagens', '/servicos', '/loja', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*', '/kids'],
+  matcher: ['/viagens', '/servicos', '/loja', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*', '/kids', '/auditoria-gratuita'],
 };
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || '';
@@ -64,6 +64,16 @@ export default async function middleware(request: Request): Promise<Response | u
       description: 'O espaço Kids do Olha que Duas já está no ar! Um espaço exclusivo para crianças, com música, histórias, brincadeiras e o programa "O Cantinho da Pequenada com a Leonor". Conteúdo seguro e educativo para toda a família.',
       image: 'https://www.olhaqueduas.com/og-kids.jpg',
       url: 'https://www.olhaqueduas.com/kids',
+    });
+  }
+
+  // ========== AUDITORIA GRATUITA ==========
+  if (path === '/auditoria-gratuita') {
+    return html({
+      title: 'Auditoria Gratuita de Comunicação',
+      description: 'Descubra em 15 minutos o que está a travar o crescimento da sua marca — e como resolvê-lo. Análise gratuita de presença digital, redes sociais e estratégia de comunicação. Sem compromisso.',
+      image: 'https://www.olhaqueduas.com/og-auditoria.jpg',
+      url: 'https://www.olhaqueduas.com/auditoria-gratuita',
     });
   }
 
