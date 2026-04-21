@@ -25,6 +25,7 @@ const Newsletter = lazy(() => import("./pages/Newsletter"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
 const FAQ = lazy(() => import("./pages/FAQ"));
+const Auditoria = lazy(() => import("./pages/Auditoria"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 /**
@@ -78,6 +79,7 @@ const App = () => (
               <Route path="/newsletter" element={<Newsletter />} />
               <Route path="/privacidade" element={<PrivacyPolicy />} />
               <Route path="/termos" element={<TermsOfService />} />
+              <Route path="/auditoria-gratuita" element={<Auditoria />} />
               <Route path="/faq" element={<FAQ />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

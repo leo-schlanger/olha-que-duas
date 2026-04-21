@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200">
+  <title>OG Auditoria - Olha que Duas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 1200px;
+      height: 630px;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .banner {
+      width: 1200px;
+      height: 630px;
+      background: linear-gradient(145deg, #1a1410 0%, #2d1f18 35%, #3d2920 70%, #1a1410 100%);
+      position: relative;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* Gradient orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+    }
+
+    .orb-1 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(180,41,43,0.35) 0%, transparent 70%);
+      top: -150px;
+      right: -100px;
+    }
+
+    .orb-2 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255,215,0,0.2) 0%, transparent 70%);
+      bottom: -100px;
+      left: -50px;
+    }
+
+    .orb-3 {
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(180,41,43,0.15) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Sound wave bars */
+    .equalizer {
+      position: absolute;
+      display: flex;
+      gap: 5px;
+      align-items: flex-end;
+    }
+
+    .equalizer-left {
+      left: 50px;
+      bottom: 100px;
+      height: 120px;
+      opacity: 0.4;
+    }
+
+    .equalizer-right {
+      right: 50px;
+      top: 100px;
+      height: 120px;
+      opacity: 0.3;
+    }
+
+    .eq-bar {
+      width: 6px;
+      border-radius: 3px;
+    }
+
+    .equalizer-left .eq-bar { background: linear-gradient(180deg, #FFD700 0%, #b4292b 100%); }
+    .equalizer-right .eq-bar { background: linear-gradient(180deg, #b4292b 0%, #FFD700 100%); }
+
+    .equalizer-left .eq-bar:nth-child(1) { height: 25%; }
+    .equalizer-left .eq-bar:nth-child(2) { height: 55%; }
+    .equalizer-left .eq-bar:nth-child(3) { height: 80%; }
+    .equalizer-left .eq-bar:nth-child(4) { height: 45%; }
+    .equalizer-left .eq-bar:nth-child(5) { height: 95%; }
+    .equalizer-left .eq-bar:nth-child(6) { height: 60%; }
+    .equalizer-left .eq-bar:nth-child(7) { height: 35%; }
+
+    .equalizer-right .eq-bar:nth-child(1) { height: 40%; }
+    .equalizer-right .eq-bar:nth-child(2) { height: 75%; }
+    .equalizer-right .eq-bar:nth-child(3) { height: 50%; }
+    .equalizer-right .eq-bar:nth-child(4) { height: 90%; }
+    .equalizer-right .eq-bar:nth-child(5) { height: 60%; }
+    .equalizer-right .eq-bar:nth-child(6) { height: 30%; }
+    .equalizer-right .eq-bar:nth-child(7) { height: 70%; }
+
+    /* Musical notes floating */
+    .notes {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .note {
+      position: absolute;
+      font-size: 36px;
+      opacity: 0.08;
+      color: #FFD700;
+    }
+
+    .note:nth-child(1) { top: 10%; left: 8%; font-size: 48px; }
+    .note:nth-child(2) { top: 30%; right: 12%; font-size: 32px; }
+    .note:nth-child(3) { bottom: 20%; left: 15%; font-size: 40px; }
+    .note:nth-child(4) { top: 60%; right: 8%; font-size: 28px; }
+    .note:nth-child(5) { bottom: 35%; right: 25%; font-size: 44px; }
+
+    /* Top accent bar */
+    .top-accent {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, #b4292b 0%, #FFD700 50%, #b4292b 100%);
+    }
+
+    /* Content */
+    .content {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      padding: 60px 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      height: 100%;
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,215,0,0.15);
+      border: 1px solid rgba(255,215,0,0.3);
+      padding: 10px 24px;
+      border-radius: 50px;
+      margin-bottom: 30px;
+    }
+
+    .badge-text {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #FFD700;
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      background: #00ff00;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #00ff00;
+    }
+
+    /* Headline */
+    .headline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 62px;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      text-shadow: 0 4px 30px rgba(0,0,0,0.5);
+    }
+
+    .headline .highlight {
+      color: #FFD700;
+      text-shadow: 0 0 40px rgba(255,215,0,0.4), 0 4px 30px rgba(0,0,0,0.5);
+    }
+
+    /* Subtitle */
+    .subtitle {
+      font-size: 22px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.5;
+      max-width: 700px;
+      margin-bottom: 35px;
+    }
+
+    /* CTA Button */
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, #b4292b 0%, #d63031 100%);
+      color: white;
+      padding: 18px 40px;
+      border-radius: 16px;
+      font-size: 20px;
+      font-weight: 700;
+      box-shadow: 0 10px 40px rgba(180,41,43,0.4);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .cta-arrow {
+      font-size: 24px;
+    }
+
+    /* Bottom bar */
+    .bottom-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 50px;
+      background: rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(255,215,0,0.15);
+    }
+
+    .bottom-item {
+      color: rgba(255,255,255,0.8);
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bottom-divider {
+      width: 4px;
+      height: 4px;
+      background: #FFD700;
+      border-radius: 50%;
+    }
+
+    /* Logo watermark */
+    .logo-watermark {
+      position: absolute;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0.9;
+    }
+
+    .logo-watermark img {
+      height: 60px;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+    }
+  </style>
+</head>
+<body>
+  <div class="banner">
+    <!-- Gradient orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <!-- Musical notes -->
+    <div class="notes">
+      <span class="note">&#9835;</span>
+      <span class="note">&#9834;</span>
+      <span class="note">&#9833;</span>
+      <span class="note">&#9836;</span>
+      <span class="note">&#9835;</span>
+    </div>
+
+    <!-- Equalizer bars -->
+    <div class="equalizer equalizer-left">
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+    </div>
+
+    <div class="equalizer equalizer-right">
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+    </div>
+
+    <!-- Top accent -->
+    <div class="top-accent"></div>
+
+    <!-- Logo watermark -->
+    <div class="logo-watermark">
+      <img src="../src/assets/logo-olha-que-duas.webp" alt="Olha que Duas">
+    </div>
+
+    <!-- Main content -->
+    <div class="content">
+      <!-- Badge -->
+      <div class="badge">
+        <div class="badge-dot"></div>
+        <span class="badge-text">Auditoria Gratuita de Comunicacao</span>
+      </div>
+
+      <!-- Headline -->
+      <h1 class="headline">
+        A sua marca tem potencial.<br>
+        <span class="highlight">Falta-lhe voz.</span>
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="subtitle">
+        Descubra em 15 minutos o que esta a travar o crescimento da sua marca — e como resolve-lo. Sem compromisso.
+      </p>
+
+      <!-- CTA -->
+      <div class="cta">
+        <span>Quero a minha auditoria gratuita</span>
+        <span class="cta-arrow">&rarr;</span>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="bottom-bar">
+      <span class="bottom-item">&#127911; Radio 24/7</span>
+      <div class="bottom-divider"></div>
+      <span class="bottom-item">&#127908; Assessoria de Imprensa</span>
+      <div class="bottom-divider"></div>
+      <span class="bottom-item">&#128242; Marketing Digital</span>
+      <div class="bottom-divider"></div>
+      <span class="bottom-item">www.olhaqueduas.com</span>
+    </div>
+  </div>
+</body>
+</html>

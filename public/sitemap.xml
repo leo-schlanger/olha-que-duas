@@ -29,6 +29,18 @@
     </image:image>
   </url>
 
+  <!-- Auditoria Gratuita (Landing Page) -->
+  <url>
+    <loc>https://www.olhaqueduas.com/auditoria-gratuita</loc>
+    <lastmod>2026-04-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://www.olhaqueduas.com/og-auditoria.jpg</image:loc>
+      <image:title>Auditoria Gratuita de Comunicação - Olha que Duas</image:title>
+    </image:image>
+  </url>
+
   <!-- Serviços -->
   <url>
     <loc>https://www.olhaqueduas.com/servicos</loc>
