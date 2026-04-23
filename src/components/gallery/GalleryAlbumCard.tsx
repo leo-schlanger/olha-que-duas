@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { pt } from 'date-fns/locale';
-import { MapPin, Camera, Calendar } from 'lucide-react';
+import { MapPin, Camera, Calendar, Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { getCloudinaryUrl, getCloudinaryPlaceholder } from '@/lib/cloudinary';
@@ -71,10 +71,18 @@ export function GalleryAlbumCard({ album, className }: GalleryAlbumCardProps) {
           )}
 
           {/* Photo count badge */}
-          <Badge className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm text-white border-0 shadow-lg">
-            <Camera className="w-3 h-3 mr-1" />
-            {album.photo_count} fotos
-          </Badge>
+          <div className="absolute top-3 right-3 flex items-center gap-1.5">
+            {!!album.video_count && (
+              <Badge className="bg-vermelho/90 backdrop-blur-sm text-white border-0 shadow-lg">
+                <Play className="w-3 h-3 mr-1" />
+                {album.video_count}
+              </Badge>
+            )}
+            <Badge className="bg-black/60 backdrop-blur-sm text-white border-0 shadow-lg">
+              <Camera className="w-3 h-3 mr-1" />
+              {album.photo_count} fotos
+            </Badge>
+          </div>
 
           {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />

@@ -18,7 +18,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import { Animated } from '@/components/ui/animated';
-import { PhotoGrid } from '@/components/gallery';
+import { PhotoGrid, VideoSection } from '@/components/gallery';
 import { useGalleryAlbum } from '@/hooks/useGallery';
 import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
 import { getCloudinaryUrl } from '@/lib/cloudinary';
@@ -243,8 +243,15 @@ export default function GalleryAlbum() {
             </div>
           </Animated>
 
+          {/* Videos (before photos) */}
+          {album.videos.length > 0 && (
+            <Animated animation="fade-up" delay={100}>
+              <VideoSection videos={album.videos} className="mb-8" />
+            </Animated>
+          )}
+
           {/* Photo Grid */}
-          <Animated animation="fade-up" delay={100}>
+          <Animated animation="fade-up" delay={album.videos.length > 0 ? 200 : 100}>
             <PhotoGrid photos={album.photos} />
           </Animated>
 

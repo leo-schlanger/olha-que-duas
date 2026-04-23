@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getSupabase, isSupabaseConfigured, getSupabaseUrl } from '@/lib/supabase';
-import type { GalleryAlbum, GalleryAlbumWithPhotos, GalleryPhoto, GalleryAlbumsByYear } from '@/types/gallery';
+import type { GalleryAlbum, GalleryAlbumWithPhotos, GalleryPhoto, GalleryVideo, GalleryAlbumsByYear } from '@/types/gallery';
 
 interface CloudinaryPhotoRef {
   public_id: string;
@@ -68,6 +68,18 @@ export function useGalleryAlbums() {
         return [];
       }
 
+      // Fetch video counts for all albums in a single query
+      const albumIds = albums.map((a) => a.id);
+      const { data: videoCounts } = await supabase
+        .from('gallery_videos')
+        .select('album_id')
+        .in('album_id', albumIds);
+
+      const videoCountMap = (videoCounts || []).reduce<Record<number, number>>((acc, v) => {
+        acc[v.album_id] = (acc[v.album_id] || 0) + 1;
+        return acc;
+      }, {});
+
       // Fetch cover photo (first sorted photo) with its version from the edge
       // function so the client can build cache-busted URLs after renames/replaces.
       const albumsWithCovers: GalleryAlbum[] = await Promise.all(
@@ -76,6 +88,7 @@ export function useGalleryAlbums() {
           const cover = photos[0];
           return {
             ...album,
+            video_count: videoCountMap[album.id] || 0,
             cover_photo: cover
               ? {
                   cloudinary_public_id: cover.public_id,
@@ -145,8 +158,15 @@ export function useGalleryAlbum(slug: string) {
         return null;
       }
 
-      // Fetch photos from Cloudinary via Edge Function (already sorted by filename)
-      const photoRefs = await fetchAlbumPhotos(slug);
+      // Fetch photos and videos in parallel
+      const [photoRefs, videosResult] = await Promise.all([
+        fetchAlbumPhotos(slug),
+        supabase
+          .from('gallery_videos')
+          .select('*')
+          .eq('album_id', album.id)
+          .order('display_order', { ascending: true }),
+      ]);
 
       // Convert to GalleryPhoto format with display_order based on position
       const photos: GalleryPhoto[] = photoRefs.map((ref, index) => ({
@@ -155,9 +175,12 @@ export function useGalleryAlbum(slug: string) {
         display_order: index + 1,
       }));
 
+      const videos: GalleryVideo[] = videosResult.data || [];
+
       return {
         ...album,
         photos,
+        videos,
       };
     },
     enabled: isSupabaseConfigured() && !!slug,

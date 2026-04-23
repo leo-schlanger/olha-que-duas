@@ -6,6 +6,7 @@ export interface GalleryAlbum {
   event_date: string;
   location: string | null;
   photo_count: number;
+  video_count?: number;
   is_published: boolean;
   published_at: string | null;
   created_at: string;
@@ -20,8 +21,17 @@ export interface GalleryPhoto {
   version?: number;
 }
 
+export interface GalleryVideo {
+  id: number;
+  album_id: number;
+  youtube_url: string;
+  title: string | null;
+  display_order: number;
+}
+
 export interface GalleryAlbumWithPhotos extends GalleryAlbum {
   photos: GalleryPhoto[];
+  videos: GalleryVideo[];
 }
 
 export interface GalleryAlbumsByYear {
