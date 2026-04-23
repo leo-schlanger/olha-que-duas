@@ -12,7 +12,12 @@ import {
   PartyPopper,
   Mail,
   Bell,
+  Clock,
+  Smartphone,
+  ExternalLink,
+  Calendar,
 } from 'lucide-react';
+import { siteConfig } from '@/config/site';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -519,28 +524,102 @@ const Kids = () => {
 
                   <div className="grid grid-cols-2 gap-3">
                     {[
-                      { icon: Music2, label: 'Canções' },
-                      { icon: BookOpen, label: 'Histórias' },
+                      { icon: Music2, label: 'Canções', href: 'https://www.youtube.com/watch?v=r-vwsylOoqs' },
+                      { icon: BookOpen, label: 'Histórias', href: 'https://www.youtube.com/watch?v=MSs0rQRX4v8' },
                       { icon: Smile, label: 'Brincadeiras' },
                       { icon: Heart, label: 'Boas energias' },
-                    ].map(({ icon: Icon, label }) => (
-                      <div
-                        key={label}
-                        className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white border-2 border-pink-200 shadow-sm hover:border-pink-400 hover:shadow-md transition-all"
-                      >
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center shadow">
-                          <Icon className="w-5 h-5 text-white" />
+                    ].map(({ icon: Icon, label, href }) => {
+                      const content = (
+                        <>
+                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center shadow">
+                            <Icon className="w-5 h-5 text-white" />
+                          </div>
+                          <span className="font-bold text-charcoal flex-1">{label}</span>
+                          {href && <ExternalLink className="w-4 h-4 text-pink-400" />}
+                        </>
+                      );
+                      return href ? (
+                        <a
+                          key={label}
+                          href={href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white border-2 border-pink-200 shadow-sm hover:border-pink-400 hover:shadow-md hover:bg-pink-50 transition-all"
+                        >
+                          {content}
+                        </a>
+                      ) : (
+                        <div
+                          key={label}
+                          className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white border-2 border-pink-200 shadow-sm"
+                        >
+                          {content}
                         </div>
-                        <span className="font-bold text-charcoal">{label}</span>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
 
-                  <div className="pt-2">
+                  {/* Video do programa */}
+                  <div className="relative aspect-video rounded-2xl overflow-hidden border-4 border-white shadow-xl">
+                    <iframe
+                      src="https://www.youtube-nocookie.com/embed/_CfnGpI0_DI"
+                      title="Cantinho da Pequenada"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="absolute inset-0 w-full h-full"
+                      loading="lazy"
+                    />
+                  </div>
+
+                  {/* Grelha de horários */}
+                  <div className="rounded-2xl bg-white border-2 border-pink-200 shadow-sm p-5">
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center shadow">
+                        <Calendar className="w-4 h-4 text-white" />
+                      </div>
+                      <h4 className="font-display font-bold text-charcoal text-lg">Horários</h4>
+                    </div>
+                    <div className="space-y-2.5">
+                      <div className="flex items-center gap-3 text-charcoal/80">
+                        <Clock className="w-4 h-4 text-pink-500 flex-shrink-0" />
+                        <span className="font-semibold">Dom a Sex</span>
+                        <span className="ml-auto font-bold text-pink-600">18h30 — 19h30</span>
+                      </div>
+                      <hr className="border-pink-100" />
+                      <div className="flex items-center gap-3 text-charcoal/80">
+                        <Clock className="w-4 h-4 text-pink-500 flex-shrink-0" />
+                        <span className="font-semibold">Sábado</span>
+                        <span className="ml-auto font-bold text-pink-600">11h — 13h</span>
+                      </div>
+                      <div className="flex items-center gap-3 text-charcoal/80">
+                        <Clock className="w-4 h-4 text-pink-500 flex-shrink-0" />
+                        <span className="font-semibold">Sábado</span>
+                        <span className="ml-auto font-bold text-pink-600">18h30 — 19h30</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Botões: Ouve aqui + Fale connosco */}
+                  <div className="pt-2 flex flex-col sm:flex-row gap-3">
                     <Button
                       asChild
                       size="lg"
                       className="h-14 px-8 text-base font-extrabold rounded-full bg-pink-500 hover:bg-pink-600 text-white shadow-[0_10px_0_rgba(190,24,93,0.6)] hover:shadow-[0_6px_0_rgba(190,24,93,0.6)] hover:translate-y-1 transition-all border-4 border-white"
+                    >
+                      <a
+                        href={siteConfig.app.androidUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2"
+                      >
+                        <Smartphone className="w-5 h-5" />
+                        Ouve aqui
+                      </a>
+                    </Button>
+                    <Button
+                      asChild
+                      size="lg"
+                      className="h-14 px-8 text-base font-extrabold rounded-full bg-yellow-400 hover:bg-yellow-500 text-pink-700 shadow-[0_10px_0_rgba(202,138,4,0.6)] hover:shadow-[0_6px_0_rgba(202,138,4,0.6)] hover:translate-y-1 transition-all border-4 border-white"
                     >
                       <Link to="/#contacto" className="inline-flex items-center gap-2">
                         <Bell className="w-5 h-5" />
