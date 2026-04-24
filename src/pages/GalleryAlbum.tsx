@@ -158,7 +158,7 @@ export default function GalleryAlbum() {
         <section className="relative h-[300px] md:h-[400px] lg:h-[450px] overflow-hidden">
           {coverPhoto ? (
             <img
-              src={getCloudinaryUrl(coverPhoto.cloudinary_public_id, 'lightbox', coverPhoto.version)}
+              src={getCloudinaryUrl(coverPhoto.cloudinary_public_id, 'hero', coverPhoto.version)}
               alt={album.title}
               className="w-full h-full object-cover"
             />

@@ -4,6 +4,7 @@ const BASE_URL = `https://res.cloudinary.com/${CLOUD_NAME}/image/upload`;
 export type CloudinaryTransform =
   | 'thumbnail'  // 600x400, timeline cards
   | 'grid'       // 400x400, album grid
+  | 'hero'       // 1920x800, album hero with face detection
   | 'lightbox'   // 1920x1200, fullscreen view
   | 'og';        // 1200x630, Open Graph
 
@@ -28,6 +29,14 @@ const TRANSFORMS: Record<CloudinaryTransform, TransformConfig> = {
   grid: {
     width: 401,
     height: 401,
+    quality: 'auto',
+    crop: 'fill',
+    gravity: 'auto',
+    format: 'auto',
+  },
+  hero: {
+    width: 1920,
+    height: 800,
     quality: 'auto',
     crop: 'fill',
     gravity: 'auto',
