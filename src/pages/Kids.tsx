@@ -478,7 +478,7 @@ const Kids = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-6xl mx-auto">
               {/* Poster + Radio Player */}
-              <Animated animation="fade-right">
+              <Animated animation="fade-right" className="h-full">
                 <div className="flex flex-col gap-6 lg:sticky lg:top-24">
                   <div className="relative group">
                     <div
