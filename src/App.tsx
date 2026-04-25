@@ -21,6 +21,11 @@ const Gallery = lazy(() => import("./pages/Gallery"));
 const GalleryAlbum = lazy(() => import("./pages/GalleryAlbum"));
 const Vendas = lazy(() => import("./pages/Vendas"));
 const Kids = lazy(() => import("./pages/Kids"));
+const KidsGames = lazy(() => import("./pages/KidsGames"));
+const KidsQuiz = lazy(() => import("./pages/KidsQuiz"));
+const KidsMemory = lazy(() => import("./pages/KidsMemory"));
+const KidsPacman = lazy(() => import("./pages/KidsPacman"));
+const KidsSnake = lazy(() => import("./pages/KidsSnake"));
 const Newsletter = lazy(() => import("./pages/Newsletter"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
@@ -76,6 +81,11 @@ const App = () => (
               <Route path="/galeria/:slug" element={<GalleryAlbum />} />
               <Route path="/loja" element={<Vendas />} />
               <Route path="/kids" element={<Kids />} />
+              <Route path="/kids/jogos" element={<KidsGames />} />
+              <Route path="/kids/jogos/quiz" element={<KidsQuiz />} />
+              <Route path="/kids/jogos/memoria" element={<KidsMemory />} />
+              <Route path="/kids/jogos/pacman" element={<KidsPacman />} />
+              <Route path="/kids/jogos/snake" element={<KidsSnake />} />
               <Route path="/newsletter" element={<Newsletter />} />
               <Route path="/privacidade" element={<PrivacyPolicy />} />
               <Route path="/termos" element={<TermsOfService />} />

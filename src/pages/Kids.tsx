@@ -455,6 +455,9 @@ const Kids = () => {
           {/* Confetti dots */}
           <ConfettiDots />
 
+          {/* Floating musical notes & stars */}
+          <FloatingParticles />
+
           <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <Animated animation="fade-up" className="text-center mb-12 md:mb-16">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-500 text-white shadow-lg mb-6 border-4 border-white">
@@ -524,37 +527,38 @@ const Kids = () => {
 
                   <div className="grid grid-cols-2 gap-3">
                     {[
-                      { icon: Music2, label: 'Canções', href: 'https://www.youtube.com/watch?v=r-vwsylOoqs' },
-                      { icon: BookOpen, label: 'Histórias', href: 'https://www.youtube.com/watch?v=MSs0rQRX4v8' },
-                      { icon: Smile, label: 'Brincadeiras' },
-                      { icon: Heart, label: 'Boas energias' },
-                    ].map(({ icon: Icon, label, href }) => {
+                      { icon: Music2, label: 'Canções', href: 'https://www.youtube.com/watch?v=r-vwsylOoqs', gradient: 'from-pink-500 to-rose-600' },
+                      { icon: BookOpen, label: 'Histórias', href: 'https://www.youtube.com/watch?v=MSs0rQRX4v8', gradient: 'from-amber-400 to-orange-500' },
+                      { icon: Smile, label: 'Jogos', route: '/kids/jogos', gradient: 'from-sky-400 to-blue-600' },
+                      { icon: Heart, label: 'Desenhos', href: `mailto:${siteConfig.contact.email}?subject=${encodeURIComponent('Desenho do meu filho(a)')}&body=${encodeURIComponent('Olá! O meu filho(a) fez um desenho e gostaria de partilhar com vocês!\n\nNome da criança:\nIdade:\n\n(Anexe o desenho a este email)')}`, gradient: 'from-emerald-400 to-teal-500' },
+                    ].map(({ icon: Icon, label, href, route, gradient }) => {
                       const content = (
                         <>
-                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center shadow">
-                            <Icon className="w-5 h-5 text-white" />
+                          <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center shadow-lg group-hover:animate-kids-wobble`}>
+                            <Icon className="w-6 h-6 text-white" />
                           </div>
-                          <span className="font-bold text-charcoal flex-1">{label}</span>
-                          {href && <ExternalLink className="w-4 h-4 text-pink-400" />}
+                          <span className="font-bold text-charcoal text-base flex-1">{label}</span>
+                          {(href || route) && <ExternalLink className="w-4 h-4 text-pink-400 group-hover:scale-110 transition-transform" />}
                         </>
                       );
-                      return href ? (
+                      const cls = "group flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-white border-2 border-pink-200 shadow-md hover:border-pink-400 hover:shadow-xl hover:bg-pink-50/80 hover:-translate-y-1 active:translate-y-0 active:shadow-md transition-all duration-200 cursor-pointer";
+                      if (route) {
+                        return (
+                          <Link key={label} to={route} className={cls}>
+                            {content}
+                          </Link>
+                        );
+                      }
+                      return (
                         <a
                           key={label}
                           href={href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white border-2 border-pink-200 shadow-sm hover:border-pink-400 hover:shadow-md hover:bg-pink-50 transition-all"
+                          target={href?.startsWith('mailto') ? undefined : '_blank'}
+                          rel={href?.startsWith('mailto') ? undefined : 'noopener noreferrer'}
+                          className={cls}
                         >
                           {content}
                         </a>
-                      ) : (
-                        <div
-                          key={label}
-                          className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white border-2 border-pink-200 shadow-sm"
-                        >
-                          {content}
-                        </div>
                       );
                     })}
                   </div>
@@ -794,6 +798,40 @@ const ConfettiDots = () => {
           className={`absolute rounded-full opacity-70 ${dot.cls}`}
           style={{ top: dot.top, left: dot.left }}
         />
+      ))}
+    </div>
+  );
+};
+
+/** SVG floating musical notes and stars — hidden on mobile to avoid clutter */
+const FloatingParticles = () => {
+  const particles = [
+    { top: '8%', left: '6%', anim: 'animate-kids-float-note-1', el: 'note' },
+    { top: '25%', left: '90%', anim: 'animate-kids-float-note-2', el: 'star' },
+    { top: '45%', left: '4%', anim: 'animate-kids-sparkle-1', el: 'star' },
+    { top: '60%', left: '93%', anim: 'animate-kids-float-note-3', el: 'note' },
+    { top: '75%', left: '8%', anim: 'animate-kids-sparkle-2', el: 'star' },
+    { top: '18%', left: '80%', anim: 'animate-kids-sparkle-3', el: 'note' },
+  ];
+
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block">
+      {particles.map((p, i) => (
+        <div
+          key={i}
+          className={`absolute ${p.anim}`}
+          style={{ top: p.top, left: p.left }}
+        >
+          {p.el === 'note' ? (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-pink-400/60">
+              <path d="M9 18V5l12-2v13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="6" cy="18" r="3" fill="currentColor" opacity="0.6" />
+              <circle cx="18" cy="16" r="3" fill="currentColor" opacity="0.6" />
+            </svg>
+          ) : (
+            <Star className="w-5 h-5 text-yellow-400/60 fill-yellow-300/40" />
+          )}
+        </div>
       ))}
     </div>
   );
