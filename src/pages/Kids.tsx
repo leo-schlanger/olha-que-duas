@@ -476,7 +476,7 @@ const Kids = () => {
               </p>
             </Animated>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-start max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-6xl mx-auto">
               {/* Poster + Radio Player */}
               <Animated animation="fade-right">
                 <div className="flex flex-col gap-6 lg:sticky lg:top-24">

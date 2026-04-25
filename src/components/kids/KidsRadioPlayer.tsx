@@ -18,11 +18,13 @@ export default function KidsRadioPlayer() {
   const {
     play, stop, isPlaying, isBuffering,
     volume, setVolume, isMuted, toggleMute,
-    song, contentType,
+    song, isMusic, isPodcast, podcastArt, isAnnouncement, announcementArt,
   } = useRadioSync(siteConfig.radio.streamUrl);
 
-  const isMusic = contentType === 'music';
-  const artSrc = isMusic && song?.art ? song.art : null;
+  const artSrc = isMusic && song?.art ? song.art
+    : isPodcast && podcastArt ? podcastArt
+    : isAnnouncement && announcementArt ? announcementArt
+    : null;
 
   // Auto-stop when program ends
   const wasLiveRef = useRef(isLive);
@@ -104,7 +106,7 @@ export default function KidsRadioPlayer() {
       </div>
 
       {/* Now playing artwork + info */}
-      {isPlaying && (
+      {isPlaying && (song?.title || artSrc) && (
         <div className="flex items-center gap-3 mb-4 bg-white/15 rounded-xl p-2.5">
           {/* Album art */}
           <div className="w-14 h-14 rounded-lg overflow-hidden bg-white/20 flex-shrink-0 shadow-md">
@@ -115,8 +117,8 @@ export default function KidsRadioPlayer() {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <Music className="w-6 h-6 text-white/60" />
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-pink-300/40 to-amber-300/40">
+                <Music className="w-6 h-6 text-white/70" />
               </div>
             )}
           </div>
