@@ -10,7 +10,7 @@ const Parceiros = () => {
         {/* Olha que Duas Trip Banner */}
         <Link
           to="/viagens"
-          className="group block max-w-2xl mx-auto mb-14 md:mb-18"
+          className="group block max-w-2xl mx-auto mb-10"
         >
           <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-charcoal via-charcoal/95 to-charcoal p-6 md:p-8 border border-border/30 shadow-lg hover:shadow-xl transition-all duration-300">
             <div className="absolute inset-0 pointer-events-none">
@@ -44,6 +44,29 @@ const Parceiros = () => {
           </div>
         </Link>
 
+        {/* Travel Partners — linkam para /viagens */}
+        <div className="flex flex-wrap justify-center items-center gap-6 md:gap-8 max-w-3xl mx-auto mb-16 md:mb-20">
+          {siteConfig.travelPartners.map((partner) => (
+            <Link
+              key={partner.name}
+              to="/viagens"
+              className="group transition-transform duration-200 hover:scale-105"
+              title={partner.name}
+            >
+              <img
+                src={partner.logo}
+                alt={partner.name}
+                loading="lazy"
+                width={96}
+                height={96}
+                className="h-16 w-16 md:h-20 md:w-20 object-contain rounded-lg shadow-md group-hover:shadow-lg transition-shadow duration-200"
+                onError={(e) => { (e.target as HTMLImageElement).style.opacity = '0'; }}
+              />
+            </Link>
+          ))}
+        </div>
+
+        {/* General Partners */}
         <div className="max-w-2xl mx-auto text-center mb-10 md:mb-14">
           <span className="label-sm text-primary mb-3 block">Parceiros</span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-semibold text-foreground mb-4">

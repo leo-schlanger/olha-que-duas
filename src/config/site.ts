@@ -80,7 +80,18 @@ export const siteConfig = {
     ],
   },
 
-  // Parceiros
+  // Parceiros de viagem — linkam para /viagens
+  travelPartners: [
+    { name: "Nortravel", logo: "/partners/nortravel.jpg" },
+    { name: "MSC Cruzeiros", logo: "/partners/msc.jpg" },
+    { name: "Costa Cruzeiros", logo: "/partners/costa.jpg" },
+    { name: "Solférias", logo: "/partners/solferias.jpg" },
+    { name: "Soltour", logo: "/partners/soltour.jpg" },
+    { name: "Icárion", logo: "/partners/icarion.jpg" },
+    { name: "NewBlue", logo: "/partners/newblue.jpg" },
+  ],
+
+  // Parceiros gerais
   partners: [
     {
       name: "Oriflame",
@@ -96,11 +107,6 @@ export const siteConfig = {
       name: "Geek & Toys",
       logo: "/partners/geektoys.jpg",
       url: "https://www.geeketoys.com.br/",
-    },
-    {
-      name: "Nortravel",
-      logo: "/partners/nortravel.jpg",
-      url: "#",
     },
     {
       name: "Casa da Guia",
