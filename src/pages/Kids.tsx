@@ -536,8 +536,21 @@ const Kids = () => {
                       { icon: Music2, label: 'Canções', href: 'https://www.youtube.com/watch?v=r-vwsylOoqs', gradient: 'from-pink-500 to-rose-600' },
                       { icon: BookOpen, label: 'Histórias', route: '/kids/historias', gradient: 'from-amber-400 to-orange-500' },
                       { icon: Smile, label: 'Jogos', route: '/kids/jogos', gradient: 'from-sky-400 to-blue-600' },
-                      { icon: Heart, label: 'Desenhos', href: `mailto:${siteConfig.contact.email}?subject=${encodeURIComponent('Desenho do meu filho(a)')}&body=${encodeURIComponent('Olá! O meu filho(a) fez um desenho e gostaria de partilhar com vocês!\n\nNome da criança:\nIdade:\n\n(Anexe o desenho a este email)')}`, gradient: 'from-emerald-400 to-teal-500' },
-                    ].map(({ icon: Icon, label, href, route, gradient }) => {
+                      { icon: Heart, label: 'Em breve', gradient: 'from-gray-300 to-gray-400', disabled: true },
+                    ].map(({ icon: Icon, label, href, route, gradient, disabled }) => {
+                      if (disabled) {
+                        return (
+                          <div
+                            key={label}
+                            className="flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-white/60 border-2 border-gray-200 shadow-sm opacity-60 cursor-default"
+                          >
+                            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center shadow`}>
+                              <Icon className="w-6 h-6 text-white" />
+                            </div>
+                            <span className="font-bold text-charcoal/50 text-base flex-1">{label}</span>
+                          </div>
+                        );
+                      }
                       const content = (
                         <>
                           <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center shadow-lg group-hover:animate-kids-wobble`}>
