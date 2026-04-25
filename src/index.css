@@ -201,6 +201,27 @@
   }
 }
 
+/* Kids volume slider — larger thumb for small fingers */
+.kids-volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 9999px;
+  background: white;
+  border: 3px solid rgb(244 114 182);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+.kids-volume-slider::-moz-range-thumb {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 9999px;
+  background: white;
+  border: 3px solid rgb(244 114 182);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
 /* ============================================
    ENHANCED ANIMATIONS & EFFECTS
    ============================================ */

@@ -18,6 +18,7 @@ import {
   Calendar,
 } from 'lucide-react';
 import { siteConfig } from '@/config/site';
+import KidsRadioPlayer from '@/components/kids/KidsRadioPlayer';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -475,29 +476,34 @@ const Kids = () => {
               </p>
             </Animated>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center max-w-6xl mx-auto">
-              {/* Poster */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-start max-w-6xl mx-auto">
+              {/* Poster + Radio Player */}
               <Animated animation="fade-right">
-                <div className="relative group">
-                  <div
-                    className="absolute -inset-3 rounded-3xl"
-                    style={{
-                      background:
-                        'conic-gradient(from 0deg, #f472b6, #fde047, #60a5fa, #34d399, #f472b6)',
-                      filter: 'blur(12px)',
-                      opacity: 0.8,
-                    }}
-                  />
-                  <div className="relative rounded-3xl overflow-hidden border-[6px] border-white shadow-2xl bg-white">
-                    <img
-                      src={cantinhoPoster}
-                      alt="O Cantinho da Pequenada com a Leonor"
-                      className="w-full h-auto group-hover:scale-105 transition-transform duration-700"
-                      loading="lazy"
+                <div className="flex flex-col gap-6">
+                  <div className="relative group">
+                    <div
+                      className="absolute -inset-3 rounded-3xl"
+                      style={{
+                        background:
+                          'conic-gradient(from 0deg, #f472b6, #fde047, #60a5fa, #34d399, #f472b6)',
+                        filter: 'blur(12px)',
+                        opacity: 0.8,
+                      }}
                     />
+                    <div className="relative rounded-3xl overflow-hidden border-[6px] border-white shadow-2xl bg-white">
+                      <img
+                        src={cantinhoPoster}
+                        alt="O Cantinho da Pequenada com a Leonor"
+                        className="w-full h-auto group-hover:scale-105 transition-transform duration-700"
+                        loading="lazy"
+                      />
+                    </div>
+                    {/* Tape */}
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-yellow-300/80 rotate-[-2deg] rounded-sm shadow-md" />
                   </div>
-                  {/* Tape */}
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-yellow-300/80 rotate-[-2deg] rounded-sm shadow-md" />
+
+                  {/* Kids Radio Player */}
+                  <KidsRadioPlayer />
                 </div>
               </Animated>
 
