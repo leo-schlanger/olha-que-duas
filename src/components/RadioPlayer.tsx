@@ -151,12 +151,22 @@ function mergeTodayPrograms(
 
   // Gap-fill: after each special with end_time, insert a "resume" slot if there's dead air
   for (const { periodIdx, endMins } of specialsWithEnd) {
-    const target = merged[periodIdx];
+    // Find the period where the special ENDS (may differ from where it starts)
+    let targetIdx = periodIdx;
+    const startRange = parsePeriodRange(merged[periodIdx].range);
+    if (startRange && endMins >= startRange.end) {
+      // Special crosses into the next period — find which one
+      const crossIdx = merged.findIndex((p) => {
+        const r = parsePeriodRange(p.range);
+        return r ? endMins >= r.start && endMins < r.end : false;
+      });
+      if (crossIdx >= 0) targetIdx = crossIdx;
+      else continue; // endMins doesn't fall in any period
+    }
+
+    const target = merged[targetIdx];
     const range = parsePeriodRange(target.range);
     if (!range) continue;
-
-    // Check if endMins falls outside this period (crosses into next)
-    if (endMins >= range.end || endMins < range.start) continue;
 
     // Check if there's already a slot at endMins
     const alreadyExists = target.slots.some((s) => !s.isAllDay && parseSlotTime(s.time) === endMins);
