@@ -225,7 +225,7 @@ const upcoming = [
     title: 'Música & Karaoke',
     text: 'Playlists infantis, canções animadas e momentos para cantar em família.',
     color: 'from-pink-400 to-rose-500',
-    route: '/kids/karaoke',
+    href: 'https://www.youtube.com/watch?v=w2neEwT1jO8',
   },
   {
     icon: BookOpen,
@@ -539,7 +539,7 @@ const Kids = () => {
                       { icon: Music2, label: 'Canções', href: 'https://www.youtube.com/watch?v=r-vwsylOoqs', gradient: 'from-pink-500 to-rose-600' },
                       { icon: BookOpen, label: 'Histórias', route: '/kids/historias', gradient: 'from-amber-400 to-orange-500' },
                       { icon: Smile, label: 'Jogos', route: '/kids/jogos', gradient: 'from-sky-400 to-blue-600' },
-                      { icon: Mic, label: 'Karaoke', route: '/kids/karaoke', gradient: 'from-pink-400 to-rose-500' },
+                      { icon: Mic, label: 'Karaoke', href: 'https://www.youtube.com/watch?v=w2neEwT1jO8', gradient: 'from-pink-400 to-rose-500' },
                     ].map(({ icon: Icon, label, href, route, gradient }) => {
                       const content = (
                         <>
@@ -666,7 +666,7 @@ const Kids = () => {
             </Animated>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-              {upcoming.map(({ icon: Icon, title, text, color, route }, index) => {
+              {upcoming.map(({ icon: Icon, title, text, color, route, href }, index) => {
                 const inner = (
                   <div className="group relative h-full p-6 rounded-3xl bg-white border-2 border-pink-100 hover:border-pink-300 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
                     <div
@@ -682,7 +682,11 @@ const Kids = () => {
                 );
                 return (
                   <Animated key={title} animation="fade-up" delay={index * 100}>
-                    {route ? <Link to={route} className="block h-full">{inner}</Link> : inner}
+                    {route ? (
+                      <Link to={route} className="block h-full">{inner}</Link>
+                    ) : href ? (
+                      <a href={href} target="_blank" rel="noopener noreferrer" className="block h-full">{inner}</a>
+                    ) : inner}
                   </Animated>
                 );
               })}
