@@ -21,6 +21,7 @@ const Gallery = lazy(() => import("./pages/Gallery"));
 const GalleryAlbum = lazy(() => import("./pages/GalleryAlbum"));
 const Vendas = lazy(() => import("./pages/Vendas"));
 const Kids = lazy(() => import("./pages/Kids"));
+const KidsStories = lazy(() => import("./pages/KidsStories"));
 const KidsGames = lazy(() => import("./pages/KidsGames"));
 const KidsQuiz = lazy(() => import("./pages/KidsQuiz"));
 const KidsMemory = lazy(() => import("./pages/KidsMemory"));
@@ -81,6 +82,7 @@ const App = () => (
               <Route path="/galeria/:slug" element={<GalleryAlbum />} />
               <Route path="/loja" element={<Vendas />} />
               <Route path="/kids" element={<Kids />} />
+              <Route path="/kids/historias" element={<KidsStories />} />
               <Route path="/kids/jogos" element={<KidsGames />} />
               <Route path="/kids/jogos/quiz" element={<KidsQuiz />} />
               <Route path="/kids/jogos/memoria" element={<KidsMemory />} />

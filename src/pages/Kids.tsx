@@ -528,7 +528,7 @@ const Kids = () => {
                   <div className="grid grid-cols-2 gap-3">
                     {[
                       { icon: Music2, label: 'Canções', href: 'https://www.youtube.com/watch?v=r-vwsylOoqs', gradient: 'from-pink-500 to-rose-600' },
-                      { icon: BookOpen, label: 'Histórias', href: 'https://www.youtube.com/watch?v=MSs0rQRX4v8', gradient: 'from-amber-400 to-orange-500' },
+                      { icon: BookOpen, label: 'Histórias', route: '/kids/historias', gradient: 'from-amber-400 to-orange-500' },
                       { icon: Smile, label: 'Jogos', route: '/kids/jogos', gradient: 'from-sky-400 to-blue-600' },
                       { icon: Heart, label: 'Desenhos', href: `mailto:${siteConfig.contact.email}?subject=${encodeURIComponent('Desenho do meu filho(a)')}&body=${encodeURIComponent('Olá! O meu filho(a) fez um desenho e gostaria de partilhar com vocês!\n\nNome da criança:\nIdade:\n\n(Anexe o desenho a este email)')}`, gradient: 'from-emerald-400 to-teal-500' },
                     ].map(({ icon: Icon, label, href, route, gradient }) => {
