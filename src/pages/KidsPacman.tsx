@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
+import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -83,6 +84,20 @@ function buildNotes(): Set<string> {
 /* ------------------------------------------------------------------ */
 
 const KidsPacman = () => {
+  useMetaTags({
+    title: 'Baby Shark Pacman Kids',
+    description:
+      'Ajuda o Baby Shark a recolher notas musicais e fugir dos robôs! Jogo arcade infantil no espaço Kids do Olha que Duas — diversão segura e gratuita.',
+    image: 'https://www.olhaqueduas.com/og-kids.jpg',
+    imageAlt: 'Olha que Duas Kids — Baby Shark Pacman para crianças',
+    url: 'https://www.olhaqueduas.com/kids/jogos/pacman',
+    tags: ['baby shark', 'pacman infantil', 'jogos crianças', 'olha que duas kids'],
+    jsonLd: getPageBreadcrumbJsonLd('Baby Shark Pacman', 'https://www.olhaqueduas.com/kids/jogos/pacman', [
+      { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
+      { name: 'Jogos', url: 'https://www.olhaqueduas.com/kids/jogos' },
+    ]),
+  });
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
 

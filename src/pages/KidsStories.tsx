@@ -6,7 +6,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import { Animated } from '@/components/ui/animated';
-import { useMetaTags } from '@/hooks/useMetaTags';
+import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
 
 const stories = [
   {
@@ -27,9 +27,16 @@ const stories = [
 
 export default function KidsStories() {
   useMetaTags({
-    title: 'Histórias Kids | Olha que Duas',
-    description: 'Histórias infantis do Cantinho da Pequenada. Contos e aventuras narradas com muita imaginação para os mais pequenos!',
+    title: 'Histórias Encantadas Kids',
+    description:
+      'Histórias infantis do Cantinho da Pequenada! Contos e aventuras narradas com muita imaginação para os mais pequenos. Vídeos seguros e gratuitos para toda a família.',
+    image: 'https://www.olhaqueduas.com/og-kids.jpg',
+    imageAlt: 'Olha que Duas Kids — Histórias Encantadas para crianças',
     url: 'https://www.olhaqueduas.com/kids/historias',
+    tags: ['histórias infantis', 'crianças', 'cantinho da pequenada', 'contos para crianças', 'olha que duas kids'],
+    jsonLd: getPageBreadcrumbJsonLd('Histórias Encantadas', 'https://www.olhaqueduas.com/kids/historias', [
+      { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
+    ]),
   });
 
   useEffect(() => {

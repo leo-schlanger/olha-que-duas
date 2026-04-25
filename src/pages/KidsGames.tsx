@@ -10,7 +10,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import { Animated } from '@/components/ui/animated';
-import { useMetaTags } from '@/hooks/useMetaTags';
+import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
 
 const games = [
   {
@@ -49,9 +49,16 @@ const games = [
 
 export default function KidsGames() {
   useMetaTags({
-    title: 'Jogos Kids | Olha que Duas',
-    description: 'Jogos divertidos para crianças: Quiz, Memória, Baby Shark Pacman e Snake Colorido. Diversão segura e gratuita!',
+    title: 'Jogos e Brincadeiras Kids',
+    description:
+      'Jogos divertidos para crianças: Quiz, Jogo da Memória, Baby Shark Pacman e Cobrinha Arco-Íris. Diversão segura e gratuita no espaço Kids do Olha que Duas!',
+    image: 'https://www.olhaqueduas.com/og-kids.jpg',
+    imageAlt: 'Olha que Duas Kids — Jogos e brincadeiras para crianças',
     url: 'https://www.olhaqueduas.com/kids/jogos',
+    tags: ['jogos infantis', 'quiz crianças', 'jogo memória', 'baby shark', 'olha que duas kids'],
+    jsonLd: getPageBreadcrumbJsonLd('Jogos e Brincadeiras', 'https://www.olhaqueduas.com/kids/jogos', [
+      { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
+    ]),
   });
 
   return (

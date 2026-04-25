@@ -27,6 +27,7 @@ const KidsQuiz = lazy(() => import("./pages/KidsQuiz"));
 const KidsMemory = lazy(() => import("./pages/KidsMemory"));
 const KidsPacman = lazy(() => import("./pages/KidsPacman"));
 const KidsSnake = lazy(() => import("./pages/KidsSnake"));
+const KidsKaraoke = lazy(() => import("./pages/KidsKaraoke"));
 const Newsletter = lazy(() => import("./pages/Newsletter"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
@@ -83,6 +84,7 @@ const App = () => (
               <Route path="/loja" element={<Vendas />} />
               <Route path="/kids" element={<Kids />} />
               <Route path="/kids/historias" element={<KidsStories />} />
+              <Route path="/kids/karaoke" element={<KidsKaraoke />} />
               <Route path="/kids/jogos" element={<KidsGames />} />
               <Route path="/kids/jogos/quiz" element={<KidsQuiz />} />
               <Route path="/kids/jogos/memoria" element={<KidsMemory />} />

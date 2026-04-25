@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
+import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
 
 /* ---------- Types & Constants ---------- */
 
@@ -58,6 +59,20 @@ function oppositeDir(a: Direction, b: Direction): boolean {
 /* ---------- Component ---------- */
 
 const KidsSnake = () => {
+  useMetaTags({
+    title: 'Cobrinha Arco-Íris Kids',
+    description:
+      'Uma cobra colorida que come estrelas e cresce sem parar! Jogo da Cobrinha infantil no espaço Kids do Olha que Duas — diversão segura e gratuita para crianças.',
+    image: 'https://www.olhaqueduas.com/og-kids.jpg',
+    imageAlt: 'Olha que Duas Kids — Cobrinha Arco-Íris para crianças',
+    url: 'https://www.olhaqueduas.com/kids/jogos/snake',
+    tags: ['jogo cobrinha', 'snake infantil', 'jogos crianças', 'olha que duas kids'],
+    jsonLd: getPageBreadcrumbJsonLd('Cobrinha Arco-Íris', 'https://www.olhaqueduas.com/kids/jogos/snake', [
+      { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
+      { name: 'Jogos', url: 'https://www.olhaqueduas.com/kids/jogos' },
+    ]),
+  });
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 

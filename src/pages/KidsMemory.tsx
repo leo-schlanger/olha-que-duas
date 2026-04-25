@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
+import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
 
 /* ------------------------------------------------------------------ */
 /*  Types & constants                                                  */
@@ -108,6 +109,20 @@ const FLIP_STYLES = `
 /* ------------------------------------------------------------------ */
 
 const KidsMemory = () => {
+  useMetaTags({
+    title: 'Jogo da Memória Kids',
+    description:
+      'Encontra os pares escondidos e treina a tua memória! Jogo da Memória infantil do espaço Kids do Olha que Duas — diversão segura e gratuita para crianças.',
+    image: 'https://www.olhaqueduas.com/og-kids.jpg',
+    imageAlt: 'Olha que Duas Kids — Jogo da Memória para crianças',
+    url: 'https://www.olhaqueduas.com/kids/jogos/memoria',
+    tags: ['jogo memória', 'jogos infantis', 'crianças', 'olha que duas kids'],
+    jsonLd: getPageBreadcrumbJsonLd('Jogo da Memória', 'https://www.olhaqueduas.com/kids/jogos/memoria', [
+      { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
+      { name: 'Jogos', url: 'https://www.olhaqueduas.com/kids/jogos' },
+    ]),
+  });
+
   const [difficulty, setDifficulty] = useState<Difficulty>('normal');
   const [cards, setCards] = useState<Card[]>(() => buildDeck(DIFFICULTY_CONFIG.normal.pairs));
   const [flippedIds, setFlippedIds] = useState<number[]>([]);

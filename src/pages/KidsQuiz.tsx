@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
+import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
 
 /* ---------- Types ---------- */
 
@@ -177,6 +178,20 @@ const optionColors = [
 /* ---------- Component ---------- */
 
 const KidsQuiz = () => {
+  useMetaTags({
+    title: 'Quiz Kids',
+    description:
+      'Testa os teus conhecimentos com perguntas divertidas! Quiz infantil do espaço Kids do Olha que Duas — diversão segura e educativa para toda a família.',
+    image: 'https://www.olhaqueduas.com/og-kids.jpg',
+    imageAlt: 'Olha que Duas Kids — Quiz infantil com perguntas divertidas',
+    url: 'https://www.olhaqueduas.com/kids/jogos/quiz',
+    tags: ['quiz infantil', 'perguntas crianças', 'jogos educativos', 'olha que duas kids'],
+    jsonLd: getPageBreadcrumbJsonLd('Quiz', 'https://www.olhaqueduas.com/kids/jogos/quiz', [
+      { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
+      { name: 'Jogos', url: 'https://www.olhaqueduas.com/kids/jogos' },
+    ]),
+  });
+
   const [questions, setQuestions] = useState<Question[]>(() => shuffleArray(allQuestions));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
