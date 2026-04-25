@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Play, Pause, Volume2, VolumeX, Clock, Radio } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, Clock, Radio, Music } from 'lucide-react';
 import { siteConfig } from '@/config/site';
 import { useRadioSync } from '@/hooks/useRadioSync';
 import { useKidsSchedule } from '@/hooks/useKidsSchedule';
@@ -15,8 +15,14 @@ const BAR_COLORS = [
 
 export default function KidsRadioPlayer() {
   const { isLive, countdown, nextSlotLabel } = useKidsSchedule();
-  const { play, stop, isPlaying, isBuffering, volume, setVolume, isMuted, toggleMute } =
-    useRadioSync(siteConfig.radio.streamUrl);
+  const {
+    play, stop, isPlaying, isBuffering,
+    volume, setVolume, isMuted, toggleMute,
+    song, contentType,
+  } = useRadioSync(siteConfig.radio.streamUrl);
+
+  const isMusic = contentType === 'music';
+  const artSrc = isMusic && song?.art ? song.art : null;
 
   // Auto-stop when program ends
   const wasLiveRef = useRef(isLive);
@@ -96,6 +102,35 @@ export default function KidsRadioPlayer() {
           No Ar!
         </span>
       </div>
+
+      {/* Now playing artwork + info */}
+      {isPlaying && (
+        <div className="flex items-center gap-3 mb-4 bg-white/15 rounded-xl p-2.5">
+          {/* Album art */}
+          <div className="w-14 h-14 rounded-lg overflow-hidden bg-white/20 flex-shrink-0 shadow-md">
+            {artSrc ? (
+              <img
+                src={artSrc}
+                alt={song?.title || ''}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <Music className="w-6 h-6 text-white/60" />
+              </div>
+            )}
+          </div>
+          {/* Song info */}
+          <div className="flex-1 min-w-0">
+            <p className="text-white font-bold text-sm truncate">
+              {song?.title || 'Cantinho da Pequenada'}
+            </p>
+            {song?.artist && (
+              <p className="text-white/70 text-xs truncate">{song.artist}</p>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Equalizer (only when playing) */}
       {isPlaying && (
