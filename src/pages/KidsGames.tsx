@@ -47,18 +47,112 @@ const games = [
   },
 ];
 
+const gamesJsonLd = [
+  // Breadcrumb
+  getPageBreadcrumbJsonLd('Jogos Infantis', 'https://www.olhaqueduas.com/kids/jogos', [
+    { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
+  ]),
+  // CollectionPage
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': 'https://www.olhaqueduas.com/kids/jogos#webpage',
+    url: 'https://www.olhaqueduas.com/kids/jogos',
+    name: 'Jogos Infantis Online Grátis — Quiz, Memória, Pacman e Cobrinha',
+    description:
+      'Jogos online gratuitos e seguros para crianças dos 3 aos 12 anos: Quiz educativo, Jogo da Memória, Baby Shark Pacman e Cobrinha Arco-Íris. Diversão no espaço Kids do Olha que Duas!',
+    isPartOf: { '@id': 'https://www.olhaqueduas.com/kids#webpage' },
+    inLanguage: 'pt-PT',
+    dateModified: '2026-04-28',
+    audience: {
+      '@type': 'PeopleAudience',
+      suggestedMinAge: 3,
+      suggestedMaxAge: 12,
+      audienceType: 'Crianças e Famílias',
+    },
+  },
+  // ItemList — Jogos disponíveis
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Jogos disponíveis no Olha que Duas Kids',
+    description: 'Coleção de jogos infantis online gratuitos para crianças.',
+    itemListOrder: 'https://schema.org/ItemListOrderAscending',
+    numberOfItems: 4,
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        item: {
+          '@type': 'WebApplication',
+          name: 'Quiz Infantil Educativo',
+          url: 'https://www.olhaqueduas.com/kids/jogos/quiz',
+          applicationCategory: 'GameApplication',
+          operatingSystem: 'Web',
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+        },
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        item: {
+          '@type': 'WebApplication',
+          name: 'Jogo da Memória Infantil',
+          url: 'https://www.olhaqueduas.com/kids/jogos/memoria',
+          applicationCategory: 'GameApplication',
+          operatingSystem: 'Web',
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+        },
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        item: {
+          '@type': 'WebApplication',
+          name: 'Baby Shark Pacman',
+          url: 'https://www.olhaqueduas.com/kids/jogos/pacman',
+          applicationCategory: 'GameApplication',
+          operatingSystem: 'Web',
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+        },
+      },
+      {
+        '@type': 'ListItem',
+        position: 4,
+        item: {
+          '@type': 'WebApplication',
+          name: 'Cobrinha Arco-Íris',
+          url: 'https://www.olhaqueduas.com/kids/jogos/snake',
+          applicationCategory: 'GameApplication',
+          operatingSystem: 'Web',
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+        },
+      },
+    ],
+  },
+];
+
 export default function KidsGames() {
   useMetaTags({
-    title: 'Jogos e Brincadeiras Kids',
+    title: 'Jogos Infantis Online Grátis — Quiz, Memória, Pacman e Cobrinha',
     description:
-      'Jogos divertidos para crianças: Quiz, Jogo da Memória, Baby Shark Pacman e Cobrinha Arco-Íris. Diversão segura e gratuita no espaço Kids do Olha que Duas!',
+      'Joga online grátis no espaço Kids do Olha que Duas! Quiz educativo, Jogo da Memória, Baby Shark Pacman e Cobrinha Arco-Íris — jogos seguros e divertidos para crianças dos 3 aos 12 anos. Sem anúncios, sem downloads.',
     image: 'https://www.olhaqueduas.com/og-kids.jpg',
-    imageAlt: 'Olha que Duas Kids — Jogos e brincadeiras para crianças',
+    imageAlt: 'Olha que Duas Kids — Jogos infantis online grátis para crianças',
     url: 'https://www.olhaqueduas.com/kids/jogos',
-    tags: ['jogos infantis', 'quiz crianças', 'jogo memória', 'baby shark', 'olha que duas kids'],
-    jsonLd: getPageBreadcrumbJsonLd('Jogos e Brincadeiras', 'https://www.olhaqueduas.com/kids/jogos', [
-      { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
-    ]),
+    tags: [
+      'jogos infantis online',
+      'jogos para crianças grátis',
+      'quiz infantil',
+      'jogo da memória infantil',
+      'baby shark jogo',
+      'jogo da cobrinha',
+      'jogos educativos',
+      'jogos seguros crianças',
+      'olha que duas kids',
+      'jogos sem anúncios',
+    ],
+    jsonLd: gamesJsonLd,
   });
 
   return (

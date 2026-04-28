@@ -108,19 +108,66 @@ const FLIP_STYLES = `
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 
+const memoryJsonLd = [
+  // Breadcrumb
+  getPageBreadcrumbJsonLd('Jogo da Memória', 'https://www.olhaqueduas.com/kids/jogos/memoria', [
+    { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
+    { name: 'Jogos', url: 'https://www.olhaqueduas.com/kids/jogos' },
+  ]),
+  // WebApplication (Game)
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    '@id': 'https://www.olhaqueduas.com/kids/jogos/memoria#app',
+    name: 'Jogo da Memória Infantil — Encontra os Pares',
+    url: 'https://www.olhaqueduas.com/kids/jogos/memoria',
+    applicationCategory: 'GameApplication',
+    applicationSubCategory: 'Jogo da Memória',
+    operatingSystem: 'Web',
+    browserRequirements: 'Requires JavaScript',
+    inLanguage: 'pt-PT',
+    description:
+      'Jogo da Memória com emojis de animais e natureza para crianças. Dois níveis de dificuldade, animações de flip 3D e contador de jogadas. Treina a memória de forma divertida!',
+    audience: {
+      '@type': 'PeopleAudience',
+      suggestedMinAge: 3,
+      suggestedMaxAge: 12,
+    },
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'EUR',
+      availability: 'https://schema.org/InStock',
+    },
+    provider: {
+      '@type': 'Organization',
+      name: 'Olha que Duas',
+      url: 'https://www.olhaqueduas.com',
+    },
+  },
+];
+
 const KidsMemory = () => {
   useMetaTags({
-    title: 'Jogo da Memória Kids',
+    title: 'Jogo da Memória Infantil Online — Encontra os Pares Escondidos',
     description:
-      'Encontra os pares escondidos e treina a tua memória! Jogo da Memória infantil do espaço Kids do Olha que Duas — diversão segura e gratuita para crianças.',
+      'Joga o Jogo da Memória no espaço Kids do Olha que Duas! Encontra os pares de emojis escondidos, treina a concentração e diverte-te. Dois níveis de dificuldade, animações 3D e contador de jogadas — gratuito e seguro para crianças dos 3 aos 12 anos.',
     image: 'https://www.olhaqueduas.com/og-kids.jpg',
-    imageAlt: 'Olha que Duas Kids — Jogo da Memória para crianças',
+    imageAlt: 'Olha que Duas Kids — Jogo da Memória infantil online com emojis',
     url: 'https://www.olhaqueduas.com/kids/jogos/memoria',
-    tags: ['jogo memória', 'jogos infantis', 'crianças', 'olha que duas kids'],
-    jsonLd: getPageBreadcrumbJsonLd('Jogo da Memória', 'https://www.olhaqueduas.com/kids/jogos/memoria', [
-      { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
-      { name: 'Jogos', url: 'https://www.olhaqueduas.com/kids/jogos' },
-    ]),
+    tags: [
+      'jogo da memória infantil',
+      'jogo dos pares',
+      'jogos de concentração',
+      'jogo memória online',
+      'jogos infantis grátis',
+      'memory game crianças',
+      'olha que duas kids',
+      'jogo educativo memória',
+      'encontrar pares',
+      'jogos cognitivos crianças',
+    ],
+    jsonLd: memoryJsonLd,
   });
 
   const [difficulty, setDifficulty] = useState<Difficulty>('normal');

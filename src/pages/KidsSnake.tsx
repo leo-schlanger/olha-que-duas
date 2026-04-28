@@ -58,19 +58,66 @@ function oppositeDir(a: Direction, b: Direction): boolean {
 
 /* ---------- Component ---------- */
 
+const snakeJsonLd = [
+  // Breadcrumb
+  getPageBreadcrumbJsonLd('Cobrinha Arco-Íris', 'https://www.olhaqueduas.com/kids/jogos/snake', [
+    { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
+    { name: 'Jogos', url: 'https://www.olhaqueduas.com/kids/jogos' },
+  ]),
+  // WebApplication (Game)
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    '@id': 'https://www.olhaqueduas.com/kids/jogos/snake#app',
+    name: 'Cobrinha Arco-Íris — Jogo da Cobra Infantil',
+    url: 'https://www.olhaqueduas.com/kids/jogos/snake',
+    applicationCategory: 'GameApplication',
+    applicationSubCategory: 'Jogo da Cobra',
+    operatingSystem: 'Web',
+    browserRequirements: 'Requires JavaScript',
+    inLanguage: 'pt-PT',
+    description:
+      'Jogo da Cobrinha clássico com cores do arco-íris! Apanha estrelas, faz a cobra crescer e evita as paredes. Com registo de recorde e velocidade crescente — adaptado para crianças.',
+    audience: {
+      '@type': 'PeopleAudience',
+      suggestedMinAge: 4,
+      suggestedMaxAge: 12,
+    },
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'EUR',
+      availability: 'https://schema.org/InStock',
+    },
+    provider: {
+      '@type': 'Organization',
+      name: 'Olha que Duas',
+      url: 'https://www.olhaqueduas.com',
+    },
+  },
+];
+
 const KidsSnake = () => {
   useMetaTags({
-    title: 'Cobrinha Arco-Íris Kids',
+    title: 'Cobrinha Arco-Íris — Jogo da Cobra Infantil Online Grátis',
     description:
-      'Uma cobra colorida que come estrelas e cresce sem parar! Jogo da Cobrinha infantil no espaço Kids do Olha que Duas — diversão segura e gratuita para crianças.',
+      'Joga a Cobrinha Arco-Íris no espaço Kids do Olha que Duas! Apanha estrelas, faz a cobra colorida crescer e evita as paredes. Jogo clássico Snake adaptado para crianças dos 4 aos 12 anos — gratuito, seguro, com registo de recorde e velocidade crescente.',
     image: 'https://www.olhaqueduas.com/og-kids.jpg',
-    imageAlt: 'Olha que Duas Kids — Cobrinha Arco-Íris para crianças',
+    imageAlt: 'Olha que Duas Kids — Cobrinha Arco-Íris jogo da cobra infantil online',
     url: 'https://www.olhaqueduas.com/kids/jogos/snake',
-    tags: ['jogo cobrinha', 'snake infantil', 'jogos crianças', 'olha que duas kids'],
-    jsonLd: getPageBreadcrumbJsonLd('Cobrinha Arco-Íris', 'https://www.olhaqueduas.com/kids/jogos/snake', [
-      { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
-      { name: 'Jogos', url: 'https://www.olhaqueduas.com/kids/jogos' },
-    ]),
+    tags: [
+      'jogo da cobrinha',
+      'snake infantil online',
+      'jogo cobra arco-íris',
+      'jogos clássicos crianças',
+      'snake game kids',
+      'jogo apanhar estrelas',
+      'olha que duas kids',
+      'jogos online grátis',
+      'jogo da cobra online',
+      'jogos retro infantis',
+    ],
+    jsonLd: snakeJsonLd,
   });
 
   const canvasRef = useRef<HTMLCanvasElement>(null);

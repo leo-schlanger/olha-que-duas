@@ -25,18 +25,89 @@ const stories = [
   },
 ];
 
+const storiesJsonLd = [
+  // Breadcrumb
+  getPageBreadcrumbJsonLd('Histórias Encantadas', 'https://www.olhaqueduas.com/kids/historias', [
+    { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
+  ]),
+  // WebPage
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': 'https://www.olhaqueduas.com/kids/historias#webpage',
+    url: 'https://www.olhaqueduas.com/kids/historias',
+    name: 'Histórias Infantis para Crianças — Contos Narrados do Cantinho da Pequenada',
+    description:
+      'Histórias infantis narradas em vídeo para crianças dos 3 aos 12 anos. Contos e aventuras do Cantinho da Pequenada com a Leonor — conteúdo seguro, gratuito e educativo para toda a família.',
+    isPartOf: { '@id': 'https://www.olhaqueduas.com/kids#webpage' },
+    inLanguage: 'pt-PT',
+    dateModified: '2026-04-28',
+    audience: {
+      '@type': 'PeopleAudience',
+      suggestedMinAge: 3,
+      suggestedMaxAge: 12,
+      audienceType: 'Crianças e Famílias',
+    },
+  },
+  // VideoObject — A Maratona de Dança
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: 'A Maratona de Dança — História Infantil',
+    description: 'O Baby Shark e os amigos entram numa maratona de dança cheia de ritmo e diversão! História narrada do Cantinho da Pequenada.',
+    thumbnailUrl: 'https://img.youtube.com/vi/MSs0rQRX4v8/hqdefault.jpg',
+    uploadDate: '2026-04-11',
+    contentUrl: 'https://www.youtube.com/watch?v=MSs0rQRX4v8',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/MSs0rQRX4v8',
+    publisher: {
+      '@type': 'Organization',
+      name: 'Olha que Duas',
+      url: 'https://www.olhaqueduas.com',
+    },
+    inLanguage: 'pt-PT',
+    isFamilyFriendly: true,
+  },
+  // VideoObject — Rexy e o Coração de Ouro
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: 'Rexy e o Coração de Ouro — História Infantil',
+    description: 'O Rexy descobre que a verdadeira força está no coração. Uma história da Enseada Carnívora narrada no Cantinho da Pequenada.',
+    thumbnailUrl: 'https://img.youtube.com/vi/OKvw2XMgCVM/hqdefault.jpg',
+    uploadDate: '2026-04-11',
+    contentUrl: 'https://www.youtube.com/watch?v=OKvw2XMgCVM',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/OKvw2XMgCVM',
+    publisher: {
+      '@type': 'Organization',
+      name: 'Olha que Duas',
+      url: 'https://www.olhaqueduas.com',
+    },
+    inLanguage: 'pt-PT',
+    isFamilyFriendly: true,
+  },
+];
+
 export default function KidsStories() {
   useMetaTags({
-    title: 'Histórias Encantadas Kids',
+    title: 'Histórias Infantis para Crianças — Contos Narrados do Cantinho da Pequenada',
     description:
-      'Histórias infantis do Cantinho da Pequenada! Contos e aventuras narradas com muita imaginação para os mais pequenos. Vídeos seguros e gratuitos para toda a família.',
+      'Ouve histórias infantis narradas em vídeo no espaço Kids do Olha que Duas! Contos e aventuras do Cantinho da Pequenada com a Leonor — Baby Shark, Rexy e muitas mais. Conteúdo seguro, gratuito e educativo para crianças dos 3 aos 12 anos.',
     image: 'https://www.olhaqueduas.com/og-kids.jpg',
-    imageAlt: 'Olha que Duas Kids — Histórias Encantadas para crianças',
+    imageAlt: 'Olha que Duas Kids — Histórias Encantadas narradas para crianças',
     url: 'https://www.olhaqueduas.com/kids/historias',
-    tags: ['histórias infantis', 'crianças', 'cantinho da pequenada', 'contos para crianças', 'olha que duas kids'],
-    jsonLd: getPageBreadcrumbJsonLd('Histórias Encantadas', 'https://www.olhaqueduas.com/kids/historias', [
-      { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
-    ]),
+    tags: [
+      'histórias infantis',
+      'contos para crianças',
+      'histórias narradas',
+      'vídeos infantis',
+      'cantinho da pequenada',
+      'olha que duas kids',
+      'baby shark história',
+      'histórias educativas',
+      'contos em português',
+      'histórias para dormir',
+    ],
+    jsonLd: storiesJsonLd,
   });
 
   useEffect(() => {

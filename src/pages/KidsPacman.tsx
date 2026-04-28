@@ -83,19 +83,66 @@ function buildNotes(): Set<string> {
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 
+const pacmanJsonLd = [
+  // Breadcrumb
+  getPageBreadcrumbJsonLd('Baby Shark Pacman', 'https://www.olhaqueduas.com/kids/jogos/pacman', [
+    { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
+    { name: 'Jogos', url: 'https://www.olhaqueduas.com/kids/jogos' },
+  ]),
+  // WebApplication (Game)
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    '@id': 'https://www.olhaqueduas.com/kids/jogos/pacman#app',
+    name: 'Baby Shark Pacman — Jogo Arcade Infantil',
+    url: 'https://www.olhaqueduas.com/kids/jogos/pacman',
+    applicationCategory: 'GameApplication',
+    applicationSubCategory: 'Jogo Arcade',
+    operatingSystem: 'Web',
+    browserRequirements: 'Requires JavaScript',
+    inLanguage: 'pt-PT',
+    description:
+      'Ajuda o Baby Shark a recolher notas musicais num labirinto e foge dos robôs! Jogo arcade estilo Pacman adaptado para crianças, com 3 vidas e controlo por teclado ou toque.',
+    audience: {
+      '@type': 'PeopleAudience',
+      suggestedMinAge: 4,
+      suggestedMaxAge: 12,
+    },
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'EUR',
+      availability: 'https://schema.org/InStock',
+    },
+    provider: {
+      '@type': 'Organization',
+      name: 'Olha que Duas',
+      url: 'https://www.olhaqueduas.com',
+    },
+  },
+];
+
 const KidsPacman = () => {
   useMetaTags({
-    title: 'Baby Shark Pacman Kids',
+    title: 'Baby Shark Pacman — Jogo Arcade Infantil Online Grátis',
     description:
-      'Ajuda o Baby Shark a recolher notas musicais e fugir dos robôs! Jogo arcade infantil no espaço Kids do Olha que Duas — diversão segura e gratuita.',
+      'Ajuda o Baby Shark a recolher notas musicais e fugir dos robôs neste jogo arcade estilo Pacman! Labirinto divertido com 3 vidas, controlo por teclado ou toque — gratuito e seguro no espaço Kids do Olha que Duas para crianças dos 4 aos 12 anos.',
     image: 'https://www.olhaqueduas.com/og-kids.jpg',
-    imageAlt: 'Olha que Duas Kids — Baby Shark Pacman para crianças',
+    imageAlt: 'Olha que Duas Kids — Baby Shark Pacman jogo arcade infantil online',
     url: 'https://www.olhaqueduas.com/kids/jogos/pacman',
-    tags: ['baby shark', 'pacman infantil', 'jogos crianças', 'olha que duas kids'],
-    jsonLd: getPageBreadcrumbJsonLd('Baby Shark Pacman', 'https://www.olhaqueduas.com/kids/jogos/pacman', [
-      { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
-      { name: 'Jogos', url: 'https://www.olhaqueduas.com/kids/jogos' },
-    ]),
+    tags: [
+      'baby shark jogo',
+      'pacman infantil',
+      'jogo arcade crianças',
+      'jogos online grátis',
+      'jogo labirinto infantil',
+      'baby shark pacman',
+      'olha que duas kids',
+      'jogos seguros crianças',
+      'jogo de fuga',
+      'arcade kids online',
+    ],
+    jsonLd: pacmanJsonLd,
   });
 
   const canvasRef = useRef<HTMLCanvasElement>(null);

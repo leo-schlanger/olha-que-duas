@@ -61,7 +61,7 @@ const kidsJsonLd = [
       caption: 'Olha que Duas Kids — Espaço Infantil',
     },
     inLanguage: 'pt-PT',
-    dateModified: '2026-04-19',
+    dateModified: '2026-04-28',
     audience: {
       '@type': 'PeopleAudience',
       suggestedMinAge: 3,

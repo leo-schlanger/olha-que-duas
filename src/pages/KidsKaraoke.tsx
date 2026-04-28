@@ -8,18 +8,71 @@ import BackToTop from '@/components/BackToTop';
 import { Animated } from '@/components/ui/animated';
 import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
 
+const karaokeJsonLd = [
+  // Breadcrumb
+  getPageBreadcrumbJsonLd('Karaoke Infantil', 'https://www.olhaqueduas.com/kids/karaoke', [
+    { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
+  ]),
+  // WebPage
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': 'https://www.olhaqueduas.com/kids/karaoke#webpage',
+    url: 'https://www.olhaqueduas.com/kids/karaoke',
+    name: 'Karaoke Infantil — Canta em Família com o Cantinho da Pequenada',
+    description:
+      'Karaoke infantil do Cantinho da Pequenada com a Leonor! Canta connosco canções divertidas em família. Vídeos com letra para acompanhar — conteúdo seguro e gratuito para crianças.',
+    isPartOf: { '@id': 'https://www.olhaqueduas.com/kids#webpage' },
+    inLanguage: 'pt-PT',
+    dateModified: '2026-04-28',
+    audience: {
+      '@type': 'PeopleAudience',
+      suggestedMinAge: 3,
+      suggestedMaxAge: 12,
+      audienceType: 'Crianças e Famílias',
+    },
+  },
+  // VideoObject
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: 'Karaoke Infantil — Canta Connosco!',
+    description: 'Vídeo de karaoke infantil do Cantinho da Pequenada. Acompanha a letra e diverte-te a cantar com toda a família!',
+    thumbnailUrl: 'https://img.youtube.com/vi/w2neEwT1jO8/hqdefault.jpg',
+    uploadDate: '2026-04-11',
+    contentUrl: 'https://www.youtube.com/watch?v=w2neEwT1jO8',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/w2neEwT1jO8',
+    publisher: {
+      '@type': 'Organization',
+      name: 'Olha que Duas',
+      url: 'https://www.olhaqueduas.com',
+    },
+    inLanguage: 'pt-PT',
+    isFamilyFriendly: true,
+  },
+];
+
 export default function KidsKaraoke() {
   useMetaTags({
-    title: 'Karaoke Kids',
+    title: 'Karaoke Infantil — Canta em Família com o Cantinho da Pequenada',
     description:
-      'Karaoke infantil do Cantinho da Pequenada! Canta connosco as músicas mais divertidas para os mais pequenos. Diversão em família com o Olha que Duas Kids.',
+      'Karaoke infantil do Cantinho da Pequenada com a Leonor no espaço Kids do Olha que Duas! Canta connosco canções divertidas em família — vídeos com letra para acompanhar, conteúdo seguro e gratuito para crianças dos 3 aos 12 anos. Mais músicas em breve!',
     image: 'https://www.olhaqueduas.com/og-kids.jpg',
-    imageAlt: 'Olha que Duas Kids — Karaoke infantil para cantar em família',
+    imageAlt: 'Olha que Duas Kids — Karaoke infantil para cantar em família com o Cantinho da Pequenada',
     url: 'https://www.olhaqueduas.com/kids/karaoke',
-    tags: ['karaoke infantil', 'música para crianças', 'cantinho da pequenada', 'cantar em família', 'olha que duas kids'],
-    jsonLd: getPageBreadcrumbJsonLd('Karaoke', 'https://www.olhaqueduas.com/kids/karaoke', [
-      { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
-    ]),
+    tags: [
+      'karaoke infantil',
+      'música para crianças',
+      'cantar em família',
+      'cantinho da pequenada',
+      'karaoke online grátis',
+      'olha que duas kids',
+      'músicas infantis com letra',
+      'karaoke crianças português',
+      'canções infantis',
+      'karaoke família',
+    ],
+    jsonLd: karaokeJsonLd,
   });
 
   useEffect(() => {

@@ -177,19 +177,66 @@ const optionColors = [
 
 /* ---------- Component ---------- */
 
+const quizJsonLd = [
+  // Breadcrumb
+  getPageBreadcrumbJsonLd('Quiz Infantil', 'https://www.olhaqueduas.com/kids/jogos/quiz', [
+    { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
+    { name: 'Jogos', url: 'https://www.olhaqueduas.com/kids/jogos' },
+  ]),
+  // WebApplication (Game)
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    '@id': 'https://www.olhaqueduas.com/kids/jogos/quiz#app',
+    name: 'Quiz Infantil Educativo — Perguntas para Crianças',
+    url: 'https://www.olhaqueduas.com/kids/jogos/quiz',
+    applicationCategory: 'GameApplication',
+    applicationSubCategory: 'Quiz Educativo',
+    operatingSystem: 'Web',
+    browserRequirements: 'Requires JavaScript',
+    inLanguage: 'pt-PT',
+    description:
+      'Quiz com perguntas divertidas sobre animais, cores e natureza para crianças dos 3 aos 12 anos. 10 perguntas com feedback imediato e sistema de pontuação por estrelas.',
+    audience: {
+      '@type': 'PeopleAudience',
+      suggestedMinAge: 3,
+      suggestedMaxAge: 12,
+    },
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'EUR',
+      availability: 'https://schema.org/InStock',
+    },
+    provider: {
+      '@type': 'Organization',
+      name: 'Olha que Duas',
+      url: 'https://www.olhaqueduas.com',
+    },
+  },
+];
+
 const KidsQuiz = () => {
   useMetaTags({
-    title: 'Quiz Kids',
+    title: 'Quiz Infantil Educativo — Perguntas Divertidas sobre Animais e Natureza',
     description:
-      'Testa os teus conhecimentos com perguntas divertidas! Quiz infantil do espaço Kids do Olha que Duas — diversão segura e educativa para toda a família.',
+      'Testa os teus conhecimentos com o Quiz do Olha que Duas Kids! 10 perguntas divertidas sobre animais, cores e natureza para crianças dos 3 aos 12 anos. Jogo educativo online, gratuito e seguro — com pontuação por estrelas e feedback imediato.',
     image: 'https://www.olhaqueduas.com/og-kids.jpg',
-    imageAlt: 'Olha que Duas Kids — Quiz infantil com perguntas divertidas',
+    imageAlt: 'Olha que Duas Kids — Quiz infantil educativo com perguntas sobre animais e natureza',
     url: 'https://www.olhaqueduas.com/kids/jogos/quiz',
-    tags: ['quiz infantil', 'perguntas crianças', 'jogos educativos', 'olha que duas kids'],
-    jsonLd: getPageBreadcrumbJsonLd('Quiz', 'https://www.olhaqueduas.com/kids/jogos/quiz', [
-      { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
-      { name: 'Jogos', url: 'https://www.olhaqueduas.com/kids/jogos' },
-    ]),
+    tags: [
+      'quiz infantil',
+      'perguntas para crianças',
+      'jogos educativos online',
+      'quiz animais',
+      'quiz natureza',
+      'jogo de perguntas infantil',
+      'olha que duas kids',
+      'quiz online grátis',
+      'jogos didáticos crianças',
+      'quiz português crianças',
+    ],
+    jsonLd: quizJsonLd,
   });
 
   const [questions, setQuestions] = useState<Question[]>(() => shuffleArray(allQuestions));
