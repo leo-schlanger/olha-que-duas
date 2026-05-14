@@ -20,20 +20,23 @@ const RockInRioBanner = () => {
     sessionStorage.setItem(STORAGE_KEY, "1");
   };
 
+  const logo = siteConfig.rockInRio.partnerLogoWhite;
+
+  const piece = (
+    <>
+      <img src={logo} alt="" className="inline-block h-5 md:h-[18px] w-auto mx-3 object-contain" />
+      <span className="text-white/80">PARCEIROS OFICIAIS</span>
+      <span className="mx-2 font-bold text-white">ROCK IN RIO LISBOA 2026</span>
+      <span className="mx-2 opacity-70">&#9835;</span>
+    </>
+  );
+
   const segment = (
     <>
-      <span className="mx-3 text-white/80">PARCEIROS OFICIAIS</span>
-      <span className="font-bold text-white">ROCK IN RIO LISBOA 2026</span>
-      <span className="mx-3 opacity-70">&#127928;</span>
-      <span className="mx-3 text-white/80">PARCEIROS OFICIAIS</span>
-      <span className="font-bold text-white">ROCK IN RIO LISBOA 2026</span>
-      <span className="mx-3 opacity-70">&#9835;</span>
-      <span className="mx-3 text-white/80">PARCEIROS OFICIAIS</span>
-      <span className="font-bold text-white">ROCK IN RIO LISBOA 2026</span>
-      <span className="mx-3 opacity-70">&#127928;</span>
-      <span className="mx-3 text-white/80">PARCEIROS OFICIAIS</span>
-      <span className="font-bold text-white">ROCK IN RIO LISBOA 2026</span>
-      <span className="mx-3 opacity-70">&#9835;</span>
+      {piece}
+      {piece}
+      {piece}
+      {piece}
     </>
   );
 
