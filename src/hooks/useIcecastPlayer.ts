@@ -237,13 +237,35 @@ export function useIcecastPlayer({
 
   const play = useCallback(async () => {
     if (playerRef.current) {
-      // ICY player
+      // ICY player — com timeout de 15s para não pendurar
       setIsBuffering(true);
       setState("loading");
+      console.log("[IcecastPlayer] starting ICY play...");
       try {
-        await playerRef.current.play();
+        const timeout = new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error("ICY play timeout (15s)")), 15_000)
+        );
+        await Promise.race([playerRef.current.play(), timeout]);
       } catch (err) {
-        console.error("[IcecastPlayer] play error:", err);
+        console.error("[IcecastPlayer] ICY play failed, trying fallback:", err);
+        // Tentar fallback nativo como plano B
+        try {
+          playerRef.current.stop().catch(() => {});
+          const audio = fallbackAudioRef.current ?? new Audio();
+          audio.src = streamUrl!;
+          fallbackAudioRef.current = audio;
+          audioElementRef.current = audio;
+          audio.volume = isMuted ? 0 : volume / 100;
+          audio.addEventListener("play", () => { setIsPlaying(true); setIsBuffering(false); setState("playing"); }, { once: true });
+          audio.addEventListener("error", () => {
+            setIsPlaying(false); setIsBuffering(false); setState("stopped");
+            onErrorRef.current?.("Falha ao iniciar o stream.");
+          }, { once: true });
+          await audio.play();
+          return;
+        } catch (fallbackErr) {
+          console.error("[IcecastPlayer] fallback also failed:", fallbackErr);
+        }
         setIsPlaying(false);
         setIsBuffering(false);
         setState("stopped");
