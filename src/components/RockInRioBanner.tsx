@@ -20,14 +20,14 @@ const RockInRioBanner = () => {
     sessionStorage.setItem(STORAGE_KEY, "1");
   };
 
-  const logo = siteConfig.rockInRio.partnerLetteringWhite;
+  const logo = siteConfig.rockInRio.partnerLogo;
 
   const piece = (
     <>
-      <img src={logo} alt="" className="inline-block h-5 md:h-[18px] w-auto mx-3 object-contain" />
-      <span className="text-white/80">PARCEIROS OFICIAIS</span>
-      <span className="mx-2 font-bold text-white">ROCK IN RIO LISBOA 2026</span>
-      <span className="mx-2 opacity-70">&#9835;</span>
+      <img src={logo} alt="" className="inline-block h-7 w-auto mx-3 object-contain drop-shadow-md" />
+      <span className="text-white/90 font-semibold">PARCEIROS OFICIAIS</span>
+      <span className="mx-1.5 text-amber-300 font-bold">ROCK IN RIO LISBOA 2026</span>
+      <span className="mx-2 text-amber-300/80">&#9835;</span>
     </>
   );
 
@@ -44,15 +44,14 @@ const RockInRioBanner = () => {
     <div
       className="relative overflow-hidden"
       style={{
-        background: "linear-gradient(90deg, hsl(217 85% 50%), hsl(0 75% 48%), hsl(217 85% 50%))",
+        background: "linear-gradient(90deg, hsl(217 85% 40%), hsl(260 60% 35%), hsl(0 70% 40%), hsl(217 85% 40%))",
         backgroundSize: "200% 100%",
       }}
     >
-      <div className="flex items-center h-9 md:h-8">
+      <div className="flex items-center h-10 md:h-9">
         {/* Marquee track */}
         <div className="flex-1 overflow-hidden relative">
           <div className="animate-marquee flex items-center whitespace-nowrap text-[11px] md:text-xs tracking-widest uppercase font-medium select-none">
-            {/* Duplicate content for seamless loop */}
             {segment}
             {segment}
           </div>
