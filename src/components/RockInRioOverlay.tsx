@@ -20,6 +20,10 @@ const RockInRioOverlay = () => {
     <div
       className="fixed inset-0 pointer-events-none z-[5] overflow-hidden"
       aria-hidden="true"
+      style={{
+        maskImage: "linear-gradient(to bottom, black 0%, black 75%, transparent 95%)",
+        WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 75%, transparent 95%)",
+      }}
     >
       {/* Floating musical notes */}
       {NOTES.map((note, i) => (
