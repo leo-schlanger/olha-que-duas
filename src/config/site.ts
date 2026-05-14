@@ -119,4 +119,14 @@ export const siteConfig = {
       url: "https://www.instagram.com/rrodynergallery/",
     },
   ],
+  // Rock in Rio Lisboa — Festival Mode
+  // enabled: true → decorações festivas em todo o site
+  // enabled: false → só o card de parceria em Parceiros fica visível
+  rockInRio: {
+    enabled: true,
+    partnerName: "Rock in Rio Lisboa",
+    partnerUrl: "https://rockinrio.com/lisboa/",
+    partnerLogo: "/partners/rockinrio.png",
+    partnerLogoWhite: "/rock-in-rio-branco.png",
+  },
 } as const;

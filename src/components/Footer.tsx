@@ -27,6 +27,34 @@ const Footer = () => {
             <p className="text-cream/60 text-sm md:text-base text-center md:text-left max-w-xs leading-relaxed">
               {siteConfig.info.tagline}
             </p>
+
+            {/* Rock in Rio Lisboa — footer badge */}
+            {siteConfig.rockInRio.enabled && (
+              <a
+                href={siteConfig.rockInRio.partnerUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-3 mt-4 px-4 py-2.5 rounded-xl border border-cream/10 hover:border-cream/25 transition-all duration-300"
+                style={{
+                  background: "linear-gradient(135deg, hsla(217,85%,55%,0.08), hsla(0,80%,50%,0.05))",
+                }}
+              >
+                <img
+                  src={siteConfig.rockInRio.partnerLogoWhite}
+                  alt={siteConfig.rockInRio.partnerName}
+                  className="h-10 w-auto object-contain opacity-80 group-hover:opacity-100 transition-opacity"
+                  loading="lazy"
+                />
+                <div className="flex flex-col">
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-cream/40">
+                    Parceiro Oficial
+                  </span>
+                  <span className="text-xs font-medium text-cream/70 group-hover:text-cream transition-colors">
+                    Rock in Rio Lisboa
+                  </span>
+                </div>
+              </a>
+            )}
           </div>
 
           {/* Quick Links */}

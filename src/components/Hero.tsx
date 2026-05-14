@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { ArrowRight, Play, Mic, Radio, Video, Sparkles, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import fotoJuntas from "@/assets/olha-que-duas-foto.jpg";
+import { siteConfig } from "@/config/site";
 
 const Hero = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -287,6 +288,38 @@ const Hero = () => {
                   <span className="text-[10px] font-semibold text-cream uppercase">Podcast</span>
                 </div>
               </div>
+
+              {/* Rock in Rio Lisboa — badge de parceria */}
+              {siteConfig.rockInRio.enabled && (
+                <div
+                  className="absolute -bottom-3 -right-2 sm:-bottom-4 sm:-right-4 animate-float-slow z-20"
+                  style={{ animationDuration: "6s", animationDelay: "1s" }}
+                >
+                  <a
+                    href={siteConfig.rockInRio.partnerUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block relative group"
+                  >
+                    <div className="absolute -inset-1 rounded-2xl blur-md opacity-60 group-hover:opacity-80 transition-opacity"
+                      style={{ background: "linear-gradient(135deg, hsla(217,85%,55%,0.5), hsla(0,80%,50%,0.4))" }}
+                    />
+                    <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl p-2 sm:p-2.5 shadow-xl border border-white/50 animate-rir-pulse">
+                      <img
+                        src={siteConfig.rockInRio.partnerLogo}
+                        alt={siteConfig.rockInRio.partnerName}
+                        className="w-14 h-14 sm:w-16 sm:h-16 object-contain"
+                        loading="eager"
+                      />
+                      <div className="absolute -top-2 -right-2 px-1.5 py-0.5 rounded-full text-[7px] sm:text-[8px] font-bold uppercase tracking-wider text-white"
+                        style={{ background: "linear-gradient(135deg, hsl(217 85% 55%), hsl(0 80% 50%))" }}
+                      >
+                        Parceiro
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </div>

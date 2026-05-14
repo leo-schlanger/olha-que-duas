@@ -15,6 +15,10 @@
     --amarelo: 45 80% 60%;
     --amarelo-soft: 45 70% 70%;
 
+    /* Rock in Rio Lisboa — Festival Mode */
+    --rir-blue: 217 85% 55%;
+    --rir-red: 0 80% 50%;
+
     /* Warm Beige Palette - Fluid & Light */
     --beige-light: 38 40% 96%;
     --beige: 36 35% 92%;
@@ -496,6 +500,71 @@
 /* ============================================
    RESPONSIVE MOTION PREFERENCES
    ============================================ */
+
+/* ============================================
+   ROCK IN RIO LISBOA — FESTIVAL ANIMATIONS
+   ============================================ */
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes musicFloat {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.15;
+  }
+  90% {
+    opacity: 0.15;
+  }
+  100% {
+    transform: translateY(-100vh) rotate(20deg);
+    opacity: 0;
+  }
+}
+
+@keyframes rirPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 hsla(var(--rir-blue), 0.4);
+  }
+  50% {
+    box-shadow: 0 0 16px 4px hsla(var(--rir-blue), 0.15);
+  }
+}
+
+@keyframes rirGlow {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes rirBorderRotate {
+  0% { --rir-angle: 0deg; }
+  100% { --rir-angle: 360deg; }
+}
+
+.animate-marquee {
+  animation: marquee 25s linear infinite;
+}
+
+.animate-music-float {
+  animation: musicFloat linear infinite;
+}
+
+.animate-rir-pulse {
+  animation: rirPulse 2.5s ease-in-out infinite;
+}
+
+.animate-rir-glow {
+  animation: rirGlow 3s ease-in-out infinite;
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,
