@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, Youtube, Radio, Music } from "lucide-react";
+import { Menu, Youtube, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -146,25 +146,6 @@ const Header = () => {
               <Radio className="w-3.5 h-3.5 text-vermelho" />
               <span className="text-xs font-semibold text-vermelho">AO VIVO</span>
             </div>
-
-            {/* Rock in Rio Lisboa badge */}
-            {siteConfig.rockInRio.enabled && (
-              <a
-                href={siteConfig.rockInRio.partnerUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-all duration-300 animate-rir-pulse group"
-                style={{
-                  background: "linear-gradient(135deg, hsla(217,85%,55%,0.1), hsla(0,80%,50%,0.08))",
-                  borderColor: "hsla(217,85%,55%,0.3)",
-                }}
-              >
-                <Music className="w-3 h-3" style={{ color: "hsl(217 85% 55%)" }} />
-                <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "hsl(217 85% 55%)" }}>
-                  Rock in Rio
-                </span>
-              </a>
-            )}
 
             <Button
               asChild
