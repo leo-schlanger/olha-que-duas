@@ -417,12 +417,18 @@ const RadioPlayer = () => {
   );
 
   const togglePlay = async () => {
-    if (!canPlay) return;
+    console.log("[RadioPlayer] togglePlay called — canPlay:", canPlay, "isPlaying:", isPlaying);
+    if (!canPlay) {
+      console.warn("[RadioPlayer] canPlay is false — isLive:", radio.isLive, "streamUrl:", radio.streamUrl);
+      return;
+    }
     if (isPlaying) {
       stop();
     } else {
       try {
+        console.log("[RadioPlayer] calling play()...");
         await play();
+        console.log("[RadioPlayer] play() resolved");
       } catch (err) {
         console.error("[RadioPlayer] play failed:", err);
         toast.error("Não foi possível iniciar a rádio. Tenta novamente.");
