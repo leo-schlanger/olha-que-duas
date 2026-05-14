@@ -242,10 +242,12 @@ export function useIcecastPlayer({
       setState("loading");
       try {
         await playerRef.current.play();
-      } catch {
+      } catch (err) {
+        console.error("[IcecastPlayer] play error:", err);
         setIsPlaying(false);
         setIsBuffering(false);
         setState("stopped");
+        onErrorRef.current?.("Falha ao iniciar o stream.");
       }
     } else if (fallbackAudioRef.current && streamUrl) {
       // Fallback <audio> nativo
@@ -254,13 +256,17 @@ export function useIcecastPlayer({
       try {
         fallbackAudioRef.current.src = streamUrl;
         await fallbackAudioRef.current.play();
-      } catch {
+      } catch (err) {
+        console.error("[IcecastPlayer] fallback play error:", err);
         setIsPlaying(false);
         setIsBuffering(false);
         setState("stopped");
+        onErrorRef.current?.("Falha ao iniciar o stream.");
       }
+    } else {
+      console.warn("[IcecastPlayer] play called but no player available. supported:", supported, "streamUrl:", streamUrl);
     }
-  }, [streamUrl]);
+  }, [streamUrl, supported]);
 
   const stop = useCallback(() => {
     playerRef.current?.stop().catch(() => {});

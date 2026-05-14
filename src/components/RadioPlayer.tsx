@@ -3,6 +3,7 @@ import {
   Music, Radio, Play, Pause,
   Volume2, VolumeX,
 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Card, CardContent } from "@/components/ui/card";
@@ -420,7 +421,12 @@ const RadioPlayer = () => {
     if (isPlaying) {
       stop();
     } else {
-      await play();
+      try {
+        await play();
+      } catch (err) {
+        console.error("[RadioPlayer] play failed:", err);
+        toast.error("Não foi possível iniciar a rádio. Tenta novamente.");
+      }
     }
   };
 
