@@ -18,43 +18,48 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-10 mb-10">
           {/* Brand */}
           <div className="flex flex-col items-center md:items-start">
-            <img
-              src={logo}
-              alt={siteConfig.info.name}
-              className="h-24 md:h-28 w-auto mb-4"
-              loading="lazy"
-            />
+            {/* Logos side by side */}
+            <div className="flex items-center gap-4 md:gap-5 mb-4">
+              <img
+                src={logo}
+                alt={siteConfig.info.name}
+                className="h-24 md:h-28 w-auto"
+                loading="lazy"
+              />
+              {siteConfig.rockInRio.enabled && (
+                <a
+                  href={siteConfig.rockInRio.partnerUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative shrink-0"
+                >
+                  <div
+                    className="absolute -inset-2 rounded-xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity"
+                    style={{ background: "linear-gradient(135deg, hsla(217,85%,55%,0.5), hsla(0,75%,50%,0.4))" }}
+                  />
+                  <div
+                    className="relative rounded-xl p-2.5 md:p-3 border border-white/20 group-hover:border-white/40 transition-all duration-300"
+                    style={{ background: "linear-gradient(135deg, hsl(217 85% 35%), hsl(0 70% 38%))" }}
+                  >
+                    <img
+                      src={siteConfig.rockInRio.partnerLogo}
+                      alt={siteConfig.rockInRio.partnerName}
+                      className="h-14 md:h-16 w-auto object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                    <span
+                      className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[7px] md:text-[8px] font-bold uppercase tracking-widest text-white whitespace-nowrap shadow-md"
+                      style={{ background: "linear-gradient(90deg, hsl(217 85% 50%), hsl(0 75% 48%))" }}
+                    >
+                      Parceiro Oficial
+                    </span>
+                  </div>
+                </a>
+              )}
+            </div>
             <p className="text-cream/60 text-sm md:text-base text-center md:text-left max-w-xs leading-relaxed">
               {siteConfig.info.tagline}
             </p>
-
-            {/* Rock in Rio Lisboa — footer badge */}
-            {siteConfig.rockInRio.enabled && (
-              <a
-                href={siteConfig.rockInRio.partnerUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group inline-flex items-center gap-3 mt-4 px-4 py-2.5 rounded-xl border border-cream/10 hover:border-cream/25 transition-all duration-300"
-                style={{
-                  background: "linear-gradient(135deg, hsla(217,85%,55%,0.08), hsla(0,80%,50%,0.05))",
-                }}
-              >
-                <img
-                  src={siteConfig.rockInRio.partnerLetteringWhite}
-                  alt={siteConfig.rockInRio.partnerName}
-                  className="h-8 w-auto object-contain opacity-80 group-hover:opacity-100 transition-opacity"
-                  loading="lazy"
-                />
-                <div className="flex flex-col">
-                  <span className="text-[9px] font-bold uppercase tracking-widest text-cream/40">
-                    Parceiro Oficial
-                  </span>
-                  <span className="text-xs font-medium text-cream/70 group-hover:text-cream transition-colors">
-                    Rock in Rio Lisboa
-                  </span>
-                </div>
-              </a>
-            )}
           </div>
 
           {/* Quick Links */}
