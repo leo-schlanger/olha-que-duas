@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from "react";
 import { ArrowRight, Play, Mic, Radio, Video, Sparkles, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import fotoJuntas from "@/assets/olha-que-duas-foto.jpg";
-import { siteConfig } from "@/config/site";
 
 const Hero = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -289,30 +288,6 @@ const Hero = () => {
                 </div>
               </div>
 
-              {/* Rock in Rio Lisboa — ribbon diagonal */}
-              {siteConfig.rockInRio.enabled && (
-                <a
-                  href={siteConfig.rockInRio.partnerUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="absolute top-0 right-0 w-32 h-32 sm:w-40 sm:h-40 overflow-hidden z-20 pointer-events-auto"
-                  aria-label={siteConfig.rockInRio.partnerName}
-                >
-                  <div
-                    className="absolute top-[18px] sm:top-[22px] -right-[32px] sm:-right-[36px] w-[170px] sm:w-[200px] text-center py-1.5 sm:py-2 rotate-45 shadow-lg"
-                    style={{
-                      background: "linear-gradient(90deg, hsl(217 85% 48%), hsl(0 75% 45%))",
-                    }}
-                  >
-                    <span className="block text-[8px] sm:text-[9px] font-bold uppercase tracking-widest text-white/90 leading-none mb-0.5">
-                      Parceiro Oficial
-                    </span>
-                    <span className="block text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-white leading-none">
-                      Rock in Rio
-                    </span>
-                  </div>
-                </a>
-              )}
             </div>
           </div>
         </div>
