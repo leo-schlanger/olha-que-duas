@@ -171,8 +171,8 @@ const Footer = () => {
             </Link>
           </div>
 
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
-            <p className="text-cream/30 text-sm">
+          <div className="flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-3 px-16 sm:px-0">
+            <p className="text-cream/30 text-sm text-center sm:text-left pl-0 sm:pl-16">
               © {new Date().getFullYear()} {siteConfig.info.name}. Todos os direitos reservados.
             </p>
             <p className="text-cream/30 text-sm flex items-center gap-1.5">
