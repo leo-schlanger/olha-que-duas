@@ -13,7 +13,7 @@ const Footer = () => {
         <div className="absolute bottom-0 right-1/4 w-48 h-24 bg-amarelo/5 rounded-full blur-3xl" />
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 py-12 md:py-16 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 pt-12 md:pt-16 pb-20 md:pb-24 relative z-10">
         {/* Main Footer Content */}
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-10 mb-10">
           {/* Brand */}
