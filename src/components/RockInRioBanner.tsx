@@ -20,7 +20,7 @@ const RockInRioBanner = () => {
     sessionStorage.setItem(STORAGE_KEY, "1");
   };
 
-  const logo = siteConfig.rockInRio.partnerLogoWhite;
+  const logo = siteConfig.rockInRio.partnerLetteringWhite;
 
   const piece = (
     <>

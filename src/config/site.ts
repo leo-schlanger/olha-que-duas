@@ -128,5 +128,6 @@ export const siteConfig = {
     partnerUrl: "https://rockinriolisboa.pt/",
     partnerLogo: "/partners/rockinrio.png",
     partnerLogoWhite: "/rock-in-rio-branco.png",
+    partnerLetteringWhite: "/rock-in-rio-lettering-branco.png",
   },
 } as const;

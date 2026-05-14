@@ -105,7 +105,7 @@ const Parceiros = () => {
               <div className="relative shrink-0">
                 <div className="absolute -inset-3 rounded-2xl bg-white/10 blur-xl group-hover:bg-white/15 transition-all" />
                 <img
-                  src={rir.partnerLogoWhite}
+                  src={rir.partnerLogo}
                   alt={rir.partnerName}
                   className="relative w-28 h-28 md:w-36 md:h-36 object-contain drop-shadow-2xl group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"

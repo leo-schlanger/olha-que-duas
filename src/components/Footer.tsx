@@ -40,9 +40,9 @@ const Footer = () => {
                 }}
               >
                 <img
-                  src={siteConfig.rockInRio.partnerLogoWhite}
+                  src={siteConfig.rockInRio.partnerLetteringWhite}
                   alt={siteConfig.rockInRio.partnerName}
-                  className="h-10 w-auto object-contain opacity-80 group-hover:opacity-100 transition-opacity"
+                  className="h-8 w-auto object-contain opacity-80 group-hover:opacity-100 transition-opacity"
                   loading="lazy"
                 />
                 <div className="flex flex-col">
