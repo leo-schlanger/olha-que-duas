@@ -344,12 +344,15 @@ export function pickCategory(
     duration: audible.duration || 0,
   };
 
-  // 3. Jingle por título: intercepta vinhetas que têm artist preenchido
-  // mas o título começa com "Jingle"/"Vinheta"/"Spot"/etc.
+  // 3. Jingle por título, artista ou playlist: intercepta vinhetas que têm
+  // artist preenchido mas o título começa com "Jingle"/"Vinheta"/"Spot"/etc.,
+  // ou que estão numa playlist de jingles (ex: "Jingle Rock in Rio").
   const isJingleByTitle =
     JINGLE_PATTERNS.some((p) => p.test(songData.title)) ||
     JINGLE_PATTERNS.some((p) => p.test(songData.artist));
-  if (isJingleByTitle) return { kind: "jingle", audible };
+  const isJingleByPlaylist =
+    !!songData.playlist && JINGLE_PLAYLISTS.some((p) => p.test(songData.playlist));
+  if (isJingleByTitle || isJingleByPlaylist) return { kind: "jingle", audible };
 
   // 4. Playlist de anúncio (precede music — alguns anúncios têm metadata
   // "musical" mas devem ser apresentados como destaque)
