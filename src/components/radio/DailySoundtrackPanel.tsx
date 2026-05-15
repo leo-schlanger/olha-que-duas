@@ -146,6 +146,32 @@ const DailySoundtrackPanel = memo(function DailySoundtrackPanel({
                             </span>
                           </div>
                         )}
+                        {slot.subPrograms && slot.subPrograms.length > 0 && (
+                          <div className="mt-1.5 ml-3 space-y-1 border-l-2 border-amarelo/20 pl-2.5">
+                            {slot.subPrograms.map((sub, subIdx) => (
+                              <div key={`sub-${subIdx}`} className="flex items-center gap-2">
+                                <span className={`font-mono text-xs shrink-0 w-10 ${isCurrent ? 'text-amarelo/60' : 'text-cream/40'}`}>
+                                  {sub.time}
+                                </span>
+                                {sub.iconUrl && (
+                                  <div className="w-6 h-6 rounded-md shrink-0 overflow-hidden text-amarelo shadow-sm shadow-amarelo/20">
+                                    <ProgramIcon show={sub.name} iconUrl={sub.iconUrl} />
+                                  </div>
+                                )}
+                                <span className="text-sm text-amarelo/90 font-semibold truncate" title={sub.name}>
+                                  {sub.name}
+                                </span>
+                                {sub.duration && (
+                                  <span className={`ml-auto text-[10px] font-mono shrink-0 px-1.5 py-0.5 rounded ${
+                                    isCurrent ? 'bg-amarelo/15 text-amarelo/70' : 'bg-cream/5 text-cream/30'
+                                  }`}>
+                                    {sub.duration}
+                                  </span>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     );
                   })}

@@ -76,8 +76,18 @@ function mergeTodayPrograms(
     }
   }
 
-  // Collect all specials with their end times for gap-filling later
-  const specialsWithEnd: { periodIdx: number; startMins: number; endMins: number }[] = [];
+  // --- 1. Collect all specials with their time ranges ---
+  interface SpecialEntry {
+    prog: GroupedSchedule;
+    mins: number;
+    endMins: number | undefined;
+    durationMins: number;
+    formatted: string;
+    duration: string | undefined;
+    periodIdx: number;
+  }
+
+  const specials: SpecialEntry[] = [];
 
   for (const prog of todayPrograms) {
     if (prog.isAllDay) continue;
@@ -94,41 +104,79 @@ function mergeTodayPrograms(
         return range ? mins >= range.start && mins < range.end : false;
       });
       if (periodIdx < 0) continue;
-      const target = merged[periodIdx];
 
-      const formatted = formatMinsToSlotTime(mins);
-
-      // Compute duration from end_time if available
-      let duration: string | undefined;
       let endMins: number | undefined;
+      let durationMins = 0;
+      let duration: string | undefined;
       if (rawEndTime) {
         const [eh, em] = rawEndTime.split(':').map(Number);
         endMins = eh * 60 + (em || 0);
         let diff = endMins - mins;
         if (diff <= 0) diff += 24 * 60;
+        durationMins = diff;
         const dh = Math.floor(diff / 60);
         const dm = diff % 60;
         duration = dh === 0 ? `${dm}min` : dm > 0 ? `${dh}h${String(dm).padStart(2, '0')}` : `${dh}h`;
       }
 
-      // Replace routine slot at the same time, or add new
-      const existingIdx = target.slots.findIndex((s) => !s.isAllDay && parseSlotTime(s.time) === mins);
-      const specialSlot: DailySlot = {
-        time: formatted,
-        name: prog.show,
-        iconUrl: prog.iconUrl,
-        ...(duration && { duration }),
-      };
+      specials.push({ prog, mins, endMins, durationMins, formatted: formatMinsToSlotTime(mins), duration, periodIdx });
+    }
+  }
 
-      if (existingIdx >= 0) {
-        target.slots[existingIdx] = specialSlot;
-      } else {
-        target.slots.push(specialSlot);
-      }
+  // --- 2. Detect parent-child (nested) relationships ---
+  // Sort by duration descending so longer programs are checked as parents first
+  const byDuration = [...specials].sort((a, b) => b.durationMins - a.durationMins);
+  const childToParent = new Map<SpecialEntry, SpecialEntry>();
 
-      if (endMins !== undefined) {
-        specialsWithEnd.push({ periodIdx, startMins: mins, endMins });
+  for (let i = 0; i < byDuration.length; i++) {
+    const candidate = byDuration[i];
+    if (candidate.endMins === undefined) continue;
+    for (let j = 0; j < i; j++) {
+      const parent = byDuration[j];
+      if (parent.endMins === undefined) continue;
+      if (childToParent.has(parent)) continue; // skip if parent is itself a child
+      if (candidate.mins >= parent.mins && candidate.endMins <= parent.endMins) {
+        childToParent.set(candidate, parent);
+        break;
       }
+    }
+  }
+
+  // --- 3. Insert parent specials with children nested ---
+  const specialsWithEnd: { periodIdx: number; startMins: number; endMins: number }[] = [];
+
+  for (const spec of specials) {
+    if (childToParent.has(spec)) continue; // children are attached to parent
+
+    const target = merged[spec.periodIdx];
+    const specialSlot: DailySlot = {
+      time: spec.formatted,
+      name: spec.prog.show,
+      iconUrl: spec.prog.iconUrl,
+      ...(spec.duration && { duration: spec.duration }),
+    };
+
+    // Attach children as sub-programs
+    const children = specials.filter((s) => childToParent.get(s) === spec);
+    if (children.length > 0) {
+      specialSlot.subPrograms = children.map((child) => ({
+        time: child.formatted,
+        name: child.prog.show,
+        iconUrl: child.prog.iconUrl,
+        ...(child.duration && { duration: child.duration }),
+      }));
+    }
+
+    // Replace routine slot at the same time, or add new
+    const existingIdx = target.slots.findIndex((s) => !s.isAllDay && parseSlotTime(s.time) === spec.mins);
+    if (existingIdx >= 0) {
+      target.slots[existingIdx] = specialSlot;
+    } else {
+      target.slots.push(specialSlot);
+    }
+
+    if (spec.endMins !== undefined) {
+      specialsWithEnd.push({ periodIdx: spec.periodIdx, startMins: spec.mins, endMins: spec.endMins });
     }
   }
 
@@ -468,7 +516,7 @@ const RadioPlayer = () => {
                     <div>
                       <h3 className="font-display font-bold text-xl leading-tight">{radio.name}</h3>
                       <p className="text-[10px] text-white/50 tracking-widest font-medium">
-                        {syncSource === "icy" ? "ICY SYNC" : "LIVE STREAM"}
+                        AO VIVO 24H
                       </p>
                     </div>
                   </div>

@@ -8,6 +8,7 @@ export interface DailySlot {
   duration?: string;
   iconUrl?: string;
   isAllDay?: boolean;
+  subPrograms?: DailySlot[];
 }
 
 export interface DailyPeriod {

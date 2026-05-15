@@ -145,6 +145,9 @@ const MUSIC_PLAYLIST_PATTERNS = [
   /sunset/i, /night/i, /madrugada/i, /noite/i, /tarde/i,
   /manh[ãa]/i, /top\s?\d/i, /hits/i, /chill/i, /lounge/i,
   /general/i, /default/i, /shuffle/i,
+  /lunch/i, /beats/i, /break/i, /power/i, /hour/i,
+  /midnight/i, /session/i, /relax/i, /flow/i, /wake/i,
+  /especial/i, /infantil/i,
 ];
 
 // Playlists de anúncios/conteúdo especial: devem mostrar artwork próprio
@@ -376,9 +379,24 @@ export function pickCategory(
     };
   }
 
-  // 6. Conteúdo longo em playlist não-musical → podcast
+  // 5b. Playlist de música com metadata incompleto (ex: sem artista) —
+  // mostra como música mesmo assim, com o que houver disponível
   const isMusicPlaylist =
     !playlistName || MUSIC_PLAYLIST_PATTERNS.some((p) => p.test(playlistName));
+  if (isMusicPlaylist && songData.title.trim() && songData.duration >= MIN_SONG_DURATION) {
+    return {
+      kind: "music",
+      audible,
+      song: {
+        title: songData.title,
+        artist: songData.artist || "",
+        album: audible.song.album || "",
+        art: audible.song.art || "",
+      },
+    };
+  }
+
+  // 6. Conteúdo longo em playlist não-musical → podcast
   const isLongContent = songData.duration >= MIN_SONG_DURATION;
   if (!isMusicPlaylist && isLongContent) {
     return {
