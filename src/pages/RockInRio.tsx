@@ -470,27 +470,31 @@ const RockInRio = () => {
                 <div className="absolute inset-0 mix-blend-overlay opacity-40" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, transparent 50%, #991b1b 100%)' }} />
               </div>
 
-              <div className="relative z-10 p-10 sm:p-12 md:p-16 flex flex-col md:flex-row items-center gap-8 md:gap-12">
-                {/* Logos */}
-                <div className="flex items-center gap-4 shrink-0">
-                  <img src={siteConfig.rockInRio.partnerLogo} alt="Rock in Rio Lisboa" className="w-28 md:w-36 drop-shadow-2xl" />
-                  <div className="w-px h-16 bg-white/15" />
-                  <img src="/icon-512x512.png" alt="Olha que Duas" className="w-20 md:w-24 rounded-full shadow-lg" />
+              <div className="relative z-10 p-10 sm:p-12 md:p-16 flex flex-col items-center gap-10">
+                {/* Logos — centered, balanced */}
+                <div className="flex items-center gap-6 sm:gap-8">
+                  <img src={siteConfig.rockInRio.partnerLogo} alt="Rock in Rio Lisboa" className="w-36 sm:w-44 md:w-52 drop-shadow-2xl" />
+                  <div className="flex flex-col items-center gap-1 self-stretch justify-center">
+                    <div className="flex-1 w-px bg-gradient-to-b from-transparent via-white/15 to-transparent" />
+                    <span className="text-white/15 text-sm select-none">&times;</span>
+                    <div className="flex-1 w-px bg-gradient-to-b from-transparent via-white/15 to-transparent" />
+                  </div>
+                  <img src="/icon-512x512.png" alt="Olha que Duas" className="w-32 sm:w-40 md:w-44 rounded-full shadow-lg" />
                 </div>
 
-                {/* Text + CTA */}
-                <div className="text-center md:text-left flex-1">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-amber-400/10 border border-amber-400/20 mb-4">
+                {/* Text + CTA — centered */}
+                <div className="text-center">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md bg-amber-400/10 border border-amber-400/20 mb-5">
                     <Users className="w-3 h-3 text-amber-400" />
                     <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-amber-300/80">A Olha que Duas vai estar lá</span>
                   </div>
 
-                  <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-3">Garante o teu bilhete</h2>
-                  <p className="text-sm text-white/40 mb-8 max-w-md leading-relaxed">
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight mb-4">Garante o teu bilhete</h2>
+                  <p className="text-sm sm:text-base text-white/40 mb-10 max-w-lg mx-auto leading-relaxed">
                     Junta-te a nós no maior festival do mundo. Bilhetes disponíveis na Worten e pontos de venda oficiais.
                   </p>
 
-                  <div className="flex flex-wrap justify-center md:justify-start gap-3">
+                  <div className="flex flex-wrap justify-center gap-3">
                     <a
                       href="https://worten.seetickets.com/event/rock-in-rio-lisboa-2026/parque-tejo/3430460"
                       target="_blank" rel="noopener noreferrer"
