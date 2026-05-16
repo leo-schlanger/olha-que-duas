@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>OG Image - Rock in Rio Lisboa 2026</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 1200px;
+      height: 630px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, hsl(217 85% 15%) 0%, hsl(217 85% 30%) 35%, hsl(260 60% 25%) 60%, hsl(0 70% 25%) 100%);
+      font-family: 'Inter', system-ui, sans-serif;
+      overflow: hidden;
+      position: relative;
+    }
+    /* Glow orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.4;
+    }
+    .orb-blue {
+      width: 400px; height: 400px;
+      top: -100px; right: -50px;
+      background: radial-gradient(circle, hsl(217 85% 55%) 0%, transparent 70%);
+    }
+    .orb-red {
+      width: 350px; height: 350px;
+      bottom: -80px; left: -50px;
+      background: radial-gradient(circle, hsl(0 80% 50%) 0%, transparent 70%);
+    }
+    .orb-purple {
+      width: 300px; height: 300px;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, hsl(260 60% 45%) 0%, transparent 70%);
+      opacity: 0.2;
+    }
+    .content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fbbf24;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    .logo {
+      height: 160px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 32px rgba(0,0,0,0.3));
+    }
+    .title {
+      font-size: 42px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.5px;
+    }
+    .title span { color: #fbbf24; }
+    .subtitle {
+      font-size: 18px;
+      color: rgba(255,255,255,0.7);
+    }
+    .footer-logo {
+      position: absolute;
+      bottom: 30px;
+      right: 40px;
+      height: 40px;
+      opacity: 0.8;
+    }
+    .dates {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.1em;
+    }
+  </style>
+</head>
+<body>
+  <div class="orb orb-blue"></div>
+  <div class="orb orb-red"></div>
+  <div class="orb orb-purple"></div>
+
+  <div class="content">
+    <div class="badge">&#9835; Parceiro Oficial</div>
+    <img src="rock-in-rio-branco.png" alt="Rock in Rio Lisboa" class="logo">
+    <h1 class="title">Rock in Rio Lisboa <span>2026</span></h1>
+    <p class="subtitle">O maior festival de musica e entretenimento do mundo</p>
+    <p class="dates">20 &bull; 21 &bull; 27 &bull; 28 JUNHO &mdash; PARQUE TEJO, LISBOA</p>
+  </div>
+
+  <!-- Olha que Duas branding corner -->
+  <img src="og-image.jpg" alt="Olha que Duas" class="footer-logo">
+</body>
+</html>

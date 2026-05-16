@@ -126,6 +126,7 @@ export const siteConfig = {
     enabled: true,
     partnerName: "Rock in Rio Lisboa",
     partnerUrl: "https://rockinriolisboa.pt/",
+    partnerPageUrl: "/rockinrio",
     partnerLogo: "/partners/rockinrio.png",
     partnerLogoWhite: "/rock-in-rio-branco.png",
     partnerLetteringWhite: "/rock-in-rio-lettering-branco.png",

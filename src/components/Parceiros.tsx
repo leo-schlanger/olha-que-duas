@@ -69,10 +69,8 @@ const Parceiros = () => {
         </div>
 
         {/* Rock in Rio Lisboa — Card Destaque (permanente) */}
-        <a
-          href={rir.partnerUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          to="/rockinrio"
           className="group block max-w-2xl mx-auto mb-14 md:mb-18"
         >
           <div className="relative rounded-2xl overflow-hidden border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-500">
@@ -135,7 +133,7 @@ const Parceiros = () => {
               </div>
             </div>
           </div>
-        </a>
+        </Link>
 
         {/* General Partners */}
         <div className="max-w-2xl mx-auto text-center mb-10 md:mb-14">

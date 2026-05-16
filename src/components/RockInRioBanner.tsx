@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { X } from "lucide-react";
 import { siteConfig } from "@/config/site";
 
@@ -49,13 +50,13 @@ const RockInRioBanner = () => {
       }}
     >
       <div className="flex items-center h-10 md:h-9">
-        {/* Marquee track */}
-        <div className="flex-1 overflow-hidden relative">
+        {/* Marquee track — links to internal page */}
+        <Link to="/rockinrio" className="flex-1 overflow-hidden relative block">
           <div className="animate-marquee flex items-center whitespace-nowrap text-[11px] md:text-xs tracking-widest uppercase font-medium select-none">
             {segment}
             {segment}
           </div>
-        </div>
+        </Link>
 
         {/* Close button */}
         <button

@@ -34,6 +34,7 @@ const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
 const FAQ = lazy(() => import("./pages/FAQ"));
 const Auditoria = lazy(() => import("./pages/Auditoria"));
+const RockInRio = lazy(() => import("./pages/RockInRio"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 /**
@@ -96,6 +97,7 @@ const App = () => (
               <Route path="/termos" element={<TermsOfService />} />
               <Route path="/auditoria-gratuita" element={<Auditoria />} />
               <Route path="/faq" element={<FAQ />} />
+              <Route path="/rockinrio" element={<RockInRio />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
