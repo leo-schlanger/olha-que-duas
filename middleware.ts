@@ -1,5 +1,5 @@
 export const config = {
-  matcher: ['/viagens', '/servicos', '/loja', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*', '/kids', '/auditoria-gratuita'],
+  matcher: ['/viagens', '/servicos', '/loja', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*', '/kids', '/auditoria-gratuita', '/rockinrio'],
 };
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || '';
@@ -74,6 +74,16 @@ export default async function middleware(request: Request): Promise<Response | u
       description: 'Descubra em 15 minutos o que está a travar o crescimento da sua marca — e como resolvê-lo. Análise gratuita de presença digital, redes sociais e estratégia de comunicação. Sem compromisso.',
       image: 'https://www.olhaqueduas.com/og-auditoria.jpg',
       url: 'https://www.olhaqueduas.com/auditoria-gratuita',
+    });
+  }
+
+  // ========== ROCK IN RIO ==========
+  if (path === '/rockinrio') {
+    return html({
+      title: 'Rock in Rio Lisboa 2026 — Parceiro Oficial',
+      description: 'A Olha que Duas é parceira oficial do Rock in Rio Lisboa 2026. Lineup completo dia a dia: Katy Perry, Linkin Park, Rod Stewart, 21 Savage e +40 artistas. Mapa do Parque Tejo, palcos, transportes e bilhetes. 20, 21, 27 e 28 de Junho.',
+      image: 'https://www.olhaqueduas.com/og-rockinrio.jpg',
+      url: 'https://www.olhaqueduas.com/rockinrio',
     });
   }
 
