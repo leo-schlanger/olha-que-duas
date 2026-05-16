@@ -29,8 +29,8 @@ const LINEUP: Day[] = [
     gradient: 'from-pink-600 to-rose-500',
     accent: 'text-pink-400', accentBg: 'bg-pink-500/10 border-pink-500/20',
     stages: [
-      { name: 'Palco Mundo', artists: [A('Katy Perry', 'katy-perry', true), A('Charlie Puth', 'charlie-puth'), A('Alok', 'alok'), { name: 'Nena' }] },
-      { name: 'Super Bock Stage', artists: [A('Bebe Rexha', 'bebe-rexha'), A('Pedro Sampaio', 'pedro-sampaio'), { name: 'Calema' }, { name: 'NAPA' }] },
+      { name: 'Palco Mundo', artists: [A('Katy Perry', 'katy-perry', true), A('Charlie Puth', 'charlie-puth'), A('Alok', 'alok'), A('Nena', 'nena')] },
+      { name: 'Super Bock Stage', artists: [A('Bebe Rexha', 'bebe-rexha'), A('Pedro Sampaio', 'pedro-sampaio'), A('Calema', 'calema'), { name: 'NAPA' }] },
       { name: 'Music Valley', artists: [{ name: 'Maninho' }, { name: 'Audrey Nuna' }, { name: 'Sofia Camara' }] },
     ],
   },
@@ -39,9 +39,9 @@ const LINEUP: Day[] = [
     gradient: 'from-red-700 to-orange-500',
     accent: 'text-red-400', accentBg: 'bg-red-500/10 border-red-500/20',
     stages: [
-      { name: 'Palco Mundo', artists: [A('Linkin Park', 'linkin-park', true), A('Cypress Hill', 'cypress-hill'), { name: 'The Pretty Reckless' }, { name: 'Grandson' }] },
-      { name: 'Music Valley', artists: [A('Kaiser Chiefs', 'kaiser-chiefs'), { name: 'Hoobastank' }, { name: 'Blasted Mechanism' }] },
-      { name: 'Super Bock Stage', artists: [A('Sepultura', 'sepultura'), { name: 'P.O.D.' }, { name: 'Tara Perdida' }] },
+      { name: 'Palco Mundo', artists: [A('Linkin Park', 'linkin-park', true), A('Cypress Hill', 'cypress-hill'), A('The Pretty Reckless', 'the-pretty-reckless'), { name: 'Grandson' }] },
+      { name: 'Music Valley', artists: [A('Kaiser Chiefs', 'kaiser-chiefs'), A('Hoobastank', 'hoobastank'), { name: 'Blasted Mechanism' }] },
+      { name: 'Super Bock Stage', artists: [A('Sepultura', 'sepultura'), A('P.O.D.', 'pod'), { name: 'Tara Perdida' }] },
       { name: 'BacanaPlay Digital Stage', artists: [{ name: 'Sam the Kid' }, { name: 'Orelha Negra' }] },
     ],
   },
@@ -50,9 +50,9 @@ const LINEUP: Day[] = [
     gradient: 'from-amber-600 to-yellow-400',
     accent: 'text-amber-400', accentBg: 'bg-amber-500/10 border-amber-500/20',
     stages: [
-      { name: 'Palco Mundo', artists: [A('Rod Stewart', 'rod-stewart', true), A('Cyndi Lauper', 'cyndi-lauper'), { name: '4 Non Blondes' }, A('Shaggy', 'shaggy')] },
-      { name: 'Music Valley', artists: [{ name: 'Xutos & Pontapés' }, { name: 'GNR' }, { name: 'UHF' }, { name: 'Táxi' }, { name: 'Jafumega' }] },
-      { name: 'Super Bock Stage', artists: [A('Joss Stone', 'joss-stone'), { name: 'The Wailers' }, { name: 'Belo' }, { name: 'SYRO' }] },
+      { name: 'Palco Mundo', artists: [A('Rod Stewart', 'rod-stewart', true), A('Cyndi Lauper', 'cyndi-lauper'), A('4 Non Blondes', '4-non-blondes'), A('Shaggy', 'shaggy')] },
+      { name: 'Music Valley', artists: [A('Xutos & Pontapés', 'xutos'), A('GNR', 'gnr'), { name: 'UHF' }, { name: 'Táxi' }, { name: 'Jafumega' }] },
+      { name: 'Super Bock Stage', artists: [A('Joss Stone', 'joss-stone'), A('The Wailers', 'the-wailers'), { name: 'Belo' }, { name: 'SYRO' }] },
     ],
   },
   {
@@ -60,8 +60,8 @@ const LINEUP: Day[] = [
     gradient: 'from-violet-600 to-purple-500',
     accent: 'text-violet-400', accentBg: 'bg-violet-500/10 border-violet-500/20',
     stages: [
-      { name: 'Palco Mundo', artists: [A('21 Savage', '21-savage', true), A('Central Cee', 'central-cee'), A('Rema', 'rema'), { name: 'Matué' }] },
-      { name: 'Music Valley', artists: [{ name: 'Filipe Ret' }, { name: 'DENNIS' }, { name: 'Carlão' }, { name: 'Irina Barros' }] },
+      { name: 'Palco Mundo', artists: [A('21 Savage', '21-savage', true), A('Central Cee', 'central-cee'), A('Rema', 'rema'), A('Matué', 'matue')] },
+      { name: 'Music Valley', artists: [A('Filipe Ret', 'filipe-ret'), { name: 'DENNIS' }, { name: 'Carlão' }, { name: 'Irina Barros' }] },
       { name: 'Super Bock Stage', artists: [A('CeeLo Green', 'ceelo-green'), A('Lola Indigo', 'lola-indigo')] },
     ],
   },
