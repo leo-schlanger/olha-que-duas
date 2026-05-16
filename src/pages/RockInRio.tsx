@@ -485,10 +485,10 @@ const RockInRio = () => {
           <Animated animation="fade-up" delay={100}>
             <div className="rounded-2xl overflow-hidden border border-white/[0.06] mb-10 aspect-[16/7]">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12442.0!2d-9.0985!3d38.7710!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd19316a4fc5b0c7%3A0x0!2sParque+Tejo!5e0!3m2!1spt-PT!2spt!4v1716000000000"
+                src="https://maps.google.com/maps?q=Parque+Tejo,+Lisboa,+Portugal&t=&z=14&ie=UTF8&iwloc=&output=embed"
                 width="100%"
                 height="100%"
-                style={{ border: 0, filter: 'invert(0.9) hue-rotate(180deg) saturate(0.3) brightness(0.6)' }}
+                style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"

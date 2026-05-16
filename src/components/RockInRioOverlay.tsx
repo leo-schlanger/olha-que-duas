@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import { siteConfig } from "@/config/site";
 
 const NOTES = [
@@ -14,7 +15,10 @@ const NOTES = [
 ];
 
 const RockInRioOverlay = () => {
-  if (!siteConfig.rockInRio.enabled) return null;
+  const { pathname } = useLocation();
+
+  // Hide on the dedicated /rockinrio page — it has its own design
+  if (!siteConfig.rockInRio.enabled || pathname === "/rockinrio") return null;
 
   return (
     <div
