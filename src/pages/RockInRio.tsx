@@ -322,12 +322,12 @@ const RockInRio = () => {
               </Animated>
             </div>
 
-            {/* Right: logo */}
+            {/* Right: logo — white version, rotated 45deg to correct orientation */}
             <Animated animation="fade-up" delay={300}>
               <img
-                src={siteConfig.rockInRio.partnerLogo}
+                src={siteConfig.rockInRio.partnerLogoWhite}
                 alt="Rock in Rio Lisboa"
-                className="hidden lg:block w-56 xl:w-64 drop-shadow-[0_0_40px_rgba(30,100,220,0.25)]"
+                className="hidden lg:block w-64 xl:w-72 rotate-45 drop-shadow-[0_0_50px_rgba(255,255,255,0.15)]"
               />
             </Animated>
           </div>
@@ -485,12 +485,13 @@ const RockInRio = () => {
           <Animated animation="fade-up" delay={100}>
             <div className="rounded-2xl overflow-hidden border border-white/[0.06] mb-10 aspect-[16/7]">
               <iframe
-                src="https://www.openstreetmap.org/export/embed.html?bbox=-9.115%2C38.765%2C-9.080%2C38.787&layer=mapnik&marker=38.776%2C-9.098"
+                src="https://www.google.com/maps?q=38.776,-9.098&z=15&output=embed"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
                 title="Mapa — Parque Tejo, Lisboa"
               />
             </div>
