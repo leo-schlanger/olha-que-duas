@@ -30,8 +30,8 @@ const LINEUP: Day[] = [
     accent: 'text-pink-400', accentBg: 'bg-pink-500/10 border-pink-500/20',
     stages: [
       { name: 'Palco Mundo', artists: [A('Katy Perry', 'katy-perry', true), A('Charlie Puth', 'charlie-puth'), A('Alok', 'alok'), A('Nena', 'nena')] },
-      { name: 'Super Bock Stage', artists: [A('Bebe Rexha', 'bebe-rexha'), A('Pedro Sampaio', 'pedro-sampaio'), A('Calema', 'calema'), { name: 'NAPA' }] },
-      { name: 'Music Valley', artists: [{ name: 'Maninho' }, { name: 'Audrey Nuna' }, { name: 'Sofia Camara' }] },
+      { name: 'Super Bock Stage', artists: [A('Bebe Rexha', 'bebe-rexha'), A('Pedro Sampaio', 'pedro-sampaio'), A('Calema', 'calema'), A('NAPA', 'napa')] },
+      { name: 'Music Valley', artists: [A('Maninho', 'maninho'), A('Audrey Nuna', 'audrey-nuna'), A('Sofia Camara', 'sofia-camara')] },
     ],
   },
   {
@@ -39,10 +39,10 @@ const LINEUP: Day[] = [
     gradient: 'from-red-700 to-orange-500',
     accent: 'text-red-400', accentBg: 'bg-red-500/10 border-red-500/20',
     stages: [
-      { name: 'Palco Mundo', artists: [A('Linkin Park', 'linkin-park', true), A('Cypress Hill', 'cypress-hill'), A('The Pretty Reckless', 'the-pretty-reckless'), { name: 'Grandson' }] },
-      { name: 'Music Valley', artists: [A('Kaiser Chiefs', 'kaiser-chiefs'), A('Hoobastank', 'hoobastank'), { name: 'Blasted Mechanism' }] },
-      { name: 'Super Bock Stage', artists: [A('Sepultura', 'sepultura'), A('P.O.D.', 'pod'), { name: 'Tara Perdida' }] },
-      { name: 'BacanaPlay Digital Stage', artists: [{ name: 'Sam the Kid' }, { name: 'Orelha Negra' }] },
+      { name: 'Palco Mundo', artists: [A('Linkin Park', 'linkin-park', true), A('Cypress Hill', 'cypress-hill'), A('The Pretty Reckless', 'the-pretty-reckless'), A('Grandson', 'grandson')] },
+      { name: 'Music Valley', artists: [A('Kaiser Chiefs', 'kaiser-chiefs'), A('Hoobastank', 'hoobastank'), A('Blasted Mechanism', 'blasted-mechanism')] },
+      { name: 'Super Bock Stage', artists: [A('Sepultura', 'sepultura'), A('P.O.D.', 'pod'), A('Tara Perdida', 'tara-perdida')] },
+      { name: 'BacanaPlay Digital Stage', artists: [A('Sam the Kid', 'sam-the-kid'), A('Orelha Negra', 'orelha-negra')] },
     ],
   },
   {
@@ -51,8 +51,8 @@ const LINEUP: Day[] = [
     accent: 'text-amber-400', accentBg: 'bg-amber-500/10 border-amber-500/20',
     stages: [
       { name: 'Palco Mundo', artists: [A('Rod Stewart', 'rod-stewart', true), A('Cyndi Lauper', 'cyndi-lauper'), A('4 Non Blondes', '4-non-blondes'), A('Shaggy', 'shaggy')] },
-      { name: 'Music Valley', artists: [A('Xutos & Pontapés', 'xutos'), A('GNR', 'gnr'), { name: 'UHF' }, { name: 'Táxi' }, { name: 'Jafumega' }] },
-      { name: 'Super Bock Stage', artists: [A('Joss Stone', 'joss-stone'), A('The Wailers', 'the-wailers'), { name: 'Belo' }, { name: 'SYRO' }] },
+      { name: 'Music Valley', artists: [A('Xutos & Pontapés', 'xutos'), A('GNR', 'gnr'), A('UHF', 'uhf'), A('Táxi', 'taxi'), A('Jafumega', 'jafumega')] },
+      { name: 'Super Bock Stage', artists: [A('Joss Stone', 'joss-stone'), A('The Wailers', 'the-wailers'), A('Belo', 'belo'), A('SYRO', 'syro')] },
     ],
   },
   {
@@ -61,7 +61,7 @@ const LINEUP: Day[] = [
     accent: 'text-violet-400', accentBg: 'bg-violet-500/10 border-violet-500/20',
     stages: [
       { name: 'Palco Mundo', artists: [A('21 Savage', '21-savage', true), A('Central Cee', 'central-cee'), A('Rema', 'rema'), A('Matué', 'matue')] },
-      { name: 'Music Valley', artists: [A('Filipe Ret', 'filipe-ret'), { name: 'DENNIS' }, { name: 'Carlão' }, { name: 'Irina Barros' }] },
+      { name: 'Music Valley', artists: [A('Filipe Ret', 'filipe-ret'), A('DENNIS', 'dennis'), A('Carlão', 'carlao'), A('Irina Barros', 'irina-barros')] },
       { name: 'Super Bock Stage', artists: [A('CeeLo Green', 'ceelo-green'), A('Lola Indigo', 'lola-indigo')] },
     ],
   },
