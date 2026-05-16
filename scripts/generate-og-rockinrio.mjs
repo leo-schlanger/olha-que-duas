@@ -8,9 +8,8 @@ const pub = (...p) => resolve(__dirname, '..', 'public', ...p);
 const W = 1200, H = 630;
 
 async function main() {
-  console.log('Downloading background...');
-  const bgRes = await fetch('https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=1400&h=740&fit=crop&crop=center&q=90');
-  const bg = await sharp(Buffer.from(await bgRes.arrayBuffer())).resize(W, H, { fit: 'cover' }).toBuffer();
+  console.log('Loading background...');
+  const bg = await sharp(readFileSync(pub('rockinrio', 'hero.jpg'))).resize(W, H, { fit: 'cover' }).toBuffer();
 
   // Rock in Rio white logo — rotate 90deg, balanced size
   const rirLogo = await sharp(readFileSync(pub('rock-in-rio-branco.png')))
