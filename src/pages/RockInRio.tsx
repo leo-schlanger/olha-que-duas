@@ -322,13 +322,28 @@ const RockInRio = () => {
               </Animated>
             </div>
 
-            {/* Right: logo — white version, rotated 45deg to correct orientation */}
+            {/* Right: dual logos — RiR white + Olha que Duas side by side */}
             <Animated animation="fade-up" delay={300}>
-              <img
-                src={siteConfig.rockInRio.partnerLogoWhite}
-                alt="Rock in Rio Lisboa"
-                className="hidden lg:block w-64 xl:w-72 rotate-45 drop-shadow-[0_0_50px_rgba(255,255,255,0.15)]"
-              />
+              <div className="hidden lg:flex flex-col items-center gap-5">
+                {/* Logos row */}
+                <div className="flex items-center gap-6">
+                  <img
+                    src={siteConfig.rockInRio.partnerLogoWhite}
+                    alt="Rock in Rio Lisboa"
+                    className="w-44 xl:w-52 rotate-45 drop-shadow-[0_0_40px_rgba(255,255,255,0.12)]"
+                  />
+                  <div className="w-px h-20 bg-white/15" />
+                  <img
+                    src="/icon-512x512.png"
+                    alt="Olha que Duas"
+                    className="w-24 xl:w-28 rounded-full drop-shadow-[0_0_30px_rgba(220,50,50,0.2)]"
+                  />
+                </div>
+                {/* Label */}
+                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/25">
+                  Parceiros Oficiais
+                </span>
+              </div>
             </Animated>
           </div>
         </div>
