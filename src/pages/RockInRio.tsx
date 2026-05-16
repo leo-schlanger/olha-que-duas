@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   Calendar, MapPin, Clock, Music, Train, Bus, Car, Ticket,
-  ExternalLink, Globe, Mic2, Radio, Headphones, Smartphone,
+  ExternalLink, Globe, Radio, Headphones, Smartphone,
   Star, Users, Navigation, AlertTriangle,
 } from 'lucide-react';
 import Header from '@/components/Header';
@@ -15,99 +15,46 @@ import { siteConfig } from '@/config/site';
    DATA
    ═══════════════════════════════════════════════════════════════════════════ */
 
-interface Artist {
-  name: string;
-  headliner?: boolean;
-}
-
-interface Stage {
-  name: string;
-  artists: Artist[];
-}
-
-interface Day {
-  date: string;
-  weekday: string;
-  label: string;
-  accent: string;
-  accentBg: string;
-  stages: Stage[];
-}
+interface Artist { name: string; headliner?: boolean }
+interface Stage { name: string; artists: Artist[] }
+interface Day { date: string; weekday: string; label: string; accent: string; accentBg: string; stages: Stage[] }
 
 const LINEUP: Day[] = [
   {
-    date: '20 Junho',
-    weekday: 'Sábado',
-    label: 'Pop Day',
-    accent: 'text-pink-400',
-    accentBg: 'bg-pink-500/10 border-pink-500/20',
+    date: '20 Junho', weekday: 'Sábado', label: 'Pop Day',
+    accent: 'text-pink-400', accentBg: 'bg-pink-500/10 border-pink-500/20',
     stages: [
-      { name: 'Palco Mundo', artists: [
-        { name: 'Katy Perry', headliner: true }, { name: 'Charlie Puth' }, { name: 'Alok' }, { name: 'Nena' },
-      ]},
-      { name: 'Super Bock Stage', artists: [
-        { name: 'Bebe Rexha' }, { name: 'Pedro Sampaio' }, { name: 'Calema' }, { name: 'NAPA' },
-      ]},
-      { name: 'Music Valley', artists: [
-        { name: 'Maninho' }, { name: 'Audrey Nuna' }, { name: 'Sofia Camara' },
-      ]},
+      { name: 'Palco Mundo', artists: [{ name: 'Katy Perry', headliner: true }, { name: 'Charlie Puth' }, { name: 'Alok' }, { name: 'Nena' }] },
+      { name: 'Super Bock Stage', artists: [{ name: 'Bebe Rexha' }, { name: 'Pedro Sampaio' }, { name: 'Calema' }, { name: 'NAPA' }] },
+      { name: 'Music Valley', artists: [{ name: 'Maninho' }, { name: 'Audrey Nuna' }, { name: 'Sofia Camara' }] },
     ],
   },
   {
-    date: '21 Junho',
-    weekday: 'Domingo',
-    label: 'Rock Day',
-    accent: 'text-red-400',
-    accentBg: 'bg-red-500/10 border-red-500/20',
+    date: '21 Junho', weekday: 'Domingo', label: 'Rock Day',
+    accent: 'text-red-400', accentBg: 'bg-red-500/10 border-red-500/20',
     stages: [
-      { name: 'Palco Mundo', artists: [
-        { name: 'Linkin Park', headliner: true }, { name: 'Cypress Hill' }, { name: 'The Pretty Reckless' }, { name: 'Grandson' },
-      ]},
-      { name: 'Music Valley', artists: [
-        { name: 'Kaiser Chiefs' }, { name: 'Hoobastank' }, { name: 'Blasted Mechanism' },
-      ]},
-      { name: 'Super Bock Stage', artists: [
-        { name: 'Sepultura' }, { name: 'P.O.D.' }, { name: 'Tara Perdida' },
-      ]},
-      { name: 'BacanaPlay Digital Stage', artists: [
-        { name: 'Sam the Kid' }, { name: 'Orelha Negra' },
-      ]},
+      { name: 'Palco Mundo', artists: [{ name: 'Linkin Park', headliner: true }, { name: 'Cypress Hill' }, { name: 'The Pretty Reckless' }, { name: 'Grandson' }] },
+      { name: 'Music Valley', artists: [{ name: 'Kaiser Chiefs' }, { name: 'Hoobastank' }, { name: 'Blasted Mechanism' }] },
+      { name: 'Super Bock Stage', artists: [{ name: 'Sepultura' }, { name: 'P.O.D.' }, { name: 'Tara Perdida' }] },
+      { name: 'BacanaPlay Digital Stage', artists: [{ name: 'Sam the Kid' }, { name: 'Orelha Negra' }] },
     ],
   },
   {
-    date: '27 Junho',
-    weekday: 'Sábado',
-    label: 'Legends Day',
-    accent: 'text-amber-400',
-    accentBg: 'bg-amber-500/10 border-amber-500/20',
+    date: '27 Junho', weekday: 'Sábado', label: 'Legends Day',
+    accent: 'text-amber-400', accentBg: 'bg-amber-500/10 border-amber-500/20',
     stages: [
-      { name: 'Palco Mundo', artists: [
-        { name: 'Rod Stewart', headliner: true }, { name: 'Cyndi Lauper' }, { name: '4 Non Blondes' }, { name: 'Shaggy' },
-      ]},
-      { name: 'Music Valley', artists: [
-        { name: 'Xutos & Pontapés' }, { name: 'GNR' }, { name: 'UHF' }, { name: 'Táxi' }, { name: 'Jafumega' },
-      ]},
-      { name: 'Super Bock Stage', artists: [
-        { name: 'Joss Stone' }, { name: 'The Wailers' }, { name: 'Belo' }, { name: 'SYRO' },
-      ]},
+      { name: 'Palco Mundo', artists: [{ name: 'Rod Stewart', headliner: true }, { name: 'Cyndi Lauper' }, { name: '4 Non Blondes' }, { name: 'Shaggy' }] },
+      { name: 'Music Valley', artists: [{ name: 'Xutos & Pontapés' }, { name: 'GNR' }, { name: 'UHF' }, { name: 'Táxi' }, { name: 'Jafumega' }] },
+      { name: 'Super Bock Stage', artists: [{ name: 'Joss Stone' }, { name: 'The Wailers' }, { name: 'Belo' }, { name: 'SYRO' }] },
     ],
   },
   {
-    date: '28 Junho',
-    weekday: 'Domingo',
-    label: 'Urban Day',
-    accent: 'text-violet-400',
-    accentBg: 'bg-violet-500/10 border-violet-500/20',
+    date: '28 Junho', weekday: 'Domingo', label: 'Urban Day',
+    accent: 'text-violet-400', accentBg: 'bg-violet-500/10 border-violet-500/20',
     stages: [
-      { name: 'Palco Mundo', artists: [
-        { name: '21 Savage', headliner: true }, { name: 'Central Cee' }, { name: 'Rema' }, { name: 'Matué' },
-      ]},
-      { name: 'Music Valley', artists: [
-        { name: 'Filipe Ret' }, { name: 'DENNIS' }, { name: 'Carlão' }, { name: 'Irina Barros' },
-      ]},
-      { name: 'Super Bock Stage', artists: [
-        { name: 'CeeLo Green' }, { name: 'Lola Indigo' },
-      ]},
+      { name: 'Palco Mundo', artists: [{ name: '21 Savage', headliner: true }, { name: 'Central Cee' }, { name: 'Rema' }, { name: 'Matué' }] },
+      { name: 'Music Valley', artists: [{ name: 'Filipe Ret' }, { name: 'DENNIS' }, { name: 'Carlão' }, { name: 'Irina Barros' }] },
+      { name: 'Super Bock Stage', artists: [{ name: 'CeeLo Green' }, { name: 'Lola Indigo' }] },
     ],
   },
 ];
@@ -121,7 +68,7 @@ const STAGES_INFO = [
 ];
 
 const TRANSPORT = [
-  { icon: Bus, title: 'Shuttle CARRIS', detail: 'Gare do Oriente → Parque Tejo', schedule: 'Ida 12h–21h · Volta 23h–03h', price: '2€ pré-venda' },
+  { icon: Bus, title: 'Shuttle CARRIS', detail: 'Gare do Oriente → Parque Tejo', schedule: 'Ida 12h–21h · Volta 23h–03h', price: '2€' },
   { icon: Train, title: 'Comboio CP', detail: 'Estação de Sacavém (mais próxima)', schedule: 'Tarifas promocionais nos dias do evento', price: '' },
   { icon: Train, title: 'Metro de Lisboa', detail: 'Estação Oriente — Linha Vermelha', schedule: 'Ligação direta ao shuttle CARRIS', price: '' },
   { icon: Car, title: 'TVDE / Uber', detail: 'Pontos dedicados junto ao recinto', schedule: 'Pick-up e drop-off organizados', price: '' },
@@ -129,55 +76,37 @@ const TRANSPORT = [
 ];
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   SEO — JSON-LD enriquecido
+   SEO
    ═══════════════════════════════════════════════════════════════════════════ */
 
 const allPerformers = LINEUP.flatMap(d => d.stages.flatMap(s => s.artists)).map(a => ({
-  '@type': 'MusicGroup' as const,
-  name: a.name,
+  '@type': 'MusicGroup' as const, name: a.name,
 }));
 
 const eventJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'MusicEvent',
+  '@context': 'https://schema.org', '@type': 'MusicEvent',
   '@id': 'https://www.olhaqueduas.com/rockinrio#event',
   name: 'Rock in Rio Lisboa 2026',
   description: 'O maior festival de música e entretenimento do mundo. Katy Perry, Linkin Park, Rod Stewart, 21 Savage e dezenas de artistas no Parque Tejo, Lisboa — 20, 21, 27 e 28 de Junho de 2026.',
-  startDate: '2026-06-20T13:00:00+01:00',
-  endDate: '2026-06-28T03:00:00+01:00',
+  startDate: '2026-06-20T13:00:00+01:00', endDate: '2026-06-28T03:00:00+01:00',
   eventStatus: 'https://schema.org/EventScheduled',
   eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
   image: 'https://www.olhaqueduas.com/og-rockinrio.jpg',
   location: {
-    '@type': 'Place',
-    name: 'Parque Tejo',
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: 'Passeio dos Heróis do Mar',
-      addressLocality: 'Lisboa',
-      postalCode: '1990-059',
-      addressCountry: 'PT',
-    },
+    '@type': 'Place', name: 'Parque Tejo',
+    address: { '@type': 'PostalAddress', streetAddress: 'Passeio dos Heróis do Mar', addressLocality: 'Lisboa', postalCode: '1990-059', addressCountry: 'PT' },
     geo: { '@type': 'GeoCoordinates', latitude: 38.7688, longitude: -9.0935 },
     maximumAttendeeCapacity: 80000,
   },
   performer: allPerformers,
   organizer: { '@type': 'Organization', name: 'Rock in Rio', url: 'https://rockinriolisboa.pt/' },
   sponsor: { '@type': 'Organization', name: 'Olha que Duas', url: 'https://www.olhaqueduas.com' },
-  offers: {
-    '@type': 'Offer',
-    url: 'https://worten.seetickets.com/event/rock-in-rio-lisboa-2026/parque-tejo/3430460',
-    priceCurrency: 'EUR',
-    availability: 'https://schema.org/InStock',
-    validFrom: '2025-12-01',
-  },
-  inLanguage: 'pt',
-  isAccessibleForFree: false,
+  offers: { '@type': 'Offer', url: 'https://worten.seetickets.com/event/rock-in-rio-lisboa-2026/parque-tejo/3430460', priceCurrency: 'EUR', availability: 'https://schema.org/InStock', validFrom: '2025-12-01' },
+  inLanguage: 'pt', isAccessibleForFree: false,
 };
 
 const breadcrumbJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
+  '@context': 'https://schema.org', '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Início', item: 'https://www.olhaqueduas.com' },
     { '@type': 'ListItem', position: 2, name: 'Rock in Rio Lisboa 2026', item: 'https://www.olhaqueduas.com/rockinrio' },
@@ -185,27 +114,16 @@ const breadcrumbJsonLd = {
 };
 
 const webPageJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebPage',
+  '@context': 'https://schema.org', '@type': 'WebPage',
   '@id': 'https://www.olhaqueduas.com/rockinrio#webpage',
   url: 'https://www.olhaqueduas.com/rockinrio',
   name: 'Rock in Rio Lisboa 2026 — Parceiro Oficial | Olha que Duas',
   description: 'Lineup completo, palcos, como chegar e bilhetes do Rock in Rio Lisboa 2026. A Olha que Duas é parceira oficial.',
   isPartOf: { '@id': 'https://www.olhaqueduas.com/#website' },
   about: { '@id': 'https://www.olhaqueduas.com/rockinrio#event' },
-  primaryImageOfPage: {
-    '@type': 'ImageObject',
-    url: 'https://www.olhaqueduas.com/og-rockinrio.jpg',
-    width: 1200,
-    height: 630,
-  },
-  inLanguage: 'pt-PT',
-  datePublished: '2026-05-16',
-  dateModified: '2026-05-16',
-  speakable: {
-    '@type': 'SpeakableSpecification',
-    cssSelector: ['h1', 'h2', '.hero-subtitle'],
-  },
+  primaryImageOfPage: { '@type': 'ImageObject', url: 'https://www.olhaqueduas.com/og-rockinrio.jpg', width: 1200, height: 630 },
+  inLanguage: 'pt-PT', datePublished: '2026-05-16', dateModified: '2026-05-16',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', 'h2', '.hero-subtitle'] },
 };
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -219,7 +137,7 @@ const RockInRio = () => {
 
   useMetaTags({
     title: 'Rock in Rio Lisboa 2026 — Parceiro Oficial',
-    description: 'A Olha que Duas é parceira oficial do Rock in Rio Lisboa 2026. Lineup completo dia a dia, mapa do Parque Tejo, palcos, transportes e bilhetes. Katy Perry, Linkin Park, Rod Stewart, 21 Savage — 20, 21, 27 e 28 de Junho.',
+    description: 'A Olha que Duas é parceira oficial do Rock in Rio Lisboa 2026. Lineup completo dia a dia: Katy Perry, Linkin Park, Rod Stewart, 21 Savage e +40 artistas. Mapa do Parque Tejo, palcos, transportes e bilhetes. 20, 21, 27 e 28 de Junho.',
     image: 'https://www.olhaqueduas.com/og-rockinrio.jpg',
     imageAlt: 'Olha que Duas x Rock in Rio Lisboa 2026 — Parceiro Oficial',
     url: 'https://www.olhaqueduas.com/rockinrio',
@@ -229,136 +147,118 @@ const RockInRio = () => {
   const day = LINEUP[activeDay];
 
   return (
-    <div className="min-h-screen bg-[#080810]">
+    <div className="min-h-screen bg-[#060610]">
       <Header />
 
       {/* ════════════════════════ HERO ════════════════════════════════ */}
-      <section className="relative min-h-[100svh] flex items-end overflow-hidden">
-        {/* Background image — concert stage */}
+      <section className="relative min-h-[100svh] flex flex-col justify-end overflow-hidden">
+        {/* Background */}
         <div className="absolute inset-0">
-          <img
-            src={HERO_BG}
-            alt=""
-            className="w-full h-full object-cover object-center"
-            loading="eager"
-            aria-hidden="true"
-          />
-          {/* Dark overlay — bottom-heavy gradient for text readability */}
-          <div className="absolute inset-0" style={{
-            background: 'linear-gradient(to bottom, rgba(8,8,16,0.3) 0%, rgba(8,8,16,0.5) 40%, rgba(8,8,16,0.92) 75%, rgba(8,8,16,1) 100%)',
-          }} />
-          {/* Colour tint */}
-          <div className="absolute inset-0 mix-blend-overlay opacity-40" style={{
-            background: 'linear-gradient(135deg, hsl(217 85% 30%) 0%, transparent 50%, hsl(0 70% 30%) 100%)',
-          }} />
+          <img src={HERO_BG} alt="" className="w-full h-full object-cover" loading="eager" aria-hidden="true" />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(6,6,16,0.2) 0%, rgba(6,6,16,0.55) 40%, rgba(6,6,16,0.95) 70%, #060610 100%)' }} />
+          <div className="absolute inset-0 mix-blend-color opacity-30" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, transparent 60%, #991b1b 100%)' }} />
         </div>
 
-        {/* Content */}
-        <div className="relative z-10 w-full max-w-6xl mx-auto px-5 pb-16 pt-32 md:pb-24 md:pt-48">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-10 items-end">
-            {/* Left: text */}
-            <div>
-              <Animated animation="fade-up" delay={100}>
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-400/10 border border-amber-400/25 mb-6">
-                  <Star className="w-3.5 h-3.5 text-amber-400" fill="currentColor" />
-                  <span className="text-[11px] font-extrabold uppercase tracking-[0.25em] text-amber-300">
-                    Parceiro Oficial
-                  </span>
+        <div className="relative z-10 w-full">
+          {/* Partner logos — centered, large, clean */}
+          <Animated animation="fade-up" delay={150}>
+            <div className="flex flex-col items-center pt-28 md:pt-36 pb-10 md:pb-14">
+              <div className="flex items-center gap-5 sm:gap-8 md:gap-10">
+                <img
+                  src={siteConfig.rockInRio.partnerLogoWhite}
+                  alt="Rock in Rio Lisboa"
+                  className="w-32 sm:w-40 md:w-52 lg:w-60 rotate-90 drop-shadow-[0_4px_40px_rgba(255,255,255,0.15)]"
+                />
+                <div className="flex flex-col items-center gap-1.5 self-stretch justify-center">
+                  <div className="flex-1 w-px bg-gradient-to-b from-transparent via-white/20 to-transparent" />
+                  <span className="text-white/20 text-lg font-light select-none">&times;</span>
+                  <div className="flex-1 w-px bg-gradient-to-b from-transparent via-white/20 to-transparent" />
                 </div>
-              </Animated>
-
-              <Animated animation="fade-up" delay={200}>
-                <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white leading-[0.9] tracking-tighter mb-5">
-                  Rock in Rio
-                  <br />
-                  <span className="bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-500 bg-clip-text text-transparent">
-                    Lisboa 2026
-                  </span>
-                </h1>
-              </Animated>
-
-              <Animated animation="fade-up" delay={350}>
-                <p className="hero-subtitle text-base md:text-lg text-white/50 max-w-lg leading-relaxed mb-8 font-light">
-                  O maior festival de música e entretenimento do mundo.
-                  <br className="hidden md:block" />
-                  4 dias, 5 palcos, <span className="text-white/70 font-medium">80 000 pessoas por dia</span>.
-                </p>
-              </Animated>
-
-              <Animated animation="fade-up" delay={450}>
-                <div className="flex flex-wrap gap-3 mb-8">
-                  {[
-                    { icon: Calendar, label: '20 · 21 · 27 · 28 Jun' },
-                    { icon: MapPin, label: 'Parque Tejo, Lisboa' },
-                    { icon: Clock, label: 'Portas 13h' },
-                  ].map((p, i) => (
-                    <span key={i} className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-white/[0.06] border border-white/[0.08] text-xs text-white/50 font-medium">
-                      <p.icon className="w-3.5 h-3.5 text-white/30" />
-                      {p.label}
-                    </span>
-                  ))}
-                </div>
-              </Animated>
-
-              <Animated animation="fade-up" delay={550}>
-                <div className="flex flex-wrap gap-3">
-                  <a
-                    href="https://worten.seetickets.com/event/rock-in-rio-lisboa-2026/parque-tejo/3430460"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg font-bold text-sm uppercase tracking-wider bg-amber-400 text-black hover:bg-amber-300 transition-colors shadow-lg shadow-amber-500/20"
-                  >
-                    <Ticket className="w-4 h-4" />
-                    Bilhetes
-                    <ExternalLink className="w-3.5 h-3.5 opacity-60" />
-                  </a>
-                  <a
-                    href="#lineup"
-                    className="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg font-semibold text-sm text-white/70 border border-white/15 hover:bg-white/[0.06] hover:text-white transition-colors"
-                  >
-                    Ver Lineup
-                  </a>
-                </div>
-              </Animated>
-            </div>
-
-            {/* Right: dual logos — RiR white + Olha que Duas side by side */}
-            <Animated animation="fade-up" delay={300}>
-              <div className="hidden lg:flex flex-col items-center gap-5">
-                {/* Logos row */}
-                <div className="flex items-center gap-6">
-                  <img
-                    src={siteConfig.rockInRio.partnerLogoWhite}
-                    alt="Rock in Rio Lisboa"
-                    className="w-44 xl:w-52 rotate-45 drop-shadow-[0_0_40px_rgba(255,255,255,0.12)]"
-                  />
-                  <div className="w-px h-20 bg-white/15" />
-                  <img
-                    src="/icon-512x512.png"
-                    alt="Olha que Duas"
-                    className="w-24 xl:w-28 rounded-full drop-shadow-[0_0_30px_rgba(220,50,50,0.2)]"
-                  />
-                </div>
-                {/* Label */}
-                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/25">
+                <img
+                  src="/icon-512x512.png"
+                  alt="Olha que Duas"
+                  className="w-24 sm:w-28 md:w-36 lg:w-40 rounded-full shadow-[0_4px_40px_rgba(180,40,40,0.2)]"
+                />
+              </div>
+              <div className="mt-5 px-5 py-1.5 rounded-full bg-amber-400/[0.08] border border-amber-400/20">
+                <span className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-[0.3em] text-amber-300/80">
+                  <Star className="w-3 h-3 inline-block mr-1.5 -mt-0.5 text-amber-400" fill="currentColor" />
                   Parceiros Oficiais
+                  <Star className="w-3 h-3 inline-block ml-1.5 -mt-0.5 text-amber-400" fill="currentColor" />
                 </span>
               </div>
+            </div>
+          </Animated>
+
+          {/* Title + info + CTA */}
+          <div className="max-w-4xl mx-auto px-5 pb-20 md:pb-28 text-center">
+            <Animated animation="fade-up" delay={300}>
+              <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-black text-white leading-[0.9] tracking-[-0.03em] mb-4">
+                Rock in Rio
+                <br />
+                <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 bg-clip-text text-transparent">
+                  Lisboa 2026
+                </span>
+              </h1>
             </Animated>
+
+            <Animated animation="fade-up" delay={420}>
+              <p className="hero-subtitle text-base sm:text-lg md:text-xl text-white/40 max-w-xl mx-auto leading-relaxed mb-8">
+                O maior festival de música e entretenimento do mundo.
+                <br className="hidden sm:block" />
+                4 dias, 5 palcos, <span className="text-white/60 font-semibold">80 000 pessoas por dia</span>.
+              </p>
+            </Animated>
+
+            <Animated animation="fade-up" delay={520}>
+              <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
+                {[
+                  { icon: Calendar, label: '20 · 21 · 27 · 28 Jun' },
+                  { icon: MapPin, label: 'Parque Tejo, Lisboa' },
+                  { icon: Clock, label: 'Portas 13h' },
+                ].map((p, i) => (
+                  <span key={i} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.05] border border-white/[0.07] text-xs sm:text-sm text-white/40 font-medium">
+                    <p.icon className="w-3.5 h-3.5 text-amber-400/50" />
+                    {p.label}
+                  </span>
+                ))}
+              </div>
+            </Animated>
+
+            <Animated animation="fade-up" delay={620}>
+              <div className="flex flex-wrap justify-center gap-3">
+                <a
+                  href="https://worten.seetickets.com/event/rock-in-rio-lisboa-2026/parque-tejo/3430460"
+                  target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2.5 px-8 py-4 rounded-full font-extrabold text-sm uppercase tracking-wider bg-gradient-to-r from-amber-400 to-yellow-500 text-black hover:from-amber-300 hover:to-yellow-400 transition-all shadow-[0_4px_24px_rgba(251,191,36,0.25)] hover:shadow-[0_4px_32px_rgba(251,191,36,0.4)]"
+                >
+                  <Ticket className="w-4 h-4" />
+                  Comprar Bilhetes
+                  <ExternalLink className="w-3.5 h-3.5 opacity-50" />
+                </a>
+                <a href="#lineup" className="inline-flex items-center gap-2 px-7 py-4 rounded-full font-bold text-sm text-white/60 border border-white/[0.12] hover:bg-white/[0.05] hover:text-white/80 transition-all">
+                  Ver Lineup
+                </a>
+              </div>
+            </Animated>
+          </div>
+        </div>
+
+        {/* Scroll hint */}
+        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10">
+          <div className="w-5 h-8 rounded-full border border-white/15 flex justify-center pt-1.5">
+            <div className="w-0.5 h-2 rounded-full bg-white/30 animate-bounce" />
           </div>
         </div>
       </section>
 
       {/* ════════════════════════ HEADLINERS MARQUEE ══════════════════ */}
-      <section className="py-6 border-y border-white/[0.04] overflow-hidden bg-[#080810]">
-        <div className="animate-marquee flex items-center whitespace-nowrap gap-8 text-2xl md:text-3xl font-black tracking-tight text-white/[0.07] uppercase select-none">
+      <section className="py-5 border-y border-white/[0.04] overflow-hidden bg-[#060610]">
+        <div className="animate-marquee flex items-center whitespace-nowrap gap-10 text-xl md:text-2xl font-black tracking-tight text-white/[0.06] uppercase select-none">
           {[...Array(3)].map((_, r) => (
-            <span key={r} className="flex items-center gap-8">
-              {['Katy Perry', 'Linkin Park', 'Rod Stewart', '21 Savage', 'Cyndi Lauper', 'Central Cee', 'Cypress Hill', 'Rema', 'Joss Stone'].map((n, i) => (
-                <span key={i} className="flex items-center gap-8">
-                  {n}
-                  <span className="text-amber-400/20 text-base">&#9830;</span>
-                </span>
+            <span key={r} className="flex items-center gap-10">
+              {['Katy Perry', 'Linkin Park', 'Rod Stewart', '21 Savage', 'Cyndi Lauper', 'Central Cee', 'Cypress Hill', 'Rema', 'Joss Stone', 'CeeLo Green'].map((n, i) => (
+                <span key={i} className="flex items-center gap-10">{n}<span className="text-amber-400/15 text-xs">&#9830;</span></span>
               ))}
             </span>
           ))}
@@ -366,33 +266,30 @@ const RockInRio = () => {
       </section>
 
       {/* ════════════════════════ LINEUP ══════════════════════════════ */}
-      <section id="lineup" className="py-20 md:py-28 px-5 bg-[#080810]">
+      <section id="lineup" className="py-24 md:py-32 px-5 bg-[#060610]">
         <div className="max-w-5xl mx-auto">
           <Animated animation="fade-up">
-            <div className="text-center mb-14">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-amber-400/80 font-bold mb-3">Cartaz Completo</p>
-              <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight">
-                Lineup 2026
-              </h2>
+            <div className="text-center mb-16">
+              <p className="text-[10px] uppercase tracking-[0.3em] text-amber-400/70 font-bold mb-4">Cartaz Completo</p>
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight">Lineup 2026</h2>
             </div>
           </Animated>
 
-          {/* Day selector */}
+          {/* Day selector — segmented control */}
           <Animated animation="fade-up" delay={100}>
-            <div className="flex justify-center mb-12">
-              <div className="inline-flex rounded-xl bg-white/[0.03] border border-white/[0.06] p-1 gap-1">
+            <div className="flex justify-center mb-14">
+              <div className="inline-flex rounded-2xl bg-white/[0.03] border border-white/[0.06] p-1.5 gap-1.5">
                 {LINEUP.map((d, i) => (
                   <button
-                    key={i}
-                    onClick={() => setActiveDay(i)}
-                    className={`px-5 py-3 rounded-lg text-sm font-bold transition-all duration-200 ${
+                    key={i} onClick={() => setActiveDay(i)}
+                    className={`px-4 sm:px-6 py-3 sm:py-3.5 rounded-xl font-bold transition-all duration-200 ${
                       activeDay === i
-                        ? 'bg-white text-black shadow-md'
-                        : 'text-white/40 hover:text-white/70 hover:bg-white/[0.04]'
+                        ? 'bg-white text-[#060610] shadow-lg shadow-white/10'
+                        : 'text-white/35 hover:text-white/60 hover:bg-white/[0.04]'
                     }`}
                   >
-                    <span className="block leading-tight">{d.date.split(' ')[0]}</span>
-                    <span className={`block text-[9px] mt-0.5 uppercase tracking-widest ${activeDay === i ? 'text-black/50' : 'opacity-50'}`}>
+                    <span className="block text-sm sm:text-base leading-tight">{d.date.split(' ')[0]}</span>
+                    <span className={`block text-[9px] sm:text-[10px] mt-0.5 uppercase tracking-widest ${activeDay === i ? 'text-black/40' : 'opacity-50'}`}>
                       {d.label}
                     </span>
                   </button>
@@ -403,48 +300,48 @@ const RockInRio = () => {
 
           {/* Day header */}
           <Animated animation="fade-up" delay={150}>
-            <div className="flex items-center justify-between mb-6 px-1">
+            <div className="flex items-center justify-between mb-8 px-1">
               <div>
-                <h3 className="text-2xl font-black text-white tracking-tight">{day.date}, 2026</h3>
-                <p className="text-sm text-white/40 mt-0.5">{day.weekday} — {day.label}</p>
+                <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight">{day.date}, 2026</h3>
+                <p className="text-sm text-white/35 mt-1 font-medium">{day.weekday}</p>
               </div>
-              <span className={`px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest border ${day.accentBg} ${day.accent}`}>
+              <span className={`px-4 py-1.5 rounded-lg text-[10px] sm:text-[11px] font-extrabold uppercase tracking-widest border ${day.accentBg} ${day.accent}`}>
                 {day.label}
               </span>
             </div>
           </Animated>
 
-          {/* Lineup table */}
+          {/* Lineup table — clean, professional */}
           <Animated animation="fade-up" delay={200}>
-            <div className="rounded-2xl border border-white/[0.06] overflow-hidden">
-              <table className="w-full">
+            <div className="rounded-2xl border border-white/[0.07] overflow-hidden shadow-xl shadow-black/20">
+              <table className="w-full border-collapse">
                 <thead>
-                  <tr className="border-b border-white/[0.06] bg-white/[0.02]">
-                    <th className="text-left px-5 py-3.5 text-[10px] uppercase tracking-[0.2em] text-white/30 font-bold">Palco</th>
-                    <th className="text-left px-5 py-3.5 text-[10px] uppercase tracking-[0.2em] text-white/30 font-bold">Artistas</th>
+                  <tr className="bg-white/[0.03]">
+                    <th className="text-left px-6 py-4 text-[11px] uppercase tracking-[0.2em] text-white/25 font-bold border-b border-white/[0.06] w-[180px] md:w-[220px]">Palco</th>
+                    <th className="text-left px-6 py-4 text-[11px] uppercase tracking-[0.2em] text-white/25 font-bold border-b border-white/[0.06]">Artistas</th>
                   </tr>
                 </thead>
                 <tbody>
                   {day.stages.map((stage, si) => (
-                    <tr key={si} className="border-b border-white/[0.04] last:border-0 hover:bg-white/[0.015] transition-colors">
-                      <td className="px-5 py-4 align-top w-[160px] md:w-[200px]">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-1.5 h-1.5 rounded-full bg-amber-400/60 shrink-0" />
-                          <span className="text-xs font-bold text-white/60 uppercase tracking-wide leading-tight">{stage.name}</span>
+                    <tr key={si} className="border-b border-white/[0.05] last:border-0 group hover:bg-white/[0.02] transition-colors duration-300">
+                      <td className="px-6 py-5 align-top">
+                        <div className="flex items-center gap-3">
+                          <div className="w-2 h-2 rounded-full bg-amber-400/50 shrink-0 group-hover:bg-amber-400/80 transition-colors" />
+                          <span className="text-xs font-extrabold text-white/50 uppercase tracking-wider leading-tight">{stage.name}</span>
                         </div>
                       </td>
-                      <td className="px-5 py-4">
-                        <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                      <td className="px-6 py-5">
+                        <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-2">
                           {stage.artists.map((artist, ai) => (
                             <span key={ai}>
                               <span className={artist.headliner
-                                ? 'text-lg md:text-xl font-black text-white'
-                                : 'text-sm font-medium text-white/50'
+                                ? 'text-xl sm:text-2xl font-black text-white tracking-tight'
+                                : 'text-sm sm:text-base font-semibold text-white/45'
                               }>
                                 {artist.name}
                               </span>
                               {ai < stage.artists.length - 1 && (
-                                <span className="text-white/15 mx-1">·</span>
+                                <span className="text-white/10 mx-1.5 font-light">·</span>
                               )}
                             </span>
                           ))}
@@ -460,24 +357,24 @@ const RockInRio = () => {
       </section>
 
       {/* ════════════════════════ PALCOS ══════════════════════════════ */}
-      <section className="py-20 px-5 bg-[#0a0a14]">
+      <section className="py-24 px-5 bg-[#08080f]">
         <div className="max-w-5xl mx-auto">
           <Animated animation="fade-up">
-            <div className="text-center mb-12">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-amber-400/80 font-bold mb-3">5 Experiências Únicas</p>
-              <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight">Palcos</h2>
+            <div className="text-center mb-14">
+              <p className="text-[10px] uppercase tracking-[0.3em] text-amber-400/70 font-bold mb-4">5 Experiências Únicas</p>
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight">Palcos</h2>
             </div>
           </Animated>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {STAGES_INFO.map((stage, i) => (
               <Animated key={i} animation="fade-up" delay={i * 80}>
-                <div className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 hover:border-amber-400/20 transition-all duration-500">
-                  <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center mb-4 group-hover:border-amber-400/20 transition-colors">
-                    <stage.icon className="w-5 h-5 text-white/30 group-hover:text-amber-400/60 transition-colors" />
+                <div className="group rounded-2xl border border-white/[0.06] bg-white/[0.015] p-7 hover:border-amber-400/15 transition-all duration-500">
+                  <div className="w-12 h-12 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center mb-5 group-hover:border-amber-400/20 group-hover:bg-amber-400/[0.04] transition-all duration-500">
+                    <stage.icon className="w-5 h-5 text-white/25 group-hover:text-amber-400/60 transition-colors duration-500" />
                   </div>
-                  <h3 className="font-bold text-white text-sm tracking-wide mb-1.5">{stage.name}</h3>
-                  <p className="text-xs text-white/35 leading-relaxed">{stage.desc}</p>
+                  <h3 className="font-extrabold text-white text-base tracking-wide mb-2">{stage.name}</h3>
+                  <p className="text-sm text-white/30 leading-relaxed">{stage.desc}</p>
                 </div>
               </Animated>
             ))}
@@ -486,27 +383,23 @@ const RockInRio = () => {
       </section>
 
       {/* ════════════════════════ COMO CHEGAR ═════════════════════════ */}
-      <section className="py-20 px-5 bg-[#080810]">
+      <section className="py-24 px-5 bg-[#060610]">
         <div className="max-w-5xl mx-auto">
           <Animated animation="fade-up">
             <div className="text-center mb-14">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-amber-400/80 font-bold mb-3">Parque Tejo, Lisboa</p>
-              <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-2">Como Chegar</h2>
-              <p className="text-sm text-white/35">Passeio dos Heróis do Mar, 1990-059 Lisboa</p>
+              <p className="text-[10px] uppercase tracking-[0.3em] text-amber-400/70 font-bold mb-4">Parque Tejo, Lisboa</p>
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight mb-3">Como Chegar</h2>
+              <p className="text-sm text-white/30 font-medium">Passeio dos Heróis do Mar, 1990-059 Lisboa</p>
             </div>
           </Animated>
 
-          {/* Map embed */}
+          {/* Map */}
           <Animated animation="fade-up" delay={100}>
-            <div className="rounded-2xl overflow-hidden border border-white/[0.06] mb-10 aspect-[16/7]">
+            <div className="rounded-2xl overflow-hidden border border-white/[0.07] mb-12 aspect-[2/1] md:aspect-[16/7] shadow-xl shadow-black/20">
               <iframe
                 src="https://www.google.com/maps?q=38.776,-9.098&z=15&output=embed"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
+                width="100%" height="100%" style={{ border: 0 }}
+                allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"
                 title="Mapa — Parque Tejo, Lisboa"
               />
             </div>
@@ -514,36 +407,38 @@ const RockInRio = () => {
 
           {/* Transport table */}
           <Animated animation="fade-up" delay={200}>
-            <div className="rounded-2xl border border-white/[0.06] overflow-hidden mb-6">
-              <table className="w-full">
+            <div className="rounded-2xl border border-white/[0.07] overflow-hidden mb-6 shadow-xl shadow-black/20">
+              <table className="w-full border-collapse">
                 <thead>
-                  <tr className="border-b border-white/[0.06] bg-white/[0.02]">
-                    <th className="text-left px-5 py-3.5 text-[10px] uppercase tracking-[0.2em] text-white/30 font-bold">Transporte</th>
-                    <th className="text-left px-5 py-3.5 text-[10px] uppercase tracking-[0.2em] text-white/30 font-bold hidden md:table-cell">Detalhes</th>
-                    <th className="text-left px-5 py-3.5 text-[10px] uppercase tracking-[0.2em] text-white/30 font-bold hidden md:table-cell">Horário</th>
-                    <th className="text-right px-5 py-3.5 text-[10px] uppercase tracking-[0.2em] text-white/30 font-bold">Preço</th>
+                  <tr className="bg-white/[0.03]">
+                    <th className="text-left px-6 py-4 text-[11px] uppercase tracking-[0.2em] text-white/25 font-bold border-b border-white/[0.06]">Transporte</th>
+                    <th className="text-left px-6 py-4 text-[11px] uppercase tracking-[0.2em] text-white/25 font-bold border-b border-white/[0.06] hidden md:table-cell">Detalhes</th>
+                    <th className="text-left px-6 py-4 text-[11px] uppercase tracking-[0.2em] text-white/25 font-bold border-b border-white/[0.06] hidden lg:table-cell">Horário</th>
+                    <th className="text-right px-6 py-4 text-[11px] uppercase tracking-[0.2em] text-white/25 font-bold border-b border-white/[0.06]">Preço</th>
                   </tr>
                 </thead>
                 <tbody>
                   {TRANSPORT.map((t, i) => (
-                    <tr key={i} className="border-b border-white/[0.04] last:border-0 hover:bg-white/[0.015] transition-colors">
-                      <td className="px-5 py-4">
-                        <div className="flex items-center gap-3">
-                          <t.icon className="w-4 h-4 text-amber-400/60 shrink-0" />
+                    <tr key={i} className="border-b border-white/[0.05] last:border-0 hover:bg-white/[0.02] transition-colors duration-300">
+                      <td className="px-6 py-5">
+                        <div className="flex items-center gap-3.5">
+                          <div className="w-9 h-9 rounded-lg bg-amber-400/[0.06] border border-amber-400/15 flex items-center justify-center shrink-0">
+                            <t.icon className="w-4 h-4 text-amber-400/60" />
+                          </div>
                           <div>
                             <span className="text-sm font-bold text-white block">{t.title}</span>
-                            <span className="text-xs text-white/35 md:hidden">{t.detail}</span>
+                            <span className="text-xs text-white/30 md:hidden block mt-0.5">{t.detail}</span>
                           </div>
                         </div>
                       </td>
-                      <td className="px-5 py-4 hidden md:table-cell">
-                        <span className="text-xs text-white/50">{t.detail}</span>
+                      <td className="px-6 py-5 hidden md:table-cell">
+                        <span className="text-sm text-white/45">{t.detail}</span>
                       </td>
-                      <td className="px-5 py-4 hidden md:table-cell">
-                        <span className="text-xs text-white/35">{t.schedule}</span>
+                      <td className="px-6 py-5 hidden lg:table-cell">
+                        <span className="text-sm text-white/30">{t.schedule}</span>
                       </td>
-                      <td className="px-5 py-4 text-right">
-                        <span className="text-xs font-bold text-amber-400/80">{t.price || '—'}</span>
+                      <td className="px-6 py-5 text-right">
+                        <span className="text-sm font-bold text-amber-400/70">{t.price || '—'}</span>
                       </td>
                     </tr>
                   ))}
@@ -553,10 +448,10 @@ const RockInRio = () => {
           </Animated>
 
           <Animated animation="fade-up" delay={300}>
-            <div className="flex items-start gap-3 p-4 rounded-xl bg-red-500/[0.05] border border-red-500/15">
-              <AlertTriangle className="w-4 h-4 text-red-400/70 shrink-0 mt-0.5" />
-              <p className="text-xs text-red-300/60 leading-relaxed">
-                <strong className="text-red-300/80">Sem estacionamento</strong> junto ao recinto. Ruas envolventes de acesso exclusivo a moradores. Recomenda-se transportes públicos ou TVDE.
+            <div className="flex items-start gap-3.5 p-5 rounded-xl bg-red-500/[0.04] border border-red-500/10">
+              <AlertTriangle className="w-4 h-4 text-red-400/60 shrink-0 mt-0.5" />
+              <p className="text-sm text-red-300/50 leading-relaxed">
+                <strong className="text-red-300/70 font-bold">Sem estacionamento</strong> junto ao recinto. Ruas envolventes de acesso exclusivo a moradores. Recomenda-se transportes públicos ou TVDE.
               </p>
             </div>
           </Animated>
@@ -564,57 +459,50 @@ const RockInRio = () => {
       </section>
 
       {/* ════════════════════════ CTA ═════════════════════════════════ */}
-      <section className="py-24 px-5 bg-[#0a0a14]">
+      <section className="py-24 px-5 bg-[#08080f]">
         <div className="max-w-4xl mx-auto">
           <Animated animation="fade-up">
-            <div className="relative rounded-3xl overflow-hidden">
-              {/* BG — re-use hero image */}
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-black/40">
+              {/* BG */}
               <div className="absolute inset-0">
                 <img src={HERO_BG} alt="" className="w-full h-full object-cover" aria-hidden="true" />
-                <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" />
-                <div className="absolute inset-0 mix-blend-overlay opacity-50" style={{
-                  background: 'linear-gradient(135deg, hsl(217 85% 30%) 0%, transparent 50%, hsl(0 70% 30%) 100%)',
-                }} />
+                <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+                <div className="absolute inset-0 mix-blend-overlay opacity-40" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, transparent 50%, #991b1b 100%)' }} />
               </div>
 
-              <div className="relative z-10 p-10 md:p-16 flex flex-col md:flex-row items-center gap-10">
-                {/* Logo */}
-                <img
-                  src={siteConfig.rockInRio.partnerLogo}
-                  alt="Rock in Rio Lisboa"
-                  className="w-36 md:w-44 shrink-0 drop-shadow-2xl"
-                />
+              <div className="relative z-10 p-10 sm:p-12 md:p-16 flex flex-col md:flex-row items-center gap-8 md:gap-12">
+                {/* Logos */}
+                <div className="flex items-center gap-4 shrink-0">
+                  <img src={siteConfig.rockInRio.partnerLogo} alt="Rock in Rio Lisboa" className="w-28 md:w-36 drop-shadow-2xl" />
+                  <div className="w-px h-16 bg-white/15" />
+                  <img src="/icon-512x512.png" alt="Olha que Duas" className="w-20 md:w-24 rounded-full shadow-lg" />
+                </div>
 
                 {/* Text + CTA */}
                 <div className="text-center md:text-left flex-1">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-amber-400/10 border border-amber-400/25 mb-4">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-amber-400/10 border border-amber-400/20 mb-4">
                     <Users className="w-3 h-3 text-amber-400" />
-                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-amber-300">A Olha que Duas vai estar lá</span>
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-amber-300/80">A Olha que Duas vai estar lá</span>
                   </div>
 
-                  <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-3">
-                    Garante o teu bilhete
-                  </h2>
-                  <p className="text-sm text-white/45 mb-8 max-w-md leading-relaxed">
+                  <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-3">Garante o teu bilhete</h2>
+                  <p className="text-sm text-white/40 mb-8 max-w-md leading-relaxed">
                     Junta-te a nós no maior festival do mundo. Bilhetes disponíveis na Worten e pontos de venda oficiais.
                   </p>
 
                   <div className="flex flex-wrap justify-center md:justify-start gap-3">
                     <a
                       href="https://worten.seetickets.com/event/rock-in-rio-lisboa-2026/parque-tejo/3430460"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg font-bold text-sm uppercase tracking-wider bg-amber-400 text-black hover:bg-amber-300 transition-colors shadow-lg shadow-amber-500/20"
+                      target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-extrabold text-sm uppercase tracking-wider bg-gradient-to-r from-amber-400 to-yellow-500 text-black hover:from-amber-300 hover:to-yellow-400 transition-all shadow-lg shadow-amber-500/20"
                     >
                       <Ticket className="w-4 h-4" />
                       Comprar Bilhetes
                       <ExternalLink className="w-3.5 h-3.5 opacity-50" />
                     </a>
                     <a
-                      href="https://rockinriolisboa.pt/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg font-semibold text-sm text-white/60 border border-white/15 hover:bg-white/[0.06] hover:text-white transition-colors"
+                      href="https://rockinriolisboa.pt/" target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-bold text-sm text-white/50 border border-white/[0.12] hover:bg-white/[0.05] hover:text-white/70 transition-all"
                     >
                       rockinriolisboa.pt
                       <ExternalLink className="w-3.5 h-3.5" />
