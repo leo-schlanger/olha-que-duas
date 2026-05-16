@@ -15,46 +15,54 @@ import { siteConfig } from '@/config/site';
    DATA
    ═══════════════════════════════════════════════════════════════════════════ */
 
-interface Artist { name: string; headliner?: boolean }
+interface Artist { name: string; headliner?: boolean; photo?: string }
 interface Stage { name: string; artists: Artist[] }
-interface Day { date: string; weekday: string; label: string; accent: string; accentBg: string; stages: Stage[] }
+interface Day { date: string; weekday: string; label: string; gradient: string; accent: string; accentBg: string; stages: Stage[] }
+
+const A = (name: string, slug: string, headliner?: boolean): Artist => ({
+  name, headliner, photo: `/rockinrio/artists/${slug}.jpg`,
+});
 
 const LINEUP: Day[] = [
   {
     date: '20 Junho', weekday: 'Sábado', label: 'Pop Day',
+    gradient: 'from-pink-600 to-rose-500',
     accent: 'text-pink-400', accentBg: 'bg-pink-500/10 border-pink-500/20',
     stages: [
-      { name: 'Palco Mundo', artists: [{ name: 'Katy Perry', headliner: true }, { name: 'Charlie Puth' }, { name: 'Alok' }, { name: 'Nena' }] },
-      { name: 'Super Bock Stage', artists: [{ name: 'Bebe Rexha' }, { name: 'Pedro Sampaio' }, { name: 'Calema' }, { name: 'NAPA' }] },
+      { name: 'Palco Mundo', artists: [A('Katy Perry', 'katy-perry', true), A('Charlie Puth', 'charlie-puth'), A('Alok', 'alok'), { name: 'Nena' }] },
+      { name: 'Super Bock Stage', artists: [A('Bebe Rexha', 'bebe-rexha'), A('Pedro Sampaio', 'pedro-sampaio'), { name: 'Calema' }, { name: 'NAPA' }] },
       { name: 'Music Valley', artists: [{ name: 'Maninho' }, { name: 'Audrey Nuna' }, { name: 'Sofia Camara' }] },
     ],
   },
   {
     date: '21 Junho', weekday: 'Domingo', label: 'Rock Day',
+    gradient: 'from-red-700 to-orange-500',
     accent: 'text-red-400', accentBg: 'bg-red-500/10 border-red-500/20',
     stages: [
-      { name: 'Palco Mundo', artists: [{ name: 'Linkin Park', headliner: true }, { name: 'Cypress Hill' }, { name: 'The Pretty Reckless' }, { name: 'Grandson' }] },
-      { name: 'Music Valley', artists: [{ name: 'Kaiser Chiefs' }, { name: 'Hoobastank' }, { name: 'Blasted Mechanism' }] },
-      { name: 'Super Bock Stage', artists: [{ name: 'Sepultura' }, { name: 'P.O.D.' }, { name: 'Tara Perdida' }] },
+      { name: 'Palco Mundo', artists: [A('Linkin Park', 'linkin-park', true), A('Cypress Hill', 'cypress-hill'), { name: 'The Pretty Reckless' }, { name: 'Grandson' }] },
+      { name: 'Music Valley', artists: [A('Kaiser Chiefs', 'kaiser-chiefs'), { name: 'Hoobastank' }, { name: 'Blasted Mechanism' }] },
+      { name: 'Super Bock Stage', artists: [A('Sepultura', 'sepultura'), { name: 'P.O.D.' }, { name: 'Tara Perdida' }] },
       { name: 'BacanaPlay Digital Stage', artists: [{ name: 'Sam the Kid' }, { name: 'Orelha Negra' }] },
     ],
   },
   {
     date: '27 Junho', weekday: 'Sábado', label: 'Legends Day',
+    gradient: 'from-amber-600 to-yellow-400',
     accent: 'text-amber-400', accentBg: 'bg-amber-500/10 border-amber-500/20',
     stages: [
-      { name: 'Palco Mundo', artists: [{ name: 'Rod Stewart', headliner: true }, { name: 'Cyndi Lauper' }, { name: '4 Non Blondes' }, { name: 'Shaggy' }] },
+      { name: 'Palco Mundo', artists: [A('Rod Stewart', 'rod-stewart', true), A('Cyndi Lauper', 'cyndi-lauper'), { name: '4 Non Blondes' }, A('Shaggy', 'shaggy')] },
       { name: 'Music Valley', artists: [{ name: 'Xutos & Pontapés' }, { name: 'GNR' }, { name: 'UHF' }, { name: 'Táxi' }, { name: 'Jafumega' }] },
-      { name: 'Super Bock Stage', artists: [{ name: 'Joss Stone' }, { name: 'The Wailers' }, { name: 'Belo' }, { name: 'SYRO' }] },
+      { name: 'Super Bock Stage', artists: [A('Joss Stone', 'joss-stone'), { name: 'The Wailers' }, { name: 'Belo' }, { name: 'SYRO' }] },
     ],
   },
   {
     date: '28 Junho', weekday: 'Domingo', label: 'Urban Day',
+    gradient: 'from-violet-600 to-purple-500',
     accent: 'text-violet-400', accentBg: 'bg-violet-500/10 border-violet-500/20',
     stages: [
-      { name: 'Palco Mundo', artists: [{ name: '21 Savage', headliner: true }, { name: 'Central Cee' }, { name: 'Rema' }, { name: 'Matué' }] },
+      { name: 'Palco Mundo', artists: [A('21 Savage', '21-savage', true), A('Central Cee', 'central-cee'), A('Rema', 'rema'), { name: 'Matué' }] },
       { name: 'Music Valley', artists: [{ name: 'Filipe Ret' }, { name: 'DENNIS' }, { name: 'Carlão' }, { name: 'Irina Barros' }] },
-      { name: 'Super Bock Stage', artists: [{ name: 'CeeLo Green' }, { name: 'Lola Indigo' }] },
+      { name: 'Super Bock Stage', artists: [A('CeeLo Green', 'ceelo-green'), A('Lola Indigo', 'lola-indigo')] },
     ],
   },
 ];
@@ -235,7 +243,7 @@ const RockInRio = () => {
         </Animated>
       </section>
 
-      {/* ════════════════════════ LINEUP TABLE ════════════════════════ */}
+      {/* ════════════════════════ LINEUP ═════════════════════════════ */}
       <section id="lineup" className="py-24 md:py-32 px-5 bg-[#060610]">
         <div className="max-w-5xl mx-auto">
           <Animated animation="fade-up">
@@ -245,6 +253,7 @@ const RockInRio = () => {
             </div>
           </Animated>
 
+          {/* Day selector */}
           <Animated animation="fade-up" delay={100}>
             <div className="flex justify-center mb-14">
               <div className="inline-flex rounded-2xl bg-white/[0.03] border border-white/[0.06] p-1.5 gap-1.5">
@@ -259,8 +268,9 @@ const RockInRio = () => {
             </div>
           </Animated>
 
+          {/* Day header */}
           <Animated animation="fade-up" delay={150}>
-            <div className="flex items-center justify-between mb-8 px-1">
+            <div className="flex items-center justify-between mb-10 px-1">
               <div>
                 <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight">{day.date}, 2026</h3>
                 <p className="text-sm text-white/35 mt-1 font-medium">{day.weekday}</p>
@@ -269,38 +279,70 @@ const RockInRio = () => {
             </div>
           </Animated>
 
-          <Animated animation="fade-up" delay={200}>
-            <div className="rounded-2xl border border-white/[0.07] overflow-hidden shadow-xl shadow-black/20">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-white/[0.03]">
-                    <th className="text-left px-6 py-4 text-[11px] uppercase tracking-[0.2em] text-white/25 font-bold border-b border-white/[0.06] w-[180px] md:w-[220px]">Palco</th>
-                    <th className="text-left px-6 py-4 text-[11px] uppercase tracking-[0.2em] text-white/25 font-bold border-b border-white/[0.06]">Artistas</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {day.stages.map((stage, si) => (
-                    <tr key={si} className="border-b border-white/[0.05] last:border-0 group hover:bg-white/[0.02] transition-colors duration-300">
-                      <td className="px-6 py-5 align-top">
-                        <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 rounded-full bg-amber-400/50 shrink-0 group-hover:bg-amber-400/80 transition-colors" />
-                          <span className="text-xs font-extrabold text-white/50 uppercase tracking-wider leading-tight">{stage.name}</span>
+          {/* Headliner card — full width, large */}
+          {day.stages[0]?.artists[0]?.headliner && (
+            <Animated animation="fade-up" delay={200}>
+              <div className={`relative rounded-2xl overflow-hidden mb-8 bg-gradient-to-r ${day.gradient} p-[1px]`}>
+                <div className="rounded-[15px] bg-[#0a0a14] p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6">
+                  {day.stages[0].artists[0].photo && (
+                    <img
+                      src={day.stages[0].artists[0].photo}
+                      alt={day.stages[0].artists[0].name}
+                      className="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl object-cover shadow-xl shrink-0"
+                      loading="lazy"
+                    />
+                  )}
+                  <div className="text-center sm:text-left">
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-white/30 font-bold mb-2">Headliner — {day.stages[0].name}</p>
+                    <h4 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-none mb-3">
+                      {day.stages[0].artists[0].name}
+                    </h4>
+                    <span className={`inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-gradient-to-r ${day.gradient} text-white`}>
+                      {day.label}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </Animated>
+          )}
+
+          {/* Artists grid — visual cards with photos */}
+          <Animated animation="fade-up" delay={300}>
+            <div className="space-y-8">
+              {day.stages.map((stage, si) => {
+                const artists = si === 0 ? stage.artists.slice(1) : stage.artists;
+                if (artists.length === 0) return null;
+                return (
+                  <div key={si}>
+                    <div className="flex items-center gap-2.5 mb-4">
+                      <div className="w-2 h-2 rounded-full bg-amber-400/50" />
+                      <span className="text-xs font-extrabold text-white/40 uppercase tracking-wider">{stage.name}</span>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                      {artists.map((artist, ai) => (
+                        <div
+                          key={ai}
+                          className="group relative rounded-xl overflow-hidden border border-white/[0.06] hover:border-white/[0.15] transition-all duration-300 aspect-square"
+                        >
+                          {artist.photo ? (
+                            <>
+                              <img src={artist.photo} alt={artist.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                            </>
+                          ) : (
+                            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-white/[0.01] flex items-center justify-center">
+                              <Music className="w-8 h-8 text-white/10" />
+                            </div>
+                          )}
+                          <div className="absolute bottom-0 left-0 right-0 p-3">
+                            <p className="text-sm font-bold text-white leading-tight drop-shadow-lg">{artist.name}</p>
+                          </div>
                         </div>
-                      </td>
-                      <td className="px-6 py-5">
-                        <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-2">
-                          {stage.artists.map((artist, ai) => (
-                            <span key={ai}>
-                              <span className={artist.headliner ? 'text-xl sm:text-2xl font-black text-white tracking-tight' : 'text-sm sm:text-base font-semibold text-white/45'}>{artist.name}</span>
-                              {ai < stage.artists.length - 1 && <span className="text-white/10 mx-1.5 font-light">·</span>}
-                            </span>
-                          ))}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </Animated>
         </div>
