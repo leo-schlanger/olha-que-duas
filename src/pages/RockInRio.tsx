@@ -485,13 +485,12 @@ const RockInRio = () => {
           <Animated animation="fade-up" delay={100}>
             <div className="rounded-2xl overflow-hidden border border-white/[0.06] mb-10 aspect-[16/7]">
               <iframe
-                src="https://maps.google.com/maps?q=Parque+Tejo,+Lisboa,+Portugal&t=&z=14&ie=UTF8&iwloc=&output=embed"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=-9.115%2C38.765%2C-9.080%2C38.787&layer=mapnik&marker=38.776%2C-9.098"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
                 title="Mapa — Parque Tejo, Lisboa"
               />
             </div>
