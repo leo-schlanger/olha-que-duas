@@ -165,9 +165,9 @@ const RockInRio = () => {
             <div className="flex flex-col items-center pt-28 md:pt-36 pb-10 md:pb-14">
               <div className="flex items-center gap-5 sm:gap-8 md:gap-10">
                 <img
-                  src={siteConfig.rockInRio.partnerLogoWhite}
+                  src={siteConfig.rockInRio.partnerLogo}
                   alt="Rock in Rio Lisboa"
-                  className="w-28 sm:w-36 md:w-44 lg:w-48 rotate-90 drop-shadow-[0_4px_40px_rgba(255,255,255,0.15)]"
+                  className="w-32 sm:w-40 md:w-52 lg:w-56 drop-shadow-[0_4px_40px_rgba(30,100,220,0.3)]"
                 />
                 <div className="flex flex-col items-center gap-1.5 self-stretch justify-center">
                   <div className="flex-1 w-px bg-gradient-to-b from-transparent via-white/20 to-transparent" />
@@ -177,7 +177,7 @@ const RockInRio = () => {
                 <img
                   src="/icon-512x512.png"
                   alt="Olha que Duas"
-                  className="w-24 sm:w-32 md:w-40 lg:w-44 rounded-full shadow-[0_4px_40px_rgba(180,40,40,0.2)]"
+                  className="w-28 sm:w-36 md:w-44 lg:w-48 rounded-full shadow-[0_4px_40px_rgba(180,40,40,0.2)]"
                 />
               </div>
               <div className="mt-5 px-5 py-1.5 rounded-full bg-amber-400/[0.08] border border-amber-400/20">
