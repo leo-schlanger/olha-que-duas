@@ -554,15 +554,24 @@ const RockInRio = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {STAGES_INFO.map((stage, i) => (
               <Animated key={i} animation="fade-up" delay={i * 100}>
-                <div className="group relative rounded-2xl overflow-hidden border border-white/[0.06] aspect-[16/9]">
-                  <img src={stage.img} alt={stage.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6">
-                    <div className="flex items-center gap-2.5 mb-2">
-                      <stage.icon className="w-4 h-4 text-amber-400/70" />
-                      <h3 className="font-extrabold text-white text-base sm:text-lg tracking-wide">{stage.name}</h3>
+                <div className="group rounded-2xl overflow-hidden border border-white/[0.06]">
+                  <div className="relative aspect-video sm:aspect-[16/9]">
+                    <img src={stage.img} alt={stage.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent hidden sm:block" />
+                    <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 hidden sm:block">
+                      <div className="flex items-center gap-2.5 mb-2">
+                        <stage.icon className="w-4 h-4 text-amber-400/70" />
+                        <h3 className="font-extrabold text-white text-base sm:text-lg tracking-wide">{stage.name}</h3>
+                      </div>
+                      <p className="text-xs sm:text-sm text-white/50 leading-relaxed">{stage.desc}</p>
                     </div>
-                    <p className="text-xs sm:text-sm text-white/50 leading-relaxed line-clamp-3 sm:line-clamp-none">{stage.desc}</p>
+                  </div>
+                  <div className="p-4 sm:hidden bg-[#0a0a14]">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <stage.icon className="w-4 h-4 text-amber-400/70" />
+                      <h3 className="font-extrabold text-white text-sm">{stage.name}</h3>
+                    </div>
+                    <p className="text-xs text-white/50 leading-relaxed">{stage.desc}</p>
                   </div>
                 </div>
               </Animated>
@@ -584,21 +593,29 @@ const RockInRio = () => {
 
           {/* The Flight — NOVO 2026 — full-width hero */}
           <Animated animation="fade-up" delay={80}>
-            <div className="relative rounded-2xl overflow-hidden border border-amber-400/15 mb-8 group">
-              <div className="aspect-[21/9] sm:aspect-[21/7] relative">
+            <div className="rounded-2xl overflow-hidden border border-amber-400/15 mb-8 group">
+              <div className="aspect-video sm:aspect-[21/7] relative">
                 <img src="/rockinrio/the-flight.jpg" alt="The Flight — Show aéreo Rock in Rio Lisboa 2026" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 hidden sm:block" />
+                <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-8 hidden sm:block">
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <Plane className="w-4 h-4 text-amber-400" />
+                    <h3 className="font-black text-white text-lg sm:text-2xl">The Flight</h3>
+                    <span className="px-2.5 py-0.5 rounded-full bg-amber-400/15 border border-amber-400/25 text-[9px] font-bold uppercase tracking-wider text-amber-400">Novo 2026</span>
+                  </div>
+                  <p className="text-sm text-white/50 leading-relaxed max-w-2xl">
+                    Cinco aviões Yak-52 da equipa acrobática Yakstars executam um ballet aéreo sincronizado sobre a Cidade do Rock — loops, mergulhos e cruzamentos milimétricos, acompanhados por uma partitura musical original e mais de 400 tiros pirotécnicos. Todos os dias entre as 20h e as 21h, com o Tejo e a Ponte Vasco da Gama como cenário.
+                  </p>
+                </div>
               </div>
-              <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-8">
+              <div className="p-4 sm:hidden bg-[#0a0a14]">
                 <div className="flex flex-wrap items-center gap-2 mb-2">
                   <Plane className="w-4 h-4 text-amber-400" />
-                  <h3 className="font-black text-white text-lg sm:text-2xl">The Flight</h3>
-                  <span className="px-2.5 py-0.5 rounded-full bg-amber-400/15 border border-amber-400/25 text-[9px] font-bold uppercase tracking-wider text-amber-400">
-                    Novo 2026
-                  </span>
+                  <h3 className="font-black text-white text-base">The Flight</h3>
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-400/15 border border-amber-400/25 text-[9px] font-bold uppercase tracking-wider text-amber-400">Novo 2026</span>
                 </div>
-                <p className="text-xs sm:text-sm text-white/50 leading-relaxed max-w-2xl line-clamp-4 sm:line-clamp-none">
-                  Cinco aviões Yak-52 da equipa acrobática Yakstars executam um ballet aéreo sincronizado sobre a Cidade do Rock — loops, mergulhos e cruzamentos milimétricos, acompanhados por uma partitura musical original e mais de 400 tiros pirotécnicos. Todos os dias entre as 20h e as 21h, com o Tejo e a Ponte Vasco da Gama como cenário.
+                <p className="text-xs text-white/45 leading-relaxed">
+                  Cinco aviões Yak-52 da equipa acrobática Yakstars executam um ballet aéreo sincronizado sobre a Cidade do Rock — loops, mergulhos e cruzamentos milimétricos, acompanhados por uma partitura musical original e mais de 400 tiros pirotécnicos. Todos os dias entre as 20h e as 21h.
                 </p>
               </div>
             </div>
@@ -608,12 +625,18 @@ const RockInRio = () => {
           <Animated animation="fade-up" delay={150}>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
               {PHOTO_ATTRACTIONS.map((a, i) => (
-                <div key={i} className="group relative rounded-2xl overflow-hidden border border-white/[0.06] aspect-video sm:aspect-[4/3]">
-                  <img src={a.img} alt={a.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
-                    <h3 className="font-extrabold text-white text-sm sm:text-base mb-1">{a.name}</h3>
-                    <p className="text-[11px] sm:text-xs text-white/45 leading-relaxed line-clamp-3 sm:line-clamp-4">{a.desc}</p>
+                <div key={i} className="group rounded-2xl overflow-hidden border border-white/[0.06]">
+                  <div className="relative aspect-video sm:aspect-[4/3]">
+                    <img src={a.img} alt={a.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent hidden sm:block" />
+                    <div className="absolute bottom-0 left-0 right-0 p-5 hidden sm:block">
+                      <h3 className="font-extrabold text-white text-base mb-1">{a.name}</h3>
+                      <p className="text-xs text-white/45 leading-relaxed">{a.desc}</p>
+                    </div>
+                  </div>
+                  <div className="p-4 sm:hidden bg-[#0a0a14]">
+                    <h3 className="font-extrabold text-white text-sm mb-1">{a.name}</h3>
+                    <p className="text-[11px] text-white/45 leading-relaxed">{a.desc}</p>
                   </div>
                 </div>
               ))}
@@ -624,17 +647,28 @@ const RockInRio = () => {
           <Animated animation="fade-up" delay={200}>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
               {PHOTO_EXPERIENCES.map((exp, i) => (
-                <div key={i} className="group relative rounded-2xl overflow-hidden border border-white/[0.06] aspect-video sm:aspect-[4/3]">
-                  <img src={exp.img} alt={exp.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
+                <div key={i} className="group rounded-2xl overflow-hidden border border-white/[0.06]">
+                  <div className="relative aspect-video sm:aspect-[4/3]">
+                    <img src={exp.img} alt={exp.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent hidden sm:block" />
+                    <div className="absolute bottom-0 left-0 right-0 p-5 hidden sm:block">
+                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                        <h3 className="font-extrabold text-white text-base">{exp.name}</h3>
+                        {exp.badge && (
+                          <span className="px-2 py-0.5 rounded-full bg-amber-400/15 border border-amber-400/25 text-[8px] font-bold uppercase tracking-wider text-amber-400">{exp.badge}</span>
+                        )}
+                      </div>
+                      <p className="text-xs text-white/45 leading-relaxed">{exp.desc}</p>
+                    </div>
+                  </div>
+                  <div className="p-4 sm:hidden bg-[#0a0a14]">
                     <div className="flex flex-wrap items-center gap-2 mb-1">
-                      <h3 className="font-extrabold text-white text-sm sm:text-base">{exp.name}</h3>
+                      <h3 className="font-extrabold text-white text-sm">{exp.name}</h3>
                       {exp.badge && (
                         <span className="px-2 py-0.5 rounded-full bg-amber-400/15 border border-amber-400/25 text-[8px] font-bold uppercase tracking-wider text-amber-400">{exp.badge}</span>
                       )}
                     </div>
-                    <p className="text-[11px] sm:text-xs text-white/45 leading-relaxed line-clamp-3 sm:line-clamp-4">{exp.desc}</p>
+                    <p className="text-[11px] text-white/45 leading-relaxed">{exp.desc}</p>
                   </div>
                 </div>
               ))}
@@ -652,7 +686,7 @@ const RockInRio = () => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="font-bold text-white text-sm mb-1.5">{exp.name}</h4>
-                      <p className="text-xs text-white/40 leading-relaxed line-clamp-4 sm:line-clamp-none">{exp.desc}</p>
+                      <p className="text-xs text-white/40 leading-relaxed">{exp.desc}</p>
                     </div>
                   </div>
                 </div>
