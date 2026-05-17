@@ -18,46 +18,36 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-10 mb-10">
           {/* Brand */}
           <div className="flex flex-col items-center md:items-start">
-            {/* Logos side by side */}
-            <div className="flex items-center gap-4 md:gap-5 mb-4">
+            <div className="flex items-center gap-5 md:gap-6 mb-5">
               <img
                 src={logo}
                 alt={siteConfig.info.name}
-                className="h-24 md:h-28 w-auto"
+                className="h-20 md:h-24 w-auto"
                 loading="lazy"
               />
               {siteConfig.rockInRio.enabled && (
-                <a
-                  href={siteConfig.rockInRio.partnerUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group relative shrink-0"
-                >
-                  <div
-                    className="absolute -inset-2 rounded-xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity"
-                    style={{ background: "linear-gradient(135deg, hsla(217,85%,55%,0.5), hsla(0,75%,50%,0.4))" }}
-                  />
-                  <div
-                    className="relative rounded-xl p-2.5 md:p-3 border border-white/20 group-hover:border-white/40 transition-all duration-300"
-                    style={{ background: "linear-gradient(135deg, hsl(217 85% 35%), hsl(0 70% 38%))" }}
+                <>
+                  <div className="h-12 w-px bg-gradient-to-b from-transparent via-cream/15 to-transparent" />
+                  <a
+                    href={siteConfig.rockInRio.partnerUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex flex-col items-center gap-2 shrink-0"
                   >
                     <img
-                      src={siteConfig.rockInRio.partnerLogo}
+                      src={siteConfig.rockInRio.partnerLogoWhite}
                       alt={siteConfig.rockInRio.partnerName}
-                      className="h-14 md:h-16 w-auto object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-300"
+                      className="h-14 md:h-16 w-auto object-contain rotate-90 opacity-70 group-hover:opacity-100 transition-opacity duration-300"
                       loading="lazy"
                     />
-                    <span
-                      className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[7px] md:text-[8px] font-bold uppercase tracking-widest text-white whitespace-nowrap shadow-md"
-                      style={{ background: "linear-gradient(90deg, hsl(217 85% 50%), hsl(0 75% 48%))" }}
-                    >
+                    <span className="px-2 py-0.5 rounded-full bg-cream/[0.06] border border-cream/10 text-[7px] md:text-[8px] font-bold uppercase tracking-widest text-cream/40 whitespace-nowrap">
                       Parceiro Oficial
                     </span>
-                  </div>
-                </a>
+                  </a>
+                </>
               )}
             </div>
-            <p className="text-cream/60 text-sm md:text-base text-center md:text-left max-w-xs leading-relaxed">
+            <p className="text-cream/50 text-sm md:text-base text-center md:text-left max-w-xs leading-relaxed">
               {siteConfig.info.tagline}
             </p>
           </div>
