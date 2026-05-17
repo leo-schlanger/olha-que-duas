@@ -3,7 +3,8 @@ import {
   Calendar, MapPin, Clock, Music, Train, Bus, Car, Ticket,
   ExternalLink, Globe, Radio, Smartphone,
   Star, Users, Navigation, AlertTriangle, X, Info,
-  Headphones, ChevronRight,
+  Headphones, ChevronRight, Plane, Utensils, Gamepad2,
+  Sparkles, Leaf,
 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -129,17 +130,25 @@ const LINEUP: Day[] = [
 ];
 
 const STAGES_INFO = [
-  { name: 'Palco Mundo', desc: 'O palco principal — os maiores nomes da música mundial', icon: Globe, img: '/rockinrio/palco-mundo.jpg' },
-  { name: 'Music Valley', desc: 'Sons diversos, reuniões lendárias e artistas emergentes', icon: Music, img: '/rockinrio/music-valley.jpg' },
-  { name: 'Super Bock Stage', desc: 'Rock, metal, alternativo e punk', icon: Radio, img: '/rockinrio/super-bock.jpg' },
-  { name: 'BacanaPlay Digital Stage', desc: 'Entretenimento digital, humor e podcasters', icon: Smartphone, img: '/rockinrio/bacanaplay.jpg' },
+  { name: 'Palco Mundo', desc: 'O palco principal e maior do festival, com novo espetáculo audiovisual para 2026. Aqui atuam os headliners e os maiores nomes da música mundial perante 80 000 pessoas.', icon: Globe, img: '/rockinrio/palco-mundo.jpg' },
+  { name: 'Music Valley', desc: 'O vale dos sons diversos — reuniões lendárias, artistas emergentes e descobertas inesperadas. Powered by Galp, é o palco onde nascem as surpresas do festival.', icon: Music, img: '/rockinrio/music-valley.jpg' },
+  { name: 'Super Bock Stage', desc: 'A casa do rock, metal, alternativo e punk na Cidade do Rock. Palco com identidade própria e público fiel que procura sons mais pesados e intensos.', icon: Radio, img: '/rockinrio/super-bock.jpg' },
+  { name: 'BacanaPlay Digital Stage', desc: 'O palco mais digital do festival — música, humor, podcasts, talk shows e fenómenos virais. Co-curado por New Sheet Entertainment e milk&black, maior e mais relevante do que nunca em 2026.', icon: Smartphone, img: '/rockinrio/bacanaplay.jpg' },
 ];
 
-const ATTRACTIONS = [
-  { name: 'Roda Gigante', desc: 'Vista panorâmica da Cidade do Rock e do rio Tejo', img: '/rockinrio/roda-gigante.jpg' },
-  { name: 'The Flight', desc: 'Acrobacia aérea com avião Rock in Rio', img: '/rockinrio/the-flight.jpg' },
-  { name: 'Slide', desc: 'O escorrega gigante da Cidade do Rock', img: '/rockinrio/slide.jpg' },
-  { name: 'Rota 85', desc: 'Experiência imersiva de som e luz', img: '/rockinrio/rota-85.jpg' },
+const PHOTO_ATTRACTIONS = [
+  { name: 'Roda Gigante PiscaPisca', desc: '24 cabines temáticas — Disco, Tropical, Fifties, Back to 90\'s e Tiro-liro-liro. Cada cabine tem a sua playlist e fragrância, e há sorteios com prémios de visitas aos bastidores.', img: '/rockinrio/roda-gigante.jpg' },
+  { name: 'Slide', desc: 'Tirolesa a 15 metros de altura que sobrevoa o recinto ao longo de 157 metros, com vista aérea sobre o Palco Mundo e toda a Cidade do Rock.', img: '/rockinrio/slide.jpg' },
+  { name: 'Rota 85', desc: 'Viagem pela história do Rock in Rio desde 1985, com cenografia vintage e o icónico "ténis enlameado" da primeira edição. Inclui a Capela Cupido ao estilo Las Vegas e o CineStage School of Rock.', img: '/rockinrio/rota-85.jpg' },
+];
+
+const ICON_EXPERIENCES = [
+  { name: 'Chef\'s Garden Continente', desc: 'Área gastronómica premium com os chefs Justa Nobre, Miguel Castro e Silva, Noélia Jerónimo e Vítor Sobral. 400 lugares, Wine Bar da Sogrape e palco próprio com concertos diários curados pelo chef Ljubomir Stanisic.', icon: Utensils },
+  { name: 'Rock Your Street', desc: 'O boulevard mais eclético da Cidade do Rock — fado, jazz, ritmos africanos, K-pop, eletrónica e sons brasileiros ao vivo. Palco próprio com curadoria de world music e cenografia renovada.', icon: Music },
+  { name: 'Game Square', desc: '14 horas diárias de gaming: arcades retro (Pinball, Tetris, Metal Slug), OMEN by HP, uma arena secreta VALORANT, e o Worten Game Stage com 11 horas de programação com os maiores gamers e streamers portugueses.', icon: Gamepad2 },
+  { name: 'Rock in Rio Kids', desc: '3 000 m² para famílias com crianças dos 3 aos 10 anos. Mini Palco Mundo com Just Dance e espetáculos, mini Slide e mini Roda Gigante, oficinas de ciência e ilustração, e pool parties de bolas.', icon: Users },
+  { name: 'Smart City of Rock', desc: 'Laboratório urbano vivo — 13 startups selecionadas de 8 países testam inovação para 100 000 visitantes/dia. Digital Twin do recinto, sala de operações integrada e gestão de fluxos em tempo real. Novo em 2026.', icon: Sparkles },
+  { name: '40+ Artistas de Rua', desc: 'Mágicos, mímicos, malabaristas, palhaços, figuras em andas, monociclos, homens-espelho, artistas de bolhas de sabão, caricaturistas e estátuas humanas — espalhados por todo o recinto o dia inteiro.', icon: Star },
 ];
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -559,30 +568,101 @@ const RockInRio = () => {
         </div>
       </section>
 
-      {/* ════════════════════════ ATRAÇÕES ════════════════════════════ */}
+      {/* ════════════════════════ A EXPERIÊNCIA ═════════════════════════ */}
       <section className="py-24 px-5 bg-[#060610]">
         <div className="max-w-5xl mx-auto">
           <Animated animation="fade-up">
             <div className="text-center mb-14">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-amber-400/70 font-bold mb-4">Cidade do Rock</p>
-              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight">Atrações</h2>
+              <p className="text-[10px] uppercase tracking-[0.3em] text-amber-400/70 font-bold mb-4">145 000 m² de Festival</p>
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight mb-3">Cidade do Rock</h2>
+              <p className="text-sm text-white/30 max-w-lg mx-auto">Muito mais do que música — atrações, gastronomia, gaming, experiências imersivas e inovação.</p>
             </div>
           </Animated>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {ATTRACTIONS.map((a, i) => (
-              <Animated key={i} animation="fade-up" delay={i * 80}>
-                <div className="group relative rounded-2xl overflow-hidden border border-white/[0.06] aspect-square">
+          {/* The Flight — NOVO 2026 — full-width hero */}
+          <Animated animation="fade-up" delay={80}>
+            <div className="relative rounded-2xl overflow-hidden border border-amber-400/15 mb-8 group">
+              <div className="aspect-[21/9] sm:aspect-[21/7] relative">
+                <img src="/rockinrio/the-flight.jpg" alt="The Flight — Show aéreo Rock in Rio Lisboa 2026" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10" />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-8">
+                <div className="flex flex-wrap items-center gap-2 mb-2">
+                  <Plane className="w-4 h-4 text-amber-400" />
+                  <h3 className="font-black text-white text-lg sm:text-2xl">The Flight</h3>
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-400/15 border border-amber-400/25 text-[9px] font-bold uppercase tracking-wider text-amber-400">
+                    Novo 2026
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm text-white/50 leading-relaxed max-w-2xl">
+                  Cinco aviões Yak-52 da equipa acrobática Yakstars executam um ballet aéreo sincronizado sobre a Cidade do Rock — loops, mergulhos e cruzamentos milimétricos, acompanhados por uma partitura musical original e mais de 400 tiros pirotécnicos. Todos os dias entre as 20h e as 21h, com o Tejo e a Ponte Vasco da Gama como cenário.
+                </p>
+              </div>
+            </div>
+          </Animated>
+
+          {/* Photo attraction cards */}
+          <Animated animation="fade-up" delay={150}>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+              {PHOTO_ATTRACTIONS.map((a, i) => (
+                <div key={i} className="group relative rounded-2xl overflow-hidden border border-white/[0.06] aspect-[4/3]">
                   <img src={a.img} alt={a.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
-                    <h3 className="font-extrabold text-white text-xs sm:text-base mb-0.5 sm:mb-1">{a.name}</h3>
-                    <p className="text-[10px] sm:text-[11px] text-white/45 leading-snug">{a.desc}</p>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
+                    <h3 className="font-extrabold text-white text-sm sm:text-base mb-1">{a.name}</h3>
+                    <p className="text-[11px] sm:text-xs text-white/45 leading-relaxed">{a.desc}</p>
                   </div>
                 </div>
-              </Animated>
-            ))}
-          </div>
+              ))}
+            </div>
+          </Animated>
+
+          {/* Icon-based experience cards */}
+          <Animated animation="fade-up" delay={220}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+              {ICON_EXPERIENCES.map((exp, i) => (
+                <div key={i} className="rounded-xl border border-white/[0.07] bg-white/[0.02] p-5 hover:bg-white/[0.04] transition-colors">
+                  <div className="flex items-start gap-3.5">
+                    <div className="w-10 h-10 rounded-lg bg-amber-400/[0.06] border border-amber-400/15 flex items-center justify-center shrink-0 mt-0.5">
+                      <exp.icon className="w-5 h-5 text-amber-400/60" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <h4 className="font-bold text-white text-sm">{exp.name}</h4>
+                        {exp.name.includes('Smart City') && (
+                          <span className="px-2 py-0.5 rounded-full bg-amber-400/10 border border-amber-400/20 text-[8px] font-bold uppercase tracking-wider text-amber-400">Novo</span>
+                        )}
+                      </div>
+                      <p className="text-xs text-white/40 leading-relaxed">{exp.desc}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Animated>
+
+          {/* Sustainability banner */}
+          <Animated animation="fade-up" delay={300}>
+            <div className="rounded-xl border border-emerald-500/10 bg-emerald-500/[0.03] p-5">
+              <div className="flex items-start gap-3.5">
+                <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                  <Leaf className="w-5 h-5 text-emerald-400/60" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-white text-sm mb-2">Sustentabilidade</h4>
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-emerald-300/50">
+                    <span>100% energia renovável</span>
+                    <span className="text-emerald-500/20">·</span>
+                    <span>Zero resíduos para aterro</span>
+                    <span className="text-emerald-500/20">·</span>
+                    <span>Compensação carbónica via reflorestação</span>
+                    <span className="text-emerald-500/20">·</span>
+                    <span>Reciclagem gamificada "Acerta & Recicla"</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Animated>
         </div>
       </section>
 
