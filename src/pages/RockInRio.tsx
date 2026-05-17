@@ -142,13 +142,16 @@ const PHOTO_ATTRACTIONS = [
   { name: 'Rota 85', desc: 'Viagem pela história do Rock in Rio desde 1985, com cenografia vintage e o icónico "ténis enlameado" da primeira edição. Inclui a Capela Cupido ao estilo Las Vegas e o CineStage School of Rock.', img: '/rockinrio/rota-85.jpg' },
 ];
 
+const PHOTO_EXPERIENCES = [
+  { name: 'Rock Your Street', desc: 'O boulevard mais eclético da Cidade do Rock — fado, jazz, ritmos africanos, K-pop, eletrónica e sons brasileiros ao vivo. Palco próprio com curadoria de world music e cenografia renovada para 2026.', img: '/rockinrio/cidade-do-rock.jpg' },
+  { name: 'Smart City of Rock', desc: 'Laboratório urbano vivo — 13 startups de 8 países testam inovação para 100 000 visitantes/dia. Digital Twin do recinto, sala de operações integrada e gestão de fluxos em tempo real. Novo em 2026.', img: '/rockinrio/smart-city.jpg', badge: 'Novo' },
+  { name: '40+ Artistas de Rua', desc: 'Mágicos, mímicos, malabaristas, palhaços, figuras em andas, monociclos, homens-espelho, artistas de bolhas de sabão, caricaturistas e estátuas humanas — espalhados o dia inteiro.', img: '/rockinrio/artistas-rua.jpg' },
+];
+
 const ICON_EXPERIENCES = [
   { name: 'Chef\'s Garden Continente', desc: 'Área gastronómica premium com os chefs Justa Nobre, Miguel Castro e Silva, Noélia Jerónimo e Vítor Sobral. 400 lugares, Wine Bar da Sogrape e palco próprio com concertos diários curados pelo chef Ljubomir Stanisic.', icon: Utensils },
-  { name: 'Rock Your Street', desc: 'O boulevard mais eclético da Cidade do Rock — fado, jazz, ritmos africanos, K-pop, eletrónica e sons brasileiros ao vivo. Palco próprio com curadoria de world music e cenografia renovada.', icon: Music },
   { name: 'Game Square', desc: '14 horas diárias de gaming: arcades retro (Pinball, Tetris, Metal Slug), OMEN by HP, uma arena secreta VALORANT, e o Worten Game Stage com 11 horas de programação com os maiores gamers e streamers portugueses.', icon: Gamepad2 },
   { name: 'Rock in Rio Kids', desc: '3 000 m² para famílias com crianças dos 3 aos 10 anos. Mini Palco Mundo com Just Dance e espetáculos, mini Slide e mini Roda Gigante, oficinas de ciência e ilustração, e pool parties de bolas.', icon: Users },
-  { name: 'Smart City of Rock', desc: 'Laboratório urbano vivo — 13 startups selecionadas de 8 países testam inovação para 100 000 visitantes/dia. Digital Twin do recinto, sala de operações integrada e gestão de fluxos em tempo real. Novo em 2026.', icon: Sparkles },
-  { name: '40+ Artistas de Rua', desc: 'Mágicos, mímicos, malabaristas, palhaços, figuras em andas, monociclos, homens-espelho, artistas de bolhas de sabão, caricaturistas e estátuas humanas — espalhados por todo o recinto o dia inteiro.', icon: Star },
 ];
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -559,7 +562,7 @@ const RockInRio = () => {
                       <stage.icon className="w-4 h-4 text-amber-400/70" />
                       <h3 className="font-extrabold text-white text-base sm:text-lg tracking-wide">{stage.name}</h3>
                     </div>
-                    <p className="text-xs sm:text-sm text-white/50 leading-relaxed">{stage.desc}</p>
+                    <p className="text-xs sm:text-sm text-white/50 leading-relaxed line-clamp-3 sm:line-clamp-none">{stage.desc}</p>
                   </div>
                 </div>
               </Animated>
@@ -594,32 +597,53 @@ const RockInRio = () => {
                     Novo 2026
                   </span>
                 </div>
-                <p className="text-xs sm:text-sm text-white/50 leading-relaxed max-w-2xl">
+                <p className="text-xs sm:text-sm text-white/50 leading-relaxed max-w-2xl line-clamp-4 sm:line-clamp-none">
                   Cinco aviões Yak-52 da equipa acrobática Yakstars executam um ballet aéreo sincronizado sobre a Cidade do Rock — loops, mergulhos e cruzamentos milimétricos, acompanhados por uma partitura musical original e mais de 400 tiros pirotécnicos. Todos os dias entre as 20h e as 21h, com o Tejo e a Ponte Vasco da Gama como cenário.
                 </p>
               </div>
             </div>
           </Animated>
 
-          {/* Photo attraction cards */}
+          {/* Photo attraction cards — rides */}
           <Animated animation="fade-up" delay={150}>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
               {PHOTO_ATTRACTIONS.map((a, i) => (
-                <div key={i} className="group relative rounded-2xl overflow-hidden border border-white/[0.06] aspect-[4/3]">
+                <div key={i} className="group relative rounded-2xl overflow-hidden border border-white/[0.06] aspect-video sm:aspect-[4/3]">
                   <img src={a.img} alt={a.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
                     <h3 className="font-extrabold text-white text-sm sm:text-base mb-1">{a.name}</h3>
-                    <p className="text-[11px] sm:text-xs text-white/45 leading-relaxed">{a.desc}</p>
+                    <p className="text-[11px] sm:text-xs text-white/45 leading-relaxed line-clamp-3 sm:line-clamp-4">{a.desc}</p>
                   </div>
                 </div>
               ))}
             </div>
           </Animated>
 
-          {/* Icon-based experience cards */}
-          <Animated animation="fade-up" delay={220}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          {/* Photo experience cards — Rock Your Street, Smart City, Artistas de Rua */}
+          <Animated animation="fade-up" delay={200}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+              {PHOTO_EXPERIENCES.map((exp, i) => (
+                <div key={i} className="group relative rounded-2xl overflow-hidden border border-white/[0.06] aspect-video sm:aspect-[4/3]">
+                  <img src={exp.img} alt={exp.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                      <h3 className="font-extrabold text-white text-sm sm:text-base">{exp.name}</h3>
+                      {exp.badge && (
+                        <span className="px-2 py-0.5 rounded-full bg-amber-400/15 border border-amber-400/25 text-[8px] font-bold uppercase tracking-wider text-amber-400">{exp.badge}</span>
+                      )}
+                    </div>
+                    <p className="text-[11px] sm:text-xs text-white/45 leading-relaxed line-clamp-3 sm:line-clamp-4">{exp.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Animated>
+
+          {/* Icon-based experience cards — remaining without photos */}
+          <Animated animation="fade-up" delay={250}>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
               {ICON_EXPERIENCES.map((exp, i) => (
                 <div key={i} className="rounded-xl border border-white/[0.07] bg-white/[0.02] p-5 hover:bg-white/[0.04] transition-colors">
                   <div className="flex items-start gap-3.5">
@@ -627,13 +651,8 @@ const RockInRio = () => {
                       <exp.icon className="w-5 h-5 text-amber-400/60" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <h4 className="font-bold text-white text-sm">{exp.name}</h4>
-                        {exp.name.includes('Smart City') && (
-                          <span className="px-2 py-0.5 rounded-full bg-amber-400/10 border border-amber-400/20 text-[8px] font-bold uppercase tracking-wider text-amber-400">Novo</span>
-                        )}
-                      </div>
-                      <p className="text-xs text-white/40 leading-relaxed">{exp.desc}</p>
+                      <h4 className="font-bold text-white text-sm mb-1.5">{exp.name}</h4>
+                      <p className="text-xs text-white/40 leading-relaxed line-clamp-4 sm:line-clamp-none">{exp.desc}</p>
                     </div>
                   </div>
                 </div>
