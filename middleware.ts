@@ -81,7 +81,7 @@ export default async function middleware(request: Request): Promise<Response | u
   if (path === '/rockinrio') {
     return html({
       title: 'Rock in Rio Lisboa 2026 — Parceiro Oficial',
-      description: 'A Olha que Duas é parceira oficial do Rock in Rio Lisboa 2026. Lineup completo dia a dia: Katy Perry, Linkin Park, Rod Stewart, 21 Savage e +40 artistas. Mapa do Parque Tejo, palcos, transportes e bilhetes. 20, 21, 27 e 28 de Junho.',
+      description: 'A Olha que Duas é parceira oficial do Rock in Rio Lisboa 2026. Lineup completo dia a dia: Katy Perry, Linkin Park, Rod Stewart, 21 Savage, Bárbara Bandeira, Jimmy P e +60 artistas em 4 palcos. Mapa, transportes e bilhetes. 20, 21, 27 e 28 de Junho.',
       image: 'https://www.olhaqueduas.com/og-rockinrio.jpg',
       url: 'https://www.olhaqueduas.com/rockinrio',
     });

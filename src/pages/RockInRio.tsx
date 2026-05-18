@@ -4,7 +4,7 @@ import {
   ExternalLink, Globe, Radio, Smartphone,
   Star, Users, Navigation, AlertTriangle, X, Info,
   Headphones, ChevronRight, Plane, Utensils, Gamepad2,
-  Sparkles, Leaf,
+  Sparkles, Leaf, Mic,
 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -40,7 +40,7 @@ const ARTIST_BIOS: Record<string, ArtistBio> = {
   'napa': { origin: 'Portugal', genre: 'Rap', since: '2019', bio: 'Voz da nova vaga do rap lisboeta, emergiu da cena underground com singles virais que misturaram trap e drill com lirismo em português. Colaborou com nomes-chave da cena urbana nacional antes de saltar para cartazes de festivais.', hits: ['Freestyle', 'Noites', 'Passo a Passo'] },
   'maninho': { origin: 'Portugal / Angola', genre: 'Afrobeats / Kizomba', since: '2015', bio: 'Figura central da ponte musical entre Lisboa e Luanda, mantém viva a kizomba tradicional enquanto moderniza a produção. Presença fixa no circuito de música ao vivo da comunidade luso-africana, com seguidores fiéis em toda a diáspora lusófona na Europa.', hits: ['Tá Bom', 'Vou Te Amar', 'Minha'] },
   'audrey-nuna': { origin: 'EUA', genre: 'R&B / Hip-Hop', since: '2019', bio: 'Coreano-americana de New Jersey, o seu EP de estreia "a liquid breakfast" foi aclamado pela crítica. Destacada como artista a seguir pela Complex e Pigeons & Planes. A faixa "damn Right" entrou na banda sonora do NBA 2K22 e ela própria cria toda a direção artística e visual dos seus projetos.', hits: ['damn Right', 'Space', 'Comic Sans', 'Blossom'] },
-  'sofia-camara': { origin: 'Portugal', genre: 'Pop', since: '2020', bio: 'Parte da nova geração de pop português que canta em português e compete com artistas internacionais nas tabelas nacionais. Os seus concertos ao vivo misturam pop com influências de dancehall e afrobeats, refletindo o som multicultural de Lisboa.', hits: ['Não Sei', 'Quero Mais', 'Sozinha'] },
+  'sofia-camara': { origin: 'Portugal / Canadá', genre: 'Pop', since: '2020', bio: 'Artista luso-canadiana que ganhou projeção internacional com versões virais no TikTok. O single "Who Do I Call Now? (Hellbent)" ultrapassou 90 milhões de streams. Já passou por festivais como Lollapalooza Chicago e Osheaga, e colaborou com Dean Lewis. Soma mais de 150 milhões de streams na carreira.', hits: ['Who Do I Call Now?', 'Ingrained (DNA)', 'Hard To Love'] },
 
   'linkin-park': { origin: 'EUA', genre: 'Rock Alternativo', since: '1996', bio: '"Hybrid Theory" vendeu mais de 30 milhões de cópias — o álbum de estreia mais vendido do século XXI. Após a morte de Chester Bennington em 2017, o vídeo de "One More Light" ultrapassou mil milhões de visualizações. Regressaram em 2024 com a nova vocalista Emily Armstrong, esgotando uma digressão mundial.', hits: ['In the End', 'Numb', 'Crawling', 'One Step Closer', 'New Divide'] },
   'cypress-hill': { origin: 'EUA', genre: 'Hip-Hop', since: '1988', bio: 'Primeiro grupo latino de hip-hop a atingir platina. "Black Sunday" estreou no #1 da Billboard 200 e foram o primeiro grupo de rap a ter uma estrela no Passeio da Fama de Hollywood. A voz nasal icónica de B-Real — conseguida ao rappar pelas cavidades nasais — é uma das mais reconhecíveis do hip-hop.', hits: ['Insane in the Brain', 'How I Could Just Kill a Man', 'Hits from the Bong'] },
@@ -79,6 +79,32 @@ const ARTIST_BIOS: Record<string, ArtistBio> = {
   'irina-barros': { origin: 'Portugal', genre: 'Pop / Urban', since: '2018', bio: 'Cantora e personalidade portuguesa que construiu uma base de fãs significativa através da TV e das redes sociais. Parte da vaga de artistas femininas portuguesas que trazem o pop de influência urbana — dancehall, R&B e sonoridades lusófonas — ao mainstream nacional.', hits: ['Não Me Toques', 'Café', 'Vem'] },
   'ceelo-green': { origin: 'EUA', genre: 'Soul / Pop', since: '2000', bio: '"Crazy" (como metade dos Gnarls Barkley, com Danger Mouse) foi a primeira canção a chegar ao #1 no Reino Unido baseada apenas em downloads digitais, em 2006 — permaneceu 9 semanas no topo. "Forget You" valeu-lhe um Grammy e tornou-se uma das canções mais reconhecíveis da década. Como membro dos Goodie Mob (ao lado dos OutKast), foi figura fundadora do hip-hop sulista e do movimento Dirty South.', hits: ['Crazy', 'Forget You', 'Bright Lights Bigger City'] },
   'lola-indigo': { origin: 'Espanha', genre: 'Pop / Reggaeton', since: '2018', bio: 'Mimi Doblas participou no Operación Triunfo 2017 — não ganhou, mas tornou-se a artista de maior sucesso comercial daquela edição. Antes da música, estudou dança na Debbie Allen Dance Academy em Los Angeles, e as suas performances com coreografia distinguem-na no pop espanhol. "Ya No Quiero Ná" foi um dos temas pop mais virais de Espanha em 2018.', hits: ['Ya No Quiero Ná', 'El Humo', 'Mala Cara', 'La Niña'] },
+
+  // ── Super Bock Stage ──
+  'barbara-bandeira': { origin: 'Portugal', genre: 'Pop', since: '2015', bio: 'Com apenas 24 anos, é um dos maiores nomes do pop português. Venceu os MTV EMA de Best Portuguese Act em 2022 e 2024, e esgotou o Coliseu dos Recreios e o Campo Pequeno. Foi convidada pelos Coldplay para abrir quatro concertos em Portugal perante 220 mil pessoas. "Como Tu" com Ivandro alcançou certificação Diamante. Em 2025, lançou "Lusa", um projeto em quatro atos que cruza Portugal e Brasil.', hits: ['Como Tu', 'Cristaliza', 'Carro', 'Marcha', 'Mau Olhado'] },
+
+  // ── Music Valley ──
+  'dealema': { origin: 'Portugal', genre: 'Hip-Hop', since: '1996', bio: 'Coletivo lendário do hip-hop portuense a celebrar 30 anos de carreira. Formados por Mundo, DJ Guze, Fuse, Expeão e Maze, mantêm a formação original desde 1996. O novo disco "96 ao Infinito" (2026) inclui colaborações com Manel Cruz, Ace e Bezegol. Passaram por palcos como Hard Club, Coliseu do Porto e Festival Iminente.', hits: ['Expresso do Submundo', 'V Império', 'Arte de Viver', '96 ao Infinito'] },
+
+  // ── BacanaPlay Digital Stage ──
+  'zarko': { origin: 'Portugal / Madeira', genre: 'Pop / Alternativo', since: '2023', bio: 'Entre o mar da Madeira, Lisboa e o mundo, construiu uma identidade marcada pela dualidade e ambição criativa. Inspirado por Nirvana, Post Malone e ProfJam, mistura emoção crua, estética DIY e sonoridades modernas. O álbum de estreia SIMBIOSE (2025) inclui singles como "1,2,3" e "Armadura".', hits: ['1,2,3', 'Armadura'] },
+  'carol-biazin': { origin: 'Brasil', genre: 'Pop', since: '2018', bio: 'Mais de 1,9 milhão de ouvintes mensais no Spotify. Após o sucesso dos álbuns "REVERSA" e "REVERSA [in]ato", realizou uma turnê esgotada pelo Brasil e tornou-se a única artista feminina da nova geração a apresentar-se no Carnegie Hall, em Nova York, em homenagem à Bossa Nova.', hits: ['REVERSA', 'Louca de Saudade', 'Inesquecível'] },
+  'joyce-alane': { origin: 'Brasil', genre: 'Pop', since: '2020', bio: 'Cantora e compositora pernambucana com mais de 1,1 milhão de ouvintes mensais. Porta-voz de uma geração, cresceu de forma expressiva nas redes sociais, sendo uma das artistas em maior ascensão da nova música brasileira, com público forte em São Paulo, Rio e Belo Horizonte.', hits: ['Quem Mandou', 'Saudade'] },
+  'pears': { origin: 'França', genre: 'House / DJ', since: '2022', bio: 'Diretamente de Paris, destaca-se pela energia elegante dos seus sets e pela forma como cruza house music, groove e club culture numa identidade sofisticada e magnética. Entre rave e pistas intimistas, construiu uma presença marcada por ritmo e atmosfera.', hits: [] },
+  'samuel-uria': { origin: 'Portugal', genre: 'Blues / Folk / Rock', since: '2008', bio: 'Nascido entre o Caramulo e a Serra da Estrela, mistura blues, fado e rock com influências punk e estética lo-fi. A discografia inclui "Canções do Pós-Guerra", "Marca Atroz", "Carga de Ombro" e "O Grande Medo do Pequeno Mudo" — uma das vozes mais singulares da música portuguesa.', hits: ['Canções do Pós-Guerra', 'Carga de Ombro', 'Marca Atroz'] },
+  'jimmy-p': { origin: 'Portugal / Angola', genre: 'Hip-Hop', since: '2013', bio: 'Nascido no Barreiro, filho de pais angolanos. Esgotou o Coliseu do Porto para celebrar 10 anos de carreira. Lançou a mixtape "Alcateia" e o álbum "Abensonhado", e em 2026 abre novo capítulo com "Alta Cultura". Colaborou com Carolina Deslandes no EP "Mercúrio". Uma presença relevante e em constante evolução no rap português.', hits: ['Abensonhado', 'Mercúrio', 'Alta Cultura'] },
+  'diego-miranda': { origin: 'Portugal', genre: 'House / Techno', since: '2008', bio: 'Um dos nomes mais reconhecidos da música eletrónica portuguesa, com carreira marcada por atuações nos maiores festivais internacionais. Cruza house, techno e sonoridades eletrónicas globais, colaborando com artistas internacionais e lançando em editoras de referência mundial.', hits: ['Turn the Lights Out', 'Iberian Dream'] },
+  'bateu-matou': { origin: 'Portugal', genre: 'Percussão / Eletrónica', since: '2018', bio: 'Um dos projetos mais explosivos da música portuguesa — Quim Albergaria, Ivo Costa e Riot fundem percussão, eletrónica e cultura urbana. Concertos altamente imersivos onde ritmos portugueses se cruzam com batidas globais e espírito de rave. Entre tradição e futurismo, identidade única.', hits: ['Bateu Matou', 'Karnaval'] },
+  'bia-caboz': { origin: 'Portugal / Madeira', genre: 'Fado / Eletrónica', since: '2020', bio: 'Artista madeirense que cruza fado com eletrónica, pop e influências urbanas. Entre Lisboa, Londres e o Brasil, encontrou na distância uma nova forma de olhar para o fado — não como tradição fechada, mas como linguagem em constante transformação.', hits: ['Noite Escura', 'Fado Futuro'] },
+  'bento-gil': { origin: 'Brasil', genre: 'MPB / Pop', since: '2024', bio: 'Neto de Gilberto Gil — cantor e violinista de 22 anos que estreia a solo com o álbum "Silêncio Azul" (2026), cruzando romantismo e sonoridades praieiras. Filho de Bem Gil e neto de um dos maiores nomes da MPB, participou no Tiny Desk Brasil ao lado do avô. Fez o primeiro show solo em Salvador em abril de 2026.', hits: ['Silêncio Azul'] },
+  'melly': { origin: 'Brasil', genre: 'R&B / Afro', since: '2019', bio: 'Uma das vozes mais potentes da nova música brasileira, construiu a sua identidade sonora a partir do R&B com a força da afrobaianidade. Premiada como Artista Revelação no Prémio Multishow e indicada ao Grammy Latino 2024 (Melhor Álbum de Pop Contemporâneo em Língua Portuguesa).', hits: ['Melly', 'Afrobaiana'] },
+  'ulas': { origin: 'Portugal', genre: 'Eletrónica', since: '2025', bio: 'Projeto de música eletrónica que combina DJ set com performance ao vivo de percussão e teclas, com forte identidade visual. Já atuou nas Docas de Lisboa com mais de 5 000 pessoas e colaborou com marcas como Delta e JBL. Inspirado por Rüfüs Du Sol e WhoMadeWho.', hits: [] },
+  'king-bigs': { origin: 'Portugal / Reino Unido', genre: 'Hip-Hop', since: '2019', bio: 'Nascido no Monte da Caparica e criado em Londres, ganhou notoriedade com "Tipo de Vida" e "Como é que Tamos!?" com Mota Jr. Entre rap street, melodias marcantes e escrita carregada de autenticidade, prepara agora o primeiro álbum de estúdio.', hits: ['Tipo de Vida', 'Como é que Tamos!?', 'Momma', 'Gangstanismo'] },
+  'dj-big-dj-glue': { origin: 'Portugal', genre: 'Hip-Hop / DJ', since: '1995', bio: 'Dois nomes incontornáveis da cultura hip-hop portuguesa. Com percursos desde os anos 90, ajudaram a moldar o som de várias gerações através de mixtapes, rádio, clubes e colaborações com os artistas mais relevantes do rap nacional. Levam ao palco clássicos do hip-hop, batidas urbanas e dance culture.', hits: [] },
+  'rima-pt': { origin: 'Portugal', genre: 'Freestyle / Hip-Hop', since: '2026', bio: 'O freestyle português entra numa nova era. No Rock in Rio, NTS é host e DJ Maskarilha no comando, com os MCs SP, Guigox, Rickas, Joker, Melro, Meixinha, Flays e Gash a enfrentarem-se numa batalha ao vivo onde só um levará o prémio.', hits: [] },
+  'elyas': { origin: 'Alemanha', genre: 'Hip-Hop / R&B', since: '2020', bio: 'Produtor nomeado ao Grammy que colaborou com Drake, 21 Savage, J. Cole e Chris Brown. "What Did I Miss?" de Drake, co-produzido por Elyas, estreou no #2 da Billboard Hot 100 e no #1 do Spotify e Apple Music. Assinou com a Avex Music Group em 2025.', hits: ['What Did I Miss?'] },
+  'valete': { origin: 'Portugal / Guiné-Bissau', genre: 'Hip-Hop', since: '2002', bio: 'Uma das vozes mais influentes e respeitadas do hip-hop português. Nascido na Guiné-Bissau e criado em Lisboa, é conhecido pelo lirismo denso, pensamento crítico e álbuns concetuais como "Serviço Público" e "Educação Visual". Considerado um dos MCs com melhor técnica lírica em língua portuguesa, com duas décadas de impacto no rap nacional.', hits: ['Serviço Público', 'Anti-Herói', 'Mátria', 'Educação Visual'] },
+  'karetus': { origin: 'Portugal', genre: 'Eletrónica / Bass', since: '2012', bio: 'Duo eletrónico português formado por André e Carlos, conhecidos por fundir bass music, trap e sonoridades tradicionais portuguesas. Os sets explosivos e a produção visual teatral (máscaras icónicas) tornaram-nos presença obrigatória nos festivais europeus. Mais de 100 milhões de streams e colaborações internacionais com Deorro e Shaggy.', hits: ['1969', 'Pixa', 'Ninguém', 'Wall of Love'] },
 };
 
 const A = (name: string, slug: string, headliner?: boolean): Artist => ({
@@ -92,8 +118,9 @@ const LINEUP: Day[] = [
     accent: 'text-pink-400', accentBg: 'bg-pink-500/10 border-pink-500/20',
     stages: [
       { name: 'Palco Mundo', artists: [A('Katy Perry', 'katy-perry', true), A('Charlie Puth', 'charlie-puth'), A('Alok', 'alok'), A('Nena', 'nena')] },
-      { name: 'Super Bock Stage', artists: [A('Bebe Rexha', 'bebe-rexha'), A('Pedro Sampaio', 'pedro-sampaio'), A('Calema', 'calema'), A('NAPA', 'napa')] },
+      { name: 'Super Bock Stage', artists: [A('Bebe Rexha', 'bebe-rexha'), A('Pedro Sampaio', 'pedro-sampaio'), A('Bárbara Bandeira', 'barbara-bandeira'), A('Calema', 'calema'), A('NAPA', 'napa')] },
       { name: 'Music Valley', artists: [A('Maninho', 'maninho'), A('Audrey Nuna', 'audrey-nuna'), A('Sofia Camara', 'sofia-camara')] },
+      { name: 'BacanaPlay Digital Stage', artists: [A('Zarko', 'zarko'), A('Carol Biazin', 'carol-biazin'), A('Joyce Alane', 'joyce-alane'), A('Pears', 'pears')] },
     ],
   },
   {
@@ -102,9 +129,9 @@ const LINEUP: Day[] = [
     accent: 'text-red-400', accentBg: 'bg-red-500/10 border-red-500/20',
     stages: [
       { name: 'Palco Mundo', artists: [A('Linkin Park', 'linkin-park', true), A('Cypress Hill', 'cypress-hill'), A('The Pretty Reckless', 'the-pretty-reckless'), A('Grandson', 'grandson')] },
-      { name: 'Music Valley', artists: [A('Kaiser Chiefs', 'kaiser-chiefs'), A('Hoobastank', 'hoobastank'), A('Blasted Mechanism', 'blasted-mechanism')] },
+      { name: 'Music Valley', artists: [A('Kaiser Chiefs', 'kaiser-chiefs'), A('Hoobastank', 'hoobastank'), A('Blasted Mechanism', 'blasted-mechanism'), A('Dealema', 'dealema')] },
       { name: 'Super Bock Stage', artists: [A('Sepultura', 'sepultura'), A('P.O.D.', 'pod'), A('Tara Perdida', 'tara-perdida')] },
-      { name: 'BacanaPlay Digital Stage', artists: [A('Sam the Kid', 'sam-the-kid'), A('Orelha Negra', 'orelha-negra')] },
+      { name: 'BacanaPlay Digital Stage', artists: [A('Samuel Úria', 'samuel-uria'), A('Jimmy P', 'jimmy-p'), A('Diego Miranda', 'diego-miranda'), A('Sam the Kid', 'sam-the-kid'), A('Orelha Negra', 'orelha-negra')] },
     ],
   },
   {
@@ -115,6 +142,7 @@ const LINEUP: Day[] = [
       { name: 'Palco Mundo', artists: [A('Rod Stewart', 'rod-stewart', true), A('Cyndi Lauper', 'cyndi-lauper'), A('4 Non Blondes', '4-non-blondes'), A('Shaggy', 'shaggy')] },
       { name: 'Music Valley', artists: [A('Xutos & Pontapés', 'xutos'), A('GNR', 'gnr'), A('UHF', 'uhf'), A('Táxi', 'taxi'), A('Jafumega', 'jafumega')] },
       { name: 'Super Bock Stage', artists: [A('Joss Stone', 'joss-stone'), A('The Wailers', 'the-wailers'), A('Belo', 'belo'), A('SYRO', 'syro')] },
+      { name: 'BacanaPlay Digital Stage', artists: [A('Bateu Matou', 'bateu-matou'), A('Bia Caboz', 'bia-caboz'), A('Bento Gil', 'bento-gil'), A('Melly', 'melly'), A('Ulas', 'ulas')] },
     ],
   },
   {
@@ -124,7 +152,8 @@ const LINEUP: Day[] = [
     stages: [
       { name: 'Palco Mundo', artists: [A('21 Savage', '21-savage', true), A('Central Cee', 'central-cee'), A('Rema', 'rema'), A('Matué', 'matue')] },
       { name: 'Music Valley', artists: [A('Filipe Ret', 'filipe-ret'), A('DENNIS', 'dennis'), A('Carlão', 'carlao'), A('Irina Barros', 'irina-barros')] },
-      { name: 'Super Bock Stage', artists: [A('CeeLo Green', 'ceelo-green'), A('Lola Indigo', 'lola-indigo')] },
+      { name: 'Super Bock Stage', artists: [A('CeeLo Green', 'ceelo-green'), A('Lola Indigo', 'lola-indigo'), A('Valete', 'valete'), A('Karetus', 'karetus')] },
+      { name: 'BacanaPlay Digital Stage', artists: [A('King Bigs', 'king-bigs'), A('DJ Big & DJ Glue', 'dj-big-dj-glue'), A('Rima.pt', 'rima-pt'), A('Elyas', 'elyas')] },
     ],
   },
 ];
@@ -144,7 +173,7 @@ const PHOTO_ATTRACTIONS = [
 
 const PHOTO_EXPERIENCES = [
   { name: 'Rock Your Street', desc: 'O boulevard mais eclético da Cidade do Rock — fado, jazz, ritmos africanos, K-pop, eletrónica e sons brasileiros ao vivo. Palco próprio com curadoria de world music e cenografia renovada para 2026.', img: '/rockinrio/cidade-do-rock.jpg' },
-  { name: 'Smart City of Rock', desc: 'Laboratório urbano vivo — 13 startups de 8 países testam inovação para 100 000 visitantes/dia. Digital Twin do recinto, sala de operações integrada e gestão de fluxos em tempo real. Novo em 2026.', img: '/rockinrio/smart-city.jpg', badge: 'Novo' },
+  { name: 'Smart City of Rock', desc: 'Laboratório urbano vivo com 20 startups de 8 países, em parceria com a Universidade de Lisboa e a Unicorn Factory Lisboa. Sete áreas — infraestrutura, mobilidade, turismo, saúde, experiência de marca, operações e ESG. Digital Twin, gestão de fluxos para 100 000 visitantes/dia e, após o festival, o Smart Rock Tank: ronda de investimento para escalar as melhores soluções. Novo em 2026.', img: '/rockinrio/smart-city.jpg', badge: 'Novo' },
   { name: '40+ Artistas de Rua', desc: 'Mágicos, mímicos, malabaristas, palhaços, figuras em andas, monociclos, homens-espelho, artistas de bolhas de sabão, caricaturistas e estátuas humanas — espalhados o dia inteiro.', img: '/rockinrio/artistas-rua.jpg' },
 ];
 
@@ -152,6 +181,54 @@ const ICON_EXPERIENCES = [
   { name: 'Chef\'s Garden Continente', desc: 'Área gastronómica premium com os chefs Justa Nobre, Miguel Castro e Silva, Noélia Jerónimo e Vítor Sobral. 400 lugares, Wine Bar da Sogrape e palco próprio com concertos diários curados pelo chef Ljubomir Stanisic.', icon: Utensils },
   { name: 'Game Square', desc: '14 horas diárias de gaming: arcades retro (Pinball, Tetris, Metal Slug), OMEN by HP, uma arena secreta VALORANT, e o Worten Game Stage com 11 horas de programação com os maiores gamers e streamers portugueses.', icon: Gamepad2 },
   { name: 'Rock in Rio Kids', desc: '3 000 m² para famílias com crianças dos 3 aos 10 anos. Mini Palco Mundo com Just Dance e espetáculos, mini Slide e mini Roda Gigante, oficinas de ciência e ilustração, e pool parties de bolas.', icon: Users },
+];
+
+/* ── Digital Stage Entertainment (non-music acts per day) ──────────── */
+
+interface DigitalStageShow { name: string; type: string; desc: string }
+
+const DIGITAL_STAGE_SHOWS: DigitalStageShow[][] = [
+  [ // Day 0 → 20 Jun
+    { name: 'De Fenómeno Viral a Sucesso nos Palcos', type: 'Talk Show', desc: 'Tiago David com Aragão e convidados sobre percursos artísticos na era digital.' },
+    { name: 'João Maria', type: 'Stand-up', desc: 'Humor satírico, cultura digital e entretenimento contemporâneo.' },
+  ],
+  [ // Day 1 → 21 Jun
+    { name: 'Monstros do Ano by Fernando Alvim', type: 'Especial', desc: 'Com participação de Maria Leal — os momentos mais absurdos e inesquecíveis do ano.' },
+    { name: 'Gameshow by Guilherme Fonseca', type: 'Stand-up', desc: 'Game show de humor com Tiago Pereira e Miguel Vaz.' },
+    { name: 'Glitter Podcast — Carina Caldeira', type: 'Podcast', desc: 'Lifestyle, bem-estar e cultura pop com convidada especial Rita Pereira.' },
+    { name: 'Seja Como For', type: 'Podcast', desc: 'Miguel Caixeiro (Mike El Nite) e João Maia Ferreira — comédia e cultura pop.' },
+    { name: 'Rock Revenge-et-Vous', type: 'Festa', desc: 'Com Fingertips e Ritual Tejo — hinos rock dos 80s, 90s e 2000s.' },
+  ],
+  [ // Day 2 → 27 Jun
+    { name: 'Canta Se Souberes com Rui Unas', type: 'Especial', desc: 'Improviso musical interativo — canções icónicas e o público canta os refrões.' },
+    { name: 'Vamos Viajar na Maionese', type: 'Podcast', desc: 'Hugo van der Ding e Tiago Ribeiro — histórias improváveis e fascinantes.' },
+    { name: 'Vitor Sá · Dário Guerreiro · Rodrigo Correia', type: 'Stand-up', desc: 'Três gerações da nova comédia portuguesa — stand-up, internet culture e improviso.' },
+  ],
+  [ // Day 3 → 28 Jun
+    { name: 'Carlos Vidal: A Petição', type: 'Stand-up', desc: 'Humor participativo com João Moreira, Manuel João Vieira e Pedro Santo (Bruno Aleixo).' },
+    { name: 'Isabel Viana · Joana Miranda · Mónica Vale de Gato', type: 'Stand-up', desc: 'Stand-up feminino — humor observacional, sarcasmo e liberdade criativa.' },
+    { name: 'Más Influências', type: 'Podcast', desc: 'Bruna Magalhães e Mia Fernandes — humor, caos e cultura pop sem filtros.' },
+  ],
+];
+
+const SHOW_TYPE_STYLES: Record<string, string> = {
+  'Stand-up': 'bg-pink-500/10 border-pink-500/20 text-pink-300',
+  'Podcast': 'bg-blue-500/10 border-blue-500/20 text-blue-300',
+  'Talk Show': 'bg-amber-500/10 border-amber-500/20 text-amber-300',
+  'Especial': 'bg-purple-500/10 border-purple-500/20 text-purple-300',
+  'Festa': 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300',
+};
+
+/* ── Road to Rock in Rio ───────────────────────────────────────────── */
+
+const ROAD_TO_STOPS = [
+  { city: 'Londres', country: 'Reino Unido', date: '26 Fev', venue: 'King\'s Cross Station', highlight: 'Lançamento global da campanha — recolha de sonhos para o Palco Mundo' },
+  { city: 'Madrid', country: 'Espanha', date: '4 Mar', venue: 'Plaza de Callao', highlight: '#1 mercado internacional · Anúncio Lola Indigo' },
+  { city: 'Lisboa', country: 'Portugal', date: '11 Mar', venue: 'ETIC', highlight: 'Super Bock Sessions #1 — Anúncio Sofia Camara · SYRO e Tara Perdida unplugged' },
+  { city: 'Porto', country: 'Portugal', date: '9 Abr', venue: 'M.Ou.Co.', highlight: 'Sessions #2 — Anúncio Dealema (30 anos) · NAPA unplugged' },
+  { city: 'Braga', country: 'Portugal', date: '5 Mai', venue: 'Praça da República', highlight: 'Coca-Cola — Anúncio Karetus e Jimmy P · Experiências interativas' },
+  { city: 'Viseu', country: 'Portugal', date: '8 Mai', venue: 'Mercado 2 de Maio', highlight: 'Sessions #3 — Anúncio Bárbara Bandeira · BB e Karetus unplugged' },
+  { city: 'Porto', country: 'Portugal', date: '14 Mai', venue: 'Estação da Trindade', highlight: 'Coca-Cola — Anúncio Valete · Jimmy P e Maninho ao vivo' },
 ];
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -164,7 +241,7 @@ const eventJsonLd = {
   '@context': 'https://schema.org', '@type': 'MusicEvent',
   '@id': 'https://www.olhaqueduas.com/rockinrio#event',
   name: 'Rock in Rio Lisboa 2026',
-  description: 'O maior festival de música e entretenimento do mundo. Katy Perry, Linkin Park, Rod Stewart, 21 Savage e dezenas de artistas no Parque Tejo, Lisboa — 20, 21, 27 e 28 de Junho de 2026.',
+  description: 'O maior festival de música e entretenimento do mundo. Katy Perry, Linkin Park, Rod Stewart, 21 Savage, Bárbara Bandeira, Jimmy P e mais de 60 artistas no Parque Tejo, Lisboa — 20, 21, 27 e 28 de Junho de 2026.',
   startDate: '2026-06-20T13:00:00+01:00', endDate: '2026-06-28T03:00:00+01:00',
   eventStatus: 'https://schema.org/EventScheduled',
   eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
@@ -191,7 +268,7 @@ const webPageJsonLd = {
   isPartOf: { '@id': 'https://www.olhaqueduas.com/#website' },
   about: { '@id': 'https://www.olhaqueduas.com/rockinrio#event' },
   primaryImageOfPage: { '@type': 'ImageObject', url: 'https://www.olhaqueduas.com/og-rockinrio.jpg', width: 1200, height: 630 },
-  inLanguage: 'pt-PT', datePublished: '2026-05-16', dateModified: '2026-05-17',
+  inLanguage: 'pt-PT', datePublished: '2026-05-16', dateModified: '2026-05-18',
   speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', 'h2', '.hero-subtitle'] },
 };
 
@@ -329,7 +406,7 @@ const RockInRio = () => {
 
   useMetaTags({
     title: 'Rock in Rio Lisboa 2026 — Parceiro Oficial',
-    description: 'A Olha que Duas é parceira oficial do Rock in Rio Lisboa 2026. Lineup completo dia a dia: Katy Perry, Linkin Park, Rod Stewart, 21 Savage e +40 artistas. Mapa do Parque Tejo, palcos, transportes e bilhetes. 20, 21, 27 e 28 de Junho.',
+    description: 'A Olha que Duas é parceira oficial do Rock in Rio Lisboa 2026. Lineup completo dia a dia: Katy Perry, Linkin Park, Rod Stewart, 21 Savage, Bárbara Bandeira, Jimmy P e +60 artistas em 4 palcos. Mapa, transportes e bilhetes. 20, 21, 27 e 28 de Junho.',
     image: 'https://www.olhaqueduas.com/og-rockinrio.jpg',
     imageAlt: 'Olha que Duas x Rock in Rio Lisboa 2026 — Parceiro Oficial',
     url: 'https://www.olhaqueduas.com/rockinrio',
@@ -577,6 +654,126 @@ const RockInRio = () => {
               </Animated>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════ DIGITAL STAGE ENTERTAINMENT ════════ */}
+      <section className="py-24 px-5 bg-[#060610]">
+        <div className="max-w-5xl mx-auto">
+          <Animated animation="fade-up">
+            <div className="text-center mb-14">
+              <p className="text-[10px] uppercase tracking-[0.3em] text-amber-400/70 font-bold mb-4">
+                <Mic className="w-3 h-3 inline-block mr-1.5 -mt-0.5" />
+                Humor · Podcasts · Talk Shows
+              </p>
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight mb-3">BacanaPlay Digital Stage</h2>
+              <p className="text-sm text-white/30 max-w-xl mx-auto">Além da música, o palco mais digital do festival traz stand-up, podcasts ao vivo, talk shows e formatos criados exclusivamente para o Rock in Rio. Co-curado por New Sheet Entertainment e milk&black.</p>
+            </div>
+          </Animated>
+
+          {/* Not So Secret Backstage callout */}
+          <Animated animation="fade-up" delay={50}>
+            <div className="rounded-xl border border-purple-500/15 bg-purple-500/[0.04] p-5 mb-8">
+              <div className="flex items-start gap-3.5">
+                <div className="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                  <Sparkles className="w-5 h-5 text-purple-400/60" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-white text-sm mb-1.5">Not So Secret Backstage</h4>
+                  <p className="text-xs text-white/40 leading-relaxed">Ponto de encontro de influenciadores e celebridades durante os 4 dias — conteúdos exclusivos para redes sociais, onde o que acontece nos bastidores não fica nos bastidores.</p>
+                </div>
+              </div>
+            </div>
+          </Animated>
+
+          {/* Shows per day — reuses activeDay from lineup */}
+          <Animated animation="fade-up" delay={100}>
+            <div className="flex justify-center mb-8">
+              <div className="inline-flex rounded-2xl bg-white/[0.03] border border-white/[0.06] p-1.5 gap-1 sm:gap-1.5 overflow-x-auto max-w-full" style={{ scrollbarWidth: 'none' }}>
+                {LINEUP.map((d, i) => (
+                  <button key={i} onClick={() => setActiveDay(i)}
+                    className={`px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl font-bold transition-all duration-200 shrink-0 text-xs sm:text-sm ${activeDay === i ? 'bg-white text-[#060610] shadow-lg shadow-white/10' : 'text-white/35 hover:text-white/60 hover:bg-white/[0.04]'}`}>
+                    {d.date.split(' ')[0]} <span className={`hidden sm:inline ${activeDay === i ? 'text-black/40' : 'opacity-50'}`}>{d.weekday}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </Animated>
+
+          <Animated animation="fade-up" delay={150}>
+            <div className="space-y-3">
+              {(DIGITAL_STAGE_SHOWS[activeDay] || []).map((show, i) => (
+                <div key={i} className="rounded-xl border border-white/[0.07] bg-white/[0.02] p-4 sm:p-5 hover:bg-white/[0.04] transition-colors">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                    <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                      <h4 className="font-bold text-white text-sm leading-tight">{show.name}</h4>
+                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border shrink-0 ${SHOW_TYPE_STYLES[show.type] || 'bg-white/5 border-white/10 text-white/40'}`}>
+                        {show.type}
+                      </span>
+                    </div>
+                    <p className="text-xs text-white/35 leading-relaxed sm:text-right sm:max-w-[55%]">{show.desc}</p>
+                  </div>
+                </div>
+              ))}
+              {(DIGITAL_STAGE_SHOWS[activeDay] || []).length === 0 && (
+                <p className="text-sm text-white/25 text-center py-6">Programação de entretenimento em breve.</p>
+              )}
+            </div>
+          </Animated>
+
+          {/* Embratur badge */}
+          <Animated animation="fade-up" delay={200}>
+            <div className="mt-8 rounded-xl border border-emerald-500/10 bg-emerald-500/[0.03] p-5">
+              <div className="flex items-start gap-3.5">
+                <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                  <Globe className="w-5 h-5 text-emerald-400/60" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-white text-sm mb-1.5">Embratur / Visit Brasil</h4>
+                  <p className="text-xs text-white/40 leading-relaxed">Parceria que traz ao festival alguns dos nomes mais emergentes da nova música brasileira — Carol Biazin, Joyce Alane, Bento Gil e Melly — reforçando a ponte cultural entre Portugal e o Brasil.</p>
+                </div>
+              </div>
+            </div>
+          </Animated>
+        </div>
+      </section>
+
+      {/* ════════════════════════ ROAD TO ROCK IN RIO ═══════════════ */}
+      <section className="py-24 px-5 bg-[#08080f]">
+        <div className="max-w-5xl mx-auto">
+          <Animated animation="fade-up">
+            <div className="text-center mb-14">
+              <p className="text-[10px] uppercase tracking-[0.3em] text-amber-400/70 font-bold mb-4">De Londres a Lisboa</p>
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight mb-3">Road to Rock in Rio</h2>
+              <p className="text-sm text-white/30 max-w-lg mx-auto">Antes da Cidade do Rock, a energia do festival percorreu 7 cidades. Sonhos recolhidos pelo caminho integram o cenário do Palco Mundo.</p>
+            </div>
+          </Animated>
+
+          <Animated animation="fade-up" delay={100}>
+            <div className="relative">
+              {/* Timeline line */}
+              <div className="absolute left-4 sm:left-5 top-0 bottom-0 w-px bg-gradient-to-b from-amber-400/30 via-amber-400/10 to-transparent" />
+
+              <div className="space-y-4">
+                {ROAD_TO_STOPS.map((stop, i) => (
+                  <div key={i} className="relative pl-10 sm:pl-14">
+                    {/* Dot */}
+                    <div className="absolute left-2.5 sm:left-3.5 top-5 w-3 h-3 rounded-full bg-amber-400/40 border-2 border-[#08080f]" />
+
+                    <div className="rounded-xl border border-white/[0.07] bg-white/[0.02] p-4 sm:p-5 hover:bg-white/[0.04] transition-colors">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 mb-1.5">
+                        <h4 className="font-bold text-white text-sm">{stop.city}<span className="text-white/25 font-normal">, {stop.country}</span></h4>
+                        <span className="text-[10px] text-white/25 font-mono">{stop.date} 2026</span>
+                      </div>
+                      <p className="text-xs text-white/35 leading-relaxed">
+                        <span className="text-white/50">{stop.venue}</span> — {stop.highlight}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Animated>
         </div>
       </section>
 
