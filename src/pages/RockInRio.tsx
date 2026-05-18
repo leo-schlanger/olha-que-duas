@@ -172,6 +172,7 @@ const PHOTO_ATTRACTIONS = [
 ];
 
 const PHOTO_EXPERIENCES = [
+  { name: 'Market Square', desc: 'Praça de comércio e gastronomia com lojas pop-up, food trucks e esplanadas ao ar livre. Cenografia de boulevard americano com iluminação neon e ambiente descontraído para pausas entre concertos.', img: '/rockinrio/market-square.jpg', badge: 'Novo' },
   { name: 'Rock Your Street', desc: 'O boulevard mais eclético da Cidade do Rock — fado, jazz, ritmos africanos, K-pop, eletrónica e sons brasileiros ao vivo. Palco próprio com curadoria de world music e cenografia renovada para 2026.', img: '/rockinrio/cidade-do-rock.jpg' },
   { name: 'Smart City of Rock', desc: 'Laboratório urbano vivo com 20 startups de 8 países, em parceria com a Universidade de Lisboa e a Unicorn Factory Lisboa. Sete áreas — infraestrutura, mobilidade, turismo, saúde, experiência de marca, operações e ESG. Digital Twin, gestão de fluxos para 100 000 visitantes/dia e, após o festival, o Smart Rock Tank: ronda de investimento para escalar as melhores soluções. Novo em 2026.', img: '/rockinrio/smart-city.jpg', badge: 'Novo' },
   { name: '40+ Artistas de Rua', desc: 'Mágicos, mímicos, malabaristas, palhaços, figuras em andas, monociclos, homens-espelho, artistas de bolhas de sabão, caricaturistas e estátuas humanas — espalhados o dia inteiro.', img: '/rockinrio/artistas-rua.jpg' },
