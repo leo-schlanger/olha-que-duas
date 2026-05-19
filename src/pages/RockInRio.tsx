@@ -233,6 +233,57 @@ const ROAD_TO_STOPS = [
   { city: 'Porto', country: 'Portugal', date: '14 Mai', venue: 'Estação da Trindade', highlight: 'Coca-Cola — Anúncio Valete · Jimmy P e Maninho ao vivo' },
 ];
 
+/* ── Route planner ────────────────────────────────────────────────── */
+
+interface RouteStep { label: string; detail: string; hub?: boolean }
+interface RouteOption { id: string; label: string; steps: RouteStep[]; tip?: string }
+
+const ROUTE_OPTIONS: RouteOption[] = [
+  {
+    id: 'lisboa', label: 'De Lisboa',
+    steps: [
+      { label: 'Metro Linha Vermelha → Estação Oriente', detail: 'Ligação direta de qualquer ponto da cidade' },
+      { label: 'Gare do Oriente — ponto de encontro', detail: 'Segue as indicações para o Shuttle CARRIS', hub: true },
+      { label: 'Shuttle CARRIS → Cidade do Rock', detail: 'Direto, contínuo · 2€ (até 15 Jun) / 4€' },
+    ],
+  },
+  {
+    id: 'norte', label: 'Do Norte',
+    steps: [
+      { label: 'CP Intercidades → Lisboa Oriente', detail: 'Porto, Aveiro, Coimbra, Leiria · 30% desconto com bilhete do festival' },
+      { label: 'Gare do Oriente — ponto de encontro', detail: 'Segue as indicações para o Shuttle CARRIS', hub: true },
+      { label: 'Shuttle CARRIS → Cidade do Rock', detail: 'Direto, contínuo · 2€ (até 15 Jun) / 4€' },
+    ],
+    tip: 'Regresso: Comboio Especial noturno Lisboa Oriente → Porto Campanhã (02h nos dias 20, 21, 28 · 03h no dia 27) com paragens em Santarém, Coimbra B, Aveiro, Espinho e Gaia',
+  },
+  {
+    id: 'sul', label: 'Margem Sul',
+    steps: [
+      { label: 'Fertagus → Roma-Areeiro', detail: '2,50€ ida/volta · Comboio especial de regresso: 01h55 (03h30 a 27 Jun)' },
+      { label: 'CP Urbanos → Estação de Sacavém', detail: 'Transbordo em Roma-Areeiro · Linha da Azambuja · 3€ ida/volta promo' },
+      { label: '7 min a pé → Cidade do Rock', detail: 'Percurso sinalizado desde a estação de Sacavém' },
+    ],
+    tip: 'Alternativa por barco: Cais do Sodré → Cacilhas (último 01h40) ou Terreiro do Paço → Barreiro (último 02h00), depois Metro até Oriente e Shuttle',
+  },
+  {
+    id: 'sintra', label: 'Sintra / Cascais',
+    steps: [
+      { label: 'CP Linha de Sintra → Estação de Sacavém', detail: 'Tarifa promo 3€ ida/volta · Comboios especiais até 02h30 (03h30 a 27 Jun)' },
+      { label: '7 min a pé → Cidade do Rock', detail: 'Percurso sinalizado desde a estação de Sacavém' },
+    ],
+    tip: 'Linha de Cascais: último comboio Cais do Sodré → Caxias às 01h30 (troço Caxias → Cascais com autocarro por obras)',
+  },
+  {
+    id: 'carro', label: 'De Carro',
+    steps: [
+      { label: 'Estacionar num parque Telpark', detail: 'Roma, Alameda, Sete Rios, Marquês de Pombal, Santa Apolónia... · Desde 4,90€/24h' },
+      { label: 'Metro ou autocarro → Gare do Oriente', detail: 'Todos os parques com ligação direta a transportes públicos' },
+      { label: 'Shuttle CARRIS → Cidade do Rock', detail: 'Direto, contínuo · 2€ (até 15 Jun) / 4€' },
+    ],
+    tip: 'Sem estacionamento no recinto · Saída IC2 "Parque das Nações" cortada · Motas: parque dedicado via Caminho das Cegonhas (15 min a pé)',
+  },
+];
+
 /* ═══════════════════════════════════════════════════════════════════════════
    SEO
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -404,6 +455,7 @@ const TransportCard = ({ icon: Icon, title, children, badge }: { icon: React.Com
 const RockInRio = () => {
   const [activeDay, setActiveDay] = useState(0);
   const [digitalDay, setDigitalDay] = useState(0);
+  const [activeRoute, setActiveRoute] = useState('lisboa');
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
 
   useMetaTags({
@@ -964,6 +1016,68 @@ const RockInRio = () => {
           <Animated animation="fade-up" delay={100}>
             <div className="rounded-2xl overflow-hidden border border-white/[0.07] mb-8 aspect-[2/1] md:aspect-[16/7] shadow-xl shadow-black/20">
               <iframe src="https://www.google.com/maps?q=38.7856,-9.0929&z=15&output=embed" width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Mapa — Parque Tejo, Lisboa" />
+            </div>
+          </Animated>
+
+          {/* Route planner — "De onde vens?" */}
+          <Animated animation="fade-up" delay={120}>
+            <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 sm:p-8 mb-8 overflow-hidden">
+              <div className="text-center mb-8">
+                <p className="text-[10px] uppercase tracking-[0.3em] text-amber-400/70 font-bold mb-2">Planeia a tua viagem</p>
+                <h3 className="text-xl sm:text-2xl font-black text-white">De onde vens?</h3>
+              </div>
+
+              <div className="flex justify-center mb-8">
+                <div className="inline-flex rounded-2xl bg-white/[0.03] border border-white/[0.06] p-1.5 gap-1 overflow-x-auto max-w-full" role="tablist" aria-label="Origem da viagem" style={{ scrollbarWidth: 'none' }}>
+                  {ROUTE_OPTIONS.map((r) => (
+                    <button key={r.id} onClick={() => setActiveRoute(r.id)} role="tab" aria-selected={activeRoute === r.id}
+                      className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-bold transition-all duration-200 shrink-0 text-xs sm:text-sm ${activeRoute === r.id ? 'bg-white text-[#060610] shadow-lg shadow-white/10' : 'text-white/35 hover:text-white/60 hover:bg-white/[0.04]'}`}>
+                      {r.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {(() => {
+                const route = ROUTE_OPTIONS.find(r => r.id === activeRoute);
+                if (!route) return null;
+                return (
+                  <div className="max-w-lg mx-auto">
+                    <div className="relative">
+                      <div className="absolute left-[13px] top-4 bottom-4 w-px bg-gradient-to-b from-amber-400/40 via-emerald-400/20 to-transparent" />
+                      <div className="space-y-3">
+                        {route.steps.map((step, i) => (
+                          <div key={i} className="relative pl-10">
+                            <div className={`absolute left-1 top-3.5 w-[18px] h-[18px] rounded-full flex items-center justify-center text-[9px] font-extrabold ${
+                              step.hub
+                                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 ring-2 ring-emerald-500/10'
+                                : 'bg-amber-400/10 text-amber-400/80 border border-amber-400/20'
+                            }`}>
+                              {i + 1}
+                            </div>
+                            <div className={`rounded-xl p-4 ${
+                              step.hub
+                                ? 'bg-emerald-500/[0.06] border border-emerald-500/15'
+                                : 'bg-white/[0.02] border border-white/[0.06]'
+                            }`}>
+                              <p className="text-sm font-bold text-white leading-tight mb-1">{step.label}</p>
+                              <p className="text-xs text-white/40 leading-relaxed">{step.detail}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {route.tip && (
+                      <div className="mt-5 rounded-lg bg-amber-400/[0.04] border border-amber-400/10 p-3.5">
+                        <p className="text-xs text-amber-300/60 leading-relaxed">
+                          <Info className="w-3 h-3 inline-block mr-1.5 -mt-0.5 text-amber-400/50" />{route.tip}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
           </Animated>
 
