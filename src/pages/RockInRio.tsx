@@ -19,7 +19,7 @@ import { siteConfig } from '@/config/site';
 
 interface Artist { name: string; slug: string; headliner?: boolean; photo?: string }
 interface Stage { name: string; artists: Artist[] }
-interface Day { date: string; weekday: string; label: string; gradient: string; accent: string; accentBg: string; stages: Stage[] }
+interface Day { date: string; weekday: string; label: string; gradient: string; accent: string; accentBg: string; stages: Stage[]; soldOut?: boolean }
 
 interface ArtistBio {
   origin: string;
@@ -117,9 +117,9 @@ const LINEUP: Day[] = [
     gradient: 'from-pink-600 to-rose-500',
     accent: 'text-pink-400', accentBg: 'bg-pink-500/10 border-pink-500/20',
     stages: [
-      { name: 'Palco Mundo', artists: [A('Katy Perry', 'katy-perry', true), A('Charlie Puth', 'charlie-puth'), A('Alok', 'alok'), A('Nena', 'nena')] },
-      { name: 'Super Bock Stage', artists: [A('Bebe Rexha', 'bebe-rexha'), A('Pedro Sampaio', 'pedro-sampaio'), A('Bárbara Bandeira', 'barbara-bandeira'), A('Calema', 'calema'), A('NAPA', 'napa')] },
-      { name: 'Music Valley', artists: [A('Maninho', 'maninho'), A('Audrey Nuna', 'audrey-nuna'), A('Sofia Camara', 'sofia-camara')] },
+      { name: 'Palco Mundo', artists: [A('Katy Perry', 'katy-perry', true), A('Pedro Sampaio', 'pedro-sampaio'), A('Charlie Puth', 'charlie-puth'), A('Calema', 'calema')] },
+      { name: 'Super Bock Stage', artists: [A('Bebe Rexha', 'bebe-rexha'), A('Bárbara Bandeira', 'barbara-bandeira'), A('NAPA', 'napa'), A('Sofia Camara', 'sofia-camara')] },
+      { name: 'Galp Music Valley', artists: [A('Alok', 'alok'), A('Audrey Nuna', 'audrey-nuna'), A('Nena', 'nena'), A('Maninho', 'maninho')] },
       { name: 'BacanaPlay Digital Stage', artists: [A('Zarko', 'zarko'), A('Carol Biazin', 'carol-biazin'), A('Joyce Alane', 'joyce-alane'), A('Pears', 'pears')] },
     ],
   },
@@ -127,11 +127,12 @@ const LINEUP: Day[] = [
     date: '21 Junho', weekday: 'Domingo', label: 'Rock Day',
     gradient: 'from-red-700 to-orange-500',
     accent: 'text-red-400', accentBg: 'bg-red-500/10 border-red-500/20',
+    soldOut: true,
     stages: [
       { name: 'Palco Mundo', artists: [A('Linkin Park', 'linkin-park', true), A('Cypress Hill', 'cypress-hill'), A('The Pretty Reckless', 'the-pretty-reckless'), A('Grandson', 'grandson')] },
-      { name: 'Music Valley', artists: [A('Kaiser Chiefs', 'kaiser-chiefs'), A('Hoobastank', 'hoobastank'), A('Blasted Mechanism', 'blasted-mechanism'), A('Dealema', 'dealema')] },
+      { name: 'Galp Music Valley', artists: [A('Kaiser Chiefs', 'kaiser-chiefs'), A('Hoobastank', 'hoobastank'), A('Blasted Mechanism', 'blasted-mechanism'), A('Dealema', 'dealema'), A('Sam the Kid', 'sam-the-kid'), A('Orelha Negra', 'orelha-negra')] },
       { name: 'Super Bock Stage', artists: [A('Sepultura', 'sepultura'), A('P.O.D.', 'pod'), A('Tara Perdida', 'tara-perdida')] },
-      { name: 'BacanaPlay Digital Stage', artists: [A('Samuel Úria', 'samuel-uria'), A('Jimmy P', 'jimmy-p'), A('Diego Miranda', 'diego-miranda'), A('Sam the Kid', 'sam-the-kid'), A('Orelha Negra', 'orelha-negra')] },
+      { name: 'BacanaPlay Digital Stage', artists: [A('Samuel Úria', 'samuel-uria'), A('Jimmy P', 'jimmy-p'), A('Diego Miranda', 'diego-miranda')] },
     ],
   },
   {
@@ -140,7 +141,7 @@ const LINEUP: Day[] = [
     accent: 'text-amber-400', accentBg: 'bg-amber-500/10 border-amber-500/20',
     stages: [
       { name: 'Palco Mundo', artists: [A('Rod Stewart', 'rod-stewart', true), A('Cyndi Lauper', 'cyndi-lauper'), A('4 Non Blondes', '4-non-blondes'), A('Shaggy', 'shaggy')] },
-      { name: 'Music Valley', artists: [A('Xutos & Pontapés', 'xutos'), A('GNR', 'gnr'), A('UHF', 'uhf'), A('Táxi', 'taxi'), A('Jafumega', 'jafumega')] },
+      { name: 'Galp Music Valley', artists: [A('Xutos & Pontapés', 'xutos'), A('GNR', 'gnr'), A('UHF', 'uhf'), A('Jafumega', 'jafumega')] },
       { name: 'Super Bock Stage', artists: [A('Joss Stone', 'joss-stone'), A('The Wailers', 'the-wailers'), A('Belo', 'belo'), A('SYRO', 'syro')] },
       { name: 'BacanaPlay Digital Stage', artists: [A('Bateu Matou', 'bateu-matou'), A('Bia Caboz', 'bia-caboz'), A('Bento Gil', 'bento-gil'), A('Melly', 'melly'), A('Ulas', 'ulas')] },
     ],
@@ -151,7 +152,7 @@ const LINEUP: Day[] = [
     accent: 'text-violet-400', accentBg: 'bg-violet-500/10 border-violet-500/20',
     stages: [
       { name: 'Palco Mundo', artists: [A('21 Savage', '21-savage', true), A('Central Cee', 'central-cee'), A('Rema', 'rema'), A('Matué', 'matue')] },
-      { name: 'Music Valley', artists: [A('Filipe Ret', 'filipe-ret'), A('DENNIS', 'dennis'), A('Carlão', 'carlao'), A('Irina Barros', 'irina-barros')] },
+      { name: 'Galp Music Valley', artists: [A('Filipe Ret', 'filipe-ret'), A('DENNIS', 'dennis'), A('Carlão', 'carlao'), A('Irina Barros', 'irina-barros')] },
       { name: 'Super Bock Stage', artists: [A('CeeLo Green', 'ceelo-green'), A('Lola Indigo', 'lola-indigo'), A('Valete', 'valete'), A('Karetus', 'karetus')] },
       { name: 'BacanaPlay Digital Stage', artists: [A('King Bigs', 'king-bigs'), A('DJ Big & DJ Glue', 'dj-big-dj-glue'), A('Rima.pt', 'rima-pt'), A('Elyas', 'elyas')] },
     ],
@@ -160,7 +161,7 @@ const LINEUP: Day[] = [
 
 const STAGES_INFO = [
   { name: 'Palco Mundo', desc: 'O palco principal e maior do festival, com novo espetáculo audiovisual para 2026. Aqui atuam os headliners e os maiores nomes da música mundial perante 80 000 pessoas.', icon: Globe, img: '/rockinrio/palco-mundo.jpg' },
-  { name: 'Music Valley', desc: 'O vale dos sons diversos — reuniões lendárias, artistas emergentes e descobertas inesperadas. Powered by Galp, é o palco onde nascem as surpresas do festival.', icon: Music, img: '/rockinrio/music-valley.jpg' },
+  { name: 'Galp Music Valley', desc: 'O vale dos sons diversos — reuniões lendárias, artistas emergentes e descobertas inesperadas. Com 20 000 lugares e 50 metros de palco, é onde nascem as surpresas do festival.', icon: Music, img: '/rockinrio/music-valley.jpg' },
   { name: 'Super Bock Stage', desc: 'A casa do rock, metal, alternativo e punk na Cidade do Rock. Palco com identidade própria e público fiel que procura sons mais pesados e intensos.', icon: Radio, img: '/rockinrio/super-bock.jpg' },
   { name: 'BacanaPlay Digital Stage', desc: 'O palco mais digital do festival — música, humor, podcasts, talk shows e fenómenos virais. Co-curado por New Sheet Entertainment e milk&black, maior e mais relevante do que nunca em 2026.', icon: Smartphone, img: '/rockinrio/bacanaplay.jpg' },
 ];
@@ -250,8 +251,7 @@ const eventJsonLd = {
   location: { '@type': 'Place', name: 'Parque Tejo', address: { '@type': 'PostalAddress', streetAddress: 'Passeio dos Heróis do Mar', addressLocality: 'Lisboa', postalCode: '1990-059', addressCountry: 'PT' }, geo: { '@type': 'GeoCoordinates', latitude: 38.7856, longitude: -9.0929 }, maximumAttendeeCapacity: 80000 },
   performer: allPerformers,
   organizer: { '@type': 'Organization', name: 'Rock in Rio', url: 'https://rockinriolisboa.pt/' },
-  sponsor: { '@type': 'Organization', name: 'Olha que Duas', url: 'https://www.olhaqueduas.com' },
-  offers: { '@type': 'Offer', url: 'https://worten.seetickets.com/event/rock-in-rio-lisboa-2026/parque-tejo/3430460', priceCurrency: 'EUR', availability: 'https://schema.org/InStock', validFrom: '2025-12-01' },
+  offers: { '@type': 'Offer', url: 'https://worten.seetickets.com/event/rock-in-rio-lisboa-2026/parque-tejo/3430460', priceCurrency: 'EUR', availability: 'https://schema.org/LimitedAvailability', validFrom: '2025-12-01' },
   inLanguage: 'pt', isAccessibleForFree: false,
 };
 
@@ -269,7 +269,7 @@ const webPageJsonLd = {
   isPartOf: { '@id': 'https://www.olhaqueduas.com/#website' },
   about: { '@id': 'https://www.olhaqueduas.com/rockinrio#event' },
   primaryImageOfPage: { '@type': 'ImageObject', url: 'https://www.olhaqueduas.com/og-rockinrio.jpg', width: 1200, height: 630 },
-  inLanguage: 'pt-PT', datePublished: '2026-05-16', dateModified: '2026-05-18',
+  inLanguage: 'pt-PT', datePublished: '2026-05-16', dateModified: '2026-05-19',
   speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', 'h2', '.hero-subtitle'] },
 };
 
@@ -403,6 +403,7 @@ const TransportCard = ({ icon: Icon, title, children, badge }: { icon: React.Com
 
 const RockInRio = () => {
   const [activeDay, setActiveDay] = useState(0);
+  const [digitalDay, setDigitalDay] = useState(0);
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
 
   useMetaTags({
@@ -491,6 +492,7 @@ const RockInRio = () => {
       <section className="py-16 px-5 bg-[#060610]">
         <Animated animation="fade-up">
           <div className="max-w-4xl mx-auto">
+            <p className="text-center text-[10px] uppercase tracking-[0.3em] text-amber-400/70 font-bold mb-6">Cartaz Oficial</p>
             <img src="/rockinrio/lineup-poster.jpg" alt="Rock in Rio Lisboa 2026 — Lineup Completo" className="w-full rounded-2xl border border-white/[0.06] shadow-2xl shadow-black/40" loading="lazy" />
           </div>
         </Animated>
@@ -509,12 +511,13 @@ const RockInRio = () => {
           {/* Day selector — scrollable on mobile */}
           <Animated animation="fade-up" delay={100}>
             <div className="flex justify-center mb-14">
-              <div className="inline-flex rounded-2xl bg-white/[0.03] border border-white/[0.06] p-1.5 gap-1 sm:gap-1.5 overflow-x-auto max-w-full" style={{ scrollbarWidth: 'none' }}>
+              <div className="inline-flex rounded-2xl bg-white/[0.03] border border-white/[0.06] p-1.5 gap-1 sm:gap-1.5 overflow-x-auto max-w-full" role="tablist" aria-label="Dias do festival" style={{ scrollbarWidth: 'none' }}>
                 {LINEUP.map((d, i) => (
-                  <button key={i} onClick={() => setActiveDay(i)}
+                  <button key={i} onClick={() => setActiveDay(i)} role="tab" aria-selected={activeDay === i}
                     className={`px-3 sm:px-6 py-2.5 sm:py-3.5 rounded-xl font-bold transition-all duration-200 shrink-0 ${activeDay === i ? 'bg-white text-[#060610] shadow-lg shadow-white/10' : 'text-white/35 hover:text-white/60 hover:bg-white/[0.04]'}`}>
                     <span className="block text-sm sm:text-base leading-tight">{d.date.split(' ')[0]}</span>
                     <span className={`block text-[9px] sm:text-[10px] mt-0.5 uppercase tracking-widest ${activeDay === i ? 'text-black/40' : 'opacity-50'}`}>{d.label}</span>
+                    {d.soldOut && <span className={`block text-[7px] sm:text-[8px] mt-0.5 uppercase tracking-wider font-extrabold ${activeDay === i ? 'text-red-500' : 'text-red-400/60'}`}>Esgotado</span>}
                   </button>
                 ))}
               </div>
@@ -528,7 +531,10 @@ const RockInRio = () => {
                 <h3 className="text-xl sm:text-3xl font-black text-white tracking-tight">{day.date}, 2026</h3>
                 <p className="text-sm text-white/35 mt-1 font-medium">{day.weekday}</p>
               </div>
-              <span className={`px-3 sm:px-4 py-1.5 rounded-lg text-[9px] sm:text-[11px] font-extrabold uppercase tracking-widest border shrink-0 ${day.accentBg} ${day.accent}`}>{day.label}</span>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className={`px-3 sm:px-4 py-1.5 rounded-lg text-[9px] sm:text-[11px] font-extrabold uppercase tracking-widest border ${day.accentBg} ${day.accent}`}>{day.label}</span>
+                {day.soldOut && <span className="px-3 sm:px-4 py-1.5 rounded-lg text-[9px] sm:text-[11px] font-extrabold uppercase tracking-widest border bg-red-500/10 border-red-500/20 text-red-400">Esgotado</span>}
+              </div>
             </div>
           </Animated>
 
@@ -687,14 +693,14 @@ const RockInRio = () => {
             </div>
           </Animated>
 
-          {/* Shows per day — reuses activeDay from lineup */}
+          {/* Shows per day */}
           <Animated animation="fade-up" delay={100}>
             <div className="flex justify-center mb-8">
-              <div className="inline-flex rounded-2xl bg-white/[0.03] border border-white/[0.06] p-1.5 gap-1 sm:gap-1.5 overflow-x-auto max-w-full" style={{ scrollbarWidth: 'none' }}>
+              <div className="inline-flex rounded-2xl bg-white/[0.03] border border-white/[0.06] p-1.5 gap-1 sm:gap-1.5 overflow-x-auto max-w-full" role="tablist" aria-label="Dias do Digital Stage" style={{ scrollbarWidth: 'none' }}>
                 {LINEUP.map((d, i) => (
-                  <button key={i} onClick={() => setActiveDay(i)}
-                    className={`px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl font-bold transition-all duration-200 shrink-0 text-xs sm:text-sm ${activeDay === i ? 'bg-white text-[#060610] shadow-lg shadow-white/10' : 'text-white/35 hover:text-white/60 hover:bg-white/[0.04]'}`}>
-                    {d.date.split(' ')[0]} <span className={`hidden sm:inline ${activeDay === i ? 'text-black/40' : 'opacity-50'}`}>{d.weekday}</span>
+                  <button key={i} onClick={() => setDigitalDay(i)} role="tab" aria-selected={digitalDay === i}
+                    className={`px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl font-bold transition-all duration-200 shrink-0 text-xs sm:text-sm ${digitalDay === i ? 'bg-white text-[#060610] shadow-lg shadow-white/10' : 'text-white/35 hover:text-white/60 hover:bg-white/[0.04]'}`}>
+                    {d.date.split(' ')[0]} <span className={`hidden sm:inline ${digitalDay === i ? 'text-black/40' : 'opacity-50'}`}>{d.weekday}</span>
                   </button>
                 ))}
               </div>
@@ -703,7 +709,7 @@ const RockInRio = () => {
 
           <Animated animation="fade-up" delay={150}>
             <div className="space-y-3">
-              {(DIGITAL_STAGE_SHOWS[activeDay] || []).map((show, i) => (
+              {(DIGITAL_STAGE_SHOWS[digitalDay] || []).map((show, i) => (
                 <div key={i} className="rounded-xl border border-white/[0.07] bg-white/[0.02] p-4 sm:p-5 hover:bg-white/[0.04] transition-colors">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                     <div className="flex items-center gap-2.5 flex-1 min-w-0">
@@ -716,7 +722,7 @@ const RockInRio = () => {
                   </div>
                 </div>
               ))}
-              {(DIGITAL_STAGE_SHOWS[activeDay] || []).length === 0 && (
+              {(DIGITAL_STAGE_SHOWS[digitalDay] || []).length === 0 && (
                 <p className="text-sm text-white/25 text-center py-6">Programação de entretenimento em breve.</p>
               )}
             </div>
@@ -843,7 +849,7 @@ const RockInRio = () => {
 
           {/* Photo experience cards — Rock Your Street, Smart City, Artistas de Rua */}
           <Animated animation="fade-up" delay={200}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               {PHOTO_EXPERIENCES.map((exp, i) => (
                 <div key={i} className="group rounded-2xl overflow-hidden border border-white/[0.06]">
                   <div className="relative aspect-video sm:aspect-[4/3]">
@@ -987,7 +993,7 @@ const RockInRio = () => {
                     <span className="text-xs text-white/25">Comprar bilhetes:</span>
                     <a href="https://rockinriolisboa.pt/en/how-to-get-there" target="_blank" rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 text-xs text-emerald-400/70 hover:text-emerald-400 transition-colors font-semibold">
-                      tickets.rockinriolisboa.pt<ExternalLink className="w-3 h-3" />
+                      rockinriolisboa.pt<ExternalLink className="w-3 h-3" />
                     </a>
                     <span className="text-xs text-white/15">ou</span>
                     <span className="text-xs text-white/40 font-medium">App Navegante</span>
