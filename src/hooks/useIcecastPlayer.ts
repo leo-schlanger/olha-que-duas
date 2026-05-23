@@ -64,13 +64,11 @@ function readStoredMuted(): boolean {
 /**
  * Hook de áudio para stream Icecast.
  *
- * Estratégia "native-first":
- *   1. PLAY usa <audio> nativo → toca no primeiro clique, sempre.
- *   2. ICY metadata player corre em paralelo (não-bloqueante) apenas para
- *      sincronizar metadata em tempo real. Se falhar, o polling da API
- *      AzuraCast (useNowPlaying) cobre.
- *   3. Se o ICY player conseguir assumir o áudio, troca para ele (melhor
- *      sync). Se não, o <audio> nativo continua a tocar sem problemas.
+ * Estratégia "icy-first":
+ *   1. PLAY tenta o ICY player (IcecastMetadataPlayer) com o <audio>
+ *      element partilhado — áudio e metadata sincronizados, sem duplicação.
+ *   2. Se ICY falhar (browser antigo, CORS, etc.), cai para <audio> nativo
+ *      directo — sem metadata ICY, mas o polling da API AzuraCast cobre.
  */
 export function useIcecastPlayer({
   streamUrl,
@@ -163,11 +161,12 @@ export function useIcecastPlayer({
     };
   }, [streamUrl]);
 
-  // Criar ICY player apenas para metadata (não-bloqueante, bónus)
+  // Criar ICY player com audioElement partilhado (áudio + metadata no mesmo stream)
   useEffect(() => {
     if (!streamUrl || !supported) return;
 
     const player = new IcecastMetadataPlayer(streamUrl, {
+      audioElement: audioRef.current ?? undefined,
       metadataTypes: ["icy"],
       bufferLength: 2,
       retryTimeout: 30,
@@ -188,8 +187,8 @@ export function useIcecastPlayer({
       onRetry: () => { setIsReconnecting(true); },
       onRetryTimeout: () => { setIsReconnecting(false); },
       onError: (message: string) => { onErrorRef.current?.(message); },
-      // Callbacks de play/stop do ICY NÃO controlam o estado —
-      // o <audio> nativo é a source of truth.
+      // Estado gerido pelos event listeners do <audio> element partilhado
+      // (play/pause/waiting/playing/error). Callbacks do ICY são no-op.
       onPlay: () => {},
       onStop: () => {},
       onBuffer: () => {},
@@ -212,7 +211,7 @@ export function useIcecastPlayer({
     }
   }, [volume, isMuted]);
 
-  // ─── PLAY: <audio> nativo primeiro, ICY metadata em paralelo ───
+  // ─── PLAY: ICY primeiro (áudio + metadata), fallback nativo ───
   const play = useCallback(async () => {
     if (!audioRef.current || !streamUrl) {
       console.warn("[IcecastPlayer] no audio element or streamUrl");
@@ -222,11 +221,21 @@ export function useIcecastPlayer({
     setIsBuffering(true);
     setState("loading");
 
-    // 1. Áudio nativo — toca imediatamente
     const audio = audioRef.current;
-    audio.src = streamUrl;
     audio.volume = isMuted ? 0 : volume / 100;
 
+    // 1. ICY player (áudio + metadata pelo audioElement partilhado)
+    if (playerRef.current && supported) {
+      try {
+        await playerRef.current.play();
+        return;
+      } catch (err) {
+        console.warn("[IcecastPlayer] ICY player failed, falling back to native:", err);
+      }
+    }
+
+    // 2. Fallback: áudio nativo (sem ICY metadata — polling da API cobre)
+    audio.src = streamUrl;
     try {
       await audio.play();
     } catch (err) {
@@ -235,27 +244,18 @@ export function useIcecastPlayer({
       setIsBuffering(false);
       setState("stopped");
       onErrorRef.current?.("Falha ao iniciar a rádio.");
-      return;
     }
-
-    // 2. ICY metadata player em paralelo (non-blocking, best-effort)
-    if (playerRef.current) {
-      playerRef.current.play().catch((err: unknown) => {
-        // ICY falhou — sem problema, o polling da API cobre metadata
-        console.warn("[IcecastPlayer] ICY metadata player failed (audio still playing):", err);
-      });
-    }
-  }, [streamUrl, volume, isMuted]);
+  }, [streamUrl, volume, isMuted, supported]);
 
   const stop = useCallback(() => {
-    // Parar áudio nativo
+    // Parar ICY player primeiro (gere o audioElement quando activo)
+    playerRef.current?.stop().catch(() => {});
+    // Limpar áudio nativo (garante que qualquer playback pára)
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.removeAttribute("src");
       audioRef.current.load();
     }
-    // Parar ICY metadata
-    playerRef.current?.stop().catch(() => {});
 
     setIsPlaying(false);
     setIsBuffering(false);
