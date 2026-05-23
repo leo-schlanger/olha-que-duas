@@ -4,7 +4,7 @@ import {
   ExternalLink, Globe, Radio, Smartphone,
   Star, Users, Navigation, AlertTriangle, X, Info,
   Headphones, ChevronRight, Plane, Utensils, Gamepad2,
-  Sparkles, Leaf, Mic,
+  Sparkles, Leaf, Mic, Play,
 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -231,6 +231,7 @@ const ROAD_TO_STOPS = [
   { city: 'Braga', country: 'Portugal', date: '5 Mai', venue: 'Praça da República', highlight: 'Coca-Cola — Anúncio Karetus e Jimmy P · Experiências interativas' },
   { city: 'Viseu', country: 'Portugal', date: '8 Mai', venue: 'Mercado 2 de Maio', highlight: 'Sessions #3 — Anúncio Bárbara Bandeira · BB e Karetus unplugged' },
   { city: 'Porto', country: 'Portugal', date: '14 Mai', venue: 'Estação da Trindade', highlight: 'Coca-Cola — Anúncio Valete · Jimmy P e Maninho ao vivo' },
+  { city: 'Lisboa', country: 'Portugal', date: '22 Mai', venue: 'Praça do Município', highlight: 'Apresentação das Festas de Lisboa — Roberta Medina no palco · GNR, Irina Barros, Matias Damásio, Toy e Grande Marcha' },
 ];
 
 /* ── Route planner ────────────────────────────────────────────────── */
@@ -457,6 +458,7 @@ const RockInRio = () => {
   const [digitalDay, setDigitalDay] = useState(0);
   const [activeRoute, setActiveRoute] = useState('lisboa');
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
+  const [festasVideoPlaying, setFestasVideoPlaying] = useState(false);
 
   useMetaTags({
     title: 'Rock in Rio Lisboa 2026 — Parceiro Oficial',
@@ -804,7 +806,7 @@ const RockInRio = () => {
             <div className="text-center mb-14">
               <p className="text-[10px] uppercase tracking-[0.3em] text-amber-400/70 font-bold mb-4">De Londres a Lisboa</p>
               <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight mb-3">Road to Rock in Rio</h2>
-              <p className="text-sm text-white/30 max-w-lg mx-auto">Antes da Cidade do Rock, a energia do festival percorreu 7 cidades. Sonhos recolhidos pelo caminho integram o cenário do Palco Mundo.</p>
+              <p className="text-sm text-white/30 max-w-lg mx-auto">Antes da Cidade do Rock, a energia do festival percorreu 8 cidades. Sonhos recolhidos pelo caminho integram o cenário do Palco Mundo.</p>
             </div>
           </Animated>
 
@@ -830,6 +832,51 @@ const RockInRio = () => {
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+          </Animated>
+          {/* Festas de Lisboa video highlight */}
+          <Animated animation="fade-up" delay={200}>
+            <div className="mt-10 rounded-2xl overflow-hidden border border-amber-400/15 bg-white/[0.02]">
+              <div className="p-5 sm:p-6 border-b border-white/[0.06]">
+                <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                  <Play className="w-4 h-4 text-amber-400" />
+                  <h3 className="font-bold text-white text-sm">Festas de Lisboa 2026</h3>
+                  <span className="px-2 py-0.5 rounded-full bg-amber-400/10 border border-amber-400/20 text-[9px] font-bold uppercase tracking-wider text-amber-300">Vídeo</span>
+                </div>
+                <p className="text-xs text-white/35 leading-relaxed">Roberta Medina, vice-presidente do Rock in Rio, marcou presença no Espetáculo de Apresentação das Festas de Lisboa — com GNR, Irina Barros, Matias Damásio, Toy e estreia da Grande Marcha 2026.</p>
+              </div>
+              <div className="relative aspect-video bg-black">
+                {festasVideoPlaying ? (
+                  <iframe
+                    src="https://www.youtube-nocookie.com/embed/kZ1gtfQeeT0?rel=0&modestbranding=1&autoplay=1"
+                    className="absolute inset-0 w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    title="Festas de Lisboa 2026 — Rock in Rio"
+                  />
+                ) : (
+                  <button onClick={() => setFestasVideoPlaying(true)} className="absolute inset-0 w-full h-full group/play cursor-pointer">
+                    <img
+                      src="https://img.youtube.com/vi/kZ1gtfQeeT0/maxresdefault.jpg"
+                      alt="Festas de Lisboa 2026"
+                      className="absolute inset-0 w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-black/30 group-hover/play:bg-black/40 transition-colors" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-16 h-16 rounded-full bg-amber-400/90 flex items-center justify-center group-hover/play:scale-110 transition-transform shadow-xl">
+                        <Play className="w-7 h-7 text-black fill-black ml-1" />
+                      </div>
+                    </div>
+                  </button>
+                )}
+              </div>
+              <div className="p-4 flex items-center justify-between">
+                <span className="text-[10px] text-white/25 font-mono">22 Mai 2026 · Praça do Município, Lisboa</span>
+                <a href="/galeria/festas-de-lisboa-20260522" className="text-[10px] text-amber-400/60 hover:text-amber-400 transition-colors font-medium flex items-center gap-1">
+                  Ver galeria completa <ChevronRight className="w-3 h-3" />
+                </a>
               </div>
             </div>
           </Animated>
