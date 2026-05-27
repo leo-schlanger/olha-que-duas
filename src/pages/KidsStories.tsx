@@ -10,18 +10,28 @@ import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
 
 const stories = [
   {
-    id: 'MSs0rQRX4v8',
-    title: 'A Maratona de Dança',
-    description: 'O Baby Shark e os amigos entram numa maratona de dança cheia de ritmo e diversão!',
-    color: 'from-pink-400 to-rose-500',
-    borderColor: 'border-pink-300',
+    id: '4HbfRsmsvrU',
+    title: 'História Infantil do Cantinho',
+    description: 'Mais uma história encantada narrada no Cantinho da Pequenada com a Leonor!',
+    date: '2026-05-27',
+    color: 'from-violet-400 to-purple-500',
+    borderColor: 'border-violet-300',
   },
   {
     id: 'OKvw2XMgCVM',
     title: 'Rexy e o Coração de Ouro',
     description: 'O Rexy descobre que a verdadeira força está no coração. Uma história da Enseada Carnívora!',
+    date: '2026-04-11',
     color: 'from-emerald-400 to-teal-500',
     borderColor: 'border-emerald-300',
+  },
+  {
+    id: 'MSs0rQRX4v8',
+    title: 'A Maratona de Dança',
+    description: 'O Baby Shark e os amigos entram numa maratona de dança cheia de ritmo e diversão!',
+    date: '2026-04-11',
+    color: 'from-pink-400 to-rose-500',
+    borderColor: 'border-pink-300',
   },
 ];
 
@@ -41,13 +51,31 @@ const storiesJsonLd = [
       'Histórias infantis narradas em vídeo para crianças dos 3 aos 12 anos. Contos e aventuras do Cantinho da Pequenada com a Leonor — conteúdo seguro, gratuito e educativo para toda a família.',
     isPartOf: { '@id': 'https://www.olhaqueduas.com/kids#webpage' },
     inLanguage: 'pt-PT',
-    dateModified: '2026-04-28',
+    dateModified: '2026-05-27',
     audience: {
       '@type': 'PeopleAudience',
       suggestedMinAge: 3,
       suggestedMaxAge: 12,
       audienceType: 'Crianças e Famílias',
     },
+  },
+  // VideoObject — História Infantil do Cantinho
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: 'História Infantil do Cantinho — Cantinho da Pequenada',
+    description: 'Mais uma história encantada narrada no Cantinho da Pequenada com a Leonor na Rádio Olha que Duas.',
+    thumbnailUrl: 'https://img.youtube.com/vi/4HbfRsmsvrU/hqdefault.jpg',
+    uploadDate: '2026-05-27',
+    contentUrl: 'https://www.youtube.com/watch?v=4HbfRsmsvrU',
+    embedUrl: 'https://www.youtube-nocookie.com/embed/4HbfRsmsvrU',
+    publisher: {
+      '@type': 'Organization',
+      name: 'Olha que Duas',
+      url: 'https://www.olhaqueduas.com',
+    },
+    inLanguage: 'pt-PT',
+    isFamilyFriendly: true,
   },
   // VideoObject — A Maratona de Dança
   {
