@@ -248,39 +248,44 @@ export function useIcecastPlayer({
     const audio = audioRef.current;
     audio.volume = isMuted ? 0 : volume / 100;
 
-    // Bypass ICY se o utilizador definiu forceNative
-    const forceNative = (() => {
-      try { return localStorage.getItem("radio.forceNative") === "true"; }
-      catch { /* localStorage unavailable */ return false; }
+    // Bypass ICY se já falhou antes ou se o utilizador forçou
+    const skipIcy = (() => {
+      try {
+        return localStorage.getItem("radio.forceNative") === "true"
+          || localStorage.getItem("radio.icyFailed") === "true";
+      } catch { /* localStorage unavailable */ return false; }
     })();
 
     // 1. ICY player (áudio + metadata pelo audioElement partilhado)
-    if (playerRef.current && supported && !forceNative) {
+    if (playerRef.current && supported && !skipIcy) {
       try {
         console.log("[IcecastPlayer] trying ICY play...");
-        // Timeout total de 10s para ICY play + audio start
+        // Timeout total de 5s — se ICY não arranca, gravar falha e usar nativo
         const icyOk = await Promise.race([
           (async () => {
             await playerRef.current!.play();
-            console.log("[IcecastPlayer] ICY play() resolved, waiting for audio...");
-            return waitForAudioStart(audio, 6_000);
+            return waitForAudioStart(audio, 4_000);
           })(),
-          new Promise<false>((resolve) => setTimeout(() => resolve(false), 10_000)),
+          new Promise<false>((resolve) => setTimeout(() => resolve(false), 5_000)),
         ]);
         if (icyOk) {
           console.log("[IcecastPlayer] ICY playing ✓");
+          // ICY funciona — limpar flag de falha anterior
+          try { localStorage.removeItem("radio.icyFailed"); } catch { /* ignored */ }
           return;
         }
-        // ICY não arrancou a tempo — fall through para nativo
-        console.warn("[IcecastPlayer] ICY did not start in time, falling back to native");
+        // ICY não arrancou a tempo — gravar para saltar nas próximas tentativas
+        console.warn("[IcecastPlayer] ICY did not start in 5s, remembering failure");
+        try { localStorage.setItem("radio.icyFailed", "true"); } catch { /* ignored */ }
         playerRef.current.stop().catch(() => {});
       } catch (err) {
-        console.warn("[IcecastPlayer] ICY player failed, falling back to native:", err);
+        console.warn("[IcecastPlayer] ICY player failed:", err);
+        try { localStorage.setItem("radio.icyFailed", "true"); } catch { /* ignored */ }
       }
     }
 
     // 2. Fallback: áudio nativo (sem ICY metadata — polling da API cobre)
-    console.log("[IcecastPlayer] trying native audio...");
+    console.log("[IcecastPlayer] playing via native audio...");
     audio.src = streamUrl;
     try {
       await audio.play();
