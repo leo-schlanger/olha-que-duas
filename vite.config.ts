@@ -28,4 +28,22 @@ export default defineConfig(() => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "vendor-react": ["react", "react-dom", "react-router-dom"],
+          "vendor-ui": [
+            "lucide-react",
+            "framer-motion",
+            "class-variance-authority",
+            "clsx",
+            "tailwind-merge",
+          ],
+          "vendor-query": ["@tanstack/react-query"],
+          "vendor-supabase": ["@supabase/supabase-js"],
+        },
+      },
+    },
+  },
 }));

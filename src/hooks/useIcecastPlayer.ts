@@ -61,6 +61,30 @@ function readStoredMuted(): boolean {
   catch { return false; }
 }
 
+/** Aguarda até o <audio> começar a tocar, com timeout de segurança. */
+function waitForAudioStart(audio: HTMLAudioElement, timeoutMs: number): Promise<boolean> {
+  return new Promise((resolve) => {
+    if (!audio.paused && audio.readyState >= 2) {
+      resolve(true);
+      return;
+    }
+    const cleanup = () => {
+      clearTimeout(timer);
+      audio.removeEventListener("playing", onPlaying);
+      audio.removeEventListener("error", onError);
+    };
+    const onPlaying = () => { cleanup(); resolve(true); };
+    const onError = () => { cleanup(); resolve(false); };
+    const timer = setTimeout(() => {
+      audio.removeEventListener("playing", onPlaying);
+      audio.removeEventListener("error", onError);
+      resolve(false);
+    }, timeoutMs);
+    audio.addEventListener("playing", onPlaying, { once: true });
+    audio.addEventListener("error", onError, { once: true });
+  });
+}
+
 /**
  * Hook de áudio para stream Icecast.
  *
@@ -96,11 +120,11 @@ export function useIcecastPlayer({
 
   // Persistir volume no localStorage
   useEffect(() => {
-    try { localStorage.setItem(LS_VOLUME_KEY, String(volume)); } catch {}
+    try { localStorage.setItem(LS_VOLUME_KEY, String(volume)); } catch { /* localStorage unavailable */ }
   }, [volume]);
 
   useEffect(() => {
-    try { localStorage.setItem(LS_MUTED_KEY, String(isMuted)); } catch {}
+    try { localStorage.setItem(LS_MUTED_KEY, String(isMuted)); } catch { /* localStorage unavailable */ }
   }, [isMuted]);
 
   // Verificar suporte ICY
@@ -228,7 +252,12 @@ export function useIcecastPlayer({
     if (playerRef.current && supported) {
       try {
         await playerRef.current.play();
-        return;
+        // Verificar se o áudio realmente arrancou (timeout de segurança)
+        const started = await waitForAudioStart(audio, 8_000);
+        if (started) return;
+        // ICY resolveu mas o áudio não arrancou — fall through para nativo
+        console.warn("[IcecastPlayer] ICY resolved but audio did not start, falling back to native");
+        playerRef.current.stop().catch(() => {});
       } catch (err) {
         console.warn("[IcecastPlayer] ICY player failed, falling back to native:", err);
       }
@@ -243,7 +272,7 @@ export function useIcecastPlayer({
       setIsPlaying(false);
       setIsBuffering(false);
       setState("stopped");
-      onErrorRef.current?.("Falha ao iniciar a rádio.");
+      throw new Error("Falha ao iniciar a rádio.");
     }
   }, [streamUrl, volume, isMuted, supported]);
 

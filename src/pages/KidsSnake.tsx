@@ -311,7 +311,7 @@ const KidsSnake = () => {
 
     snakeRef.current = newSnake;
     draw();
-  }, [draw]);
+  }, [draw, endGame]);
 
   /* ----- Start / End / Reset ----- */
   const startGame = useCallback(() => {

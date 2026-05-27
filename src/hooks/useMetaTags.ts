@@ -206,6 +206,7 @@ export function useMetaTags(config: MetaTagsConfig) {
       // Remove page-specific JSON-LD
       removeJsonLd('page-specific');
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- individual properties tracked
   }, [
     config.title,
     config.description,
@@ -217,6 +218,9 @@ export function useMetaTags(config: MetaTagsConfig) {
     config.modifiedTime,
     config.noindex,
     config.jsonLd,
+    config.author,
+    config.section,
+    config.tags,
   ]);
 }
 

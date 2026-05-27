@@ -56,7 +56,7 @@ function mergeTodayPrograms(
   // Clone periods and strip routine durations (recalculated by addDurations at end)
   const merged: DailyPeriod[] = periods.map((p) => ({
     ...p,
-    slots: p.slots.map(({ duration, ...rest }) => rest),
+    slots: p.slots.map(({ duration: _duration, ...rest }) => rest),
   }));
 
   // Check if there's an all-day event today
@@ -401,7 +401,7 @@ const RadioPlayer = () => {
     // Volume
     volume, setVolume, isMuted, toggleMute,
     // Debug
-    debugRef, syncSource, icyMeta,
+    debugRef,
   } = useRadioSync(radio.streamUrl, {
     announcementPlaylists: radio.announcementPlaylists,
   });

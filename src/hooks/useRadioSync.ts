@@ -2,7 +2,6 @@ import { useCallback, useRef, useEffect } from "react";
 import { useIcecastPlayer, type IcyMeta } from "@/hooks/useIcecastPlayer";
 import {
   useNowPlaying,
-  matchPlayingNext,
   type NowPlayingState,
   type DebugSnapshot,
 } from "@/hooks/useNowPlaying";

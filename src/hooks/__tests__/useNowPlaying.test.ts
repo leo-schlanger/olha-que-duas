@@ -695,11 +695,6 @@ describe("parseIcyStreamTitle", () => {
 });
 
 describe("matchPlayingNext", () => {
-  const withId = (id: string, title = "T", artist = "A"): AzuraEntry => ({
-    song: { title, artist, art: "x.jpg" },
-    ...({ song: { title, artist, art: "x.jpg", id } } as Record<string, unknown>),
-  });
-
   it("match por song.id quando ambos têm", () => {
     const a = { song: { title: "X", artist: "Y", id: "abc" } } as unknown as AzuraEntry;
     const b = { song: { title: "X", artist: "Y", id: "abc" } } as unknown as AzuraEntry;

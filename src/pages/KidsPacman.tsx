@@ -1,6 +1,6 @@
 import { useRef, useEffect, useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ArrowUp, ArrowDown, ArrowRight, ChevronUp } from 'lucide-react';
+import { ArrowLeft, ArrowDown, ArrowRight, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -550,7 +550,6 @@ const KidsPacman = () => {
 
     animFrameRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(animFrameRef.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* ---- Touch button handler ---- */
