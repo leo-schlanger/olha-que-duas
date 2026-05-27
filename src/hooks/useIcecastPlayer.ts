@@ -248,15 +248,31 @@ export function useIcecastPlayer({
     const audio = audioRef.current;
     audio.volume = isMuted ? 0 : volume / 100;
 
+    // Bypass ICY se o utilizador definiu forceNative
+    const forceNative = (() => {
+      try { return localStorage.getItem("radio.forceNative") === "true"; }
+      catch { /* localStorage unavailable */ return false; }
+    })();
+
     // 1. ICY player (áudio + metadata pelo audioElement partilhado)
-    if (playerRef.current && supported) {
+    if (playerRef.current && supported && !forceNative) {
       try {
-        await playerRef.current.play();
-        // Verificar se o áudio realmente arrancou (timeout de segurança)
-        const started = await waitForAudioStart(audio, 8_000);
-        if (started) return;
-        // ICY resolveu mas o áudio não arrancou — fall through para nativo
-        console.warn("[IcecastPlayer] ICY resolved but audio did not start, falling back to native");
+        console.log("[IcecastPlayer] trying ICY play...");
+        // Timeout total de 10s para ICY play + audio start
+        const icyOk = await Promise.race([
+          (async () => {
+            await playerRef.current!.play();
+            console.log("[IcecastPlayer] ICY play() resolved, waiting for audio...");
+            return waitForAudioStart(audio, 6_000);
+          })(),
+          new Promise<false>((resolve) => setTimeout(() => resolve(false), 10_000)),
+        ]);
+        if (icyOk) {
+          console.log("[IcecastPlayer] ICY playing ✓");
+          return;
+        }
+        // ICY não arrancou a tempo — fall through para nativo
+        console.warn("[IcecastPlayer] ICY did not start in time, falling back to native");
         playerRef.current.stop().catch(() => {});
       } catch (err) {
         console.warn("[IcecastPlayer] ICY player failed, falling back to native:", err);
@@ -264,9 +280,11 @@ export function useIcecastPlayer({
     }
 
     // 2. Fallback: áudio nativo (sem ICY metadata — polling da API cobre)
+    console.log("[IcecastPlayer] trying native audio...");
     audio.src = streamUrl;
     try {
       await audio.play();
+      console.log("[IcecastPlayer] native audio playing ✓");
     } catch (err) {
       console.error("[IcecastPlayer] native audio play failed:", err);
       setIsPlaying(false);
