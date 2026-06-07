@@ -21,12 +21,12 @@ const PERIOD_ICONS: Record<string, typeof Sun> = {
 
 // Fallback icons for known special programs (quando o icon_url ainda não existe)
 const FALLBACK_ICONS: Record<string, React.ReactNode> = {
-  'Nutrição': <Apple className="w-full h-full p-1" />,
-  'Motivar': <Target className="w-full h-full p-1" />,
-  'Prazer Feminino': <Heart className="w-full h-full p-1" />,
-  'Companheiros de Caminhada': <Footprints className="w-full h-full p-1" />,
-  'Dizem que...': <MessageSquare className="w-full h-full p-1" />,
-  'Olha que Duas!': <Users className="w-full h-full p-1" />,
+  'Nutrição': <Apple className="w-full h-full p-2.5" />,
+  'Motivar': <Target className="w-full h-full p-2.5" />,
+  'Prazer Feminino': <Heart className="w-full h-full p-2.5" />,
+  'Companheiros de Caminhada': <Footprints className="w-full h-full p-2.5" />,
+  'Dizem que...': <MessageSquare className="w-full h-full p-2.5" />,
+  'Olha que Duas!': <Users className="w-full h-full p-2.5" />,
 };
 
 /** Mostra "19h–21h" para intervalos, ou só "19h" para horas únicas. */
@@ -102,11 +102,15 @@ function SlotThumb({
   );
 }
 
-/** Etiqueta de hora / "Dia inteiro" à esquerda do slot. */
-function SlotTime({ slot, isCurrent }: { slot: DailySlot; isCurrent: boolean }) {
+/**
+ * Coluna da esquerda: hora (intervalo) + duração empilhadas, ou o badge
+ * "Dia inteiro". Largura fixa para alinhar todas as miniaturas, libertando
+ * a direita inteira para o nome + descrição (sem cortes).
+ */
+function SlotTimeCol({ slot, isCurrent }: { slot: DailySlot; isCurrent: boolean }) {
   if (slot.isAllDay) {
     return (
-      <span className={`text-[10px] font-bold uppercase tracking-wider shrink-0 px-2 py-0.5 rounded-full ${
+      <span className={`mt-0.5 shrink-0 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
         isCurrent ? 'bg-purple-500/20 text-purple-300 border border-purple-400/30' : 'bg-cream/10 text-cream/50'
       }`}>
         Dia inteiro
@@ -114,23 +118,16 @@ function SlotTime({ slot, isCurrent }: { slot: DailySlot; isCurrent: boolean }) 
     );
   }
   return (
-    <span className={`font-mono text-[11px] leading-tight shrink-0 w-14 whitespace-nowrap ${
-      isCurrent ? 'text-amarelo/80' : 'text-cream/45'
-    }`}>
-      {timeLabel(slot)}
-    </span>
-  );
-}
-
-/** Pílula de duração, ao lado do intervalo. */
-function DurationPill({ slot, isCurrent }: { slot: DailySlot; isCurrent: boolean }) {
-  if (slot.isAllDay || !slot.duration) return null;
-  return (
-    <span className={`ml-auto text-[10px] font-mono shrink-0 px-1.5 py-0.5 rounded ${
-      isCurrent ? 'bg-amarelo/15 text-amarelo/70' : 'bg-cream/5 text-cream/30'
-    }`}>
-      {slot.duration}
-    </span>
+    <div className="shrink-0 w-[3.4rem] mt-0.5 leading-tight font-mono">
+      <div className={`text-[11px] whitespace-nowrap ${isCurrent ? 'text-amarelo/85' : 'text-cream/55'}`}>
+        {timeLabel(slot)}
+      </div>
+      {slot.duration && (
+        <div className={`text-[10px] ${isCurrent ? 'text-amarelo/45' : 'text-cream/25'}`}>
+          {slot.duration}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -197,28 +194,21 @@ const DailySoundtrackPanel = memo(function DailySoundtrackPanel({
                         key={isAllDay ? `allday-${slotIdx}` : `${slot.time}-${slotIdx}`}
                         className={`min-w-0 ${highlight ? 'rounded-lg px-2.5 py-2 -mx-1.5 bg-amarelo/5 border border-amarelo/10' : 'px-0 py-1'}`}
                       >
-                        <div className="flex items-center gap-2.5">
-                          <SlotTime slot={slot} isCurrent={isCurrent} />
+                        <div className="flex items-start gap-2.5">
+                          <SlotTimeCol slot={slot} isCurrent={isCurrent} />
                           <SlotThumb slot={slot} isCurrent={isCurrent} size={highlight ? "md" : "sm"} />
 
-                          {/* Nome + géneros (alinhados em coluna) */}
+                          {/* Nome + descrição — largura total, sem cortes (quebram para várias linhas) */}
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                              <span
-                                className={`min-w-0 truncate ${highlight ? 'text-[15px] text-amarelo font-bold' : 'text-sm text-cream/85 font-medium'}`}
-                                title={slot.name}
-                              >
-                                {slot.name}
-                              </span>
-                              <DurationPill slot={slot} isCurrent={isCurrent} />
-                            </div>
+                            <span className={`block break-words leading-snug ${
+                              highlight ? 'text-[15px] text-amarelo font-bold' : 'text-sm text-cream/85 font-medium'
+                            }`}>
+                              {slot.name}
+                            </span>
                             {slot.genres && (
-                              <span
-                                className={`block text-[10px] leading-tight truncate mt-0.5 ${
-                                  isCurrent ? 'text-amarelo/50' : 'text-cream/30'
-                                }`}
-                                title={slot.genres}
-                              >
+                              <span className={`block break-words text-[11px] leading-snug mt-0.5 ${
+                                isCurrent ? 'text-amarelo/55' : 'text-cream/35'
+                              }`}>
                                 {slot.genres}
                               </span>
                             )}
@@ -226,17 +216,14 @@ const DailySoundtrackPanel = memo(function DailySoundtrackPanel({
                         </div>
 
                         {slot.subPrograms && slot.subPrograms.length > 0 && (
-                          <div className="mt-1.5 ml-3 space-y-1 border-l-2 border-amarelo/20 pl-2.5">
+                          <div className="mt-1.5 ml-3 space-y-1.5 border-l-2 border-amarelo/20 pl-2.5">
                             {slot.subPrograms.map((sub, subIdx) => (
-                              <div key={`sub-${subIdx}`} className="flex items-center gap-2">
-                                <span className={`font-mono text-[11px] shrink-0 w-14 whitespace-nowrap ${isCurrent ? 'text-amarelo/60' : 'text-cream/40'}`}>
-                                  {timeLabel(sub)}
-                                </span>
+                              <div key={`sub-${subIdx}`} className="flex items-start gap-2">
+                                <SlotTimeCol slot={sub} isCurrent={isCurrent} />
                                 <SlotThumb slot={sub} isCurrent={isCurrent} size="sm" />
-                                <span className="text-sm text-amarelo/90 font-semibold truncate min-w-0" title={sub.name}>
+                                <span className="flex-1 min-w-0 block break-words leading-snug text-sm text-amarelo/90 font-semibold">
                                   {sub.name}
                                 </span>
-                                <DurationPill slot={sub} isCurrent={isCurrent} />
                               </div>
                             ))}
                           </div>
