@@ -4,6 +4,7 @@ import {
   getCurrentPeriodFromSchedule,
   getPeriodBoundaries,
   parseSlotTime,
+  parseSlotTimeSpec,
   formatDuration,
   addDurations,
   type DailyPeriod,
@@ -149,6 +150,50 @@ describe("parseSlotTime", () => {
     expect(parseSlotTime("invalid")).toBe(0);
     expect(parseSlotTime("")).toBe(0);
     expect(parseSlotTime("10:30")).toBe(0);
+  });
+});
+
+describe("parseSlotTimeSpec", () => {
+  it("parseia intervalos (a fonte real dos dados)", () => {
+    expect(parseSlotTimeSpec("19h-21h")).toEqual({ start: "19h", end: "21h" });
+    expect(parseSlotTimeSpec("23h-00h")).toEqual({ start: "23h", end: "00h" });
+    expect(parseSlotTimeSpec("10h30-12h")).toEqual({ start: "10h30", end: "12h" });
+  });
+
+  it("parseia hora única (sem fim)", () => {
+    expect(parseSlotTimeSpec("07h")).toEqual({ start: "07h", end: undefined });
+  });
+
+  it("tolera espaços e vários tipos de traço", () => {
+    expect(parseSlotTimeSpec(" 19h - 21h ")).toEqual({ start: "19h", end: "21h" });
+    expect(parseSlotTimeSpec("19h–21h")).toEqual({ start: "19h", end: "21h" });
+  });
+
+  it("o início parseia para minutos válidos (ordenação/merge funcionam)", () => {
+    const { start } = parseSlotTimeSpec("19h-21h");
+    expect(parseSlotTime(start)).toBe(19 * 60);
+  });
+});
+
+describe("addDurations com endTime (intervalos explícitos)", () => {
+  it("usa o fim explícito em vez do próximo slot", () => {
+    const result = addDurations([{
+      period: "tarde", label: "Tarde", range: "12H - 18H",
+      slots: [
+        { time: "12h", endTime: "14h", name: "Almoço" },
+        { time: "17h", endTime: "19h", name: "Ritmo da Cidade" }, // cruza o fim do período
+      ],
+    }]);
+    expect(result[0].slots[0].duration).toBe("2h"); // 12h-14h
+    expect(result[0].slots[1].duration).toBe("2h"); // 17h-19h (não 1h até ao fim do período)
+  });
+
+  it("trata fim à meia-noite (23h-00h = 1h, não 24h)", () => {
+    const result = addDurations([{
+      period: "noite", label: "Noite", range: "18H - 00H",
+      slots: [{ time: "23h", endTime: "00h", name: "Love Sessions" }],
+    }]);
+    expect(result[0].slots[0].duration).toBe("1h");
   });
 });
 

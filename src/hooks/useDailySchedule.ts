@@ -3,10 +3,18 @@ import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
 
 export interface DailySlot {
   time: string;
+  /** Fim explícito do bloco quando o slot_time é um intervalo ("19h-21h" → "21h"). */
+  endTime?: string;
   name: string;
   genres?: string;
   duration?: string;
   iconUrl?: string;
+  /**
+   * true = programa especial (evento semanal): destacado a amarelo e usado
+   * pela lógica de merge para detetar takeovers. Slots de rotina ficam
+   * undefined/false, mesmo que tenham `iconUrl`.
+   */
+  isSpecial?: boolean;
   isAllDay?: boolean;
   subPrograms?: DailySlot[];
 }
@@ -72,6 +80,19 @@ export function parseSlotTime(t: string): number {
   return parseInt(match[1]) * 60 + (match[2] ? parseInt(match[2]) : 0);
 }
 
+/**
+ * Parse um slot_time que pode ser uma hora única ("07h", "10h30") OU um
+ * intervalo explícito ("19h-21h", "10h30-12h"). Devolve o início (usado como
+ * `time` canónico para ordenação/merge) e o fim opcional. Tolerante a
+ * espaços e a vários tipos de traço (-, –, —).
+ */
+export function parseSlotTimeSpec(raw: string): { start: string; end?: string } {
+  const [startRaw, endRaw] = (raw || '').split(/\s*[-–—]\s*/);
+  const start = (startRaw ?? '').trim();
+  const end = endRaw?.trim();
+  return { start, end: end || undefined };
+}
+
 /** Format a duration in minutes as e.g. "2h", "1h30" */
 export function formatDuration(minutes: number): string {
   if (minutes <= 0) return '';
@@ -91,7 +112,10 @@ export function addDurations(periods: DailyPeriod[]): DailyPeriod[] {
       if (slot.isAllDay || slot.duration) return slot;
       const start = parseSlotTime(slot.time);
       let end: number;
-      if (i < period.slots.length - 1) {
+      if (slot.endTime) {
+        // Fim explícito do intervalo tem prioridade (ex.: "17h-19h" cruza o período)
+        end = parseSlotTime(slot.endTime);
+      } else if (i < period.slots.length - 1) {
         end = parseSlotTime(period.slots[i + 1].time);
       } else {
         end = rangeEnd;
@@ -173,10 +197,13 @@ export function useDailySchedule() {
             slots: [],
           });
         }
+        const { start, end } = parseSlotTimeSpec(row.slot_time);
         grouped.get(row.period)!.slots.push({
-          time: row.slot_time,
+          time: start,
+          endTime: end,
           name: row.slot_name,
           genres: row.genres || undefined,
+          iconUrl: row.icon_url || undefined,
         });
       }
 

@@ -30,8 +30,9 @@ const DAY_NAMES = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 
 
 /**
  * Merge today's special programs (from weekly schedule) into the daily
- * periods. Special programs get an `iconUrl` to render their logo; routine
- * slots remain icon-less.
+ * periods. Special programs are flagged `isSpecial` (highlighted in the UI
+ * and used here to detect takeovers). Both specials and routine slots may
+ * carry an `iconUrl` (artwork/logo) — `isSpecial` is what distinguishes them.
  */
 /** Format minutes-from-midnight as "12h" or "12h30" */
 function formatMinsToSlotTime(totalMins: number): string {
@@ -69,9 +70,11 @@ function mergeTodayPrograms(
       name: allDayProg.show,
       iconUrl: allDayProg.iconUrl,
       isAllDay: true,
+      isSpecial: true,
     };
     for (const period of merged) {
-      period.slots = period.slots.filter((s) => !!s.iconUrl);
+      // Takeover: mantém só os especiais (não a rotina, mesmo com iconUrl)
+      period.slots = period.slots.filter((s) => s.isSpecial);
       period.slots.unshift({ ...allDaySlot });
     }
   }
@@ -153,6 +156,7 @@ function mergeTodayPrograms(
       time: spec.formatted,
       name: spec.prog.show,
       iconUrl: spec.prog.iconUrl,
+      isSpecial: true,
       ...(spec.duration && { duration: spec.duration }),
     };
 
@@ -163,6 +167,7 @@ function mergeTodayPrograms(
         time: child.formatted,
         name: child.prog.show,
         iconUrl: child.prog.iconUrl,
+        isSpecial: true,
         ...(child.duration && { duration: child.duration }),
       }));
     }
@@ -183,7 +188,7 @@ function mergeTodayPrograms(
   // Remove routine slots that fall inside a special's time range
   for (const period of merged) {
     period.slots = period.slots.filter((slot) => {
-      if (slot.iconUrl) return true;
+      if (slot.isSpecial) return true;
       const t = parseSlotTime(slot.time);
       return !specialsWithEnd.some((r) => t > r.startMins && t < r.endMins);
     });
@@ -235,6 +240,7 @@ function mergeTodayPrograms(
         time: formatMinsToSlotTime(endMins),
         name: allDayProg.show,
         iconUrl: allDayProg.iconUrl,
+        isSpecial: true,
       };
     } else {
       // Find original routine slot that was playing at this time
@@ -250,6 +256,7 @@ function mergeTodayPrograms(
         time: formatMinsToSlotTime(endMins),
         name: origSlot?.name ?? 'Programação',
         ...(origSlot?.genres && { genres: origSlot.genres }),
+        ...(origSlot?.iconUrl && { iconUrl: origSlot.iconUrl }),
       };
     }
 
