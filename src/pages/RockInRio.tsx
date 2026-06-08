@@ -173,7 +173,7 @@ const PHOTO_ATTRACTIONS = [
 ];
 
 const PHOTO_EXPERIENCES = [
-  { name: 'Market Square', desc: 'Praça de comércio e gastronomia com lojas pop-up, food trucks e esplanadas ao ar livre. Cenografia de boulevard americano com iluminação neon e ambiente descontraído para pausas entre concertos.', img: '/rockinrio/market-square.jpg', badge: 'Novo' },
+  { name: 'Market Square by Intermarché', desc: 'Nova área de lazer com naming do Intermarché, Supermercado Oficial do festival. Praça de comércio e gastronomia com lojas pop-up, food trucks e esplanadas ao ar livre, mais uma zona própria de Pronto a Comer. Cenografia de boulevard americano com iluminação neon para as pausas entre concertos.', img: '/rockinrio/market-square.jpg', badge: 'Novo' },
   { name: 'Rock Your Street', desc: 'O boulevard mais eclético da Cidade do Rock — fado, jazz, ritmos africanos, K-pop, eletrónica e sons brasileiros ao vivo. Palco próprio com curadoria de world music e cenografia renovada para 2026.', img: '/rockinrio/cidade-do-rock.jpg' },
   { name: 'Smart City of Rock', desc: 'Laboratório urbano vivo com 20 startups de 8 países, em parceria com a Universidade de Lisboa e a Unicorn Factory Lisboa. Sete áreas — infraestrutura, mobilidade, turismo, saúde, experiência de marca, operações e ESG. Digital Twin, gestão de fluxos para 100 000 visitantes/dia e, após o festival, o Smart Rock Tank: ronda de investimento para escalar as melhores soluções. Novo em 2026.', img: '/rockinrio/smart-city.jpg', badge: 'Novo' },
   { name: '40+ Artistas de Rua', desc: 'Mágicos, mímicos, malabaristas, palhaços, figuras em andas, monociclos, homens-espelho, artistas de bolhas de sabão, caricaturistas e estátuas humanas — espalhados o dia inteiro.', img: '/rockinrio/artistas-rua.jpg' },
@@ -321,7 +321,7 @@ const webPageJsonLd = {
   isPartOf: { '@id': 'https://www.olhaqueduas.com/#website' },
   about: { '@id': 'https://www.olhaqueduas.com/rockinrio#event' },
   primaryImageOfPage: { '@type': 'ImageObject', url: 'https://www.olhaqueduas.com/og-rockinrio.jpg', width: 1200, height: 630 },
-  inLanguage: 'pt-PT', datePublished: '2026-05-16', dateModified: '2026-05-19',
+  inLanguage: 'pt-PT', datePublished: '2026-05-16', dateModified: '2026-06-08',
   speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', 'h2', '.hero-subtitle'] },
 };
 
@@ -835,6 +835,20 @@ const RockInRio = () => {
               </div>
             </div>
           </Animated>
+
+          {/* Campanha "Eu Vou" — Intermarché */}
+          <Animated animation="fade-up" delay={150}>
+            <div className="mt-6 flex items-start gap-3.5 p-5 rounded-xl bg-white/[0.02] border border-white/[0.07]">
+              <Users className="w-5 h-5 text-amber-400/70 shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-bold text-white/80 mb-1">Campanha "Eu Vou" — embaixadores de cada terra</p>
+                <p className="text-xs text-white/35 leading-relaxed">
+                  Em parceria com o Intermarché, o Road to chega a todo o país: cada loja aderente seleciona um embaixador local — via candidatura por QR Code — para representar a sua comunidade na Cidade do Rock e dar a conhecer as tradições, a cultura e a identidade da sua região.
+                </p>
+              </div>
+            </div>
+          </Animated>
+
           {/* Festas de Lisboa video highlight */}
           <Animated animation="fade-up" delay={200}>
             <div className="mt-10 rounded-2xl overflow-hidden border border-amber-400/15 bg-white/[0.02]">
@@ -1014,6 +1028,8 @@ const RockInRio = () => {
                     <span>Compensação carbónica via reflorestação</span>
                     <span className="text-emerald-500/20">·</span>
                     <span>Reciclagem gamificada "Acerta & Recicla"</span>
+                    <span className="text-emerald-500/20">·</span>
+                    <span>Refill grátis nos bebedouros Intermarché com garrafa reutilizável</span>
                   </div>
                 </div>
               </div>
@@ -1030,6 +1046,7 @@ const RockInRio = () => {
               <p className="text-[10px] uppercase tracking-[0.3em] text-amber-400/70 font-bold mb-4">Parque Tejo, Lisboa</p>
               <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight mb-3">Como Chegar</h2>
               <p className="text-sm text-white/30 font-medium">Passeio dos Heróis do Mar, 1990-059 Lisboa</p>
+              <p className="text-xs text-white/25 max-w-md mx-auto mt-3 leading-relaxed">Cerca de 80% do público vem de fora de Lisboa — por isso reunimos aqui todas as rotas de transporte até à Cidade do Rock.</p>
             </div>
           </Animated>
 
@@ -1301,7 +1318,7 @@ const RockInRio = () => {
 
                   <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-white tracking-tight mb-4">Garante o teu bilhete</h2>
                   <p className="text-xs sm:text-base text-white/40 mb-8 sm:mb-10 max-w-lg mx-auto leading-relaxed">
-                    Junta-te a nós no maior festival do mundo. Bilhetes disponíveis na Worten e pontos de venda oficiais.
+                    Junta-te a nós no maior festival do mundo. Bilhetes na bilheteira oficial (powered by Fever), na Worten e pontos de venda oficiais.
                   </p>
 
                   <div className="flex flex-wrap justify-center gap-3">
@@ -1309,9 +1326,9 @@ const RockInRio = () => {
                       className="inline-flex items-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-full font-extrabold text-xs sm:text-sm uppercase tracking-wider bg-gradient-to-r from-amber-400 to-yellow-500 text-black hover:from-amber-300 hover:to-yellow-400 transition-all shadow-lg shadow-amber-500/20">
                       <Ticket className="w-4 h-4" />Comprar Bilhetes<ExternalLink className="w-3.5 h-3.5 opacity-50" />
                     </a>
-                    <a href="https://rockinriolisboa.pt/" target="_blank" rel="noopener noreferrer"
+                    <a href="https://tickets.rockinriolisboa.pt/" target="_blank" rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 rounded-full font-bold text-xs sm:text-sm text-white/50 border border-white/[0.12] hover:bg-white/[0.05] hover:text-white/70 transition-all">
-                      rockinriolisboa.pt<ExternalLink className="w-3.5 h-3.5" />
+                      Bilheteira oficial · Fever<ExternalLink className="w-3.5 h-3.5" />
                     </a>
                   </div>
                 </div>
