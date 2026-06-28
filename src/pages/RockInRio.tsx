@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import {
-  Calendar, MapPin, Clock, Music, Train, Bus, Car, Ticket,
+  Calendar, MapPin, Clock, Music,
   ExternalLink, Globe, Radio, Smartphone,
-  Star, Users, Navigation, AlertTriangle, X, Info,
+  Star, Users, X, Info,
   Headphones, ChevronRight, Plane, Utensils, Gamepad2,
   Sparkles, Leaf, Mic, Play,
 } from 'lucide-react';
@@ -234,56 +234,6 @@ const ROAD_TO_STOPS = [
   { city: 'Lisboa', country: 'Portugal', date: '22 Mai', venue: 'Praça do Município', highlight: 'Apresentação das Festas de Lisboa — Roberta Medina no palco · GNR, Irina Barros, Matias Damásio, Toy e Grande Marcha' },
 ];
 
-/* ── Route planner ────────────────────────────────────────────────── */
-
-interface RouteStep { label: string; detail: string; hub?: boolean }
-interface RouteOption { id: string; label: string; steps: RouteStep[]; tip?: string }
-
-const ROUTE_OPTIONS: RouteOption[] = [
-  {
-    id: 'lisboa', label: 'De Lisboa',
-    steps: [
-      { label: 'Metro Linha Vermelha → Estação Oriente', detail: 'Ligação direta de qualquer ponto da cidade' },
-      { label: 'Gare do Oriente — ponto de encontro', detail: 'Segue as indicações para o Shuttle CARRIS', hub: true },
-      { label: 'Shuttle CARRIS → Cidade do Rock', detail: 'Direto, contínuo · 2€ (até 15 Jun) / 4€' },
-    ],
-  },
-  {
-    id: 'norte', label: 'Do Norte',
-    steps: [
-      { label: 'CP Intercidades → Lisboa Oriente', detail: 'Porto, Aveiro, Coimbra, Leiria · 30% desconto com bilhete do festival' },
-      { label: 'Gare do Oriente — ponto de encontro', detail: 'Segue as indicações para o Shuttle CARRIS', hub: true },
-      { label: 'Shuttle CARRIS → Cidade do Rock', detail: 'Direto, contínuo · 2€ (até 15 Jun) / 4€' },
-    ],
-    tip: 'Regresso: Comboio Especial noturno Lisboa Oriente → Porto Campanhã (02h nos dias 20, 21, 28 · 03h no dia 27) com paragens em Santarém, Coimbra B, Aveiro, Espinho e Gaia',
-  },
-  {
-    id: 'sul', label: 'Margem Sul',
-    steps: [
-      { label: 'Fertagus → Roma-Areeiro', detail: '2,50€ ida/volta · Comboio especial de regresso: 01h55 (03h30 a 27 Jun)' },
-      { label: 'CP Urbanos → Estação de Sacavém', detail: 'Transbordo em Roma-Areeiro · Linha da Azambuja · 3€ ida/volta promo' },
-      { label: '7 min a pé → Cidade do Rock', detail: 'Percurso sinalizado desde a estação de Sacavém' },
-    ],
-    tip: 'Alternativa por barco: Cais do Sodré → Cacilhas (último 01h40) ou Terreiro do Paço → Barreiro (último 02h00), depois Metro até Oriente e Shuttle',
-  },
-  {
-    id: 'sintra', label: 'Sintra / Cascais',
-    steps: [
-      { label: 'CP Linha de Sintra → Estação de Sacavém', detail: 'Tarifa promo 3€ ida/volta · Comboios especiais até 02h30 (03h30 a 27 Jun)' },
-      { label: '7 min a pé → Cidade do Rock', detail: 'Percurso sinalizado desde a estação de Sacavém' },
-    ],
-    tip: 'Linha de Cascais: último comboio Cais do Sodré → Caxias às 01h30 (troço Caxias → Cascais com autocarro por obras)',
-  },
-  {
-    id: 'carro', label: 'De Carro',
-    steps: [
-      { label: 'Estacionar num parque Telpark', detail: 'Roma, Alameda, Sete Rios, Marquês de Pombal, Santa Apolónia... · Desde 4,90€/24h' },
-      { label: 'Metro ou autocarro → Gare do Oriente', detail: 'Todos os parques com ligação direta a transportes públicos' },
-      { label: 'Shuttle CARRIS → Cidade do Rock', detail: 'Direto, contínuo · 2€ (até 15 Jun) / 4€' },
-    ],
-    tip: 'Sem estacionamento no recinto · Saída IC2 "Parque das Nações" cortada · Motas: parque dedicado via Caminho das Cegonhas (15 min a pé)',
-  },
-];
 
 /* ═══════════════════════════════════════════════════════════════════════════
    SEO
@@ -316,8 +266,8 @@ const webPageJsonLd = {
   '@context': 'https://schema.org', '@type': 'WebPage',
   '@id': 'https://www.olhaqueduas.com/rockinrio#webpage',
   url: 'https://www.olhaqueduas.com/rockinrio',
-  name: 'Rock in Rio Lisboa 2026 — Parceiro Oficial | Olha que Duas',
-  description: 'Lineup completo, palcos, como chegar e bilhetes do Rock in Rio Lisboa 2026. A Olha que Duas é parceira oficial.',
+  name: 'Rock in Rio Lisboa 2026 — A Nossa Recordação | Olha que Duas',
+  description: 'Recordação do Rock in Rio Lisboa 2026, onde a Olha que Duas foi parceira oficial. Lineup, palcos e galeria de fotos dos 4 dias de festival.',
   isPartOf: { '@id': 'https://www.olhaqueduas.com/#website' },
   about: { '@id': 'https://www.olhaqueduas.com/rockinrio#event' },
   primaryImageOfPage: { '@type': 'ImageObject', url: 'https://www.olhaqueduas.com/og-rockinrio.jpg', width: 1200, height: 630 },
@@ -426,28 +376,6 @@ const ArtistModal = ({ artist, onClose }: { artist: Artist; onClose: () => void 
    TRANSPORT CARD
    ═══════════════════════════════════════════════════════════════════════════ */
 
-const TransportCard = ({ icon: Icon, title, children, badge }: { icon: React.ComponentType<{ className?: string }>; title: string; children: React.ReactNode; badge?: string }) => (
-  <div className="rounded-xl border border-white/[0.07] bg-white/[0.02] p-5 hover:bg-white/[0.03] transition-colors">
-    <div className="flex items-start gap-3.5">
-      <div className="w-10 h-10 rounded-lg bg-amber-400/[0.06] border border-amber-400/15 flex items-center justify-center shrink-0 mt-0.5">
-        <Icon className="w-5 h-5 text-amber-400/60" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex flex-wrap items-center gap-2 mb-1.5">
-          <h4 className="font-bold text-white text-sm">{title}</h4>
-          {badge && (
-            <span className="px-2 py-0.5 rounded-full bg-amber-400/10 border border-amber-400/20 text-[9px] font-bold uppercase tracking-wider text-amber-300 shrink-0">
-              {badge}
-            </span>
-          )}
-        </div>
-        <div className="text-sm text-white/40 leading-relaxed space-y-1">
-          {children}
-        </div>
-      </div>
-    </div>
-  </div>
-);
 
 /* ═══════════════════════════════════════════════════════════════════════════
    PAGE
@@ -456,13 +384,12 @@ const TransportCard = ({ icon: Icon, title, children, badge }: { icon: React.Com
 const RockInRio = () => {
   const [activeDay, setActiveDay] = useState(0);
   const [digitalDay, setDigitalDay] = useState(0);
-  const [activeRoute, setActiveRoute] = useState('lisboa');
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
   const [festasVideoPlaying, setFestasVideoPlaying] = useState(false);
 
   useMetaTags({
-    title: 'Rock in Rio Lisboa 2026 — Parceiro Oficial',
-    description: 'A Olha que Duas é parceira oficial do Rock in Rio Lisboa 2026. Lineup completo dia a dia: Katy Perry, Linkin Park, Rod Stewart, 21 Savage, Bárbara Bandeira, Jimmy P e +60 artistas em 4 palcos. Mapa, transportes e bilhetes. 20, 21, 27 e 28 de Junho.',
+    title: 'Rock in Rio Lisboa 2026 — A Nossa Recordação',
+    description: 'A Olha que Duas foi parceira oficial do Rock in Rio Lisboa 2026. Reviva connosco os 4 dias de festival — lineup completo, palcos e a nossa galeria de fotos. 20, 21, 27 e 28 de Junho, Parque Tejo.',
     image: 'https://www.olhaqueduas.com/og-rockinrio.jpg',
     imageAlt: 'Olha que Duas x Rock in Rio Lisboa 2026 — Parceiro Oficial',
     url: 'https://www.olhaqueduas.com/rockinrio',
@@ -497,7 +424,7 @@ const RockInRio = () => {
               <div className="mt-5 px-5 py-1.5 rounded-full bg-amber-400/[0.08] border border-amber-400/20">
                 <span className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-[0.3em] text-amber-300/80">
                   <Star className="w-3 h-3 inline-block mr-1.5 -mt-0.5 text-amber-400" fill="currentColor" />
-                  Parceiros Oficiais
+                  A Nossa Recordação
                   <Star className="w-3 h-3 inline-block ml-1.5 -mt-0.5 text-amber-400" fill="currentColor" />
                 </span>
               </div>
@@ -513,8 +440,8 @@ const RockInRio = () => {
             </Animated>
             <Animated animation="fade-up" delay={420}>
               <p className="hero-subtitle text-sm sm:text-lg md:text-xl text-white/40 max-w-xl mx-auto leading-relaxed mb-8">
-                O maior festival de música e entretenimento do mundo.<br className="hidden sm:block" />
-                4 dias, 5 palcos, <span className="text-white/60 font-semibold">80 000 pessoas por dia</span>.
+                Foram 4 dias inesquecíveis no maior festival de música do mundo.<br className="hidden sm:block" />
+                5 palcos, <span className="text-white/60 font-semibold">80 000 pessoas por dia</span> — e nós vivemos tudo.
               </p>
             </Animated>
             <Animated animation="fade-up" delay={520}>
@@ -528,11 +455,11 @@ const RockInRio = () => {
             </Animated>
             <Animated animation="fade-up" delay={620}>
               <div className="flex flex-wrap justify-center gap-3">
-                <a href="https://worten.seetickets.com/event/rock-in-rio-lisboa-2026/parque-tejo/3430460" target="_blank" rel="noopener noreferrer"
+                <a href="/galeria/rock-in-rio-lisboa-20260620"
                   className="inline-flex items-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-full font-extrabold text-sm uppercase tracking-wider bg-gradient-to-r from-amber-400 to-yellow-500 text-black hover:from-amber-300 hover:to-yellow-400 transition-all shadow-[0_4px_24px_rgba(251,191,36,0.25)]">
-                  <Ticket className="w-4 h-4" />Comprar Bilhetes<ExternalLink className="w-3.5 h-3.5 opacity-50" />
+                  <Sparkles className="w-4 h-4" />Ver a Galeria
                 </a>
-                <a href="#lineup" className="inline-flex items-center gap-2 px-6 sm:px-7 py-3.5 sm:py-4 rounded-full font-bold text-sm text-white/60 border border-white/[0.12] hover:bg-white/[0.05] hover:text-white/80 transition-all">Ver Lineup</a>
+                <a href="#lineup" className="inline-flex items-center gap-2 px-6 sm:px-7 py-3.5 sm:py-4 rounded-full font-bold text-sm text-white/60 border border-white/[0.12] hover:bg-white/[0.05] hover:text-white/80 transition-all">Reviver o Lineup</a>
               </div>
             </Animated>
           </div>
@@ -1038,255 +965,6 @@ const RockInRio = () => {
         </div>
       </section>
 
-      {/* ════════════════════════ COMO CHEGAR ═════════════════════════ */}
-      <section id="como-chegar" className="py-24 px-5 bg-[#08080f]">
-        <div className="max-w-5xl mx-auto">
-          <Animated animation="fade-up">
-            <div className="text-center mb-14">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-amber-400/70 font-bold mb-4">Parque Tejo, Lisboa</p>
-              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight mb-3">Como Chegar</h2>
-              <p className="text-sm text-white/30 font-medium">Passeio dos Heróis do Mar, 1990-059 Lisboa</p>
-              <p className="text-xs text-white/25 max-w-md mx-auto mt-3 leading-relaxed">Cerca de 80% do público vem de fora de Lisboa — por isso reunimos aqui todas as rotas de transporte até à Cidade do Rock.</p>
-            </div>
-          </Animated>
-
-          {/* Warning — no parking + hashtag */}
-          <Animated animation="fade-up" delay={50}>
-            <div className="flex items-start gap-3.5 p-5 rounded-xl bg-red-500/[0.06] border border-red-500/15 mb-4">
-              <AlertTriangle className="w-5 h-5 text-red-400/70 shrink-0 mt-0.5" />
-              <div>
-                <p className="text-sm font-bold text-red-300/80 mb-1">Não é possível chegar de carro ao festival</p>
-                <p className="text-xs text-red-300/40 leading-relaxed">
-                  Trânsito fortemente condicionado pela PSP — ruas envolventes de acesso exclusivo a moradores e lojistas. Saída "Parque das Nações" do IC2 totalmente cortada. Transportes públicos são a melhor opção. <span className="text-red-300/60 font-bold">#EUVOUDETRANSPORTES</span>
-                </p>
-              </div>
-            </div>
-          </Animated>
-
-          {/* Official App */}
-          <Animated animation="fade-up" delay={75}>
-            <div className="flex items-start gap-3.5 p-5 rounded-xl bg-violet-500/[0.04] border border-violet-500/[0.12] mb-8">
-              <Smartphone className="w-5 h-5 text-violet-400/70 shrink-0 mt-0.5" />
-              <div>
-                <p className="text-sm font-bold text-violet-300/80 mb-1">App Oficial Rock in Rio Lisboa</p>
-                <p className="text-xs text-violet-300/40 leading-relaxed">
-                  Horários dos concertos, agenda personalizada, mapa da Cidade do Rock, reservas na Roda Gigante e Slide, e informações de mobilidade. Disponível na App Store e Google Play.
-                </p>
-              </div>
-            </div>
-          </Animated>
-
-          {/* Map */}
-          <Animated animation="fade-up" delay={100}>
-            <div className="rounded-2xl overflow-hidden border border-white/[0.07] mb-8 aspect-[2/1] md:aspect-[16/7] shadow-xl shadow-black/20">
-              <iframe src="https://www.google.com/maps?q=38.7856,-9.0929&z=15&output=embed" width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Mapa — Parque Tejo, Lisboa" />
-            </div>
-          </Animated>
-
-          {/* Route planner — "De onde vens?" */}
-          <Animated animation="fade-up" delay={120}>
-            <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 sm:p-8 mb-8 overflow-hidden">
-              <div className="text-center mb-8">
-                <p className="text-[10px] uppercase tracking-[0.3em] text-amber-400/70 font-bold mb-2">Planeia a tua viagem</p>
-                <h3 className="text-xl sm:text-2xl font-black text-white">De onde vens?</h3>
-              </div>
-
-              <div className="flex justify-center mb-8">
-                <div className="inline-flex rounded-2xl bg-white/[0.03] border border-white/[0.06] p-1.5 gap-1 overflow-x-auto max-w-full" role="tablist" aria-label="Origem da viagem" style={{ scrollbarWidth: 'none' }}>
-                  {ROUTE_OPTIONS.map((r) => (
-                    <button key={r.id} onClick={() => setActiveRoute(r.id)} role="tab" aria-selected={activeRoute === r.id}
-                      className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-bold transition-all duration-200 shrink-0 text-xs sm:text-sm ${activeRoute === r.id ? 'bg-white text-[#060610] shadow-lg shadow-white/10' : 'text-white/35 hover:text-white/60 hover:bg-white/[0.04]'}`}>
-                      {r.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {(() => {
-                const route = ROUTE_OPTIONS.find(r => r.id === activeRoute);
-                if (!route) return null;
-                return (
-                  <div className="max-w-lg mx-auto">
-                    <div className="relative">
-                      <div className="absolute left-[13px] top-4 bottom-4 w-px bg-gradient-to-b from-amber-400/40 via-emerald-400/20 to-transparent" />
-                      <div className="space-y-3">
-                        {route.steps.map((step, i) => (
-                          <div key={i} className="relative pl-10">
-                            <div className={`absolute left-1 top-3.5 w-[18px] h-[18px] rounded-full flex items-center justify-center text-[9px] font-extrabold ${
-                              step.hub
-                                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 ring-2 ring-emerald-500/10'
-                                : 'bg-amber-400/10 text-amber-400/80 border border-amber-400/20'
-                            }`}>
-                              {i + 1}
-                            </div>
-                            <div className={`rounded-xl p-4 ${
-                              step.hub
-                                ? 'bg-emerald-500/[0.06] border border-emerald-500/15'
-                                : 'bg-white/[0.02] border border-white/[0.06]'
-                            }`}>
-                              <p className="text-sm font-bold text-white leading-tight mb-1">{step.label}</p>
-                              <p className="text-xs text-white/40 leading-relaxed">{step.detail}</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {route.tip && (
-                      <div className="mt-5 rounded-lg bg-amber-400/[0.04] border border-amber-400/10 p-3.5">
-                        <p className="text-xs text-amber-300/60 leading-relaxed">
-                          <Info className="w-3 h-3 inline-block mr-1.5 -mt-0.5 text-amber-400/50" />{route.tip}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                );
-              })()}
-            </div>
-          </Animated>
-
-          {/* Shuttle CARRIS — recommended, highlighted */}
-          <Animated animation="fade-up" delay={150}>
-            <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/[0.04] p-5 sm:p-6 mb-6">
-              <div className="flex items-start gap-3.5">
-                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
-                  <Bus className="w-6 h-6 text-emerald-400/70" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-2 mb-2">
-                    <h4 className="font-extrabold text-white text-base">Shuttle CARRIS</h4>
-                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/25 text-[9px] font-bold uppercase tracking-wider text-emerald-400">
-                      Parceiro Oficial de Mobilidade
-                    </span>
-                  </div>
-                  <p className="text-sm text-white/50 mb-4">Gare do Oriente → Estação da Cidade do Rock — ligação direta, contínua e com operação duplicada face à edição anterior.</p>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Ticket className="w-3.5 h-3.5 text-emerald-400/50 shrink-0" />
-                      <span className="text-white/40"><strong className="text-emerald-400/80">2€</strong> ida/volta (até 15 Jun) · <strong className="text-white/60">4€</strong> a partir de 15 Jun</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Users className="w-3.5 h-3.5 text-emerald-400/50 shrink-0" />
-                      <span className="text-white/40">Crianças até 12 anos: <strong className="text-white/60">grátis</strong></span>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 pt-3 border-t border-emerald-500/10 flex flex-wrap items-center gap-3">
-                    <span className="text-xs text-white/25">Comprar bilhete antecipado:</span>
-                    <a href="https://rockinriolisboa.pt/pt/como-chegar" target="_blank" rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs text-emerald-400/70 hover:text-emerald-400 transition-colors font-semibold">
-                      rockinriolisboa.pt<ExternalLink className="w-3 h-3" />
-                    </a>
-                    <span className="text-xs text-white/15">ou</span>
-                    <span className="text-xs text-white/40 font-medium">App navegante®</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Animated>
-
-          {/* Transport grid */}
-          <Animated animation="fade-up" delay={200}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-              <TransportCard icon={Train} title="Comboio CP — Urbanos" badge="3€ ida/volta">
-                <p><strong className="text-white/60">Estação de Sacavém</strong> — 7 min a pé do recinto</p>
-                <p>Linhas de Sintra e Azambuja · Tarifa promocional de <strong className="text-amber-400/70">3€</strong> ida/volta com bilhete do festival</p>
-                <p>Comboios especiais de regresso até às 02h30 (03h30 a 27 Jun)</p>
-              </TransportCard>
-
-              <TransportCard icon={Train} title="Metro de Lisboa">
-                <p><strong className="text-white/60">Estação Oriente</strong> — Linha Vermelha</p>
-                <p>Ligação direta ao Shuttle CARRIS na Gare do Oriente</p>
-                <p>Horário alargado e reforço de carruagens nos dias do festival</p>
-              </TransportCard>
-
-              <TransportCard icon={Train} title="Fertagus — Margem Sul" badge="2,50€ ida/volta">
-                <p>Tarifa especial de <strong className="text-amber-400/70">2,50€</strong> ida/volta nos dias do evento</p>
-                <p>Transbordo em Roma-Areeiro → CP até Sacavém (7 min a pé)</p>
-                <p>Comboio especial: 01h55 (dias 20, 21, 28) · 03h30 (dia 27)</p>
-              </TransportCard>
-
-              <TransportCard icon={Navigation} title="Barco — Transtejo Soflusa">
-                <p><strong className="text-white/60">Cais do Sodré → Cacilhas</strong> até às 01h40</p>
-                <p><strong className="text-white/60">Terreiro do Paço → Barreiro</strong> até às 02h00</p>
-                <p>Ligação ao Metro/CP na margem norte para chegar ao recinto</p>
-              </TransportCard>
-
-              <TransportCard icon={Car} title="TVDE / Uber">
-                <p>Selecionar <strong className="text-white/60">"Estação TVDE do Rock in Rio Lisboa"</strong> na app</p>
-                <p>Localizada a ~8 min a pé da entrada da Cidade do Rock</p>
-                <p className="text-white/25 text-xs">Espera maior após os concertos · Trânsito condicionado pela PSP</p>
-              </TransportCard>
-
-              <TransportCard icon={Navigation} title="Estacionamento">
-                <p><strong className="text-white/60">Telpark:</strong> 13 parques em Lisboa desde <strong className="text-amber-400/70">4,90€/24h</strong> — App Telpark</p>
-                <p><strong className="text-white/60">Motas:</strong> Parque dedicado via "Caminho das Cegonhas" (15 min a pé)</p>
-                <p><strong className="text-white/60">GoParkly:</strong> App para encontrar vagas desocupadas em Lisboa</p>
-              </TransportCard>
-            </div>
-          </Animated>
-
-          {/* CARRIS Buses info */}
-          <Animated animation="fade-up" delay={220}>
-            <div className="rounded-xl border border-white/[0.07] bg-white/[0.02] p-5 mb-6">
-              <div className="flex items-start gap-3.5">
-                <div className="w-10 h-10 rounded-lg bg-amber-400/[0.06] border border-amber-400/15 flex items-center justify-center shrink-0 mt-0.5">
-                  <Bus className="w-5 h-5 text-amber-400/60" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-bold text-white text-sm mb-2">Autocarros CARRIS e Carris Metropolitana</h4>
-                  <div className="text-sm text-white/40 space-y-1.5">
-                    <p>Mais de <strong className="text-white/60">10 carreiras CARRIS</strong> com ligação direta à Gare do Oriente: 705, 708, 725, 728, 744, 750, 759, 782, 794, 26B</p>
-                    <p>Carreiras noturnas de regresso: <strong className="text-white/60">208</strong> e <strong className="text-white/60">210</strong> (Gare do Oriente → Cais do Sodré)</p>
-                    <p>A <strong className="text-white/60">Carris Metropolitana</strong> oferece dezenas de linhas até à Gare do Oriente e Estação de Sacavém, incluindo ligações à Margem Sul (Montijo, Setúbal, Palmela)</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Animated>
-
-          {/* Long distance */}
-          <Animated animation="fade-up" delay={250}>
-            <div className="rounded-xl border border-white/[0.07] bg-white/[0.02] p-5 mb-6">
-              <div className="flex items-start gap-3.5">
-                <div className="w-10 h-10 rounded-lg bg-amber-400/[0.06] border border-amber-400/15 flex items-center justify-center shrink-0 mt-0.5">
-                  <Train className="w-5 h-5 text-amber-400/60" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-bold text-white text-sm mb-2">Vens de fora de Lisboa?</h4>
-                  <div className="text-sm text-white/40 space-y-1.5">
-                    <p><strong className="text-white/60">CP Regional / InterRegional:</strong> <strong className="text-amber-400/70">30% desconto</strong> ida/volta com bilhete do festival</p>
-                    <p><strong className="text-white/60">CP Intercidades:</strong> <strong className="text-amber-400/70">30% desconto</strong> ida/volta + Comboio Especial noturno Lisboa Oriente → Porto Campanhã (02h nos dias 20, 21, 28 · 03h no dia 27) com paragens em Santarém, Entroncamento, Coimbra B, Aveiro, Espinho e Gaia</p>
-                    <p><strong className="text-white/60">Rede Expressos:</strong> 20% desconto em viagens nacionais (19–21 e 27–29 Jun) — voucher em rockinriolisboa.pt</p>
-                    <p><strong className="text-white/60">FlixBus:</strong> 20% nacionais · 10% internacionais — válido todo o mês de Junho — voucher em rockinriolisboa.pt</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Animated>
-
-          {/* Accessibility */}
-          <Animated animation="fade-up" delay={300}>
-            <div className="rounded-xl bg-blue-500/[0.04] border border-blue-500/10 p-5">
-              <div className="flex items-start gap-3.5">
-                <div className="w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shrink-0 mt-0.5">
-                  <Info className="w-5 h-5 text-blue-400/60" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-bold text-white text-sm mb-2">Mobilidade Condicionada</h4>
-                  <div className="text-sm text-blue-300/50 leading-relaxed space-y-1.5">
-                    <p><strong className="text-blue-300/70">Shuttle acessível:</strong> Veículos adaptados a cadeiras de rodas com ponto dedicado na Gare do Oriente</p>
-                    <p><strong className="text-blue-300/70">Buggy CARRIS:</strong> Transporte entre a entrada principal e a entrada de mobilidade condicionada</p>
-                    <p><strong className="text-blue-300/70">No recinto:</strong> Cadeiras de rodas manuais e motorizadas disponíveis via TotalMobility · Entrada pelo Welcome Center</p>
-                    <p><strong className="text-blue-300/70">Estacionamento PMR:</strong> Lugares reservados nas imediações — reserva prévia obrigatória em <a href="https://rockinriolisboa.pt/pt/tudo-sobre-acessibilidade" target="_blank" rel="noopener noreferrer" className="text-blue-400/60 hover:text-blue-400 transition-colors">rockinriolisboa.pt</a></p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Animated>
-        </div>
-      </section>
 
       {/* ════════════════════════ CTA ═════════════════════════════════ */}
       <section className="py-24 px-5 bg-[#060610]">
@@ -1313,22 +991,22 @@ const RockInRio = () => {
                 <div className="text-center">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md bg-amber-400/10 border border-amber-400/20 mb-5">
                     <Users className="w-3 h-3 text-amber-400" />
-                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-amber-300/80">A Olha que Duas vai estar lá</span>
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-amber-300/80">A Olha que Duas esteve lá</span>
                   </div>
 
-                  <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-white tracking-tight mb-4">Garante o teu bilhete</h2>
+                  <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-white tracking-tight mb-4">Obrigado, Lisboa</h2>
                   <p className="text-xs sm:text-base text-white/40 mb-8 sm:mb-10 max-w-lg mx-auto leading-relaxed">
-                    Junta-te a nós no maior festival do mundo. Bilhetes na bilheteira oficial (powered by Fever), na Worten e pontos de venda oficiais.
+                    Foram 4 dias inesquecíveis como parceiros oficiais do maior festival do mundo. Reviva connosco os melhores momentos na nossa galeria — e até à próxima edição.
                   </p>
 
                   <div className="flex flex-wrap justify-center gap-3">
-                    <a href="https://worten.seetickets.com/event/rock-in-rio-lisboa-2026/parque-tejo/3430460" target="_blank" rel="noopener noreferrer"
+                    <a href="/galeria/rock-in-rio-lisboa-20260620"
                       className="inline-flex items-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-full font-extrabold text-xs sm:text-sm uppercase tracking-wider bg-gradient-to-r from-amber-400 to-yellow-500 text-black hover:from-amber-300 hover:to-yellow-400 transition-all shadow-lg shadow-amber-500/20">
-                      <Ticket className="w-4 h-4" />Comprar Bilhetes<ExternalLink className="w-3.5 h-3.5 opacity-50" />
+                      <Sparkles className="w-4 h-4" />Ver a Galeria
                     </a>
-                    <a href="https://tickets.rockinriolisboa.pt/" target="_blank" rel="noopener noreferrer"
+                    <a href="https://rockinriolisboa.pt/" target="_blank" rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 rounded-full font-bold text-xs sm:text-sm text-white/50 border border-white/[0.12] hover:bg-white/[0.05] hover:text-white/70 transition-all">
-                      Bilheteira oficial · Fever<ExternalLink className="w-3.5 h-3.5" />
+                      Site oficial Rock in Rio<ExternalLink className="w-3.5 h-3.5" />
                     </a>
                   </div>
                 </div>

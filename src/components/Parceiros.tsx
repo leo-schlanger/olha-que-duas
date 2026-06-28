@@ -115,15 +115,15 @@ const Parceiros = () => {
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/20 mb-3">
                   <Music className="w-3 h-3 text-amber-300" />
                   <span className="text-[10px] font-bold uppercase tracking-widest text-amber-300">
-                    Parceiro Oficial
+                    Parceiros Oficiais · 2026
                   </span>
                 </div>
                 <h3 className="text-xl md:text-2xl lg:text-3xl font-display font-bold text-white mb-2 group-hover:text-amber-100 transition-colors">
                   {rir.partnerName}
                 </h3>
                 <p className="text-sm md:text-base text-white/70 max-w-md">
-                  Temos o orgulho de ser parceiros oficiais do maior festival de
-                  música e entretenimento do mundo.
+                  Tivemos o orgulho de ser parceiros oficiais do Rock in Rio
+                  Lisboa 2026. Reviva connosco os melhores momentos.
                 </p>
               </div>
 

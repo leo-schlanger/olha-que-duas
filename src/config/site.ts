@@ -120,10 +120,12 @@ export const siteConfig = {
     },
   ],
   // Rock in Rio Lisboa — Festival Mode
-  // enabled: true → decorações festivas em todo o site
-  // enabled: false → só o card de parceria em Parceiros fica visível
+  // enabled: true → decorações festivas em todo o site (durante o festival)
+  // enabled: false → modo recordação: faixa + overlay + logo no footer desligados;
+  //   fica só o card de parceria (permanente) na Home + a página /rockinrio como memória.
+  // Festival terminou (28 Jun 2026) → modo recordação ativo.
   rockInRio: {
-    enabled: true,
+    enabled: false,
     partnerName: "Rock in Rio Lisboa",
     partnerUrl: "https://rockinriolisboa.pt/",
     partnerPageUrl: "/rockinrio",
