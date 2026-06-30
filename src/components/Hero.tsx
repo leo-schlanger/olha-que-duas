@@ -57,7 +57,7 @@ const Hero = () => {
         <div
           className="absolute top-1/4 -right-32 w-64 md:w-[600px] h-64 md:h-[600px] rounded-full blur-3xl animate-pulse"
           style={{
-            background: "radial-gradient(circle, rgba(180,41,43,0.15) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(180,41,43,0.20) 0%, transparent 70%)",
             transform: `translateY(${scrollY * 0.5}px)`,
             animationDuration: "4s",
           }}
@@ -67,14 +67,14 @@ const Hero = () => {
         <div
           className="absolute bottom-1/4 -left-20 w-48 md:w-96 h-48 md:h-96 rounded-full blur-3xl"
           style={{
-            background: "radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(217,119,6,0.16) 0%, transparent 70%)",
             transform: `translateY(${-scrollY * 0.3}px)`,
           }}
         />
 
         {/* Floating particles */}
         <div
-          className="absolute top-1/3 left-1/4 w-3 h-3 bg-amarelo/40 rounded-full animate-float"
+          className="absolute top-1/3 left-1/4 w-3 h-3 bg-vermelho/40 rounded-full animate-float"
           style={{ animationDelay: "0s" }}
         />
         <div
@@ -82,7 +82,7 @@ const Hero = () => {
           style={{ animationDelay: "1s" }}
         />
         <div
-          className="absolute bottom-1/3 left-1/3 w-4 h-4 bg-amarelo/20 rounded-full animate-float-slow"
+          className="absolute bottom-1/3 left-1/3 w-4 h-4 bg-vermelho/30 rounded-full animate-float-slow"
           style={{ animationDelay: "2s" }}
         />
         <div
@@ -91,7 +91,7 @@ const Hero = () => {
         />
 
         {/* Animated gradient line */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amarelo/50 to-transparent animate-shimmer" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-vermelho/40 to-transparent animate-shimmer" />
 
         {/* Subtle grid pattern overlay */}
         <div
