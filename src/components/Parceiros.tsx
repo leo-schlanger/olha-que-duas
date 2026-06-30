@@ -1,9 +1,7 @@
 import { Link } from "react-router-dom";
-import { Plane, Music } from "lucide-react";
+import { Plane } from "lucide-react";
 import { siteConfig } from "@/config/site";
 import tripLogo from "@/assets/olhaqueduas-trip-logo.jpg";
-
-const rir = siteConfig.rockInRio;
 
 const Parceiros = () => {
   return (
@@ -67,73 +65,6 @@ const Parceiros = () => {
             </Link>
           ))}
         </div>
-
-        {/* Rock in Rio Lisboa — Card Destaque (permanente) */}
-        <Link
-          to="/rockinrio"
-          className="group block max-w-2xl mx-auto mb-14 md:mb-18"
-        >
-          <div className="relative rounded-2xl overflow-hidden border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-500">
-            {/* Gradient background */}
-            <div
-              className="absolute inset-0"
-              style={{
-                background: "linear-gradient(135deg, hsl(217 85% 25%) 0%, hsl(217 85% 40%) 40%, hsl(0 70% 40%) 80%, hsl(0 70% 30%) 100%)",
-              }}
-            />
-
-            {/* Animated glow orbs */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-              <div
-                className="absolute -top-12 -right-12 w-48 h-48 md:w-64 md:h-64 rounded-full blur-3xl animate-rir-glow"
-                style={{ background: "radial-gradient(circle, hsla(217,85%,60%,0.3) 0%, transparent 70%)" }}
-              />
-              <div
-                className="absolute -bottom-12 -left-12 w-40 h-40 md:w-56 md:h-56 rounded-full blur-3xl animate-rir-glow"
-                style={{
-                  background: "radial-gradient(circle, hsla(0,80%,50%,0.25) 0%, transparent 70%)",
-                  animationDelay: "1.5s",
-                }}
-              />
-            </div>
-
-            {/* Content */}
-            <div className="relative p-6 md:p-10 flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
-              {/* Logo */}
-              <div className="relative shrink-0">
-                <div className="absolute -inset-3 rounded-2xl bg-white/10 blur-xl group-hover:bg-white/15 transition-all" />
-                <img
-                  src={rir.partnerLogo}
-                  alt={rir.partnerName}
-                  className="relative w-28 h-28 md:w-36 md:h-36 object-contain drop-shadow-2xl group-hover:scale-105 transition-transform duration-500"
-                  loading="lazy"
-                />
-              </div>
-
-              {/* Text */}
-              <div className="text-center sm:text-left flex-1">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/20 mb-3">
-                  <Music className="w-3 h-3 text-amber-300" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-amber-300">
-                    Parceiros Oficiais · 2026
-                  </span>
-                </div>
-                <h3 className="text-xl md:text-2xl lg:text-3xl font-display font-bold text-white mb-2 group-hover:text-amber-100 transition-colors">
-                  {rir.partnerName}
-                </h3>
-                <p className="text-sm md:text-base text-white/70 max-w-md">
-                  Tivemos o orgulho de ser parceiros oficiais do Rock in Rio
-                  Lisboa 2026. Reviva connosco os melhores momentos.
-                </p>
-              </div>
-
-              {/* Arrow */}
-              <div className="hidden sm:flex items-center justify-center w-12 h-12 rounded-full bg-white/10 group-hover:bg-white/20 transition-all border border-white/20">
-                <Music className="w-5 h-5 text-white/70 group-hover:text-amber-300 transition-colors" />
-              </div>
-            </div>
-          </div>
-        </Link>
 
         {/* General Partners */}
         <div className="max-w-2xl mx-auto text-center mb-10 md:mb-14">
