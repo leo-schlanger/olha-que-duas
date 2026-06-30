@@ -86,7 +86,7 @@ const Hero = () => {
           style={{ animationDelay: "2s" }}
         />
         <div
-          className="absolute top-2/3 right-1/4 w-2 h-2 bg-cream/20 rounded-full animate-float"
+          className="absolute top-2/3 right-1/4 w-2 h-2 bg-vermelho/20 rounded-full animate-float"
           style={{ animationDelay: "0.5s" }}
         />
 
@@ -97,7 +97,7 @@ const Hero = () => {
         <div
           className="absolute inset-0 opacity-[0.03]"
           style={{
-            backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+            backgroundImage: "radial-gradient(circle at 1px 1px, hsl(30 20% 35%) 1px, transparent 0)",
             backgroundSize: "50px 50px",
             transform: `translateY(${scrollY * 0.1}px)`,
           }}
@@ -107,7 +107,7 @@ const Hero = () => {
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-dvh pt-40 pb-20 md:pt-36 md:pb-16">
           {/* Content - Mobile first, stacks on top */}
-          <div className="text-cream space-y-6 md:space-y-8 text-center lg:text-left order-2 lg:order-1">
+          <div className="text-charcoal space-y-6 md:space-y-8 text-center lg:text-left order-2 lg:order-1">
             {/* Enhanced animated label */}
             <div
               className={`flex flex-wrap items-center gap-2 justify-center lg:justify-start transition-all duration-700 ${
@@ -132,10 +132,10 @@ const Hero = () => {
               {/* Mini-chip do app Android — discreto, não compete com os CTAs */}
               <a
                 href="#app"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amarelo/15 border border-amarelo/30 hover:bg-amarelo/25 hover:border-amarelo/50 transition-all group"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-charcoal/5 border border-charcoal/15 hover:bg-charcoal/10 hover:border-charcoal/30 transition-all group"
               >
-                <Smartphone className="w-3 h-3 text-amarelo group-hover:scale-110 transition-transform" />
-                <span className="text-[10px] font-bold uppercase tracking-wider text-amarelo">
+                <Smartphone className="w-3 h-3 text-vermelho group-hover:scale-110 transition-transform" />
+                <span className="text-[10px] font-bold uppercase tracking-wider text-charcoal">
                   App Android
                 </span>
               </a>
@@ -148,21 +148,21 @@ const Hero = () => {
               }`}
             >
               Onde a força é propósito, a comunicação é ponte e o afeto é{" "}
-              <span className="text-amarelo relative inline-block group">
+              <span className="text-vermelho relative inline-block group">
                 <span className="relative z-10">estratégia</span>
                 <span
-                  className={`absolute inset-x-0 -bottom-1 h-3 bg-amarelo/20 -skew-x-3 transition-transform duration-500 origin-left ${
+                  className={`absolute inset-x-0 -bottom-1 h-3 bg-vermelho/20 -skew-x-3 transition-transform duration-500 origin-left ${
                     isLoaded ? "scale-x-100" : "scale-x-0"
                   }`}
                   style={{ transitionDelay: "800ms" }}
                 />
-                <Sparkles className="absolute -top-2 -right-4 w-5 h-5 text-amarelo animate-pulse" />
+                <Sparkles className="absolute -top-2 -right-4 w-5 h-5 text-vermelho animate-pulse" />
               </span>
             </h1>
 
             {/* Animated description */}
             <p
-              className={`text-base md:text-lg lg:text-xl text-cream/70 max-w-xl mx-auto lg:mx-0 leading-relaxed transition-all duration-700 delay-300 ${
+              className={`text-base md:text-lg lg:text-xl text-charcoal/70 max-w-xl mx-auto lg:mx-0 leading-relaxed transition-all duration-700 delay-300 ${
                 isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
               }`}
             >
@@ -190,7 +190,7 @@ const Hero = () => {
                 asChild
                 variant="outline"
                 size="lg"
-                className="border-cream/30 bg-cream/5 text-cream hover:bg-cream/10 hover:border-cream/50 font-medium h-12 md:h-14 px-6 md:px-8 text-base rounded-xl backdrop-blur-sm btn-magnetic group"
+                className="border-charcoal/30 bg-charcoal/5 text-charcoal hover:bg-charcoal/10 hover:border-charcoal/50 font-medium h-12 md:h-14 px-6 md:px-8 text-base rounded-xl backdrop-blur-sm btn-magnetic group"
               >
                 <a href="#radio" className="inline-flex items-center gap-2">
                   <Play className="w-4 h-4 transition-transform group-hover:scale-110" fill="currentColor" />
@@ -205,12 +205,12 @@ const Hero = () => {
                 isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
               }`}
             >
-              <div className="flex items-center gap-2 bg-cream/5 backdrop-blur-sm px-4 py-2 rounded-full border border-cream/10 group cursor-default">
+              <div className="flex items-center gap-2 bg-charcoal/5 backdrop-blur-sm px-4 py-2 rounded-full border border-charcoal/10 group cursor-default">
                 <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-2xl md:text-3xl font-display font-bold text-amarelo group-hover:scale-105 transition-transform">
+                <span className="text-2xl md:text-3xl font-display font-bold text-vermelho group-hover:scale-105 transition-transform">
                   24/7
                 </span>
-                <span className="text-sm text-cream/60 font-medium">No Ar</span>
+                <span className="text-sm text-charcoal/60 font-medium">No Ar</span>
               </div>
             </div>
           </div>
@@ -232,7 +232,7 @@ const Hero = () => {
               />
 
               {/* Rotating border ring */}
-              <div className="absolute -inset-3 rounded-2xl border border-cream/10 animate-rotate-slow opacity-50" />
+              <div className="absolute -inset-3 rounded-2xl border border-charcoal/10 animate-rotate-slow opacity-50" />
 
               {/* Main image container with 3D tilt on hover */}
               <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-black/40 card-3d">
@@ -300,12 +300,12 @@ const Hero = () => {
         >
           <a
             href="#sobre"
-            className="group flex flex-col items-center gap-2 text-cream/40 hover:text-cream/70 transition-all duration-300"
+            className="group flex flex-col items-center gap-2 text-charcoal/40 hover:text-charcoal/70 transition-all duration-300"
           >
             <span className="text-[10px] uppercase tracking-widest font-medium">Explorar</span>
-            <div className="w-7 h-11 rounded-full border-2 border-current flex items-start justify-center p-2 group-hover:border-amarelo/50 transition-colors">
+            <div className="w-7 h-11 rounded-full border-2 border-current flex items-start justify-center p-2 group-hover:border-vermelho/50 transition-colors">
               <div
-                className="w-1.5 h-3 bg-current rounded-full animate-bounce group-hover:bg-amarelo"
+                className="w-1.5 h-3 bg-current rounded-full animate-bounce group-hover:bg-vermelho"
                 style={{ animationDuration: "1.5s" }}
               />
             </div>

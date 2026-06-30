@@ -99,7 +99,8 @@
   }
 
   .bg-hero-gradient {
-    background: linear-gradient(180deg, hsl(var(--beige-dark)) 0%, hsl(28 25% 45%) 100%);
+    /* Amarelo claro próximo ao amarelo da logo — clean & arejado */
+    background: linear-gradient(180deg, hsl(46 96% 92%) 0%, hsl(44 90% 82%) 100%);
   }
 
   .label-sm {
