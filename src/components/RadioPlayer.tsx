@@ -243,14 +243,28 @@ function mergeTodayPrograms(
         isSpecial: true,
       };
     } else {
-      // Find original routine slot that was playing at this time
-      const origPeriod = originalPeriods.find((p) => {
-        const r = parsePeriodRange(p.range);
-        return r ? endMins >= r.start && endMins < r.end : false;
-      });
-      const origSlots = origPeriod?.slots ?? [];
-      const covering = origSlots.filter((s) => parseSlotTime(s.time) <= endMins);
-      const origSlot = covering[covering.length - 1];
+      // Programa de rotina que está MESMO no ar em `endMins`. As slots de
+      // rotina podem cruzar a fronteira dos períodos (ex.: "Ritmo da Cidade"
+      // 17h-19h vive na Tarde mas toca até às 19h). Por isso procuramos em
+      // TODAS as slots pela que tem um intervalo explícito a cobrir `endMins`
+      // — e não só no período cujo range contém a hora: numa fronteira (18h =
+      // fim da Tarde / início da Noite) esse período seria a Noite, que só
+      // começa às 19h, e cairíamos no fallback "Programação".
+      const allSlots = originalPeriods.flatMap((p) => p.slots);
+      const covers = (s: DailySlot): boolean => {
+        if (!s.endTime) return false;
+        const start = parseSlotTime(s.time);
+        let end = parseSlotTime(s.endTime);
+        if (end <= start) end += 24 * 60; // fim à/depois da meia-noite (ex.: 23h-00h)
+        return endMins >= start && endMins < end;
+      };
+      const origSlot =
+        allSlots.find(covers) ??
+        // Fallback (slots sem fim explícito): a última a começar até `endMins`.
+        [...allSlots]
+          .filter((s) => parseSlotTime(s.time) <= endMins)
+          .sort((a, b) => parseSlotTime(a.time) - parseSlotTime(b.time))
+          .pop();
 
       resumeSlot = {
         time: formatMinsToSlotTime(endMins),
