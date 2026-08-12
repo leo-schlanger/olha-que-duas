@@ -104,9 +104,9 @@ export const siteConfig = {
       url: "#",
     },
     {
-      name: "Geek & Toys",
+      name: "GeekPop & Toys",
       logo: "/partners/geektoys.jpg",
-      url: "https://www.geeketoys.com.br/",
+      url: "https://geekpoptoys.com.br/",
     },
     {
       name: "Casa da Guia",
