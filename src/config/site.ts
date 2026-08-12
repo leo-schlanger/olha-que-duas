@@ -118,6 +118,11 @@ export const siteConfig = {
       logo: "/partners/rrodynergallery.jpg",
       url: "https://www.instagram.com/rrodynergallery/",
     },
+    {
+      name: "Motivar",
+      logo: "/partners/motivar.jpg",
+      url: "https://motivar.pt",
+    },
   ],
   // Rock in Rio Lisboa — Festival Mode
   // enabled: true → decorações festivas em todo o site (durante o festival)
