@@ -42,6 +42,8 @@ beforeAll(() => {
     rotate: vi.fn(),
     fillText: vi.fn(),
     createLinearGradient: () => ({ addColorStop: vi.fn() }),
+    bezierCurveTo: vi.fn(),
+    setLineDash: vi.fn(),
   })) as unknown as typeof HTMLCanvasElement.prototype.getContext;
 
   vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb: FrameRequestCallback) => {
@@ -57,14 +59,13 @@ function wrap(ui: ReactElement, path: string) {
 }
 
 describe('Kids games experience', () => {
-  it('hub shows branded game names, not Baby Shark', () => {
+  it('hub shows branded game names including Baby Shark', () => {
     render(wrap(<KidsGames />, '/kids/jogos'));
     expect(screen.getByRole('heading', { name: /vamos jogar no cantinho/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Quiz do Cantinho' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Memória das Duas' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Micro no Cantinho' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Cobra Musical' })).toBeInTheDocument();
-    expect(screen.queryByText(/baby shark/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Baby Shark' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Cobra Arco-Íris' })).toBeInTheDocument();
   });
 
   it('quiz renders a question and accepts an answer', () => {
@@ -83,19 +84,18 @@ describe('Kids games experience', () => {
     expect(screen.getAllByRole('button', { name: /carta virada/i }).length).toBeGreaterThanOrEqual(12);
   });
 
-  it('micro adventure shows branded start overlay', () => {
+  it('baby shark adventure shows start overlay', () => {
     render(wrap(<KidsPacman />, '/kids/jogos/pacman'));
-    expect(screen.getAllByText('Micro no Cantinho').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Baby Shark').length).toBeGreaterThan(0);
     expect(screen.getByRole('button', { name: 'Começar' })).toBeInTheDocument();
-    expect(screen.queryByText(/baby shark/i)).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Começar' }));
     expect(screen.getByRole('button', { name: 'Pausa' })).toBeInTheDocument();
   });
 
-  it('cobra musical starts from the cantinho overlay', () => {
+  it('cobra arco-íris starts from the overlay', () => {
     render(wrap(<KidsSnake />, '/kids/jogos/snake'));
-    expect(screen.getAllByText('Cobra Musical').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Cobra Arco-Íris').length).toBeGreaterThan(0);
     fireEvent.click(screen.getByRole('button', { name: 'Começar' }));
-    expect(screen.getByText(/notas:/i)).toBeInTheDocument();
+    expect(screen.getByText(/estrelas:/i)).toBeInTheDocument();
   });
 });

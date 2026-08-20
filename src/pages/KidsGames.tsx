@@ -3,7 +3,7 @@ import { Sparkles, Star } from 'lucide-react';
 import { Animated } from '@/components/ui/animated';
 import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
 import KidsGameShell from '@/components/kids/games/KidsGameShell';
-import { MemoryArt, MicroArt, QuizArt, SnakeArt } from '@/components/kids/games/GameArts';
+import { BabySharkArt, MemoryArt, QuizArt, SnakeArt } from '@/components/kids/games/GameArts';
 import logoKids from '@/assets/kids/logo-kids.webp';
 import alexandraCartoon from '@/assets/kids/alexandra-cartoon.webp';
 import marluceCartoon from '@/assets/kids/marluce-cartoon.webp';
@@ -33,19 +33,19 @@ const games = [
     mascotAlt: 'Marluce',
   },
   {
-    title: 'Micro no Cantinho',
-    description: 'O mascote da rádio apanha notas musicais e foge do Silêncio.',
+    title: 'Baby Shark',
+    description: 'Nada com o Baby Shark, apanha bolhas musicais e foge das águas-vivas!',
     age: '5–12 anos',
     shadow: 'rgba(37,99,235,0.45)',
     accent: 'from-sky-400 to-blue-500',
     route: '/kids/jogos/pacman',
-    Art: MicroArt,
+    Art: BabySharkArt,
     mascot: logoKids,
-    mascotAlt: 'Micro',
+    mascotAlt: 'Olha que Duas Kids',
   },
   {
-    title: 'Cobra Musical',
-    description: 'A cobra da rádio cresce a cada nota. Não bates nas paredes!',
+    title: 'Cobra Arco-Íris',
+    description: 'Uma cobrinha fofa e colorida. Apanha estrelas e cresce sem parar!',
     age: '5–12 anos',
     shadow: 'rgba(13,148,136,0.45)',
     accent: 'from-emerald-400 to-teal-500',
@@ -67,7 +67,7 @@ const gamesJsonLd = [
     url: 'https://www.olhaqueduas.com/kids/jogos',
     name: 'Jogos do Cantinho — Olha que Duas Kids',
     description:
-      'Jogos do espaço Kids do Olha que Duas: Quiz do Cantinho, Memória das Duas, Micro no Cantinho e Cobra Musical. Gratuitos, sem anúncios, pensados para o universo da rádio e da pequenada.',
+      'Jogos do espaço Kids do Olha que Duas: Quiz do Cantinho, Memória das Duas, Baby Shark e Cobra Arco-Íris. Gratuitos, sem anúncios, pensados para a pequenada.',
     isPartOf: { '@id': 'https://www.olhaqueduas.com/kids#webpage' },
     inLanguage: 'pt-PT',
     dateModified: '2026-08-20',
@@ -100,9 +100,9 @@ const gamesJsonLd = [
 
 export default function KidsGames() {
   useMetaTags({
-    title: 'Jogos do Cantinho — Quiz, Memória, Micro e Cobra Musical',
+    title: 'Jogos do Cantinho — Quiz, Memória, Baby Shark e Cobra Arco-Íris',
     description:
-      'Entra no Cantinho da Pequenada e joga com as Duas e o Micro! Quiz da rádio, Memória das estrelas, Aventura do mascote e Cobra Musical. Jogos seguros, sem anúncios, para crianças dos 3 aos 12 anos.',
+      'Entra no Cantinho da Pequenada e joga! Quiz da rádio, Memória das estrelas, Baby Shark e Cobra Arco-Íris. Jogos seguros, sem anúncios, para crianças dos 3 aos 12 anos.',
     image: 'https://www.olhaqueduas.com/og-kids.jpg',
     imageAlt: 'Olha que Duas Kids — Jogos do Cantinho da Pequenada',
     url: 'https://www.olhaqueduas.com/kids/jogos',

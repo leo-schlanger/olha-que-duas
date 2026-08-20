@@ -164,7 +164,7 @@ const kidsJsonLd = [
         item: {
           '@type': 'CreativeWork',
           name: 'Brincadeiras & Jogos',
-          description: 'Quiz do Cantinho, Memória das Duas, Micro no Cantinho e Cobra Musical — jogos do universo Olha que Duas Kids.',
+          description: 'Quiz do Cantinho, Memória das Duas, Baby Shark e Cobra Arco-Íris — jogos do espaço Kids.',
         },
       },
       {
@@ -237,7 +237,7 @@ const upcoming = [
   {
     icon: Smile,
     title: 'Brincadeiras & Jogos',
-    text: 'Quiz do Cantinho, Memória das Duas, Micro no Cantinho e Cobra Musical.',
+    text: 'Quiz do Cantinho, Memória das Duas, Baby Shark e Cobra Arco-Íris.',
     color: 'from-sky-400 to-blue-500',
     route: '/kids/jogos',
   },

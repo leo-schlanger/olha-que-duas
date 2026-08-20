@@ -29,18 +29,22 @@ export function MemoryArt() {
   );
 }
 
-export function MicroArt() {
+export function BabySharkArt() {
   return (
     <svg viewBox="0 0 160 120" className="w-full h-full" aria-hidden>
-      <circle cx="80" cy="62" r="42" fill="#FDE047" />
-      <rect x="58" y="28" width="44" height="22" rx="8" fill="#2563EB" />
-      <rect x="50" y="22" width="60" height="10" rx="5" fill="#1D4ED8" />
-      <circle cx="68" cy="64" r="5" fill="#1E293B" />
-      <circle cx="92" cy="64" r="5" fill="#1E293B" />
-      <path d="M68 78 Q80 88 92 78" stroke="#EC4899" strokeWidth="4" fill="none" strokeLinecap="round" />
-      <circle cx="80" cy="96" r="6" fill="#F59E0B" />
-      <path d="M118 36 Q128 28 138 40" stroke="#EC4899" strokeWidth="3" fill="none" />
-      <circle cx="138" cy="44" r="5" fill="#EC4899" />
+      <ellipse cx="80" cy="96" rx="48" ry="8" fill="#38BDF8" opacity="0.35" />
+      <path d="M28 68 L12 48 L22 68 L12 86 Z" fill="#F59E0B" />
+      <ellipse cx="86" cy="68" rx="42" ry="28" fill="#FACC15" />
+      <ellipse cx="94" cy="76" rx="24" ry="14" fill="#FFFBEB" />
+      <path d="M78 44 L92 18 L104 46 Z" fill="#FBBF24" />
+      <ellipse cx="96" cy="86" rx="14" ry="7" fill="#F59E0B" />
+      <circle cx="108" cy="62" r="7" fill="white" />
+      <circle cx="110" cy="62" r="3.5" fill="#1E293B" />
+      <circle cx="111.5" cy="60.5" r="1.4" fill="white" />
+      <circle cx="98" cy="70" r="4" fill="#F9A8D4" opacity="0.8" />
+      <path d="M118 70 Q128 76 118 80" stroke="#EA580C" strokeWidth="3" fill="none" strokeLinecap="round" />
+      <circle cx="36" cy="40" r="5" fill="white" opacity="0.7" />
+      <circle cx="48" cy="28" r="3" fill="white" opacity="0.55" />
     </svg>
   );
 }
@@ -48,15 +52,20 @@ export function MicroArt() {
 export function SnakeArt() {
   return (
     <svg viewBox="0 0 160 120" className="w-full h-full" aria-hidden>
-      <circle cx="46" cy="72" r="14" fill="#EC4899" />
-      <circle cx="66" cy="62" r="14" fill="#F97316" />
-      <circle cx="86" cy="54" r="14" fill="#EAB308" />
-      <circle cx="106" cy="48" r="16" fill="#22C55E" />
-      <circle cx="112" cy="42" r="3.5" fill="white" />
-      <circle cx="120" cy="42" r="3.5" fill="white" />
-      <circle cx="113" cy="42" r="1.8" fill="#1E293B" />
-      <circle cx="121" cy="42" r="1.8" fill="#1E293B" />
-      <polygon points="132,28 136,38 126,34" fill="#FDE047" stroke="#F59E0B" strokeWidth="1" />
+      <circle cx="38" cy="78" r="13" fill="#F472B6" />
+      <circle cx="54" cy="68" r="13" fill="#FB923C" />
+      <circle cx="70" cy="60" r="13" fill="#FACC15" />
+      <circle cx="86" cy="54" r="13" fill="#4ADE80" />
+      <circle cx="102" cy="50" r="13" fill="#38BDF8" />
+      <circle cx="118" cy="48" r="16" fill="#A78BFA" />
+      <circle cx="112" cy="42" r="4.2" fill="white" />
+      <circle cx="124" cy="42" r="4.2" fill="white" />
+      <circle cx="113.2" cy="42" r="2" fill="#1E293B" />
+      <circle cx="125.2" cy="42" r="2" fill="#1E293B" />
+      <circle cx="110" cy="52" r="3" fill="#F9A8D4" />
+      <circle cx="126" cy="52" r="3" fill="#F9A8D4" />
+      <path d="M114 58 Q118 64 122 58" stroke="#BE185D" strokeWidth="2" fill="none" strokeLinecap="round" />
+      <polygon points="132,22 136,34 124,30" fill="#FDE047" stroke="#F59E0B" strokeWidth="1.2" />
     </svg>
   );
 }

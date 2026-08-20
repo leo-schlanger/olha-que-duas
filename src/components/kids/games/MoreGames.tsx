@@ -1,10 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Gamepad2, Mic2, Music, Puzzle } from 'lucide-react';
+import { Fish, Gamepad2, Music, Puzzle } from 'lucide-react';
 
 const GAMES = [
   { to: '/kids/jogos/quiz', label: 'Quiz', icon: Puzzle },
   { to: '/kids/jogos/memoria', label: 'Memória', icon: Gamepad2 },
-  { to: '/kids/jogos/pacman', label: 'Micro', icon: Mic2 },
+  { to: '/kids/jogos/pacman', label: 'Baby Shark', icon: Fish },
   { to: '/kids/jogos/snake', label: 'Cobra', icon: Music },
 ];
 

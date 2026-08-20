@@ -17,15 +17,16 @@ interface Point {
   y: number;
 }
 
-const GRID = 18;
-const RAINBOW = ['#ec4899', '#f97316', '#eab308', '#22c55e', '#38bdf8', '#8b5cf6'];
+const GRID = 16;
+const RAINBOW = ['#f472b6', '#fb7185', '#fb923c', '#facc15', '#4ade80', '#22d3ee', '#60a5fa', '#a78bfa'];
 const INITIAL: Point[] = [
-  { x: 8, y: 9 },
-  { x: 7, y: 9 },
-  { x: 6, y: 9 },
+  { x: 7, y: 8 },
+  { x: 6, y: 8 },
+  { x: 5, y: 8 },
+  { x: 4, y: 8 },
 ];
-const SPEED_START = 210;
-const SPEED_MIN = 110;
+const SPEED_START = 220;
+const SPEED_MIN = 105;
 
 function randomFood(snake: Point[]): Point {
   let p: Point;
@@ -51,63 +52,179 @@ function toGameDir(d: Cardinal): Direction {
   return 'RIGHT';
 }
 
-function drawNote(ctx: CanvasRenderingContext2D, cx: number, cy: number, size: number) {
+function lerp(a: number, b: number, t: number) {
+  return a + (b - a) * t;
+}
+
+function drawStar(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  spikes: number,
+  outer: number,
+  inner: number,
+) {
+  let rot = (Math.PI / 2) * 3;
+  const step = Math.PI / spikes;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - outer);
+  for (let i = 0; i < spikes; i++) {
+    ctx.lineTo(cx + Math.cos(rot) * outer, cy + Math.sin(rot) * outer);
+    rot += step;
+    ctx.lineTo(cx + Math.cos(rot) * inner, cy + Math.sin(rot) * inner);
+    rot += step;
+  }
+  ctx.closePath();
+}
+
+function drawCandy(ctx: CanvasRenderingContext2D, cx: number, cy: number, size: number, t: number) {
+  const bounce = Math.sin(t * 6) * size * 0.08;
+  const spin = t * 1.4;
   ctx.save();
-  ctx.shadowColor = '#f472b6';
-  ctx.shadowBlur = 12;
-  ctx.fillStyle = '#ec4899';
-  ctx.beginPath();
-  ctx.ellipse(cx - size * 0.1, cy + size * 0.12, size * 0.22, size * 0.16, -0.4, 0, Math.PI * 2);
+  ctx.translate(cx, cy + bounce);
+  ctx.rotate(spin);
+  ctx.shadowColor = '#fbbf24';
+  ctx.shadowBlur = 16;
+  ctx.fillStyle = '#fde047';
+  drawStar(ctx, 0, 0, 5, size * 0.42, size * 0.18);
   ctx.fill();
-  ctx.strokeStyle = '#ec4899';
-  ctx.lineWidth = size * 0.1;
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = '#fb7185';
   ctx.beginPath();
-  ctx.moveTo(cx + size * 0.08, cy + size * 0.1);
-  ctx.lineTo(cx + size * 0.08, cy - size * 0.32);
-  ctx.stroke();
+  ctx.arc(0, 0, size * 0.16, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.arc(-size * 0.04, -size * 0.04, size * 0.05, 0, Math.PI * 2);
+  ctx.fill();
   ctx.restore();
 }
 
+function drawCuteSnake(
+  ctx: CanvasRenderingContext2D,
+  points: Point[],
+  dir: Direction,
+  t: number,
+  cell: number,
+) {
+  for (let i = points.length - 1; i >= 0; i--) {
+    const p = points[i];
+    const wave = Math.sin(t * 7 + i * 0.55) * cell * 0.06;
+    let ox = 0;
+    let oy = 0;
+    if (dir === 'LEFT' || dir === 'RIGHT') oy = wave;
+    else ox = wave;
+    const cx = p.x * cell + cell / 2 + ox;
+    const cy = p.y * cell + cell / 2 + oy;
+    const radius = cell * (i === 0 ? 0.48 : 0.4 - Math.min(i, 8) * 0.012);
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.fillStyle = RAINBOW[i % RAINBOW.length];
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.beginPath();
+    ctx.arc(cx - radius * 0.25, cy - radius * 0.3, radius * 0.38, 0, Math.PI * 2);
+    ctx.fill();
+
+    if (i === 0) {
+      let fx = 0;
+      let fy = 0;
+      if (dir === 'RIGHT') fx = 1;
+      else if (dir === 'LEFT') fx = -1;
+      else if (dir === 'UP') fy = -1;
+      else fy = 1;
+
+      const ex = radius * 0.32;
+      const ey = radius * 0.28;
+      const e1x = cx + fx * ex - fy * ey;
+      const e1y = cy + fy * ex + fx * ey;
+      const e2x = cx + fx * ex + fy * ey;
+      const e2y = cy + fy * ex - fx * ey;
+
+      ctx.fillStyle = '#fda4af';
+      ctx.beginPath();
+      ctx.arc(cx - fy * radius * 0.42, cy + fx * radius * 0.42, radius * 0.14, 0, Math.PI * 2);
+      ctx.arc(cx + fy * radius * 0.42, cy - fx * radius * 0.42, radius * 0.14, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.arc(e1x, e1y, radius * 0.22, 0, Math.PI * 2);
+      ctx.arc(e2x, e2y, radius * 0.22, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#1e293b';
+      ctx.beginPath();
+      ctx.arc(e1x + fx * radius * 0.06, e1y + fy * radius * 0.06, radius * 0.11, 0, Math.PI * 2);
+      ctx.arc(e2x + fx * radius * 0.06, e2y + fy * radius * 0.06, radius * 0.11, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.arc(e1x + fx * 1, e1y - 1, radius * 0.04, 0, Math.PI * 2);
+      ctx.arc(e2x + fx * 1, e2y - 1, radius * 0.04, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = '#be185d';
+      ctx.lineWidth = radius * 0.1;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.arc(cx + fx * radius * 0.18, cy + fy * radius * 0.18, radius * 0.22, 0.3, Math.PI - 0.3);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#f472b6';
+      ctx.lineWidth = radius * 0.08;
+      ctx.beginPath();
+      ctx.moveTo(cx + fx * radius * 0.48, cy + fy * radius * 0.48);
+      ctx.lineTo(cx + fx * radius * 0.72, cy + fy * radius * 0.55);
+      ctx.stroke();
+    }
+  }
+}
+
 const jsonLd = [
-  getPageBreadcrumbJsonLd('Cobra Musical', 'https://www.olhaqueduas.com/kids/jogos/snake', [
+  getPageBreadcrumbJsonLd('Cobra Arco-Íris', 'https://www.olhaqueduas.com/kids/jogos/snake', [
     { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
     { name: 'Jogos', url: 'https://www.olhaqueduas.com/kids/jogos' },
   ]),
   {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
-    name: 'Cobra Musical — Olha que Duas Kids',
+    name: 'Cobra Arco-Íris — Olha que Duas Kids',
     url: 'https://www.olhaqueduas.com/kids/jogos/snake',
     applicationCategory: 'GameApplication',
     operatingSystem: 'Web',
     inLanguage: 'pt-PT',
     description:
-      'A cobra da rádio Olha que Duas Kids apanha notas musicais e cresce. Jogo clássico com a cara do Cantinho da Pequenada.',
+      'Cobrinha fofa e colorida do espaço Kids. Apanha estrelas, cresce e evita as paredes.',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
   },
 ];
 
 const KidsSnake = () => {
   useMetaTags({
-    title: 'Cobra Musical — Jogo da rádio Olha que Duas Kids',
+    title: 'Cobra Arco-Íris — Jogo da cobra fofo para crianças',
     description:
-      'Apanha as notas da rádio e faz a cobra do Cantinho crescer. Jogo gratuito e seguro do Olha que Duas Kids.',
+      'Apanha estrelas com a cobrinha mais colorida do Cantinho! Jogo clássico, fofo e gratuito no Olha que Duas Kids.',
     image: 'https://www.olhaqueduas.com/og-kids.jpg',
-    imageAlt: 'Cobra Musical — Olha que Duas Kids',
+    imageAlt: 'Cobra Arco-Íris — Olha que Duas Kids',
     url: 'https://www.olhaqueduas.com/kids/jogos/snake',
-    tags: ['cobra musical', 'snake infantil', 'olha que duas kids', 'cantinho da pequenada'],
+    tags: ['cobra arco-íris', 'snake infantil', 'olha que duas kids', 'jogo da cobra'],
     jsonLd,
   });
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const snakeRef = useRef<Point[]>([...INITIAL]);
+  const prevRef = useRef<Point[]>([...INITIAL]);
   const dirRef = useRef<Direction>('RIGHT');
   const nextDirRef = useRef<Direction>('RIGHT');
   const foodRef = useRef<Point>(randomFood(INITIAL));
   const scoreRef = useRef(0);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const phaseRef = useRef<Phase>('idle');
+  const speedRef = useRef(SPEED_START);
+  const accRef = useRef(0);
+  const lastTsRef = useRef(0);
+  const timeRef = useRef(0);
+  const animRef = useRef(0);
 
   const [phase, setPhase] = useState<Phase>('idle');
   const [score, setScore] = useState(0);
@@ -128,152 +245,19 @@ const KidsSnake = () => {
     return () => window.removeEventListener('resize', updateSize);
   }, []);
 
-  const draw = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    const cell = canvas.width / GRID;
-
-    const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    bg.addColorStop(0, '#e0f2fe');
-    bg.addColorStop(0.55, '#fef9c3');
-    bg.addColorStop(1, '#fce7f3');
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    ctx.strokeStyle = 'rgba(14,116,144,0.08)';
-    ctx.lineWidth = 1;
-    for (let i = 0; i <= GRID; i++) {
-      ctx.beginPath();
-      ctx.moveTo(i * cell, 0);
-      ctx.lineTo(i * cell, canvas.height);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(0, i * cell);
-      ctx.lineTo(canvas.width, i * cell);
-      ctx.stroke();
-    }
-
-    const food = foodRef.current;
-    drawNote(ctx, food.x * cell + cell / 2, food.y * cell + cell / 2, cell * 0.7);
-
-    const snake = snakeRef.current;
-    for (let i = snake.length - 1; i >= 0; i--) {
-      const seg = snake[i];
-      const cx = seg.x * cell + cell / 2;
-      const cy = seg.y * cell + cell / 2;
-      const radius = cell * (i === 0 ? 0.46 : 0.4);
-      ctx.beginPath();
-      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-      ctx.fillStyle = RAINBOW[i % RAINBOW.length];
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(255,255,255,0.45)';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      if (i === 0) {
-        const dir = dirRef.current;
-        const eyeOff = radius * 0.32;
-        let ex1 = cx;
-        let ey1 = cy;
-        let ex2 = cx;
-        let ey2 = cy;
-        if (dir === 'RIGHT') {
-          ex1 = cx + eyeOff * 0.4;
-          ey1 = cy - eyeOff;
-          ex2 = cx + eyeOff * 0.4;
-          ey2 = cy + eyeOff;
-        } else if (dir === 'LEFT') {
-          ex1 = cx - eyeOff * 0.4;
-          ey1 = cy - eyeOff;
-          ex2 = cx - eyeOff * 0.4;
-          ey2 = cy + eyeOff;
-        } else if (dir === 'UP') {
-          ex1 = cx - eyeOff;
-          ey1 = cy - eyeOff * 0.4;
-          ex2 = cx + eyeOff;
-          ey2 = cy - eyeOff * 0.4;
-        } else {
-          ex1 = cx - eyeOff;
-          ey1 = cy + eyeOff * 0.4;
-          ex2 = cx + eyeOff;
-          ey2 = cy + eyeOff * 0.4;
-        }
-        ctx.fillStyle = '#fff';
-        ctx.beginPath();
-        ctx.arc(ex1, ey1, radius * 0.22, 0, Math.PI * 2);
-        ctx.arc(ex2, ey2, radius * 0.22, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#1e293b';
-        ctx.beginPath();
-        ctx.arc(ex1, ey1, radius * 0.12, 0, Math.PI * 2);
-        ctx.arc(ex2, ey2, radius * 0.12, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-  }, []);
-
-  const stopLoop = () => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-  };
-
-  const tick = useCallback(() => {
-    const snake = snakeRef.current;
-    dirRef.current = nextDirRef.current;
-    const dir = dirRef.current;
-    const head = { ...snake[0] };
-    if (dir === 'UP') head.y -= 1;
-    if (dir === 'DOWN') head.y += 1;
-    if (dir === 'LEFT') head.x -= 1;
-    if (dir === 'RIGHT') head.x += 1;
-
-    if (head.x < 0 || head.x >= GRID || head.y < 0 || head.y >= GRID || snake.some((s) => s.x === head.x && s.y === head.y)) {
-      stopLoop();
-      updateHighScore(scoreRef.current);
-      kidsSfx.lose();
-      syncPhase('gameover');
-      return;
-    }
-
-    const next = [head, ...snake];
-    if (head.x === foodRef.current.x && head.y === foodRef.current.y) {
-      scoreRef.current += 1;
-      setScore(scoreRef.current);
-      foodRef.current = randomFood(next);
-      kidsSfx.collect();
-      stopLoop();
-      const speed = Math.max(SPEED_MIN, SPEED_START - scoreRef.current * 6);
-      intervalRef.current = setInterval(tick, speed);
-    } else {
-      next.pop();
-    }
-    snakeRef.current = next;
-    draw();
-  }, [draw, updateHighScore]);
-
   const startGame = useCallback(() => {
-    stopLoop();
-    snakeRef.current = [...INITIAL];
+    snakeRef.current = INITIAL.map((p) => ({ ...p }));
+    prevRef.current = INITIAL.map((p) => ({ ...p }));
     dirRef.current = 'RIGHT';
     nextDirRef.current = 'RIGHT';
     foodRef.current = randomFood(INITIAL);
     scoreRef.current = 0;
+    speedRef.current = SPEED_START;
+    accRef.current = 0;
     setScore(0);
     syncPhase('playing');
-    draw();
-    intervalRef.current = setInterval(tick, SPEED_START);
     kidsSfx.tap();
-  }, [draw, tick]);
-
-  useEffect(() => () => stopLoop(), []);
-
-  useEffect(() => {
-    if (phase === 'idle') draw();
-  }, [phase, draw, canvasSize]);
+  }, []);
 
   const handleDir = useCallback((d: Direction) => {
     if (phaseRef.current !== 'playing') return;
@@ -304,30 +288,128 @@ const KidsSnake = () => {
       }
       if (e.key === ' ' || e.key === 'Escape') {
         e.preventDefault();
-        if (phaseRef.current === 'playing') {
-          stopLoop();
-          syncPhase('paused');
-        } else if (phaseRef.current === 'paused') {
-          syncPhase('playing');
-          const speed = Math.max(SPEED_MIN, SPEED_START - scoreRef.current * 6);
-          intervalRef.current = setInterval(tick, speed);
-        }
+        if (phaseRef.current === 'playing') syncPhase('paused');
+        else if (phaseRef.current === 'paused') syncPhase('playing');
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [handleDir, tick]);
+  }, [handleDir]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const stepGame = () => {
+      const snake = snakeRef.current;
+      dirRef.current = nextDirRef.current;
+      const dir = dirRef.current;
+      const head = { ...snake[0] };
+      if (dir === 'UP') head.y -= 1;
+      if (dir === 'DOWN') head.y += 1;
+      if (dir === 'LEFT') head.x -= 1;
+      if (dir === 'RIGHT') head.x += 1;
+
+      if (
+        head.x < 0 ||
+        head.x >= GRID ||
+        head.y < 0 ||
+        head.y >= GRID ||
+        snake.some((s) => s.x === head.x && s.y === head.y)
+      ) {
+        updateHighScore(scoreRef.current);
+        kidsSfx.lose();
+        syncPhase('gameover');
+        return;
+      }
+
+      prevRef.current = snake.map((s) => ({ ...s }));
+      const next = [head, ...snake];
+      if (head.x === foodRef.current.x && head.y === foodRef.current.y) {
+        scoreRef.current += 1;
+        setScore(scoreRef.current);
+        foodRef.current = randomFood(next);
+        kidsSfx.collect();
+        speedRef.current = Math.max(SPEED_MIN, SPEED_START - scoreRef.current * 7);
+      } else {
+        next.pop();
+      }
+      snakeRef.current = next;
+    };
+
+    const loop = (ts: number) => {
+      const dt = lastTsRef.current ? Math.min(40, ts - lastTsRef.current) : 16;
+      lastTsRef.current = ts;
+      timeRef.current += dt / 1000;
+      const t = timeRef.current;
+
+      const dpr = window.devicePixelRatio || 1;
+      if (canvas.width !== canvasSize * dpr || canvas.height !== canvasSize * dpr) {
+        canvas.width = canvasSize * dpr;
+        canvas.height = canvasSize * dpr;
+      }
+      const cell = canvas.width / GRID;
+
+      if (phaseRef.current === 'playing') {
+        accRef.current += dt;
+        if (accRef.current >= speedRef.current) {
+          accRef.current %= speedRef.current;
+          stepGame();
+        }
+      }
+
+      const progress =
+        phaseRef.current === 'playing' ? Math.min(1, accRef.current / speedRef.current) : 1;
+      const ease = 1 - (1 - progress) * (1 - progress);
+      const current = snakeRef.current;
+      const prev = prevRef.current;
+      const visual: Point[] = current.map((seg, i) => {
+        const from = prev[Math.min(i, prev.length - 1)] ?? seg;
+        return { x: lerp(from.x, seg.x, ease), y: lerp(from.y, seg.y, ease) };
+      });
+
+      const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      bg.addColorStop(0, '#fce7f3');
+      bg.addColorStop(0.4, '#fef9c3');
+      bg.addColorStop(0.75, '#dbeafe');
+      bg.addColorStop(1, '#d1fae5');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      for (let r = 0; r < GRID; r++) {
+        for (let c = 0; c < GRID; c++) {
+          if ((r + c) % 2 === 0) {
+            ctx.fillStyle = 'rgba(255,255,255,0.22)';
+            ctx.beginPath();
+            ctx.roundRect(c * cell + cell * 0.18, r * cell + cell * 0.18, cell * 0.64, cell * 0.64, cell * 0.2);
+            ctx.fill();
+          }
+        }
+      }
+
+      const food = foodRef.current;
+      drawCandy(ctx, food.x * cell + cell / 2, food.y * cell + cell / 2, cell, t);
+      drawCuteSnake(ctx, visual, dirRef.current, t, cell);
+
+      animRef.current = requestAnimationFrame(loop);
+    };
+
+    animRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animRef.current);
+  }, [canvasSize, updateHighScore]);
 
   const onDPad = (d: DPadDir) => handleDir(toGameDir(d));
 
   return (
     <KidsGameShell
-      title="Cobra Musical"
-      subtitle="A cobra da rádio cresce a cada nota do Cantinho."
+      title="Cobra Arco-Íris"
+      subtitle="A cobrinha mais fofa e colorida do Cantinho."
       hud={
         <div className="flex items-center justify-center gap-3 flex-wrap">
           <span className="px-4 py-2 rounded-full bg-yellow-100 border-2 border-yellow-300 font-extrabold text-yellow-800">
-            Notas: {score}
+            Estrelas: {score}
           </span>
           <span className="px-4 py-2 rounded-full bg-pink-100 border-2 border-pink-300 font-extrabold text-pink-700">
             Recorde: {highScore}
@@ -335,10 +417,7 @@ const KidsSnake = () => {
           {phase === 'playing' && (
             <button
               type="button"
-              onClick={() => {
-                stopLoop();
-                syncPhase('paused');
-              }}
+              onClick={() => syncPhase('paused')}
               className="min-h-12 px-4 rounded-full bg-white border-4 border-white shadow-[0_4px_0_rgba(0,0,0,0.12)] font-extrabold text-sky-800 inline-flex items-center gap-1 cursor-pointer"
             >
               <Pause className="w-4 h-4" />
@@ -351,33 +430,33 @@ const KidsSnake = () => {
         <div className="space-y-3">
           <GameDPad onDir={onDPad} />
           <p className="text-center text-sm font-bold text-sky-950/70 max-w-md mx-auto">
-            Setas, WASD, desliza no ecrã ou usa os botões. Não bates nas paredes!
+            Setas, WASD ou desliza no ecrã. Apanha as estrelas e não bates nas paredes!
           </p>
         </div>
       }
     >
       <div
         ref={containerRef}
-        className="relative mx-auto rounded-[1.5rem] border-4 border-white shadow-[0_12px_0_rgba(190,24,93,0.2)] overflow-hidden bg-sky-50"
+        className="relative mx-auto rounded-[1.5rem] border-4 border-white shadow-[0_12px_0_rgba(236,72,153,0.28)] overflow-hidden"
         style={{ width: '100%', maxWidth: 520 }}
       >
         <canvas
           ref={canvasRef}
           width={canvasSize}
           height={canvasSize}
-          className="block w-full h-auto touch-none"
+          className="block w-full h-auto touch-none bg-pink-50"
           style={{ overscrollBehavior: 'contain' }}
           {...swipe}
         />
         {phase === 'idle' && (
           <GameOverlay
             variant="start"
-            title="Cobra Musical"
-            message="A cobra do Cantinho adora as notas da rádio."
+            title="Cobra Arco-Íris"
+            message="Uma cobrinha fofa que adora estrelas de açúcar."
             howTo={[
-              'Apanha as notas rosa para crescer.',
-              'Não toques nas paredes nem em ti.',
-              'Quanto mais notas, mais depressa ela dança!',
+              'Apanha as estrelas para crescer e ficar ainda mais colorida.',
+              'Não toques nas paredes nem na tua própria cauda.',
+              'Quanto mais estrelas, mais ela dança!',
             ]}
             primaryLabel="Começar"
             onPrimary={startGame}
@@ -387,13 +466,9 @@ const KidsSnake = () => {
           <GameOverlay
             variant="pause"
             title="Pausa"
-            message="A cobra ficou quietinha."
+            message="A cobrinha ficou a descansar a barriga."
             primaryLabel="Continuar"
-            onPrimary={() => {
-              syncPhase('playing');
-              const speed = Math.max(SPEED_MIN, SPEED_START - scoreRef.current * 6);
-              intervalRef.current = setInterval(tick, speed);
-            }}
+            onPrimary={() => syncPhase('playing')}
             secondaryLabel="Recomeçar"
             onSecondary={startGame}
           />
@@ -401,9 +476,9 @@ const KidsSnake = () => {
         {phase === 'gameover' && (
           <GameOverlay
             variant="lose"
-            title="A cobra bateu!"
-            message="A música parou por um instante."
-            scoreLabel={`${scoreRef.current} ${scoreRef.current === 1 ? 'nota' : 'notas'}`}
+            title="Ai, bateu!"
+            message="A cobrinha precisa de um abraço. Tenta outra vez!"
+            scoreLabel={`${scoreRef.current} ${scoreRef.current === 1 ? 'estrela' : 'estrelas'}`}
             primaryLabel="Jogar outra vez"
             onPrimary={startGame}
           />
