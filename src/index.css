@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -225,6 +225,25 @@
   border: 3px solid rgb(244 114 182);
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes kids-confetti-fall {
+  0% { transform: translateY(-8vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(90vh) rotate(640deg); opacity: 0; }
+}
+.kids-confetti {
+  position: absolute;
+  top: -12px;
+  animation-name: kids-confetti-fall;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kids-confetti {
+    animation: none;
+    opacity: 0;
+  }
 }
 
 /* ============================================

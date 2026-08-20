@@ -1,32 +1,29 @@
-import { useRef, useEffect, useCallback, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowLeft, ArrowDown, ArrowRight, ChevronUp } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import BackToTop from '@/components/BackToTop';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Pause } from 'lucide-react';
 import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
+import KidsGameShell from '@/components/kids/games/KidsGameShell';
+import GameDPad from '@/components/kids/games/GameDPad';
+import GameOverlay from '@/components/kids/games/GameOverlay';
+import MoreGames from '@/components/kids/games/MoreGames';
+import { kidsSfx } from '@/components/kids/games/gameSounds';
+import { useSwipe, type Cardinal } from '@/components/kids/games/useSwipe';
 
-/* ------------------------------------------------------------------ */
-/*  Types                                                              */
-/* ------------------------------------------------------------------ */
-
-type Direction = 'up' | 'down' | 'left' | 'right';
+type Direction = Cardinal;
+type Phase = 'start' | 'playing' | 'paused' | 'won' | 'lost' | 'hit';
 
 interface Entity {
   x: number;
   y: number;
-}
-
-interface Robot extends Entity {
+  fx: number;
+  fy: number;
   dir: Direction;
-  color: string;
-  eyeColor: string;
+  moving: boolean;
+  remain: number;
 }
 
-/* ------------------------------------------------------------------ */
-/*  Maze (15x15) — 1 = wall, 0 = path                                 */
-/* ------------------------------------------------------------------ */
+interface Cloud extends Entity {
+  color: string;
+}
 
 const MAZE: number[][] = [
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -48,665 +45,538 @@ const MAZE: number[][] = [
 
 const COLS = MAZE[0].length;
 const ROWS = MAZE.length;
-
-/* Starting positions (grid coords) */
-const PLAYER_START: Entity = { x: 1, y: 1 };
-const ROBOT_STARTS: Robot[] = [
-  { x: 13, y: 1, dir: 'left', color: '#ef4444', eyeColor: '#fca5a5' },
-  { x: 1, y: 13, dir: 'right', color: '#3b82f6', eyeColor: '#93c5fd' },
-  { x: 13, y: 13, dir: 'up', color: '#22c55e', eyeColor: '#86efac' },
+const PLAYER_START = { x: 1, y: 1 };
+const CLOUD_STARTS: { x: number; y: number; dir: Direction; color: string }[] = [
+  { x: 13, y: 1, dir: 'left', color: '#94a3b8' },
+  { x: 1, y: 13, dir: 'right', color: '#64748b' },
+  { x: 13, y: 13, dir: 'up', color: '#7c8aa0' },
 ];
-
 const TOTAL_LIVES = 3;
-
-/* ------------------------------------------------------------------ */
-/*  Helper: collect initial note positions (all path cells)            */
-/* ------------------------------------------------------------------ */
+const PLAYER_MS = 160;
+const CLOUD_MS = 240;
 
 function buildNotes(): Set<string> {
   const notes = new Set<string>();
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
-      if (MAZE[r][c] === 0) {
-        // Skip player and robot start positions
-        const isStart =
-          (c === PLAYER_START.x && r === PLAYER_START.y) ||
-          ROBOT_STARTS.some((rb) => rb.x === c && rb.y === r);
-        if (!isStart) notes.add(`${c},${r}`);
-      }
+      if (MAZE[r][c] !== 0) continue;
+      const isStart =
+        (c === PLAYER_START.x && r === PLAYER_START.y) ||
+        CLOUD_STARTS.some((cl) => cl.x === c && cl.y === r);
+      if (!isStart) notes.add(`${c},${r}`);
     }
   }
   return notes;
 }
 
-/* ------------------------------------------------------------------ */
-/*  Component                                                          */
-/* ------------------------------------------------------------------ */
+function canMove(x: number, y: number) {
+  return x >= 0 && x < COLS && y >= 0 && y < ROWS && MAZE[y][x] === 0;
+}
 
-const pacmanJsonLd = [
-  // Breadcrumb
-  getPageBreadcrumbJsonLd('Baby Shark Pacman', 'https://www.olhaqueduas.com/kids/jogos/pacman', [
+function step(x: number, y: number, dir: Direction) {
+  if (dir === 'up') return { x, y: y - 1 };
+  if (dir === 'down') return { x, y: y + 1 };
+  if (dir === 'left') return { x: x - 1, y };
+  return { x: x + 1, y };
+}
+
+function opposite(d: Direction): Direction {
+  if (d === 'up') return 'down';
+  if (d === 'down') return 'up';
+  if (d === 'left') return 'right';
+  return 'left';
+}
+
+function makePlayer(): Entity {
+  return {
+    x: PLAYER_START.x,
+    y: PLAYER_START.y,
+    fx: PLAYER_START.x,
+    fy: PLAYER_START.y,
+    dir: 'right',
+    moving: false,
+    remain: 0,
+  };
+}
+
+function makeClouds(): Cloud[] {
+  return CLOUD_STARTS.map((c) => ({
+    x: c.x,
+    y: c.y,
+    fx: c.x,
+    fy: c.y,
+    dir: c.dir,
+    moving: false,
+    remain: 0,
+    color: c.color,
+  }));
+}
+
+function drawMic(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  size: number,
+  dir: Direction,
+  t: number,
+) {
+  const bounce = Math.sin(t * 8) * size * 0.04;
+  ctx.save();
+  ctx.translate(cx, cy + bounce);
+  const rot = dir === 'right' ? 0 : dir === 'left' ? Math.PI : dir === 'down' ? Math.PI / 2 : -Math.PI / 2;
+  ctx.rotate(rot * 0.08);
+
+  ctx.fillStyle = '#facc15';
+  ctx.beginPath();
+  ctx.roundRect(-size * 0.32, -size * 0.28, size * 0.64, size * 0.78, size * 0.28);
+  ctx.fill();
+
+  ctx.fillStyle = '#2563eb';
+  ctx.beginPath();
+  ctx.roundRect(-size * 0.36, -size * 0.52, size * 0.72, size * 0.28, size * 0.1);
+  ctx.fill();
+  ctx.fillStyle = '#1d4ed8';
+  ctx.beginPath();
+  ctx.roundRect(-size * 0.42, -size * 0.58, size * 0.84, size * 0.12, size * 0.06);
+  ctx.fill();
+
+  ctx.fillStyle = '#1e293b';
+  ctx.beginPath();
+  ctx.arc(-size * 0.12, -size * 0.02, size * 0.07, 0, Math.PI * 2);
+  ctx.arc(size * 0.12, -size * 0.02, size * 0.07, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.arc(-size * 0.1, -size * 0.04, size * 0.025, 0, Math.PI * 2);
+  ctx.arc(size * 0.14, -size * 0.04, size * 0.025, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.strokeStyle = '#ec4899';
+  ctx.lineWidth = size * 0.06;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.arc(0, size * 0.14, size * 0.14, 0.15, Math.PI - 0.15);
+  ctx.stroke();
+
+  ctx.fillStyle = '#f59e0b';
+  ctx.beginPath();
+  ctx.arc(0, size * 0.42, size * 0.1, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSleepyCloud(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  size: number,
+  color: string,
+  t: number,
+) {
+  const bob = Math.sin(t * 3) * size * 0.05;
+  ctx.save();
+  ctx.translate(cx, cy + bob);
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc(-size * 0.22, size * 0.06, size * 0.28, 0, Math.PI * 2);
+  ctx.arc(size * 0.22, size * 0.08, size * 0.26, 0, Math.PI * 2);
+  ctx.arc(0, -size * 0.1, size * 0.3, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#1e293b';
+  ctx.lineWidth = size * 0.05;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.arc(-size * 0.14, -size * 0.02, size * 0.08, Math.PI, 0);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(size * 0.14, -size * 0.02, size * 0.08, Math.PI, 0);
+  ctx.stroke();
+  ctx.fillStyle = '#64748b';
+  ctx.font = `bold ${Math.max(10, size * 0.28)}px "Baloo 2", sans-serif`;
+  ctx.fillText('z', size * 0.28, -size * 0.28);
+  ctx.restore();
+}
+
+function drawNote(ctx: CanvasRenderingContext2D, cx: number, cy: number, size: number) {
+  ctx.fillStyle = '#ec4899';
+  ctx.beginPath();
+  ctx.ellipse(cx - size * 0.08, cy + size * 0.12, size * 0.16, size * 0.12, -0.4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#ec4899';
+  ctx.lineWidth = size * 0.08;
+  ctx.beginPath();
+  ctx.moveTo(cx + size * 0.05, cy + size * 0.1);
+  ctx.lineTo(cx + size * 0.05, cy - size * 0.28);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(cx + size * 0.05, cy - size * 0.28);
+  ctx.quadraticCurveTo(cx + size * 0.32, cy - size * 0.12, cx + size * 0.05, cy - size * 0.02);
+  ctx.fill();
+}
+
+const jsonLd = [
+  getPageBreadcrumbJsonLd('Micro no Cantinho', 'https://www.olhaqueduas.com/kids/jogos/pacman', [
     { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
     { name: 'Jogos', url: 'https://www.olhaqueduas.com/kids/jogos' },
   ]),
-  // WebApplication (Game)
   {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
-    '@id': 'https://www.olhaqueduas.com/kids/jogos/pacman#app',
-    name: 'Baby Shark Pacman — Jogo Arcade Infantil',
+    name: 'Micro no Cantinho — Olha que Duas Kids',
     url: 'https://www.olhaqueduas.com/kids/jogos/pacman',
     applicationCategory: 'GameApplication',
-    applicationSubCategory: 'Jogo Arcade',
     operatingSystem: 'Web',
-    browserRequirements: 'Requires JavaScript',
     inLanguage: 'pt-PT',
     description:
-      'Ajuda o Baby Shark a recolher notas musicais num labirinto e foge dos robôs! Jogo arcade estilo Pacman adaptado para crianças, com 3 vidas e controlo por teclado ou toque.',
-    audience: {
-      '@type': 'PeopleAudience',
-      suggestedMinAge: 4,
-      suggestedMaxAge: 12,
-    },
-    offers: {
-      '@type': 'Offer',
-      price: '0',
-      priceCurrency: 'EUR',
-      availability: 'https://schema.org/InStock',
-    },
-    provider: {
-      '@type': 'Organization',
-      name: 'Olha que Duas',
-      url: 'https://www.olhaqueduas.com',
-    },
+      'Ajuda o Micro, mascote da rádio Olha que Duas Kids, a apanhar notas musicais no Cantinho e a fugir das nuvens do Silêncio.',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
   },
 ];
 
 const KidsPacman = () => {
   useMetaTags({
-    title: 'Baby Shark Pacman — Jogo Arcade Infantil Online Grátis',
+    title: 'Micro no Cantinho — Aventura musical da rádio Kids',
     description:
-      'Ajuda o Baby Shark a recolher notas musicais e fugir dos robôs neste jogo arcade estilo Pacman! Labirinto divertido com 3 vidas, controlo por teclado ou toque — gratuito e seguro no espaço Kids do Olha que Duas para crianças dos 4 aos 12 anos.',
+      'Ajuda o Micro, o mascote do Olha que Duas Kids, a recolher as notas do Cantinho e a fugir do Silêncio. Jogo grátis e seguro.',
     image: 'https://www.olhaqueduas.com/og-kids.jpg',
-    imageAlt: 'Olha que Duas Kids — Baby Shark Pacman jogo arcade infantil online',
+    imageAlt: 'Micro no Cantinho — Olha que Duas Kids',
     url: 'https://www.olhaqueduas.com/kids/jogos/pacman',
-    tags: [
-      'baby shark jogo',
-      'pacman infantil',
-      'jogo arcade crianças',
-      'jogos online grátis',
-      'jogo labirinto infantil',
-      'baby shark pacman',
-      'olha que duas kids',
-      'jogos seguros crianças',
-      'jogo de fuga',
-      'arcade kids online',
-    ],
-    jsonLd: pacmanJsonLd,
+    tags: ['olha que duas kids', 'jogo rádio', 'cantinho da pequenada', 'jogo musical infantil'],
+    jsonLd,
   });
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animFrameRef = useRef<number>(0);
-
-  /* Game state kept in refs so the game-loop closure always reads fresh values */
-  const playerRef = useRef<Entity>({ ...PLAYER_START });
-  const playerDirRef = useRef<Direction>('right');
-  const nextDirRef = useRef<Direction>('right');
-  const robotsRef = useRef<Robot[]>(ROBOT_STARTS.map((r) => ({ ...r })));
+  const playerRef = useRef<Entity>(makePlayer());
+  const cloudsRef = useRef<Cloud[]>(makeClouds());
   const notesRef = useRef<Set<string>>(buildNotes());
+  const nextDirRef = useRef<Direction>('right');
   const scoreRef = useRef(0);
   const livesRef = useRef(TOTAL_LIVES);
-  const mouthOpenRef = useRef(0); // 0-1 animation counter
-  const moveTimerRef = useRef(0);
-  const robotTimerRef = useRef(0);
-  const gameStateRef = useRef<'playing' | 'won' | 'lost' | 'hit'>('playing');
+  const phaseRef = useRef<Phase>('start');
   const hitTimerRef = useRef(0);
+  const lastTsRef = useRef(0);
+  const timeRef = useRef(0);
+  const animRef = useRef(0);
 
-  /* React state for overlay UI only — updated from game loop */
   const [uiScore, setUiScore] = useState(0);
   const [uiLives, setUiLives] = useState(TOTAL_LIVES);
-  const [uiState, setUiState] = useState<'playing' | 'won' | 'lost'>('playing');
+  const [uiPhase, setUiPhase] = useState<Phase>('start');
 
-  /* ---- Reset game ---- */
+  const setPhase = (p: Phase) => {
+    phaseRef.current = p;
+    setUiPhase(p);
+  };
+
   const resetGame = useCallback(() => {
-    playerRef.current = { ...PLAYER_START };
-    playerDirRef.current = 'right';
-    nextDirRef.current = 'right';
-    robotsRef.current = ROBOT_STARTS.map((r) => ({ ...r }));
+    playerRef.current = makePlayer();
+    cloudsRef.current = makeClouds();
     notesRef.current = buildNotes();
+    nextDirRef.current = 'right';
     scoreRef.current = 0;
     livesRef.current = TOTAL_LIVES;
-    moveTimerRef.current = 0;
-    robotTimerRef.current = 0;
-    gameStateRef.current = 'playing';
     hitTimerRef.current = 0;
     setUiScore(0);
     setUiLives(TOTAL_LIVES);
-    setUiState('playing');
+    setPhase('playing');
+    kidsSfx.tap();
   }, []);
 
-  /* ---- Direction input ---- */
   const setDirection = useCallback((dir: Direction) => {
     nextDirRef.current = dir;
   }, []);
 
-  /* ---- Keyboard handler ---- */
+  const swipe = useSwipe(setDirection);
+
   useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      switch (e.key) {
-        case 'ArrowUp':
-        case 'w':
-        case 'W':
-          e.preventDefault();
-          setDirection('up');
-          break;
-        case 'ArrowDown':
-        case 's':
-        case 'S':
-          e.preventDefault();
-          setDirection('down');
-          break;
-        case 'ArrowLeft':
-        case 'a':
-        case 'A':
-          e.preventDefault();
-          setDirection('left');
-          break;
-        case 'ArrowRight':
-        case 'd':
-        case 'D':
-          e.preventDefault();
-          setDirection('right');
-          break;
+    const onKey = (e: KeyboardEvent) => {
+      const map: Record<string, Direction> = {
+        ArrowUp: 'up',
+        w: 'up',
+        W: 'up',
+        ArrowDown: 'down',
+        s: 'down',
+        S: 'down',
+        ArrowLeft: 'left',
+        a: 'left',
+        A: 'left',
+        ArrowRight: 'right',
+        d: 'right',
+        D: 'right',
+      };
+      if (map[e.key]) {
+        e.preventDefault();
+        setDirection(map[e.key]);
+      }
+      if (e.key === ' ' || e.key === 'Escape') {
+        e.preventDefault();
+        if (phaseRef.current === 'playing') setPhase('paused');
+        else if (phaseRef.current === 'paused') setPhase('playing');
       }
     };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
   }, [setDirection]);
 
-  /* ---- Main game loop ---- */
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const MOVE_INTERVAL = 10; // frames between player moves (slow for kids)
-    const ROBOT_INTERVAL = 14; // robots are slower
-
-    function canMove(x: number, y: number): boolean {
-      if (x < 0 || x >= COLS || y < 0 || y >= ROWS) return false;
-      return MAZE[y][x] === 0;
-    }
-
-    function nextPos(e: Entity, dir: Direction): { x: number; y: number } {
-      switch (dir) {
-        case 'up': return { x: e.x, y: e.y - 1 };
-        case 'down': return { x: e.x, y: e.y + 1 };
-        case 'left': return { x: e.x - 1, y: e.y };
-        case 'right': return { x: e.x + 1, y: e.y };
+    const tryStartMove = (ent: Entity, preferred: Direction, duration: number) => {
+      const first = step(ent.x, ent.y, preferred);
+      if (canMove(first.x, first.y)) {
+        ent.dir = preferred;
+        ent.moving = true;
+        ent.remain = duration;
+        return;
       }
-    }
-
-    function oppositeDir(d: Direction): Direction {
-      switch (d) {
-        case 'up': return 'down';
-        case 'down': return 'up';
-        case 'left': return 'right';
-        case 'right': return 'left';
+      const second = step(ent.x, ent.y, ent.dir);
+      if (canMove(second.x, second.y)) {
+        ent.moving = true;
+        ent.remain = duration;
       }
-    }
+    };
 
-    function tick() {
-      if (!ctx || !canvas) return;
-      const gs = gameStateRef.current;
+    const advance = (ent: Entity, dt: number, duration: number) => {
+      if (!ent.moving) return;
+      ent.remain -= dt;
+      const dest = step(ent.x, ent.y, ent.dir);
+      const t = 1 - Math.max(0, ent.remain) / duration;
+      ent.fx = ent.x + (dest.x - ent.x) * t;
+      ent.fy = ent.y + (dest.y - ent.y) * t;
+      if (ent.remain <= 0) {
+        ent.x = dest.x;
+        ent.y = dest.y;
+        ent.fx = dest.x;
+        ent.fy = dest.y;
+        ent.moving = false;
+        ent.remain = 0;
+      }
+    };
 
-      /* Sizing */
+    const tick = (ts: number) => {
+      const dt = lastTsRef.current ? Math.min(50, ts - lastTsRef.current) : 16;
+      lastTsRef.current = ts;
+      timeRef.current += dt / 1000;
+      const t = timeRef.current;
+
       const dpr = window.devicePixelRatio || 1;
-      const cssSize = Math.min(500, canvas.parentElement?.clientWidth ?? 500);
+      const cssSize = Math.min(520, canvas.parentElement?.clientWidth ?? 520);
       if (canvas.width !== cssSize * dpr || canvas.height !== cssSize * dpr) {
         canvas.width = cssSize * dpr;
         canvas.height = cssSize * dpr;
         canvas.style.width = `${cssSize}px`;
         canvas.style.height = `${cssSize}px`;
       }
-      const cellW = (cssSize * dpr) / COLS;
-      const cellH = (cssSize * dpr) / ROWS;
+      const cell = (cssSize * dpr) / COLS;
 
-      /* ---------- UPDATE ---------- */
+      const gs = phaseRef.current;
       if (gs === 'playing') {
-        // Mouth animation
-        mouthOpenRef.current = (mouthOpenRef.current + 0.07) % 1;
+        const player = playerRef.current;
+        if (!player.moving) tryStartMove(player, nextDirRef.current, PLAYER_MS);
+        advance(player, dt, PLAYER_MS);
 
-        // Player move
-        moveTimerRef.current++;
-        if (moveTimerRef.current >= MOVE_INTERVAL) {
-          moveTimerRef.current = 0;
-          // Try next direction first, then current
-          const nd = nextDirRef.current;
-          const np = nextPos(playerRef.current, nd);
-          if (canMove(np.x, np.y)) {
-            playerRef.current = np;
-            playerDirRef.current = nd;
-          } else {
-            const cp = nextPos(playerRef.current, playerDirRef.current);
-            if (canMove(cp.x, cp.y)) {
-              playerRef.current = cp;
-            }
-          }
-
-          // Collect note
-          const key = `${playerRef.current.x},${playerRef.current.y}`;
+        if (!player.moving) {
+          const key = `${player.x},${player.y}`;
           if (notesRef.current.has(key)) {
             notesRef.current.delete(key);
             scoreRef.current += 10;
             setUiScore(scoreRef.current);
-          }
-
-          // Win check
-          if (notesRef.current.size === 0) {
-            gameStateRef.current = 'won';
-            setUiState('won');
+            kidsSfx.collect();
+            if (notesRef.current.size === 0) {
+              kidsSfx.win();
+              setPhase('won');
+            }
           }
         }
 
-        // Robot move
-        robotTimerRef.current++;
-        if (robotTimerRef.current >= ROBOT_INTERVAL) {
-          robotTimerRef.current = 0;
-          for (const robot of robotsRef.current) {
-            // Gather possible directions (not opposite, unless stuck)
-            const dirs: Direction[] = (['up', 'down', 'left', 'right'] as Direction[]).filter(
-              (d) => d !== oppositeDir(robot.dir) && canMove(nextPos(robot, d).x, nextPos(robot, d).y),
+        for (const cloud of cloudsRef.current) {
+          if (!cloud.moving) {
+            const dirs = (['up', 'down', 'left', 'right'] as Direction[]).filter(
+              (d) => d !== opposite(cloud.dir) && canMove(step(cloud.x, cloud.y, d).x, step(cloud.x, cloud.y, d).y),
             );
-            if (dirs.length > 0) {
-              robot.dir = dirs[Math.floor(Math.random() * dirs.length)];
-            } else {
-              // Stuck: reverse
-              const rev = oppositeDir(robot.dir);
-              if (canMove(nextPos(robot, rev).x, nextPos(robot, rev).y)) {
-                robot.dir = rev;
-              }
-            }
-            const rp = nextPos(robot, robot.dir);
-            if (canMove(rp.x, rp.y)) {
-              robot.x = rp.x;
-              robot.y = rp.y;
-            }
+            const pick = dirs.length ? dirs[Math.floor(Math.random() * dirs.length)] : opposite(cloud.dir);
+            tryStartMove(cloud, pick, CLOUD_MS);
           }
+          advance(cloud, dt, CLOUD_MS);
+        }
 
-          // Collision check
-          const px = playerRef.current.x;
-          const py = playerRef.current.y;
-          for (const robot of robotsRef.current) {
-            if (robot.x === px && robot.y === py) {
-              livesRef.current--;
-              setUiLives(livesRef.current);
-              if (livesRef.current <= 0) {
-                gameStateRef.current = 'lost';
-                setUiState('lost');
-              } else {
-                gameStateRef.current = 'hit';
-                hitTimerRef.current = 90; // ~1.5s
-              }
-              break;
+        for (const cloud of cloudsRef.current) {
+          if (Math.abs(cloud.fx - player.fx) < 0.45 && Math.abs(cloud.fy - player.fy) < 0.45) {
+            livesRef.current -= 1;
+            setUiLives(livesRef.current);
+            kidsSfx.hit();
+            if (livesRef.current <= 0) {
+              kidsSfx.lose();
+              setPhase('lost');
+            } else {
+              setPhase('hit');
+              hitTimerRef.current = 900;
             }
+            break;
           }
         }
       } else if (gs === 'hit') {
-        hitTimerRef.current--;
+        hitTimerRef.current -= dt;
         if (hitTimerRef.current <= 0) {
-          // Respawn
-          playerRef.current = { ...PLAYER_START };
-          playerDirRef.current = 'right';
+          playerRef.current = makePlayer();
+          cloudsRef.current = makeClouds();
           nextDirRef.current = 'right';
-          robotsRef.current = ROBOT_STARTS.map((r) => ({ ...r }));
-          gameStateRef.current = 'playing';
+          setPhase('playing');
         }
       }
 
-      /* ---------- DRAW ---------- */
-      // Background
-      ctx.fillStyle = '#bae6fd'; // sky-200
+      ctx.fillStyle = '#e0f2fe';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Walls
       for (let r = 0; r < ROWS; r++) {
         for (let c = 0; c < COLS; c++) {
-          if (MAZE[r][c] === 1) {
-            ctx.fillStyle = '#1e3a5f';
-            ctx.fillRect(c * cellW, r * cellH, cellW, cellH);
-            // Inner lighter border for depth
-            ctx.fillStyle = '#2d5a8e';
-            const inset = cellW * 0.08;
-            ctx.fillRect(
-              c * cellW + inset,
-              r * cellH + inset,
-              cellW - inset * 2,
-              cellH - inset * 2,
-            );
-          }
+          if (MAZE[r][c] !== 1) continue;
+          const x = c * cell;
+          const y = r * cell;
+          ctx.fillStyle = '#e11d48';
+          ctx.beginPath();
+          ctx.roundRect(x + cell * 0.06, y + cell * 0.06, cell * 0.88, cell * 0.88, cell * 0.18);
+          ctx.fill();
+          ctx.fillStyle = '#fb7185';
+          ctx.beginPath();
+          ctx.roundRect(x + cell * 0.16, y + cell * 0.16, cell * 0.68, cell * 0.4, cell * 0.12);
+          ctx.fill();
+          ctx.fillStyle = '#fff7ed';
+          ctx.beginPath();
+          ctx.arc(x + cell * 0.5, y + cell * 0.55, cell * 0.12, 0, Math.PI * 2);
+          ctx.fill();
         }
       }
 
-      // Notes (pink dots with stem)
-      ctx.fillStyle = '#f472b6'; // pink-400
       for (const key of notesRef.current) {
         const [cx, cy] = key.split(',').map(Number);
-        const nx = cx * cellW + cellW / 2;
-        const ny = cy * cellH + cellH / 2;
-        const noteR = cellW * 0.16;
-        // Note head
-        ctx.beginPath();
-        ctx.arc(nx, ny + noteR * 0.5, noteR, 0, Math.PI * 2);
-        ctx.fill();
-        // Stem
-        ctx.strokeStyle = '#f472b6';
-        ctx.lineWidth = cellW * 0.06;
-        ctx.beginPath();
-        ctx.moveTo(nx + noteR * 0.8, ny + noteR * 0.5);
-        ctx.lineTo(nx + noteR * 0.8, ny - noteR * 1.4);
-        ctx.stroke();
-        // Flag
-        ctx.beginPath();
-        ctx.moveTo(nx + noteR * 0.8, ny - noteR * 1.4);
-        ctx.quadraticCurveTo(
-          nx + noteR * 2,
-          ny - noteR * 0.8,
-          nx + noteR * 0.8,
-          ny - noteR * 0.2,
-        );
-        ctx.fill();
+        drawNote(ctx, cx * cell + cell / 2, cy * cell + cell / 2, cell * 0.42);
       }
 
-      // Robots
-      for (const robot of robotsRef.current) {
-        const rx = robot.x * cellW;
-        const ry = robot.y * cellH;
-        const pad = cellW * 0.1;
-        // Body
-        ctx.fillStyle = robot.color;
-        ctx.beginPath();
-        ctx.roundRect(rx + pad, ry + pad, cellW - pad * 2, cellH - pad * 2, cellW * 0.15);
-        ctx.fill();
-        // Antenna
-        ctx.strokeStyle = robot.color;
-        ctx.lineWidth = cellW * 0.06;
-        ctx.beginPath();
-        ctx.moveTo(rx + cellW / 2, ry + pad);
-        ctx.lineTo(rx + cellW / 2, ry);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(rx + cellW / 2, ry, cellW * 0.06, 0, Math.PI * 2);
-        ctx.fill();
-        // Eyes
-        const eyeR = cellW * 0.1;
-        ctx.fillStyle = 'white';
-        ctx.beginPath();
-        ctx.arc(rx + cellW * 0.35, ry + cellH * 0.38, eyeR, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(rx + cellW * 0.65, ry + cellH * 0.38, eyeR, 0, Math.PI * 2);
-        ctx.fill();
-        // Pupils
-        ctx.fillStyle = '#1e293b';
-        const pupilR = eyeR * 0.55;
-        ctx.beginPath();
-        ctx.arc(rx + cellW * 0.35, ry + cellH * 0.4, pupilR, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(rx + cellW * 0.65, ry + cellH * 0.4, pupilR, 0, Math.PI * 2);
-        ctx.fill();
-        // Mouth (rectangle)
-        ctx.fillStyle = robot.eyeColor;
-        ctx.fillRect(
-          rx + cellW * 0.3,
-          ry + cellH * 0.58,
-          cellW * 0.4,
-          cellH * 0.12,
-        );
-        // Zigzag bottom
-        ctx.fillStyle = robot.color;
-        const zy = ry + cellH - pad;
-        const zw = cellW * 0.15;
-        ctx.beginPath();
-        ctx.moveTo(rx + pad, zy);
-        for (let i = 0; i < 4; i++) {
-          ctx.lineTo(rx + pad + zw * (i + 0.5), zy + cellH * 0.1);
-          ctx.lineTo(rx + pad + zw * (i + 1), zy);
-        }
-        ctx.fill();
+      for (const cloud of cloudsRef.current) {
+        drawSleepyCloud(ctx, cloud.fx * cell + cell / 2, cloud.fy * cell + cell / 2, cell * 0.85, cloud.color, t);
       }
 
-      // Player (Baby Shark — yellow pacman)
-      {
-        const px = playerRef.current.x * cellW + cellW / 2;
-        const py = playerRef.current.y * cellH + cellH / 2;
-        const radius = cellW * 0.4;
-        const mouthAngle = Math.abs(Math.sin(mouthOpenRef.current * Math.PI * 2)) * 0.6 + 0.05;
-        let startAngle = mouthAngle;
-        let endAngle = Math.PI * 2 - mouthAngle;
-        // Rotation based on direction
-        let rotation = 0;
-        switch (playerDirRef.current) {
-          case 'right': rotation = 0; break;
-          case 'down': rotation = Math.PI / 2; break;
-          case 'left': rotation = Math.PI; break;
-          case 'up': rotation = -Math.PI / 2; break;
-        }
-        startAngle += rotation;
-        endAngle += rotation;
+      const player = playerRef.current;
+      drawMic(ctx, player.fx * cell + cell / 2, player.fy * cell + cell / 2, cell * 0.9, player.dir, t);
 
-        // Body
-        ctx.fillStyle = '#facc15'; // yellow-400
-        ctx.beginPath();
-        ctx.moveTo(px, py);
-        ctx.arc(px, py, radius, startAngle, endAngle);
-        ctx.closePath();
-        ctx.fill();
-
-        // Eye
-        const eyeOffX = Math.cos(rotation - 0.5) * radius * 0.35;
-        const eyeOffY = Math.sin(rotation - 0.5) * radius * 0.35;
-        ctx.fillStyle = '#1e293b';
-        ctx.beginPath();
-        ctx.arc(px + eyeOffX, py + eyeOffY, radius * 0.13, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Tiny dorsal fin
-        const finAngle = rotation - Math.PI / 2;
-        const finX = px + Math.cos(finAngle) * radius * 0.65;
-        const finY = py + Math.sin(finAngle) * radius * 0.65;
-        ctx.fillStyle = '#eab308'; // yellow-500
-        ctx.beginPath();
-        ctx.moveTo(finX, finY);
-        ctx.lineTo(
-          finX + Math.cos(finAngle) * radius * 0.45,
-          finY + Math.sin(finAngle) * radius * 0.45,
-        );
-        ctx.lineTo(
-          finX + Math.cos(rotation) * radius * 0.3,
-          finY + Math.sin(rotation) * radius * 0.3,
-        );
-        ctx.closePath();
-        ctx.fill();
-      }
-
-      // Hit overlay
       if (gs === 'hit') {
-        ctx.fillStyle = 'rgba(0,0,0,0.35)';
+        ctx.fillStyle = 'rgba(15,23,42,0.35)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'white';
-        ctx.font = `bold ${cellW * 0.9}px sans-serif`;
+        ctx.fillStyle = '#fff';
         ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('O robo apanhou-te!', canvas.width / 2, canvas.height / 2);
-        ctx.font = `${cellW * 0.55}px sans-serif`;
-        ctx.fillText('A voltar...', canvas.width / 2, canvas.height / 2 + cellW);
+        ctx.font = `800 ${cell * 0.7}px "Baloo 2", sans-serif`;
+        ctx.fillText('O Silêncio apanhou-te!', canvas.width / 2, canvas.height / 2);
+        ctx.font = `700 ${cell * 0.45}px "Baloo 2", sans-serif`;
+        ctx.fillText('A voltar ao estúdio…', canvas.width / 2, canvas.height / 2 + cell);
       }
 
-      animFrameRef.current = requestAnimationFrame(tick);
-    }
+      animRef.current = requestAnimationFrame(tick);
+    };
 
-    animFrameRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(animFrameRef.current);
+    animRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(animRef.current);
   }, []);
 
-  /* ---- Touch button handler ---- */
-  const handleTouch = useCallback(
-    (dir: Direction) => (e: React.TouchEvent | React.MouseEvent) => {
-      e.preventDefault();
-      setDirection(dir);
-    },
-    [setDirection],
-  );
-
-  /* ---- Overlays ---- */
-  const showOverlay = uiState === 'won' || uiState === 'lost';
+  const overlay =
+    uiPhase === 'start' || uiPhase === 'won' || uiPhase === 'lost' || uiPhase === 'paused'
+      ? uiPhase
+      : null;
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-
-      <main className="pt-24 pb-16">
-        <div className="container mx-auto px-4 sm:px-6">
-          {/* Back button */}
-          <div className="mb-6">
-            <Button
-              asChild
-              variant="outline"
-              className="rounded-full border-2 border-pink-300 text-pink-600 hover:bg-pink-50 font-bold"
-            >
-              <Link to="/kids/jogos" className="inline-flex items-center gap-2">
-                <ArrowLeft className="w-5 h-5" />
-                Voltar aos Jogos
-              </Link>
-            </Button>
-          </div>
-
-          {/* Title */}
-          <h1 className="font-display font-bold text-3xl sm:text-4xl md:text-5xl text-center mb-2">
-            <span className="text-yellow-500">Baby Shark</span>{' '}
-            <span className="text-pink-500">Pacman</span>
-          </h1>
-          <p className="text-center text-sky-700 font-bold mb-6 text-base md:text-lg">
-            Ajuda o Baby Shark a recolher todas as notas musicais!
-          </p>
-
-          {/* Score & Lives */}
-          <div className="flex items-center justify-center gap-6 mb-4">
-            <div className="px-4 py-2 rounded-full bg-yellow-100 border-2 border-yellow-300 font-bold text-yellow-700 text-sm md:text-base">
-              Pontos: {uiScore}
-            </div>
-            <div className="px-4 py-2 rounded-full bg-pink-100 border-2 border-pink-300 font-bold text-pink-700 text-sm md:text-base">
-              Vidas: {Array.from({ length: uiLives }, () => '\u{1F988}').join(' ')}
-            </div>
-          </div>
-
-          {/* Canvas + overlay wrapper */}
-          <div className="relative mx-auto" style={{ maxWidth: 500 }}>
-            <canvas
-              ref={canvasRef}
-              className="w-full rounded-2xl border-4 border-sky-300 shadow-xl bg-sky-200"
-              style={{ aspectRatio: '1 / 1', touchAction: 'none' }}
-            />
-
-            {/* Win / Game Over overlay */}
-            {showOverlay && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-2xl z-10">
-                <div className="bg-white rounded-3xl p-8 md:p-10 text-center shadow-2xl border-4 border-pink-300 mx-4 max-w-sm">
-                  {uiState === 'won' ? (
-                    <>
-                      <p className="text-4xl mb-3">&#x1F389;</p>
-                      <h2 className="font-display font-bold text-2xl md:text-3xl text-pink-600 mb-3">
-                        Parabens!
-                      </h2>
-                      <p className="text-charcoal/80 mb-2 text-lg">
-                        Recolheste todas as notas!
-                      </p>
-                      <p className="font-bold text-yellow-600 text-xl mb-6">
-                        Pontos: {uiScore}
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <p className="text-4xl mb-3">&#x1F622;</p>
-                      <h2 className="font-display font-bold text-2xl md:text-3xl text-sky-600 mb-3">
-                        Oh nao!
-                      </h2>
-                      <p className="text-charcoal/80 mb-2 text-lg">
-                        Os robos ganharam desta vez!
-                      </p>
-                      <p className="text-charcoal/60 mb-6">
-                        Tenta outra vez!
-                      </p>
-                    </>
-                  )}
-                  <Button
-                    onClick={resetGame}
-                    className="h-14 px-8 text-base font-extrabold rounded-full bg-pink-500 hover:bg-pink-600 text-white shadow-[0_8px_0_rgba(190,24,93,0.6)] hover:shadow-[0_4px_0_rgba(190,24,93,0.6)] hover:translate-y-1 transition-all border-4 border-white"
-                  >
-                    Jogar outra vez
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Mobile controls */}
-          <div className="mt-6 flex flex-col items-center gap-2 md:hidden select-none">
+    <KidsGameShell
+      title="Micro no Cantinho"
+      subtitle="Apanha as notas da rádio. Foge das nuvens do Silêncio!"
+      hud={
+        <div className="flex items-center justify-center gap-3 flex-wrap">
+          <span className="px-4 py-2 rounded-full bg-yellow-100 border-2 border-yellow-300 font-extrabold text-yellow-800">
+            Notas: {uiScore}
+          </span>
+          <span className="px-4 py-2 rounded-full bg-pink-100 border-2 border-pink-300 font-extrabold text-pink-700">
+            Vidas: {Array.from({ length: uiLives }).map((_, i) => (
+              <span key={i} className="inline-block w-3 h-3 ml-1 rounded-full bg-pink-500 align-middle" />
+            ))}
+          </span>
+          {uiPhase === 'playing' && (
             <button
-              onTouchStart={handleTouch('up')}
-              onMouseDown={handleTouch('up')}
-              className="w-16 h-16 rounded-2xl bg-sky-400 active:bg-sky-500 text-white shadow-[0_6px_0_rgba(2,132,199,0.7)] active:shadow-[0_2px_0_rgba(2,132,199,0.7)] active:translate-y-1 transition-all flex items-center justify-center border-4 border-white"
-              aria-label="Cima"
+              type="button"
+              onClick={() => setPhase('paused')}
+              className="min-h-12 px-4 rounded-full bg-white border-4 border-white shadow-[0_4px_0_rgba(0,0,0,0.12)] font-extrabold text-sky-800 inline-flex items-center gap-1 cursor-pointer"
             >
-              <ChevronUp className="w-8 h-8" />
+              <Pause className="w-4 h-4" />
+              Pausa
             </button>
-            <div className="flex gap-2">
-              <button
-                onTouchStart={handleTouch('left')}
-                onMouseDown={handleTouch('left')}
-                className="w-16 h-16 rounded-2xl bg-pink-400 active:bg-pink-500 text-white shadow-[0_6px_0_rgba(190,24,93,0.7)] active:shadow-[0_2px_0_rgba(190,24,93,0.7)] active:translate-y-1 transition-all flex items-center justify-center border-4 border-white"
-                aria-label="Esquerda"
-              >
-                <ArrowLeft className="w-8 h-8" />
-              </button>
-              <button
-                onTouchStart={handleTouch('down')}
-                onMouseDown={handleTouch('down')}
-                className="w-16 h-16 rounded-2xl bg-yellow-400 active:bg-yellow-500 text-white shadow-[0_6px_0_rgba(202,138,4,0.7)] active:shadow-[0_2px_0_rgba(202,138,4,0.7)] active:translate-y-1 transition-all flex items-center justify-center border-4 border-white"
-                aria-label="Baixo"
-              >
-                <ArrowDown className="w-8 h-8" />
-              </button>
-              <button
-                onTouchStart={handleTouch('right')}
-                onMouseDown={handleTouch('right')}
-                className="w-16 h-16 rounded-2xl bg-emerald-400 active:bg-emerald-500 text-white shadow-[0_6px_0_rgba(5,150,105,0.7)] active:shadow-[0_2px_0_rgba(5,150,105,0.7)] active:translate-y-1 transition-all flex items-center justify-center border-4 border-white"
-                aria-label="Direita"
-              >
-                <ArrowRight className="w-8 h-8" />
-              </button>
-            </div>
-          </div>
-
-          {/* Instructions */}
-          <div className="mt-8 max-w-md mx-auto text-center space-y-2">
-            <p className="text-sm text-charcoal/60 font-bold">
-              Usa as setas do teclado ou os botoes no ecra para mover o Baby Shark.
-            </p>
-            <p className="text-sm text-charcoal/50">
-              Recolhe todas as notas musicais{' '}
-              <span className="text-pink-500">&#x266A;</span> e foge dos robos!
-            </p>
-          </div>
+          )}
         </div>
-      </main>
-
-      <Footer />
-      <BackToTop />
-    </div>
+      }
+      controls={
+        <div className="space-y-3">
+          <GameDPad onDir={setDirection} />
+          <p className="text-center text-sm font-bold text-sky-950/70 max-w-md mx-auto">
+            Setas, WASD, desliza no ecrã ou usa os botões. Espaço para pausar.
+          </p>
+        </div>
+      }
+    >
+      <div className="relative mx-auto" style={{ maxWidth: 520 }}>
+        <canvas
+          ref={canvasRef}
+          className="w-full rounded-[1.5rem] border-4 border-white shadow-[0_12px_0_rgba(190,24,93,0.2)] bg-sky-100 touch-none"
+          style={{ aspectRatio: '1 / 1', overscrollBehavior: 'contain' }}
+          {...swipe}
+        />
+        {overlay === 'start' && (
+          <GameOverlay
+            variant="start"
+            title="Micro no Cantinho"
+            message="O mascote da rádio precisa de ti!"
+            howTo={[
+              'Apanha todas as notas rosa.',
+              'Foge das nuvens do Silêncio.',
+              'Tens 3 vidas — como 3 músicas extra.',
+            ]}
+            primaryLabel="Começar"
+            onPrimary={resetGame}
+          />
+        )}
+        {overlay === 'paused' && (
+          <GameOverlay
+            variant="pause"
+            title="Pausa"
+            message="O Micro está a descansar a voz."
+            primaryLabel="Continuar"
+            onPrimary={() => setPhase('playing')}
+            secondaryLabel="Recomeçar"
+            onSecondary={resetGame}
+          />
+        )}
+        {overlay === 'won' && (
+          <GameOverlay
+            variant="win"
+            title="Parabéns!"
+            message="O Cantinho está cheio de música outra vez!"
+            scoreLabel={`${uiScore} notas`}
+            primaryLabel="Jogar outra vez"
+            onPrimary={resetGame}
+          />
+        )}
+        {overlay === 'lost' && (
+          <GameOverlay
+            variant="lose"
+            title="Oh não!"
+            message="O Silêncio ganhou desta vez. Tenta outra vez!"
+            scoreLabel={`${uiScore} notas`}
+            primaryLabel="Jogar outra vez"
+            onPrimary={resetGame}
+          />
+        )}
+      </div>
+      <div className="max-w-2xl mx-auto">
+        <MoreGames />
+      </div>
+    </KidsGameShell>
   );
 };
 

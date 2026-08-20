@@ -78,6 +78,7 @@ export default {
       fontFamily: {
         display: ['"Cormorant Garamond"', 'serif'],
         sans: ['Inter', 'sans-serif'],
+        kids: ['"Baloo 2"', 'cursive'],
       },
       borderRadius: {
         lg: "var(--radius)",

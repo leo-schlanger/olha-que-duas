@@ -1,139 +1,154 @@
-import { useState, useCallback, useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowLeft, RotateCcw, Star, Trophy } from 'lucide-react';
+import { useCallback, useMemo, useState } from 'react';
+import { RotateCcw, Star, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import BackToTop from '@/components/BackToTop';
 import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
+import KidsGameShell from '@/components/kids/games/KidsGameShell';
+import MoreGames from '@/components/kids/games/MoreGames';
+import { kidsSfx } from '@/components/kids/games/gameSounds';
+import alexandraCartoon from '@/assets/kids/alexandra-cartoon.webp';
+import marluceCartoon from '@/assets/kids/marluce-cartoon.webp';
+import leoCartoon from '@/assets/kids/leo-cartoon.webp';
+import logoKids from '@/assets/kids/logo-kids.webp';
 
-/* ---------- Types ---------- */
-
-interface Question {
-  emoji: string;
-  question: string;
-  options: { emoji: string; text: string }[];
-  correctIndex: number;
+interface Option {
+  text: string;
+  correct: boolean;
 }
 
-/* ---------- Questions ---------- */
+interface Question {
+  prompt: string;
+  image?: string;
+  imageAlt?: string;
+  options: Option[];
+}
 
-const allQuestions: Question[] = [
+const BANK: Question[] = [
   {
-    emoji: '🐱',
-    question: 'Qual animal diz "Miau"?',
+    prompt: 'Como se chamam as duas da rádio?',
+    image: alexandraCartoon,
+    imageAlt: 'Alexandra',
     options: [
-      { emoji: '🐱', text: 'Gato' },
-      { emoji: '🐶', text: 'Cão' },
-      { emoji: '🐸', text: 'Sapo' },
-      { emoji: '🐦', text: 'Pássaro' },
+      { text: 'Alexandra e Marluce', correct: true },
+      { text: 'Leonor e Leo', correct: false },
+      { text: 'Ana e Maria', correct: false },
+      { text: 'Rita e Sara', correct: false },
     ],
-    correctIndex: 0,
   },
   {
-    emoji: '☀️',
-    question: 'De que cor é o sol?',
+    prompt: 'Quem apresenta o Cantinho da Pequenada?',
     options: [
-      { emoji: '🔴', text: 'Vermelho' },
-      { emoji: '🟡', text: 'Amarelo' },
-      { emoji: '🔵', text: 'Azul' },
-      { emoji: '🟢', text: 'Verde' },
+      { text: 'A Leonor', correct: true },
+      { text: 'O Micro', correct: false },
+      { text: 'O sol', correct: false },
+      { text: 'O Leo sozinho', correct: false },
     ],
-    correctIndex: 1,
   },
   {
-    emoji: '🐶',
-    question: 'Qual animal é o melhor amigo do Homem?',
+    prompt: 'Qual é o mascote do Olha que Duas Kids?',
+    image: logoKids,
+    imageAlt: 'Micro, o mascote',
     options: [
-      { emoji: '🐍', text: 'Cobra' },
-      { emoji: '🐟', text: 'Peixe' },
-      { emoji: '🐶', text: 'Cão' },
-      { emoji: '🦎', text: 'Lagarto' },
+      { text: 'O Microfone com boné', correct: true },
+      { text: 'Um tubarão', correct: false },
+      { text: 'Um robô', correct: false },
+      { text: 'Um gato', correct: false },
     ],
-    correctIndex: 2,
   },
   {
-    emoji: '🍎',
-    question: 'De que cor é uma maçã madura?',
+    prompt: 'Onde podes ouvir o Cantinho da Pequenada?',
     options: [
-      { emoji: '🔵', text: 'Azul' },
-      { emoji: '🟣', text: 'Roxo' },
-      { emoji: '🟢', text: 'Verde' },
-      { emoji: '🔴', text: 'Vermelho' },
+      { text: 'Na Rádio Olha que Duas', correct: true },
+      { text: 'Na televisão dos vizinhos', correct: false },
+      { text: 'Só no cinema', correct: false },
+      { text: 'No autocarro', correct: false },
     ],
-    correctIndex: 3,
   },
   {
-    emoji: '🐔',
-    question: 'Qual animal põe ovos e faz "Có-có-ró-có"?',
+    prompt: 'Quem está sempre a acenar “Olá!” no espaço Kids?',
+    image: leoCartoon,
+    imageAlt: 'Leo',
     options: [
-      { emoji: '🐔', text: 'Galinha' },
-      { emoji: '🐷', text: 'Porco' },
-      { emoji: '🐴', text: 'Cavalo' },
-      { emoji: '🐑', text: 'Ovelha' },
+      { text: 'O Leo', correct: true },
+      { text: 'O Micro a dormir', correct: false },
+      { text: 'Uma nuvem', correct: false },
+      { text: 'O sol', correct: false },
     ],
-    correctIndex: 0,
   },
   {
-    emoji: '🌈',
-    question: 'O que aparece no céu depois da chuva?',
+    prompt: 'A Marluce usa calças com o quê?',
+    image: marluceCartoon,
+    imageAlt: 'Marluce',
     options: [
-      { emoji: '⭐', text: 'Estrela' },
-      { emoji: '🌈', text: 'Arco-íris' },
-      { emoji: '🌙', text: 'Lua' },
-      { emoji: '❄️', text: 'Neve' },
+      { text: 'Bolinhas', correct: true },
+      { text: 'Riscas de zebra', correct: false },
+      { text: 'Folhas', correct: false },
+      { text: 'Estrelas azuis', correct: false },
     ],
-    correctIndex: 1,
   },
   {
-    emoji: '🍌',
-    question: 'Qual fruta é amarela e os macacos adoram?',
+    prompt: 'De que cor é o sol no céu do Cantinho?',
     options: [
-      { emoji: '🍇', text: 'Uvas' },
-      { emoji: '🍓', text: 'Morango' },
-      { emoji: '🍌', text: 'Banana' },
-      { emoji: '🍊', text: 'Laranja' },
+      { text: 'Amarelo', correct: true },
+      { text: 'Azul', correct: false },
+      { text: 'Roxo', correct: false },
+      { text: 'Verde', correct: false },
     ],
-    correctIndex: 2,
   },
   {
-    emoji: '🐄',
-    question: 'Qual animal nos dá leite?',
+    prompt: 'O que aparece no céu depois da chuva?',
     options: [
-      { emoji: '🐓', text: 'Galo' },
-      { emoji: '🐄', text: 'Vaca' },
-      { emoji: '🐢', text: 'Tartaruga' },
-      { emoji: '🐧', text: 'Pinguim' },
+      { text: 'Um arco-íris', correct: true },
+      { text: 'Um comboio', correct: false },
+      { text: 'Um sapato', correct: false },
+      { text: 'Um piano', correct: false },
     ],
-    correctIndex: 1,
   },
   {
-    emoji: '🌙',
-    question: 'O que vemos no céu à noite?',
+    prompt: 'Qual animal diz “miau”?',
     options: [
-      { emoji: '🌞', text: 'Sol' },
-      { emoji: '🌧️', text: 'Chuva' },
-      { emoji: '🌪️', text: 'Tornado' },
-      { emoji: '🌙', text: 'Lua e estrelas' },
+      { text: 'O gato', correct: true },
+      { text: 'O cão', correct: false },
+      { text: 'A vaca', correct: false },
+      { text: 'O peixe', correct: false },
     ],
-    correctIndex: 3,
   },
   {
-    emoji: '🐸',
-    question: 'Qual animal salta e diz "Coaxar"?',
+    prompt: 'Qual animal nos dá leite?',
     options: [
-      { emoji: '🐸', text: 'Sapo' },
-      { emoji: '🐛', text: 'Lagarta' },
-      { emoji: '🐝', text: 'Abelha' },
-      { emoji: '🐞', text: 'Joaninha' },
+      { text: 'A vaca', correct: true },
+      { text: 'O galo', correct: false },
+      { text: 'A tartaruga', correct: false },
+      { text: 'O pinguim', correct: false },
     ],
-    correctIndex: 0,
+  },
+  {
+    prompt: 'O que vemos no céu à noite?',
+    options: [
+      { text: 'A lua e as estrelas', correct: true },
+      { text: 'O sol a ferver', correct: false },
+      { text: 'Um comboio voador', correct: false },
+      { text: 'Um chapéu', correct: false },
+    ],
+  },
+  {
+    prompt: 'O espaço Kids é feito para quem?',
+    options: [
+      { text: 'A pequenada e a família', correct: true },
+      { text: 'Só os gatos', correct: false },
+      { text: 'Robôs do silêncio', correct: false },
+      { text: 'Nuvens zangadas', correct: false },
+    ],
   },
 ];
 
-/* ---------- Helpers ---------- */
+const OPTION_COLORS = [
+  { idle: 'bg-pink-500 shadow-[0_8px_0_#be185d]', mark: 'border-pink-200' },
+  { idle: 'bg-sky-500 shadow-[0_8px_0_#0369a1]', mark: 'border-sky-200' },
+  { idle: 'bg-amber-400 shadow-[0_8px_0_#b45309] text-sky-950', mark: 'border-amber-200' },
+  { idle: 'bg-emerald-500 shadow-[0_8px_0_#047857]', mark: 'border-emerald-200' },
+];
 
-function shuffleArray<T>(arr: T[]): T[] {
+function shuffle<T>(arr: T[]): T[] {
   const copy = [...arr];
   for (let i = copy.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -142,146 +157,84 @@ function shuffleArray<T>(arr: T[]): T[] {
   return copy;
 }
 
-/* ---------- Answer button color palettes ---------- */
-
-const optionColors = [
-  {
-    bg: 'bg-pink-500',
-    hover: 'hover:bg-pink-600',
-    shadow: 'shadow-[0_10px_0_rgba(190,24,93,0.6)]',
-    hoverShadow: 'hover:shadow-[0_6px_0_rgba(190,24,93,0.6)]',
-    border: 'border-pink-300',
-  },
-  {
-    bg: 'bg-sky-500',
-    hover: 'hover:bg-sky-600',
-    shadow: 'shadow-[0_10px_0_rgba(3,105,161,0.6)]',
-    hoverShadow: 'hover:shadow-[0_6px_0_rgba(3,105,161,0.6)]',
-    border: 'border-sky-300',
-  },
-  {
-    bg: 'bg-amber-400',
-    hover: 'hover:bg-amber-500',
-    shadow: 'shadow-[0_10px_0_rgba(180,83,9,0.6)]',
-    hoverShadow: 'hover:shadow-[0_6px_0_rgba(180,83,9,0.6)]',
-    border: 'border-amber-300',
-  },
-  {
-    bg: 'bg-emerald-500',
-    hover: 'hover:bg-emerald-600',
-    shadow: 'shadow-[0_10px_0_rgba(6,95,70,0.6)]',
-    hoverShadow: 'hover:shadow-[0_6px_0_rgba(6,95,70,0.6)]',
-    border: 'border-emerald-300',
-  },
-];
-
-/* ---------- Component ---------- */
+function deal(): Question[] {
+  return shuffle(BANK).map((q) => ({ ...q, options: shuffle(q.options) }));
+}
 
 const quizJsonLd = [
-  // Breadcrumb
-  getPageBreadcrumbJsonLd('Quiz Infantil', 'https://www.olhaqueduas.com/kids/jogos/quiz', [
+  getPageBreadcrumbJsonLd('Quiz do Cantinho', 'https://www.olhaqueduas.com/kids/jogos/quiz', [
     { name: 'Kids', url: 'https://www.olhaqueduas.com/kids' },
     { name: 'Jogos', url: 'https://www.olhaqueduas.com/kids/jogos' },
   ]),
-  // WebApplication (Game)
   {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
-    '@id': 'https://www.olhaqueduas.com/kids/jogos/quiz#app',
-    name: 'Quiz Infantil Educativo — Perguntas para Crianças',
+    name: 'Quiz do Cantinho — Olha que Duas Kids',
     url: 'https://www.olhaqueduas.com/kids/jogos/quiz',
     applicationCategory: 'GameApplication',
-    applicationSubCategory: 'Quiz Educativo',
     operatingSystem: 'Web',
-    browserRequirements: 'Requires JavaScript',
     inLanguage: 'pt-PT',
     description:
-      'Quiz com perguntas divertidas sobre animais, cores e natureza para crianças dos 3 aos 12 anos. 10 perguntas com feedback imediato e sistema de pontuação por estrelas.',
-    audience: {
-      '@type': 'PeopleAudience',
-      suggestedMinAge: 3,
-      suggestedMaxAge: 12,
-    },
-    offers: {
-      '@type': 'Offer',
-      price: '0',
-      priceCurrency: 'EUR',
-      availability: 'https://schema.org/InStock',
-    },
-    provider: {
-      '@type': 'Organization',
-      name: 'Olha que Duas',
-      url: 'https://www.olhaqueduas.com',
-    },
+      'Quiz do Cantinho da Pequenada: perguntas sobre a rádio Olha que Duas, a Alexandra, a Marluce, o Leo, o Micro e o mundo da pequenada.',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
   },
 ];
 
 const KidsQuiz = () => {
   useMetaTags({
-    title: 'Quiz Infantil Educativo — Perguntas Divertidas sobre Animais e Natureza',
+    title: 'Quiz do Cantinho — Perguntas da rádio Olha que Duas Kids',
     description:
-      'Testa os teus conhecimentos com o Quiz do Olha que Duas Kids! 10 perguntas divertidas sobre animais, cores e natureza para crianças dos 3 aos 12 anos. Jogo educativo online, gratuito e seguro — com pontuação por estrelas e feedback imediato.',
+      'Testa o que sabes sobre o Cantinho da Pequenada, as Duas e o Micro! Quiz educativo e gratuito do espaço Kids do Olha que Duas.',
     image: 'https://www.olhaqueduas.com/og-kids.jpg',
-    imageAlt: 'Olha que Duas Kids — Quiz infantil educativo com perguntas sobre animais e natureza',
+    imageAlt: 'Quiz do Cantinho — Olha que Duas Kids',
     url: 'https://www.olhaqueduas.com/kids/jogos/quiz',
-    tags: [
-      'quiz infantil',
-      'perguntas para crianças',
-      'jogos educativos online',
-      'quiz animais',
-      'quiz natureza',
-      'jogo de perguntas infantil',
-      'olha que duas kids',
-      'quiz online grátis',
-      'jogos didáticos crianças',
-      'quiz português crianças',
-    ],
+    tags: ['quiz infantil', 'cantinho da pequenada', 'olha que duas kids', 'quiz rádio'],
     jsonLd: quizJsonLd,
   });
 
-  const [questions, setQuestions] = useState<Question[]>(() => shuffleArray(allQuestions));
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [questions, setQuestions] = useState<Question[]>(() => deal());
+  const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
-  const [selectedOption, setSelectedOption] = useState<number | null>(null);
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [picked, setPicked] = useState<number | null>(null);
   const [finished, setFinished] = useState(false);
 
   const total = questions.length;
-  const current = questions[currentIndex];
+  const current = questions[index];
 
   const handleAnswer = useCallback(
     (optionIndex: number) => {
-      if (selectedOption !== null) return; // prevent double-click
-
-      const correct = optionIndex === current.correctIndex;
-      setSelectedOption(optionIndex);
-      setIsCorrect(correct);
-
-      if (correct) setScore((s) => s + 1);
-
-      setTimeout(() => {
-        if (currentIndex + 1 >= total) {
+      if (picked !== null) return;
+      const ok = current.options[optionIndex].correct;
+      setPicked(optionIndex);
+      if (ok) {
+        setScore((s) => s + 1);
+        kidsSfx.correct();
+      } else {
+        kidsSfx.wrong();
+      }
+      window.setTimeout(() => {
+        if (index + 1 >= total) {
           setFinished(true);
+          if (ok || score + (ok ? 1 : 0) >= total * 0.6) kidsSfx.win();
         } else {
-          setCurrentIndex((i) => i + 1);
+          setIndex((i) => i + 1);
         }
-        setSelectedOption(null);
-        setIsCorrect(null);
-      }, 1200);
+        setPicked(null);
+      }, 1100);
     },
-    [selectedOption, current, currentIndex, total],
+    [picked, current, index, total, score],
   );
 
   const restart = useCallback(() => {
-    setQuestions(shuffleArray(allQuestions));
-    setCurrentIndex(0);
+    setQuestions(deal());
+    setIndex(0);
     setScore(0);
-    setSelectedOption(null);
-    setIsCorrect(null);
+    setPicked(null);
     setFinished(false);
+    kidsSfx.tap();
   }, []);
 
-  const starRating = useMemo(() => {
+  const stars = useMemo(() => {
     const pct = score / total;
     if (pct >= 0.9) return 5;
     if (pct >= 0.7) return 4;
@@ -290,268 +243,120 @@ const KidsQuiz = () => {
     return 1;
   }, [score, total]);
 
-  const celebrationMessage = useMemo(() => {
+  const message = useMemo(() => {
     const pct = score / total;
-    if (pct === 1) return 'Perfeito! Es um verdadeiro campeão! 🏆';
-    if (pct >= 0.8) return 'Muito bem! Sabes imenso! 🎉';
-    if (pct >= 0.6) return 'Boa! Estás a aprender muito! 💪';
-    if (pct >= 0.4) return 'Bom esforço! Tenta outra vez! 😊';
-    return 'Não desistas! Vais conseguir! 🌟';
+    if (pct === 1) return 'Perfeito! És estrela do Cantinho!';
+    if (pct >= 0.8) return 'Muito bem! A rádio tem orgulho em ti!';
+    if (pct >= 0.6) return 'Boa! Ainda há mais músicas para aprender.';
+    if (pct >= 0.4) return 'Bom esforço! Tenta outra vez com as Duas.';
+    return 'Não desistas — o Micro acredita em ti!';
   }, [score, total]);
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main>
-        <section
-          className="relative min-h-[80vh] overflow-hidden pt-20 md:pt-24 pb-20 md:pb-28"
-          style={{
-            background:
-              'linear-gradient(180deg, #38bdf8 0%, #7dd3fc 30%, #fde047 70%, #f472b6 100%)',
-          }}
-        >
-          {/* Decorative floating dots */}
-          <FloatingDots />
-
-          <div className="container mx-auto px-4 sm:px-6 relative z-10">
-            {/* Back button */}
-            <div className="mb-6">
-              <Button
-                asChild
-                className="h-12 px-6 text-sm font-extrabold rounded-full bg-white/90 hover:bg-white text-pink-600 shadow-[0_6px_0_rgba(0,0,0,0.1)] hover:shadow-[0_3px_0_rgba(0,0,0,0.1)] hover:translate-y-1 transition-all border-4 border-pink-200"
-              >
-                <Link to="/kids/jogos" className="inline-flex items-center gap-2">
-                  <ArrowLeft className="w-5 h-5" />
-                  Voltar aos Jogos
-                </Link>
-              </Button>
+    <KidsGameShell
+      title="Quiz do Cantinho"
+      subtitle="Perguntas da rádio, das Duas e da pequenada."
+      hud={
+        !finished ? (
+          <div className="max-w-2xl mx-auto">
+            <div className="flex items-center justify-between mb-2 text-white font-extrabold">
+              <span>
+                Pergunta {index + 1} de {total}
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <Trophy className="w-4 h-4" />
+                {score} {score === 1 ? 'ponto' : 'pontos'}
+              </span>
             </div>
-
-            {/* Title */}
-            <div className="text-center mb-8 md:mb-10">
-              <h1 className="font-display font-bold text-4xl sm:text-5xl md:text-6xl text-white drop-shadow-md">
-                Quiz dos Pequeninos
-              </h1>
-              <p className="mt-3 text-lg md:text-xl font-bold text-white/90 drop-shadow-sm">
-                Testa o que sabes sobre animais, cores e natureza!
-              </p>
-            </div>
-
-            {/* Quiz card */}
-            <div className="max-w-2xl mx-auto">
-              {!finished ? (
-                /* ----- Question phase ----- */
-                <div className="rounded-3xl bg-white/95 backdrop-blur-sm border-4 border-white shadow-2xl p-6 md:p-10">
-                  {/* Progress bar */}
-                  <div className="mb-6">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-display font-bold text-pink-600 text-sm md:text-base">
-                        Pergunta {currentIndex + 1} de {total}
-                      </span>
-                      <span className="font-display font-bold text-amber-600 text-sm md:text-base flex items-center gap-1">
-                        <Trophy className="w-4 h-4" />
-                        {score} ponto{score !== 1 ? 's' : ''}
-                      </span>
-                    </div>
-                    <div className="w-full h-4 bg-pink-100 rounded-full overflow-hidden border-2 border-pink-200">
-                      <div
-                        className="h-full rounded-full transition-all duration-500 ease-out"
-                        style={{
-                          width: `${((currentIndex + 1) / total) * 100}%`,
-                          background:
-                            'linear-gradient(90deg, #ec4899 0%, #f472b6 50%, #fde047 100%)',
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Question emoji and text */}
-                  <div className="text-center mb-8">
-                    <div className="text-7xl md:text-8xl mb-4 animate-bounce">
-                      {current.emoji}
-                    </div>
-                    <h2 className="font-display font-bold text-2xl md:text-3xl text-gray-800">
-                      {current.question}
-                    </h2>
-                  </div>
-
-                  {/* Answer options */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {current.options.map((option, idx) => {
-                      const color = optionColors[idx];
-                      const isSelected = selectedOption === idx;
-                      const isCorrectAnswer = idx === current.correctIndex;
-
-                      let stateClasses = '';
-                      if (selectedOption !== null) {
-                        if (isCorrectAnswer) {
-                          stateClasses =
-                            'bg-emerald-500 shadow-[0_10px_0_rgba(6,95,70,0.6)] border-emerald-300 scale-105';
-                        } else if (isSelected && !isCorrect) {
-                          stateClasses =
-                            'bg-red-500 shadow-[0_10px_0_rgba(153,27,27,0.6)] border-red-300 animate-shake';
-                        } else {
-                          stateClasses = 'opacity-50 ' + color.bg + ' ' + color.shadow + ' ' + color.border;
-                        }
-                      }
-
-                      return (
-                        <button
-                          key={idx}
-                          onClick={() => handleAnswer(idx)}
-                          disabled={selectedOption !== null}
-                          className={`
-                            w-full flex items-center gap-3 px-5 py-4 md:py-5
-                            rounded-2xl text-white font-extrabold text-lg md:text-xl
-                            border-4 transition-all duration-200 cursor-pointer
-                            disabled:cursor-default
-                            hover:translate-y-1
-                            ${
-                              selectedOption !== null
-                                ? stateClasses
-                                : `${color.bg} ${color.hover} ${color.shadow} ${color.hoverShadow} ${color.border}`
-                            }
-                          `}
-                        >
-                          <span className="text-3xl">{option.emoji}</span>
-                          <span className="drop-shadow-sm">{option.text}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {/* Feedback flash */}
-                  {selectedOption !== null && (
-                    <div className="mt-6 text-center">
-                      <p
-                        className={`font-display font-bold text-2xl ${
-                          isCorrect ? 'text-emerald-600' : 'text-red-500'
-                        }`}
-                      >
-                        {isCorrect ? '✅ Boa, acertaste!' : '❌ Ups, não era essa!'}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                /* ----- Results phase ----- */
-                <div className="rounded-3xl bg-white/95 backdrop-blur-sm border-4 border-white shadow-2xl p-8 md:p-12 text-center">
-                  {/* Celebration emoji */}
-                  <div className="text-7xl md:text-8xl mb-4">🎉</div>
-
-                  <h2 className="font-display font-bold text-3xl md:text-4xl text-gray-800 mb-2">
-                    Quiz Terminado!
-                  </h2>
-
-                  <p className="font-display font-bold text-xl md:text-2xl text-pink-600 mb-4">
-                    {celebrationMessage}
-                  </p>
-
-                  {/* Score */}
-                  <div
-                    className="inline-block rounded-2xl px-8 py-4 mb-6 border-4 border-white shadow-lg"
-                    style={{
-                      background:
-                        'linear-gradient(135deg, #fde047 0%, #f472b6 100%)',
-                    }}
-                  >
-                    <p className="font-display font-bold text-white text-2xl md:text-3xl drop-shadow-md">
-                      {score} de {total} pontos
-                    </p>
-                  </div>
-
-                  {/* Star rating */}
-                  <div className="flex justify-center gap-2 mb-8">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-10 h-10 md:w-12 md:h-12 transition-all duration-300 ${
-                          i < starRating
-                            ? 'text-yellow-400 fill-yellow-400 drop-shadow-[0_2px_4px_rgba(250,204,21,0.5)]'
-                            : 'text-gray-300 fill-gray-200'
-                        }`}
-                        style={{
-                          animationDelay: `${i * 150}ms`,
-                          ...(i < starRating ? { animation: 'star-pop 0.4s ease-out forwards', animationDelay: `${i * 150}ms` } : {}),
-                        }}
-                      />
-                    ))}
-                  </div>
-
-                  {/* Buttons */}
-                  <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <Button
-                      onClick={restart}
-                      className="h-14 px-8 text-base font-extrabold rounded-full bg-pink-500 hover:bg-pink-600 text-white shadow-[0_10px_0_rgba(190,24,93,0.6)] hover:shadow-[0_6px_0_rgba(190,24,93,0.6)] hover:translate-y-1 transition-all duration-200 border-4 border-white"
-                    >
-                      <RotateCcw className="w-5 h-5 mr-2" />
-                      Jogar outra vez
-                    </Button>
-                    <Button
-                      asChild
-                      className="h-14 px-8 text-base font-extrabold rounded-full bg-yellow-400 hover:bg-yellow-500 text-pink-700 shadow-[0_10px_0_rgba(202,138,4,0.6)] hover:shadow-[0_6px_0_rgba(202,138,4,0.6)] hover:translate-y-1 transition-all duration-200 border-4 border-white"
-                    >
-                      <Link to="/kids/jogos" className="inline-flex items-center gap-2">
-                        <ArrowLeft className="w-5 h-5" />
-                        Voltar aos Jogos
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-              )}
+            <div className="h-4 rounded-full bg-white/40 border-2 border-white overflow-hidden">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-pink-500 via-amber-300 to-yellow-300 transition-all duration-500"
+                style={{ width: `${((index + (picked !== null ? 1 : 0)) / total) * 100}%` }}
+              />
             </div>
           </div>
-        </section>
-      </main>
-
-      <Footer />
-      <BackToTop />
-
-      {/* Keyframe animations */}
-      <style>{`
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          20% { transform: translateX(-8px); }
-          40% { transform: translateX(8px); }
-          60% { transform: translateX(-6px); }
-          80% { transform: translateX(6px); }
-        }
-        .animate-shake {
-          animation: shake 0.5s ease-in-out;
-        }
-        @keyframes star-pop {
-          0% { transform: scale(0); opacity: 0; }
-          60% { transform: scale(1.3); }
-          100% { transform: scale(1); opacity: 1; }
-        }
-      `}</style>
-    </div>
-  );
-};
-
-/* ---------- Decorative subcomponent ---------- */
-
-const FloatingDots = () => {
-  const dots = [
-    { top: '12%', left: '6%', cls: 'bg-white/40 w-4 h-4 animate-float-1' },
-    { top: '25%', left: '88%', cls: 'bg-yellow-300/50 w-5 h-5 animate-float-2' },
-    { top: '40%', left: '10%', cls: 'bg-pink-300/50 w-3 h-3 animate-float-3' },
-    { top: '55%', left: '93%', cls: 'bg-white/30 w-4 h-4 animate-float-1' },
-    { top: '70%', left: '4%', cls: 'bg-amber-300/50 w-3 h-3 animate-float-2' },
-    { top: '80%', left: '85%', cls: 'bg-sky-300/50 w-5 h-5 animate-float-3' },
-    { top: '18%', left: '48%', cls: 'bg-white/30 w-3 h-3 animate-float-1' },
-    { top: '65%', left: '50%', cls: 'bg-pink-200/40 w-4 h-4 animate-float-2' },
-  ];
-  return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      {dots.map((dot, i) => (
-        <span
-          key={i}
-          className={`absolute rounded-full ${dot.cls}`}
-          style={{ top: dot.top, left: dot.left }}
-        />
-      ))}
-    </div>
+        ) : null
+      }
+    >
+      <div className="max-w-2xl mx-auto">
+        {!finished ? (
+          <div className="rounded-[1.75rem] bg-white/95 border-4 border-white p-5 md:p-8 shadow-[0_12px_0_rgba(190,24,93,0.2)]">
+            {current.image && (
+              <img
+                src={current.image}
+                alt={current.imageAlt ?? ''}
+                className="mx-auto mb-4 h-28 md:h-36 w-auto object-contain drop-shadow-md"
+              />
+            )}
+            <h2 className="font-kids font-extrabold text-2xl md:text-3xl text-sky-950 text-center mb-6">
+              {current.prompt}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {current.options.map((option, idx) => {
+                const color = OPTION_COLORS[idx];
+                const isPicked = picked === idx;
+                const showCorrect = picked !== null && option.correct;
+                const showWrong = isPicked && !option.correct;
+                let state = `${color.idle} ${color.mark}`;
+                if (picked !== null) {
+                  if (showCorrect) state = 'bg-emerald-500 shadow-[0_8px_0_#047857] border-emerald-200 scale-[1.02]';
+                  else if (showWrong) state = 'bg-red-500 shadow-[0_8px_0_#991b1b] border-red-200';
+                  else state = `${color.idle} opacity-45`;
+                }
+                return (
+                  <button
+                    key={option.text}
+                    type="button"
+                    disabled={picked !== null}
+                    onClick={() => handleAnswer(idx)}
+                    className={`min-h-[56px] w-full px-4 py-3 rounded-2xl text-white font-extrabold text-lg border-4 transition-all duration-200 cursor-pointer disabled:cursor-default hover:translate-y-0.5 ${state}`}
+                  >
+                    {option.text}
+                  </button>
+                );
+              })}
+            </div>
+            {picked !== null && (
+              <p
+                className={`mt-5 text-center font-kids font-extrabold text-2xl ${
+                  current.options[picked].correct ? 'text-emerald-600' : 'text-red-500'
+                }`}
+                aria-live="polite"
+              >
+                {current.options[picked].correct ? 'Boa, acertaste!' : 'Ups, não era essa!'}
+              </p>
+            )}
+          </div>
+        ) : (
+          <div className="rounded-[1.75rem] bg-white/95 border-4 border-white p-8 md:p-10 text-center shadow-[0_12px_0_rgba(190,24,93,0.2)]">
+            <img src={logoKids} alt="" className="mx-auto h-20 w-20 object-contain mb-3" />
+            <h2 className="font-kids font-extrabold text-3xl md:text-4xl text-sky-950">Quiz terminado!</h2>
+            <p className="mt-2 font-bold text-xl text-pink-600">{message}</p>
+            <p className="mt-4 inline-flex rounded-2xl px-6 py-3 bg-gradient-to-r from-yellow-300 to-pink-400 text-white font-kids font-extrabold text-2xl">
+              {score} de {total} pontos
+            </p>
+            <div className="flex justify-center gap-1.5 mt-5 mb-8">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star
+                  key={i}
+                  className={`w-10 h-10 ${
+                    i < stars ? 'text-yellow-400 fill-yellow-400' : 'text-slate-200 fill-slate-200'
+                  }`}
+                />
+              ))}
+            </div>
+            <Button
+              onClick={restart}
+              className="h-14 px-8 text-base font-kids font-extrabold rounded-full bg-pink-500 hover:bg-pink-600 text-white shadow-[0_8px_0_rgba(190,24,93,0.6)] hover:translate-y-1 transition-all border-4 border-white cursor-pointer"
+            >
+              <RotateCcw className="w-5 h-5 mr-2" />
+              Jogar outra vez
+            </Button>
+          </div>
+        )}
+        <MoreGames />
+      </div>
+    </KidsGameShell>
   );
 };
 
