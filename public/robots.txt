@@ -51,6 +51,7 @@ Disallow: /assets/*.map$
 
 # Sitemaps
 Sitemap: https://www.olhaqueduas.com/sitemap.xml
+Sitemap: https://www.olhaqueduas.com/sitemap-historias.xml
 
 # Host preferido
 Host: https://www.olhaqueduas.com

@@ -17,6 +17,7 @@
     }
   ],
   "rewrites": [
+    { "source": "/sitemap-historias.xml", "destination": "/api/sitemap-historias" },
     { "source": "/((?!api/).*)", "destination": "/" }
   ]
 }

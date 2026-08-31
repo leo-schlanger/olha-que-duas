@@ -1,5 +1,5 @@
 export const config = {
-  matcher: ['/viagens', '/servicos', '/loja', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*', '/kids', '/auditoria-gratuita', '/rockinrio'],
+  matcher: ['/viagens', '/servicos', '/loja', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*', '/historias', '/historias/:path*', '/kids', '/auditoria-gratuita', '/rockinrio'],
 };
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || '';
@@ -7,27 +7,68 @@ const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || '';
 
 const CRAWLERS = ['facebookexternalhit', 'Facebot', 'Twitterbot', 'WhatsApp', 'LinkedInBot', 'Slackbot', 'TelegramBot', 'Discordbot'];
 
+// Motores de busca. Só recebem tratamento especial em /historias/*, onde o
+// conteúdo é o produto e a indexação não pode esperar pelo render de JS.
+const SEARCH_CRAWLERS = ['Googlebot', 'Google-InspectionTool', 'Bingbot', 'DuckDuckBot', 'Applebot', 'YandexBot'];
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/** Remove o que nunca deve chegar a um crawler vindo da base de dados. */
+function stripScripts(html: string): string {
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/\son\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '');
+}
+
 const SLUG_REGEX = /^[a-z0-9][a-z0-9-]*[a-z0-9]$/;
 
 const DEFAULT_IMAGE = 'https://www.olhaqueduas.com/og-image.jpg';
 
-function html(meta: { title: string; description: string; image: string; url: string }): Response {
-  return new Response(`<!DOCTYPE html><html><head>
-    <title>${meta.title} | Olha que Duas</title>
-    <meta property="og:title" content="${meta.title}">
-    <meta property="og:description" content="${meta.description}">
-    <meta property="og:image" content="${meta.image}">
+interface Meta {
+  title: string;
+  description: string;
+  image: string;
+  url: string;
+  /** Corpo já em HTML. Só usado nas histórias, para os motores de busca. */
+  body?: string;
+  type?: 'website' | 'article';
+  publishedTime?: string;
+}
+
+function html(meta: Meta): Response {
+  const title = escapeHtml(meta.title);
+  const description = escapeHtml(meta.description);
+  const image = escapeHtml(meta.image);
+  const url = escapeHtml(meta.url);
+  const type = meta.type || 'website';
+
+  return new Response(`<!DOCTYPE html><html lang="pt-PT"><head>
+    <meta charset="utf-8">
+    <title>${title} | Olha que Duas</title>
+    <meta name="description" content="${description}">
+    <link rel="canonical" href="${url}">
+    <meta property="og:title" content="${title}">
+    <meta property="og:description" content="${description}">
+    <meta property="og:image" content="${image}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:url" content="${meta.url}">
-    <meta property="og:type" content="website">
+    <meta property="og:url" content="${url}">
+    <meta property="og:type" content="${type}">
     <meta property="og:site_name" content="Olha que Duas">
     <meta property="og:locale" content="pt_PT">
+    ${meta.publishedTime ? `<meta property="article:published_time" content="${escapeHtml(meta.publishedTime)}">` : ''}
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="${meta.title}">
-    <meta name="twitter:description" content="${meta.description}">
-    <meta name="twitter:image" content="${meta.image}">
-  </head><body></body></html>`, {
+    <meta name="twitter:title" content="${title}">
+    <meta name="twitter:description" content="${description}">
+    <meta name="twitter:image" content="${image}">
+  </head><body>${meta.body || ''}</body></html>`, {
     headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 's-maxage=3600' },
   });
 }
@@ -40,12 +81,24 @@ async function fetchSupabase(table: string, query: string) {
 }
 
 export default async function middleware(request: Request): Promise<Response | undefined> {
-  const ua = request.headers.get('user-agent') || '';
-  const isCrawler = CRAWLERS.some(c => ua.toLowerCase().includes(c.toLowerCase()));
-  if (!isCrawler) return;
+  const ua = (request.headers.get('user-agent') || '').toLowerCase();
+  const isSocialCrawler = CRAWLERS.some(c => ua.includes(c.toLowerCase()));
+  const isSearchCrawler = SEARCH_CRAWLERS.some(c => ua.includes(c.toLowerCase()));
 
   const url = new URL(request.url);
   const path = url.pathname;
+
+  // ========== HISTÓRIAS ==========
+  // Único sítio onde os motores de busca recebem HTML pré-renderizado: o
+  // site é uma SPA e o Googlebot só executa JS dias depois, o que atrasaria
+  // a indexação de conteúdo cujo valor todo está em ser encontrado. O texto
+  // servido é o mesmo que o leitor vê — dynamic rendering, não cloaking.
+  if (path === '/historias' || path.startsWith('/historias/')) {
+    if (!isSocialCrawler && !isSearchCrawler) return;
+    return handleStories(path, isSearchCrawler);
+  }
+
+  if (!isSocialCrawler) return;
 
   // ========== VIAGENS ==========
   if (path === '/viagens') {
@@ -178,4 +231,104 @@ export default async function middleware(request: Request): Promise<Response | u
   }
 
   return;
+}
+
+// ============================================================
+// Histórias em episódios
+// ============================================================
+
+const STORIES_LIST_META = {
+  title: 'Histórias',
+  description: 'Histórias em episódios para ler de uma sentada. Ficção original do Olha que Duas, publicada por capítulos — comece pelo primeiro e siga até ao fim.',
+  image: DEFAULT_IMAGE,
+  url: 'https://www.olhaqueduas.com/historias',
+};
+
+const liveFilter = () => `or=(published_at.is.null,published_at.lte.${new Date().toISOString()})`;
+
+async function handleStories(path: string, withBody: boolean): Promise<Response | undefined> {
+  if (path === '/historias') {
+    if (!withBody) return html(STORIES_LIST_META);
+
+    try {
+      const stories = await fetchSupabase('stories', `is_published=eq.true&${liveFilter()}&order=published_at.desc`);
+      const items = (stories || []).map((s: Record<string, string>) =>
+        `<li><h2><a href="https://www.olhaqueduas.com/historias/${escapeHtml(s.slug)}">${escapeHtml(s.title)}</a></h2><p>${escapeHtml(s.tagline || '')}</p></li>`
+      ).join('');
+      return html({ ...STORIES_LIST_META, body: `<h1>Histórias</h1><ul>${items}</ul>` });
+    } catch {
+      return html(STORIES_LIST_META);
+    }
+  }
+
+  const episodeMatch = path.match(/^\/historias\/([^/]+)\/(\d{1,4})$/);
+  const storyMatch = path.match(/^\/historias\/([^/]+)$/);
+
+  const slug = episodeMatch?.[1] || storyMatch?.[1];
+  if (!slug || !SLUG_REGEX.test(slug) || slug.length > 100) return;
+
+  try {
+    const [story] = await fetchSupabase(
+      'stories',
+      `slug=eq.${encodeURIComponent(slug)}&is_published=eq.true&${liveFilter()}`
+    );
+    if (!story) return;
+
+    const storyUrl = `https://www.olhaqueduas.com/historias/${slug}`;
+
+    // ----- Página da história -----
+    if (storyMatch) {
+      const meta = {
+        title: story.title,
+        description: story.tagline || (story.synopsis || '').slice(0, 200) || `${story.title} — uma história em episódios.`,
+        image: story.cover_url || DEFAULT_IMAGE,
+        url: storyUrl,
+      };
+      if (!withBody) return html(meta);
+
+      const episodes = await fetchSupabase(
+        'story_episodes',
+        `story_id=eq.${story.id}&is_published=eq.true&${liveFilter()}&order=number.asc&select=number,title,excerpt`
+      );
+      const items = (episodes || []).map((e: Record<string, string>) =>
+        `<li><a href="${storyUrl}/${e.number}">Episódio ${e.number}: ${escapeHtml(e.title)}</a> — ${escapeHtml(e.excerpt || '')}</li>`
+      ).join('');
+
+      return html({
+        ...meta,
+        body: `<article><h1>${escapeHtml(story.title)}</h1><p>${escapeHtml(story.tagline || '')}</p><div>${escapeHtml(story.synopsis || '')}</div><h2>Episódios</h2><ol>${items}</ol></article>`,
+      });
+    }
+
+    // ----- Página do episódio -----
+    const number = Number(episodeMatch![2]);
+    const [episode] = await fetchSupabase(
+      'story_episodes',
+      `story_id=eq.${story.id}&number=eq.${number}&is_published=eq.true&${liveFilter()}`
+    );
+    if (!episode) return;
+
+    const meta = {
+      title: `${story.title} — Episódio ${episode.number}`,
+      description: episode.excerpt || episode.cliffhanger || `Episódio ${number} de ${story.title}.`,
+      image: episode.cover_url || story.cover_url || DEFAULT_IMAGE,
+      url: `${storyUrl}/${number}`,
+      type: 'article' as const,
+      publishedTime: episode.published_at || undefined,
+    };
+    if (!withBody) return html(meta);
+
+    return html({
+      ...meta,
+      body: `<article>
+        <h1>${escapeHtml(episode.title)}</h1>
+        <p>${escapeHtml(story.title)} — Episódio ${episode.number}</p>
+        ${stripScripts(episode.content || '')}
+        ${episode.cliffhanger ? `<p>${escapeHtml(episode.cliffhanger)}</p>` : ''}
+        <p><a href="${storyUrl}">Todos os episódios de ${escapeHtml(story.title)}</a></p>
+      </article>`,
+    });
+  } catch {
+    return;
+  }
 }
