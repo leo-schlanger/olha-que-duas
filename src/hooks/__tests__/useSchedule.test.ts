@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { groupScheduleRows } from "@/hooks/useSchedule";
+import { groupScheduleRows, datedRowsToWeekly, lisbonToday } from "@/hooks/useSchedule";
 
 describe("groupScheduleRows", () => {
   it("agrupa exibições do mesmo programa no mesmo dia", () => {
@@ -126,5 +126,31 @@ describe("groupScheduleRows", () => {
     expect(result).toHaveLength(1);
     expect(result[0].times).toEqual(["10:00", "19:00"]);
     expect(result[0].endTimes).toEqual(["11:30", null]);
+  });
+});
+
+describe("eventos com data", () => {
+  const event = { id: "e9", name: "Entrevista a Carlos Cruz", description: null, icon_url: "" };
+
+  it("lisbonToday usa a data de Lisboa", () => {
+    expect(lisbonToday(new Date("2026-09-15T23:30:00Z"))).toBe("2026-09-16");
+    expect(lisbonToday(new Date("2026-01-15T23:30:00Z"))).toBe("2026-01-15");
+  });
+
+  it("só entram as emissões dos próximos 7 dias, no dia da semana certo", () => {
+    const rows = [
+      { id: "a", event_id: "e9", event_date: "2026-09-15", time: "21:00:00", end_time: "21:15:00", is_all_day: false, event },
+      { id: "b", event_id: "e9", event_date: "2026-09-20", time: "19:00:00", end_time: null, is_all_day: false, event },
+      { id: "c", event_id: "e9", event_date: "2026-09-22", time: "19:00:00", end_time: null, is_all_day: false, event },
+      { id: "d", event_id: "e9", event_date: "2026-09-14", time: "19:00:00", end_time: null, is_all_day: false, event },
+    ];
+    const weekly = datedRowsToWeekly(rows, "2026-09-15");
+    expect(weekly.map((r) => [r.id, r.day_of_week])).toEqual([["a", 2], ["b", 0]]);
+
+    const grouped = groupScheduleRows(weekly);
+    expect(grouped.map((g) => [g.day, g.show, g.times])).toEqual([
+      ["Domingo", "Entrevista a Carlos Cruz", ["19:00"]],
+      ["Terça", "Entrevista a Carlos Cruz", ["21:00"]],
+    ]);
   });
 });

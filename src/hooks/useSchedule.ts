@@ -8,7 +8,7 @@ interface ScheduleEvent {
   icon_url: string;
 }
 
-interface ScheduleItemRaw {
+export interface ScheduleItemRaw {
   id: string;
   event_id: string;
   day_of_week: number;
@@ -38,6 +38,54 @@ const DAYS_MAP: Record<number, string> = {
   6: 'Sábado',
 };
 
+interface ScheduleDateRaw {
+  id: string;
+  event_id: string;
+  event_date: string; // YYYY-MM-DD (Lisboa)
+  time: string;
+  end_time: string | null;
+  is_all_day: boolean;
+  event: ScheduleEvent | ScheduleEvent[] | null;
+}
+
+/** Data de hoje em Lisboa, "YYYY-MM-DD". */
+export function lisbonToday(now: Date = new Date()): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Lisbon",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(now);
+}
+
+export function addDays(date: string, days: number): string {
+  const [y, m, d] = date.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d + days)).toISOString().slice(0, 10);
+}
+
+/**
+ * Eventos com data (emissões únicas) dos próximos 7 dias passam a linhas da
+ * grelha semanal, no dia da semana em que calham. Função pura — exposta para
+ * testes.
+ */
+export function datedRowsToWeekly(rows: ScheduleDateRaw[], today: string): ScheduleItemRaw[] {
+  const end = addDays(today, 6);
+  return rows
+    .filter((r) => r.event_date >= today && r.event_date <= end)
+    .map((r) => {
+      const [y, m, d] = r.event_date.split("-").map(Number);
+      return {
+        id: r.id,
+        event_id: r.event_id,
+        day_of_week: new Date(Date.UTC(y, m - 1, d)).getUTCDay(),
+        time: r.time,
+        end_time: r.end_time,
+        is_all_day: r.is_all_day,
+        event: r.event,
+      };
+    });
+}
+
 // Fallback schedule for when Supabase is not configured
 const fallbackSchedule: GroupedSchedule[] = [
   { day: 'Segunda', dayNumber: 1, show: 'Nutrição', times: ['12:00', '19:00'], endTimes: [null, null], isAllDay: false, iconUrl: '' },
@@ -66,7 +114,8 @@ export function groupScheduleRows(rows: ScheduleItemRaw[]): GroupedSchedule[] {
     const endTime = item.end_time ? item.end_time.slice(0, 5) : null;
 
     if (grouped.has(key)) {
-      if (!isAllDay) {
+      // Evento semanal e evento com data à mesma hora: mostrar uma só vez
+      if (!isAllDay && !grouped.get(key)!.times.includes(time)) {
         grouped.get(key)!.times.push(time);
         grouped.get(key)!.endTimes.push(endTime);
       }
@@ -94,6 +143,23 @@ export function useSchedule() {
       const supabase = getSupabase();
       if (!supabase) return fallbackSchedule;
 
+      const today = lisbonToday();
+      const datedQuery = supabase
+        .from('schedule_dates')
+        .select(`
+          id,
+          event_id,
+          event_date,
+          time,
+          end_time,
+          is_all_day,
+          event:events!inner(id, name, description, icon_url, is_active)
+        `)
+        .eq('is_active', true)
+        .eq('events.is_active', true)
+        .gte('event_date', today)
+        .lte('event_date', addDays(today, 6));
+
       const { data, error: fetchError } = await supabase
         .from('schedule')
         .select(`
@@ -111,9 +177,16 @@ export function useSchedule() {
         .order('time', { ascending: true });
 
       if (fetchError) throw fetchError;
-      if (!data || data.length === 0) return fallbackSchedule;
 
-      return groupScheduleRows(data as ScheduleItemRaw[]);
+      // Os eventos com data são um extra: se falharem, a grelha semanal aparece na mesma
+      const { data: datedData, error: datedError } = await datedQuery;
+      if (datedError) console.warn('schedule_dates:', datedError.message);
+      const dated = datedRowsToWeekly((datedData ?? []) as ScheduleDateRaw[], today);
+
+      const rows = [...((data ?? []) as ScheduleItemRaw[]), ...dated];
+      if (rows.length === 0) return fallbackSchedule;
+
+      return groupScheduleRows(rows);
     },
     staleTime: 1000 * 60 * 30, // 30 minutos — programação raramente muda
     placeholderData: fallbackSchedule,
