@@ -21,9 +21,10 @@ const BlogPost = lazy(() => import("./pages/BlogPost"));
 const Gallery = lazy(() => import("./pages/Gallery"));
 const GalleryAlbum = lazy(() => import("./pages/GalleryAlbum"));
 const Vendas = lazy(() => import("./pages/Vendas"));
-const Stories = lazy(() => import("./pages/Stories"));
-const StoryDetail = lazy(() => import("./pages/StoryDetail"));
-const StoryEpisode = lazy(() => import("./pages/StoryEpisode"));
+// Histórias em episódios — em standby temporário (páginas mantidas no repo)
+// const Stories = lazy(() => import("./pages/Stories"));
+// const StoryDetail = lazy(() => import("./pages/StoryDetail"));
+// const StoryEpisode = lazy(() => import("./pages/StoryEpisode"));
 const Kids = lazy(() => import("./pages/Kids"));
 const KidsStories = lazy(() => import("./pages/KidsStories"));
 const KidsGames = lazy(() => import("./pages/KidsGames"));
@@ -87,9 +88,11 @@ const App = () => (
               <Route path="/galeria" element={<Gallery />} />
               <Route path="/galeria/:slug" element={<GalleryAlbum />} />
               <Route path="/loja" element={<Vendas />} />
+              {/* Histórias em episódios — em standby temporário
               <Route path="/historias" element={<Stories />} />
               <Route path="/historias/:storySlug" element={<StoryDetail />} />
               <Route path="/historias/:storySlug/:episodeNumber" element={<StoryEpisode />} />
+              */}
               <Route path="/kids" element={<Kids />} />
               <Route path="/kids/historias" element={<KidsStories />} />
               {/* <Route path="/kids/karaoke" element={<KidsKaraoke />} /> — standby until embed works */}

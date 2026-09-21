@@ -3,7 +3,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import alexandraImg from "@/assets/alexandra.jpg";
 import marluceImg from "@/assets/marluce.jpg";
 import leoImg from "@/assets/leo.png";
-import leonorImg from "@/assets/leonor.jpg";
 
 const founders = [
   {
@@ -35,15 +34,6 @@ const team = [
       "Desenvolvedor de software sénior com expertise em cibersegurança e infraestrutura. Apaixonado por automações e tecnologias Web3, é o responsável por toda a vertente tecnológica do projeto, garantindo soluções robustas, seguras e inovadoras que sustentam a presença digital do Olha que Duas.",
     initials: "LS",
     imagePosition: "object-cover",
-  },
-  {
-    name: "Leonor Martins Seixas",
-    image: leonorImg,
-    role: "Comercial | Relações & Vendas",
-    description:
-      "Formada em Organização de Eventos, traz para a área comercial uma combinação de comunicação fluida, conhecimento prático de redes sociais e à-vontade com as ferramentas digitais. Constrói relações genuínas com clientes e parceiros, transformando cada contacto numa oportunidade de venda. Dinâmica, persuasiva e orientada a resultados, é o motor comercial do Olha que Duas.",
-    initials: "LMS",
-    imagePosition: "object-cover object-top",
   },
 ];
 
@@ -125,7 +115,11 @@ const SobreNos = () => {
           </h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto mb-16 md:mb-20">
+        <div
+          className={`grid grid-cols-1 gap-6 md:gap-8 mx-auto mb-16 md:mb-20 ${
+            team.length > 1 ? "md:grid-cols-2 max-w-5xl" : "max-w-xl"
+          }`}
+        >
           {team.map((member) => (
             <Card
               key={member.name}
