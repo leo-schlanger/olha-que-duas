@@ -31,6 +31,22 @@ const SLUG_REGEX = /^[a-z0-9][a-z0-9-]*[a-z0-9]$/;
 
 const DEFAULT_IMAGE = 'https://www.olhaqueduas.com/og-image.jpg';
 
+/**
+ * Capa de um álbum em 1200x630 para os crawlers sociais. Espelha o que o
+ * `og` do src/lib/cloudinary.ts faz: capas em 9:16 (os cartazes feitos para
+ * stories) são encaixadas inteiras em vez de recortadas, senão o Facebook e
+ * o WhatsApp mostram uma faixa do meio do cartaz. Se um lado mudar, o outro
+ * tem de acompanhar.
+ */
+function albumCoverUrl(slug: string): string {
+  const dims = 'w_1200,h_630,q_auto,f_auto';
+  return (
+    'https://res.cloudinary.com/dfljesvj7/image/upload/' +
+    `if_ar_lt_0.7,c_pad,b_auto,${dims}/if_else/c_fill,g_auto,${dims}/if_end` +
+    `/olhaqueduas/galeria/${slug}/01`
+  );
+}
+
 interface Meta {
   title: string;
   description: string;
@@ -166,7 +182,7 @@ export default async function middleware(request: Request): Promise<Response | u
     try {
       const albums = await fetchSupabase('gallery_albums', 'is_published=eq.true&order=event_date.desc&limit=1');
       if (albums?.[0]) {
-        galleryImage = `https://res.cloudinary.com/dfljesvj7/image/upload/w_1200,h_630,c_fill,g_auto,q_auto,f_auto/olhaqueduas/galeria/${albums[0].slug}/01`;
+        galleryImage = albumCoverUrl(albums[0].slug);
       }
     } catch { /* fallback to default */ }
     return html({
@@ -185,7 +201,7 @@ export default async function middleware(request: Request): Promise<Response | u
       const [album] = await fetchSupabase('gallery_albums', `slug=eq.${encodeURIComponent(slug)}&is_published=eq.true`);
       if (!album) return;
 
-      const image = `https://res.cloudinary.com/dfljesvj7/image/upload/w_1200,h_630,c_fill,g_auto,q_auto,f_auto/olhaqueduas/galeria/${slug}/01`;
+      const image = albumCoverUrl(slug);
 
       const date = new Date(album.event_date).toLocaleDateString('pt-PT', {
         day: 'numeric', month: 'long', year: 'numeric',

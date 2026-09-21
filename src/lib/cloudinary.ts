@@ -59,26 +59,46 @@ const TRANSFORMS: Record<CloudinaryTransform, TransformConfig> = {
   },
 };
 
-function buildTransformString(config: TransformConfig): string {
-  const parts: string[] = [];
+/**
+ * Acima deste rácio (largura/altura) a imagem é recortada; abaixo, é encaixada
+ * inteira com fundo. 0.7 separa as duas coisas que aparecem como capa:
+ *
+ *  - Fotos de evento, mesmo verticais (0.75 a 0.90) — o `g_auto` encontra as
+ *    caras e o recorte fica melhor do que encaixar a imagem pequena ao centro.
+ *  - Cartazes em 9:16 (0.5625), feitos para stories. Aqui o recorte é fatal:
+ *    a composição ocupa a altura toda e um corte para 1200x630 devolve uma
+ *    faixa do meio — sem título, sem logo. Foi o que aconteceu ao cartaz do
+ *    "Senhor Televisão", que saía como um par de olhos.
+ */
+const RACIO_MINIMO_PARA_RECORTAR = 0.7;
 
-  parts.push(`w_${config.width}`);
-  parts.push(`h_${config.height}`);
-  parts.push(`q_${config.quality}`);
-
-  if (config.crop) {
-    parts.push(`c_${config.crop}`);
-  }
-
-  if (config.gravity) {
-    parts.push(`g_${config.gravity}`);
-  }
-
-  if (config.format) {
-    parts.push(`f_${config.format}`);
-  }
-
+function buildDimensions(config: TransformConfig): string {
+  const parts = [`w_${config.width}`, `h_${config.height}`, `q_${config.quality}`];
+  if (config.format) parts.push(`f_${config.format}`);
   return parts.join(',');
+}
+
+function buildTransformString(config: TransformConfig): string {
+  const dims = buildDimensions(config);
+
+  // `fit` já encaixa a imagem toda — não há nada a decidir.
+  if (config.crop !== 'fill') {
+    const parts = [dims];
+    if (config.crop) parts.push(`c_${config.crop}`);
+    if (config.gravity) parts.push(`g_${config.gravity}`);
+    return parts.join(',');
+  }
+
+  const gravity = config.gravity ? `,g_${config.gravity}` : '';
+
+  // Transformação condicional do Cloudinary: o `if_else` tem de ser um
+  // componente próprio do caminho, separado por barras.
+  return [
+    `if_ar_lt_${RACIO_MINIMO_PARA_RECORTAR},c_pad,b_auto,${dims}`,
+    'if_else',
+    `c_fill${gravity},${dims}`,
+    'if_end',
+  ].join('/');
 }
 
 /**
