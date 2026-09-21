@@ -32,17 +32,15 @@ const SLUG_REGEX = /^[a-z0-9][a-z0-9-]*[a-z0-9]$/;
 const DEFAULT_IMAGE = 'https://www.olhaqueduas.com/og-image.jpg';
 
 /**
- * Capa de um álbum em 1200x630 para os crawlers sociais. Espelha o que o
- * `og` do src/lib/cloudinary.ts faz: capas em 9:16 (os cartazes feitos para
- * stories) são encaixadas inteiras em vez de recortadas, senão o Facebook e
- * o WhatsApp mostram uma faixa do meio do cartaz. Se um lado mudar, o outro
- * tem de acompanhar.
+ * Capa de um álbum em 1200x630 para os crawlers sociais. Espelha o preset
+ * `og` do src/lib/cloudinary.ts — se um lado mudar, o outro tem de
+ * acompanhar. Conta com a foto `01` estar em formato horizontal: é aí que a
+ * regra vive, no ficheiro, não na transformação (ver CLAUDE.md).
  */
 function albumCoverUrl(slug: string): string {
-  const dims = 'w_1200,h_630,q_auto,f_auto';
   return (
     'https://res.cloudinary.com/dfljesvj7/image/upload/' +
-    `if_ar_lt_0.7,c_pad,b_auto,${dims}/if_else/c_fill,g_auto,${dims}/if_end` +
+    'w_1200,h_630,c_fill,g_auto,q_auto,f_auto' +
     `/olhaqueduas/galeria/${slug}/01`
   );
 }
