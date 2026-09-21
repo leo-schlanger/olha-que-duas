@@ -191,9 +191,15 @@ export default async function middleware(request: Request): Promise<Response | u
         day: 'numeric', month: 'long', year: 'numeric',
       });
 
+      // A descrição do álbum, quando existe, ganha sempre: é escrita para ser
+      // lida. Sem ela, montamos uma a partir dos campos que há — e `location`
+      // é opcional, por isso não pode entrar às cegas ou o crawler recebe a
+      // palavra "null" no meio da frase.
+      const parts = [album.title, album.location, date].filter(Boolean);
+
       return html({
         title: album.title,
-        description: `${album.title} - ${album.location} - ${date}`,
+        description: album.description || parts.join(' - '),
         image,
         url: `https://www.olhaqueduas.com/galeria/${slug}`,
       });

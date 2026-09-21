@@ -22,6 +22,7 @@ import { PhotoGrid, VideoSection } from '@/components/gallery';
 import { useGalleryAlbum } from '@/hooks/useGallery';
 import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
 import { getCloudinaryUrl } from '@/lib/cloudinary';
+import { getYouTubeId, getYouTubeThumbnail, getYouTubeEmbedUrl, getYouTubeWatchUrl } from '@/lib/youtube';
 import { isSupabaseConfigured } from '@/lib/supabase';
 
 export default function GalleryAlbum() {
@@ -38,7 +39,11 @@ export default function GalleryAlbum() {
   // SEO Meta Tags
   useMetaTags({
     title: album?.title || 'Álbum',
-    description: album?.description || `Galeria de fotos: ${album?.title}. Veja ${album?.photo_count || 0} fotos deste momento especial.`,
+    description:
+      album?.description ||
+      (album?.videos.length
+        ? `${album.title} — vídeo e ${album.photo_count || 0} fotos, pelo Olha que Duas.`
+        : `Galeria de fotos: ${album?.title}. Veja ${album?.photo_count || 0} fotos deste momento especial.`),
     image: coverImageUrl,
     url: `https://www.olhaqueduas.com/galeria/${slug}`,
     jsonLd: album ? [
@@ -57,6 +62,31 @@ export default function GalleryAlbum() {
         numberOfItems: album.photo_count,
         ...(album.location && { contentLocation: { '@type': 'Place', name: album.location } }),
       },
+      // Um VideoObject por vídeo do álbum. Sem isto o Google vê o iframe mas
+      // não sabe que a página *é* sobre um vídeo, e o álbum não entra nos
+      // resultados de vídeo nem ganha a miniatura na pesquisa.
+      ...album.videos.flatMap((video) => {
+        const videoId = getYouTubeId(video.youtube_url);
+        if (!videoId) return [];
+        return [{
+          '@context': 'https://schema.org',
+          '@type': 'VideoObject',
+          name: video.title || album.title,
+          description: album.description || `${video.title || album.title} — Olha que Duas.`,
+          thumbnailUrl: getYouTubeThumbnail(videoId),
+          uploadDate: album.published_at || album.event_date,
+          embedUrl: getYouTubeEmbedUrl(videoId),
+          url: getYouTubeWatchUrl(videoId),
+          publisher: {
+            '@type': 'Organization',
+            name: 'Olha que Duas',
+            url: 'https://www.olhaqueduas.com',
+          },
+          ...(album.location && {
+            contentLocation: { '@type': 'Place', name: album.location },
+          }),
+        }];
+      }),
     ] : undefined,
   });
 

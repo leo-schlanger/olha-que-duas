@@ -1,28 +1,11 @@
 import { Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getYouTubeId, getYouTubeEmbedUrl } from '@/lib/youtube';
 import type { GalleryVideo } from '@/types/gallery';
 
 interface VideoSectionProps {
   videos: GalleryVideo[];
   className?: string;
-}
-
-/**
- * Extracts YouTube video ID from various URL formats.
- * Supports: youtu.be/ID, youtube.com/watch?v=ID, youtube.com/embed/ID
- */
-function getYouTubeId(url: string): string | null {
-  const patterns = [
-    /youtu\.be\/([a-zA-Z0-9_-]{11})/,
-    /[?&]v=([a-zA-Z0-9_-]{11})/,
-    /\/embed\/([a-zA-Z0-9_-]{11})/,
-    /\/shorts\/([a-zA-Z0-9_-]{11})/,
-  ];
-  for (const pattern of patterns) {
-    const match = url.match(pattern);
-    if (match) return match[1];
-  }
-  return null;
 }
 
 export function VideoSection({ videos, className }: VideoSectionProps) {
@@ -53,7 +36,7 @@ export function VideoSection({ videos, className }: VideoSectionProps) {
             <div key={video.id} className="space-y-2">
               <div className="relative aspect-video rounded-xl overflow-hidden bg-black/5 border border-border/50">
                 <iframe
-                  src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+                  src={getYouTubeEmbedUrl(videoId)}
                   title={video.title || 'Vídeo do evento'}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
