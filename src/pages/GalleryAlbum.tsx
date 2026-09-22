@@ -30,6 +30,13 @@ export default function GalleryAlbum() {
   const navigate = useNavigate();
   const { data: album, isLoading, error } = useGalleryAlbum(slug || '');
 
+  const albumUrl = `https://www.olhaqueduas.com/galeria/${slug}`;
+
+  // Primeiro vídeo com id legível. É ele que representa a página no JSON-LD
+  // quando o álbum tem vídeo — nos álbuns de entrevista a peça é a conversa,
+  // não a reportagem fotográfica.
+  const mainVideoId = album?.videos.map((v) => getYouTubeId(v.youtube_url)).find(Boolean) ?? null;
+
   // Cover photo is the first photo in the album
   const coverPhoto = album?.photos[0];
   const coverImageUrl = coverPhoto
@@ -45,26 +52,21 @@ export default function GalleryAlbum() {
         ? `${album.title} — vídeo e ${album.photo_count || 0} fotos, pelo Olha que Duas.`
         : `Galeria de fotos: ${album?.title}. Veja ${album?.photo_count || 0} fotos deste momento especial.`),
     image: coverImageUrl,
-    url: `https://www.olhaqueduas.com/galeria/${slug}`,
+    url: albumUrl,
     jsonLd: album ? [
       getPageBreadcrumbJsonLd(
         album.title,
-        `https://www.olhaqueduas.com/galeria/${slug}`,
+        albumUrl,
         [{ name: 'Galeria', url: 'https://www.olhaqueduas.com/galeria' }]
       ),
-      {
-        '@context': 'https://schema.org',
-        '@type': 'ImageGallery',
-        name: album.title,
-        description: album.description,
-        datePublished: album.published_at,
-        dateCreated: album.event_date,
-        numberOfItems: album.photo_count,
-        ...(album.location && { contentLocation: { '@type': 'Place', name: album.location } }),
-      },
       // Um VideoObject por vídeo do álbum. Sem isto o Google vê o iframe mas
       // não sabe que a página *é* sobre um vídeo, e o álbum não entra nos
       // resultados de vídeo nem ganha a miniatura na pesquisa.
+      //
+      // Nos álbuns cuja peça é a entrevista, o vídeo *é* o assunto da página,
+      // não uma ilustração. Por isso o primeiro vídeo leva o
+      // `mainEntityOfPage` — sem ele o Google lê a página como uma galeria de
+      // fotos que por acaso tem um vídeo, e indexa-a assim.
       ...album.videos.flatMap((video) => {
         const videoId = getYouTubeId(video.youtube_url);
         if (!videoId) return [];
@@ -77,6 +79,8 @@ export default function GalleryAlbum() {
           uploadDate: album.published_at || album.event_date,
           embedUrl: getYouTubeEmbedUrl(videoId),
           url: getYouTubeWatchUrl(videoId),
+          inLanguage: 'pt-PT',
+          ...(videoId === mainVideoId && { mainEntityOfPage: albumUrl }),
           publisher: {
             '@type': 'Organization',
             name: 'Olha que Duas',
@@ -87,6 +91,18 @@ export default function GalleryAlbum() {
           }),
         }];
       }),
+      {
+        '@context': 'https://schema.org',
+        '@type': 'ImageGallery',
+        name: album.title,
+        description: album.description,
+        datePublished: album.published_at,
+        dateCreated: album.event_date,
+        numberOfItems: album.photo_count,
+        // Só reclama a página para si quando não há vídeo a fazê-lo.
+        ...(!mainVideoId && { mainEntityOfPage: albumUrl }),
+        ...(album.location && { contentLocation: { '@type': 'Place', name: album.location } }),
+      },
     ] : undefined,
   });
 
