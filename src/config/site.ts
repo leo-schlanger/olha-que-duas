@@ -124,6 +124,11 @@ export const siteConfig = {
       logo: "/partners/motivar.jpg",
       url: "https://motivar.pt",
     },
+    {
+      name: "Sóller Collection",
+      logo: "/partners/soller.jpg",
+      url: "https://www.instagram.com/soller_collection/",
+    },
   ],
   // Rock in Rio Lisboa — Festival Mode
   // enabled: true → decorações festivas em todo o site (durante o festival)
