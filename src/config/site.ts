@@ -6,7 +6,7 @@
 export const siteConfig = {
   // Informações de contato
   contact: {
-    email: "olhaqueduas.assessoria@gmail.com",
+    email: "geral@olhaqueduas.com",
   },
 
   // Links de redes sociais
@@ -95,6 +95,11 @@ export const siteConfig = {
   // Parceiros gerais
   partners: [
     {
+      name: "Sóller Collection",
+      logo: "/partners/soller.jpg",
+      url: "https://www.instagram.com/soller_collection/",
+    },
+    {
       name: "Oriflame",
       logo: "/partners/oriflame.jpg",
       url: "https://shop.oriflame.com/PT-alexandraserra/bGOLVwKh5",
@@ -123,11 +128,6 @@ export const siteConfig = {
       name: "Motivar",
       logo: "/partners/motivar.jpg",
       url: "https://motivar.pt",
-    },
-    {
-      name: "Sóller Collection",
-      logo: "/partners/soller.jpg",
-      url: "https://www.instagram.com/soller_collection/",
     },
   ],
   // Rock in Rio Lisboa — Festival Mode

@@ -22,7 +22,7 @@ const TermsOfService = () => {
             Termos de Utilização
           </h1>
           <p className="text-gray-400">
-            Última atualização: {new Date().toLocaleDateString('pt-PT')}
+            Última atualização: 2 de outubro de 2026
           </p>
         </div>
 
@@ -214,7 +214,7 @@ const TermsOfService = () => {
               Para questões sobre estes Termos, contacte-nos:
             </p>
             <div className="bg-[#2a2a2a] p-4 rounded-lg mt-4">
-              <p className="text-white"><strong>Email:</strong> olhaqueduas.assessoria@gmail.com</p>
+              <p className="text-white"><strong>Email:</strong> geral@olhaqueduas.com</p>
             </div>
           </section>
         </div>

@@ -25,7 +25,7 @@ for (const a of artists) {
   try {
     await sleep(1500);
     console.log(`  ${a.slug}...`);
-    const res = await fetch(a.url, { headers: { 'User-Agent': 'OlhaQueDuasBot/1.0 (https://olhaqueduas.com; contact: olhaqueduas.assessoria@gmail.com)' } });
+    const res = await fetch(a.url, { headers: { 'User-Agent': 'OlhaQueDuasBot/1.0 (https://olhaqueduas.com; contact: geral@olhaqueduas.com)' } });
     if (!res.ok) { console.log(`  ✗ ${a.slug}: HTTP ${res.status}`); continue; }
     const buf = Buffer.from(await res.arrayBuffer());
     await sharp(buf).resize(300, 300, { fit: 'cover', position: 'top' }).jpeg({ quality: 80 }).toFile(dest);

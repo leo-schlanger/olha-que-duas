@@ -22,7 +22,7 @@ const PrivacyPolicy = () => {
             Política de Privacidade
           </h1>
           <p className="text-gray-400">
-            Última atualização: {new Date().toLocaleDateString('pt-PT')}
+            Última atualização: 2 de outubro de 2026
           </p>
         </div>
 
@@ -46,7 +46,14 @@ const PrivacyPolicy = () => {
             <h2 className="text-2xl font-semibold text-white mb-4">2. Dados que Recolhemos</h2>
 
             <h3 className="text-xl font-medium text-[#FFD700] mb-2">2.1 Dados Fornecidos por Si</h3>
-            <ul className="list-disc list-inside text-gray-300 space-y-2">
+            <p className="text-gray-300 leading-relaxed">No website:</p>
+            <ul className="list-disc list-inside text-gray-300 space-y-2 mt-2">
+              <li><strong>Formulário de contacto:</strong> nome, email e a mensagem que nos envia</li>
+              <li><strong>Pedido de auditoria:</strong> nome, empresa, email, telefone, redes sociais e mensagem</li>
+              <li><strong>Newsletter:</strong> email e, opcionalmente, nome</li>
+            </ul>
+            <p className="text-gray-300 leading-relaxed mt-4">Na aplicação móvel:</p>
+            <ul className="list-disc list-inside text-gray-300 space-y-2 mt-2">
               <li>Informações de compra (quando adquire a versão premium)</li>
               <li>Preferências de utilização da aplicação</li>
               <li>Preferências de notificações e lembretes de programas</li>
@@ -81,12 +88,13 @@ const PrivacyPolicy = () => {
             <ul className="list-disc list-inside text-gray-300 space-y-2 mt-2">
               <li><strong>Google AdMob:</strong> Para exibição de anúncios na app móvel (pode ser desativado na versão premium)</li>
               <li><strong>Google Play / Apple App Store:</strong> Para processamento de compras</li>
-              <li><strong>Serviço de Meteorologia:</strong> Recebe coordenadas de localização para fornecer previsões meteorológicas</li>
-              <li><strong>Supabase:</strong> Para sincronização de dados de programação da rádio e armazenamento de metadados (alojamento na UE)</li>
+              <li><strong>Open-Meteo:</strong> Recebe coordenadas de localização para fornecer previsões meteorológicas</li>
+              <li><strong>Supabase:</strong> Para sincronização de dados de programação da rádio, armazenamento de metadados e encaminhamento das inscrições na newsletter</li>
               <li><strong>Cloudinary:</strong> Para alojamento e entrega otimizada de imagens da galeria de fotos</li>
               <li><strong>Vercel:</strong> Para alojamento do website e execução de funções serverless</li>
               <li><strong>Brevo (Sendinblue):</strong> Para gestão e envio da newsletter</li>
-              <li><strong>FormSubmit.co:</strong> Para processamento do formulário de contacto</li>
+              <li><strong>FormSubmit.co:</strong> Para entregar no nosso email as mensagens do formulário de contacto e os pedidos de auditoria</li>
+              <li><strong>YouTube:</strong> Para os vídeos incorporados no website, carregados em modo de privacidade reforçada (youtube-nocookie.com). O YouTube só guarda dados no seu navegador quando inicia a reprodução de um vídeo</li>
               <li><strong>Umami Analytics:</strong> Para estatísticas de utilização anónimas e sem cookies (conforme RGPD)</li>
               <li><strong>Google Fonts:</strong> Para carregamento de tipos de letra no website</li>
             </ul>
@@ -97,10 +105,14 @@ const PrivacyPolicy = () => {
             </p>
             <ul className="list-disc list-inside text-gray-300 space-y-2 mt-2">
               <li><strong>Preferência de consentimento:</strong> Armazena a sua escolha sobre cookies (estritamente necessário)</li>
-              <li><strong>Estado da interface:</strong> Guarda preferências de navegação como o estado do menu lateral (funcional, requer consentimento)</li>
+              <li><strong>Leitor da rádio:</strong> Guarda o volume, o estado de som desligado e o modo de reprodução compatível com o seu navegador (necessário para o funcionamento que pediu)</li>
+              <li><strong>Jogos da área Kids:</strong> Guarda a pontuação máxima e a preferência de som, apenas no seu dispositivo (necessário para o funcionamento que pediu)</li>
+              <li><strong>Avisos do site:</strong> Regista, só durante a sessão, se fechou um aviso para que não volte a aparecer (necessário)</li>
               <li><strong>Instalação da app:</strong> Regista se dispensou o convite de instalação da app (funcional, requer consentimento)</li>
             </ul>
             <p className="text-gray-300 leading-relaxed mt-2">
+              Estes dados ficam no armazenamento local do seu navegador, não são enviados para os nossos
+              servidores e pode apagá-los a qualquer momento nas definições do navegador.
               Não utilizamos cookies de rastreamento, publicidade ou de terceiros para fins de marketing.
               O Umami Analytics que utilizamos não requer cookies e está em conformidade com o RGPD.
             </p>
@@ -132,6 +144,26 @@ const PrivacyPolicy = () => {
               <li>Consentimento de anúncios (RGPD)</li>
               <li>Preferência de tema (claro/escuro)</li>
             </ul>
+
+            <h3 className="text-xl font-medium text-[#FFD700] mb-2 mt-4">3.2 Fundamento Legal</h3>
+            <p className="text-gray-300 leading-relaxed">
+              Tratamos os seus dados com base nos seguintes fundamentos do artigo 6.º do RGPD:
+            </p>
+            <ul className="list-disc list-inside text-gray-300 space-y-2 mt-2">
+              <li><strong>Consentimento:</strong> newsletter, anúncios personalizados, localização e armazenamento funcional no navegador</li>
+              <li><strong>Diligências pré-contratuais a seu pedido:</strong> resposta a mensagens de contacto e a pedidos de auditoria ou orçamento</li>
+              <li><strong>Execução de contrato:</strong> compras na aplicação</li>
+              <li><strong>Interesse legítimo:</strong> estatísticas anónimas de utilização e segurança do website</li>
+              <li><strong>Obrigação legal:</strong> conservação de registos de compras exigida pela legislação fiscal</li>
+            </ul>
+
+            <h3 className="text-xl font-medium text-[#FFD700] mb-2 mt-4">3.3 Transferências Internacionais</h3>
+            <p className="text-gray-300 leading-relaxed">
+              Alguns dos prestadores indicados acima (por exemplo, Google, Vercel, Cloudinary e FormSubmit)
+              podem tratar dados fora do Espaço Económico Europeu. Nesses casos, as transferências são
+              feitas ao abrigo de mecanismos previstos no RGPD, como o Quadro de Privacidade de Dados
+              UE-EUA ou as Cláusulas Contratuais-Tipo aprovadas pela Comissão Europeia.
+            </p>
           </section>
 
           <section>
@@ -165,6 +197,8 @@ const PrivacyPolicy = () => {
             </ul>
             <p className="text-gray-300 leading-relaxed mt-4">
               Para exercer qualquer destes direitos, contacte-nos através do email indicado abaixo.
+              Para deixar de receber a newsletter, basta usar a ligação de cancelamento incluída em
+              cada envio.
             </p>
           </section>
 
@@ -172,8 +206,14 @@ const PrivacyPolicy = () => {
             <h2 className="text-2xl font-semibold text-white mb-4">6. Retenção de Dados</h2>
             <p className="text-gray-300 leading-relaxed">
               Mantemos os seus dados apenas pelo tempo necessário para os fins descritos nesta política,
-              ou conforme exigido por lei. Dados de compra são mantidos conforme requisitos fiscais aplicáveis.
+              ou conforme exigido por lei. Em concreto:
             </p>
+            <ul className="list-disc list-inside text-gray-300 space-y-2 mt-2">
+              <li><strong>Newsletter:</strong> até cancelar a inscrição</li>
+              <li><strong>Mensagens de contacto e pedidos de auditoria:</strong> enquanto durar o assunto ou a relação comercial a que dizem respeito, e eliminadas depois disso</li>
+              <li><strong>Dados de compra:</strong> pelo prazo exigido pela legislação fiscal aplicável</li>
+              <li><strong>Armazenamento local:</strong> até o apagar no seu navegador ou dispositivo</li>
+            </ul>
           </section>
 
           <section>
@@ -187,9 +227,15 @@ const PrivacyPolicy = () => {
           <section>
             <h2 className="text-2xl font-semibold text-white mb-4">8. Menores de Idade</h2>
             <p className="text-gray-300 leading-relaxed">
-              A nossa aplicação não se destina a menores de 16 anos. Não recolhemos intencionalmente
-              dados pessoais de menores de 16 anos. Se tomarmos conhecimento de que recolhemos dados
-              de um menor, tomaremos medidas para eliminar essas informações.
+              A nossa aplicação, a newsletter e os formulários não se destinam a menores de 16 anos.
+              Não recolhemos intencionalmente dados pessoais de menores de 16 anos. Se tomarmos
+              conhecimento de que recolhemos dados de um menor, tomaremos medidas para eliminar essas
+              informações.
+            </p>
+            <p className="text-gray-300 leading-relaxed mt-4">
+              A área Kids do website não pede nem recolhe dados pessoais: os jogos guardam apenas a
+              pontuação e a preferência de som no próprio dispositivo. Recomendamos que as crianças a
+              utilizem acompanhadas por um adulto.
             </p>
           </section>
 
@@ -209,7 +255,7 @@ const PrivacyPolicy = () => {
               contacte-nos:
             </p>
             <div className="bg-[#2a2a2a] p-4 rounded-lg mt-4">
-              <p className="text-white"><strong>Email:</strong> olhaqueduas.assessoria@gmail.com</p>
+              <p className="text-white"><strong>Email:</strong> geral@olhaqueduas.com</p>
               <p className="text-white mt-2"><strong>Responsável pelo tratamento:</strong> Olha que Duas</p>
             </div>
           </section>
