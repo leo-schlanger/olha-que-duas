@@ -126,7 +126,7 @@ export const siteConfig = {
     },
     {
       name: "Motivar",
-      logo: "/partners/motivar.jpg",
+      logo: "/partners/motivar-lotus.jpg",
       url: "https://motivar.pt",
     },
   ],

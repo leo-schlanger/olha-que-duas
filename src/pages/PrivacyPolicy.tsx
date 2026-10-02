@@ -89,7 +89,7 @@ const PrivacyPolicy = () => {
               <li><strong>Google AdMob:</strong> Para exibição de anúncios na app móvel (pode ser desativado na versão premium)</li>
               <li><strong>Google Play / Apple App Store:</strong> Para processamento de compras</li>
               <li><strong>Open-Meteo:</strong> Recebe coordenadas de localização para fornecer previsões meteorológicas</li>
-              <li><strong>Supabase:</strong> Para sincronização de dados de programação da rádio, armazenamento de metadados e encaminhamento das inscrições na newsletter</li>
+              <li><strong>Supabase:</strong> Para sincronização de dados de programação da rádio, armazenamento de metadados e encaminhamento das inscrições na newsletter (alojamento na UE)</li>
               <li><strong>Cloudinary:</strong> Para alojamento e entrega otimizada de imagens da galeria de fotos</li>
               <li><strong>Vercel:</strong> Para alojamento do website e execução de funções serverless</li>
               <li><strong>Brevo (Sendinblue):</strong> Para gestão e envio da newsletter</li>
