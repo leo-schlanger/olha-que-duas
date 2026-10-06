@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useMetaTags, getPageBreadcrumbJsonLd } from "@/hooks/useMetaTags";
+import { siteConfig } from "@/config/site";
 
 const PrivacyPolicy = () => {
   // SEO Meta Tags
@@ -255,7 +256,7 @@ const PrivacyPolicy = () => {
               contacte-nos:
             </p>
             <div className="bg-[#2a2a2a] p-4 rounded-lg mt-4">
-              <p className="text-white"><strong>Email:</strong> geral@olhaqueduas.com</p>
+              <p className="text-white"><strong>Email:</strong> {siteConfig.contact.email}</p>
               <p className="text-white mt-2"><strong>Responsável pelo tratamento:</strong> Olha que Duas</p>
             </div>
           </section>

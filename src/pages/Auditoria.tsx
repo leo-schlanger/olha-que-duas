@@ -176,7 +176,7 @@ const Auditoria = () => {
       const timeout = setTimeout(() => controller.abort(), FORM_SUBMIT_TIMEOUT_MS);
 
       const response = await fetch(
-        `https://formsubmit.co/ajax/${siteConfig.contact.email}`,
+        `https://formsubmit.co/ajax/${siteConfig.contact.deliveryEmail}`,
         {
           method: "POST",
           headers: {

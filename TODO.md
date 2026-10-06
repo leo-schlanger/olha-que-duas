@@ -1,5 +1,11 @@
 # TODO - Olha que Duas
 
+## Lembrete — voltar o email visível para o oficial
+
+O que o visitante vê (mailto e texto) está em `olhaqueduas.assessoria@gmail.com`. Formulários do FormSubmit e o JSON-LD ficam em `geral@olhaqueduas.com` (`contact.deliveryEmail`).
+
+- [ ] No fim do teste, em `src/config/site.ts`: apagar o Gmail de `contact.email` e descomentar `geral@olhaqueduas.com`. O `deliveryEmail` já é o oficial.
+
 ## Melhorias Futuras
 
 ### Dark Mode (Standby)
@@ -70,4 +76,4 @@
 
 ---
 
-**Última atualização:** Abril 2026
+**Última atualização:** 6 de outubro de 2026

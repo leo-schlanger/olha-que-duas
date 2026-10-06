@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useMetaTags, getPageBreadcrumbJsonLd } from "@/hooks/useMetaTags";
+import { siteConfig } from "@/config/site";
 
 interface FAQItem {
   question: string;
@@ -213,7 +214,7 @@ const faqData: FAQCategory[] = [
       },
       {
         question: "Como posso eliminar os meus dados?",
-        answer: "As preferências e dados da aplicação são armazenados localmente no seu dispositivo. Para os eliminar, basta desinstalar a aplicação. Para cancelar a newsletter, use a ligação incluída em cada envio. Para pedir o acesso ou a eliminação de mensagens que nos tenha enviado, ou de quaisquer outros dados, contacte-nos através do email geral@olhaqueduas.com.",
+        answer: `As preferências e dados da aplicação são armazenados localmente no seu dispositivo. Para os eliminar, basta desinstalar a aplicação. Para cancelar a newsletter, use a ligação incluída em cada envio. Para pedir o acesso ou a eliminação de mensagens que nos tenha enviado, ou de quaisquer outros dados, contacte-nos através do email ${siteConfig.contact.email}.`,
       },
       {
         question: "A aplicação cumpre o RGPD?",
@@ -268,7 +269,7 @@ const faqData: FAQCategory[] = [
           <>
             Agradecemos o seu feedback! Pode reportar problemas:
             <ul className="list-disc list-inside mt-2 space-y-1">
-              <li>Por email: geral@olhaqueduas.com</li>
+              <li>Por email: {siteConfig.contact.email}</li>
               <li>Através das redes sociais (Instagram, Facebook)</li>
               <li>Deixando um comentário na Google Play Store</li>
             </ul>
@@ -288,7 +289,7 @@ const faqData: FAQCategory[] = [
           <>
             Pode contactar-nos através de:
             <ul className="list-disc list-inside mt-2 space-y-1">
-              <li><strong>Email:</strong> geral@olhaqueduas.com</li>
+              <li><strong>Email:</strong> {siteConfig.contact.email}</li>
               <li><strong>Instagram:</strong> @olhaqueduas</li>
               <li><strong>Facebook:</strong> Olha que Duas</li>
             </ul>
@@ -309,7 +310,7 @@ const faqData: FAQCategory[] = [
       },
       {
         question: "Posso anunciar na Olha que Duas?",
-        answer: "Sim, temos várias opções de publicidade e parcerias. Para mais informações sobre oportunidades comerciais, envie um email para geral@olhaqueduas.com com o assunto 'Publicidade'.",
+        answer: `Sim, temos várias opções de publicidade e parcerias. Para mais informações sobre oportunidades comerciais, envie um email para ${siteConfig.contact.email} com o assunto 'Publicidade'.`,
       },
     ],
   },
@@ -449,7 +450,7 @@ const FAQ = () => {
             Estamos sempre disponíveis para ajudar!
           </p>
           <a
-            href="mailto:geral@olhaqueduas.com"
+            href={`mailto:${siteConfig.contact.email}`}
             className="inline-block bg-white text-[#1a1a1a] font-semibold px-8 py-3 rounded-full hover:bg-gray-100 transition-colors"
           >
             Enviar Email

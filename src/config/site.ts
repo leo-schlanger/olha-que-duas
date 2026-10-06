@@ -6,7 +6,14 @@
 export const siteConfig = {
   // Informações de contato
   contact: {
-    email: "geral@olhaqueduas.com",
+    // Visual: mailto e texto no site.
+    // Temporário — Gmail da assessoria enquanto a direção testa o oficial.
+    // LEMBRETE: no fim do teste, apagar a linha ativa e descomentar a de baixo. Ver TODO.md.
+    email: "olhaqueduas.assessoria@gmail.com",
+    // email: "geral@olhaqueduas.com",
+
+    // Formulários (FormSubmit) e JSON-LD. Ficam no oficial durante o teste.
+    deliveryEmail: "geral@olhaqueduas.com",
   },
 
   // Links de redes sociais

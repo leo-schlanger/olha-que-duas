@@ -129,7 +129,7 @@ const Contacto = () => {
       };
 
       const response = await fetchWithRetry(
-        `https://formsubmit.co/ajax/${siteConfig.contact.email}`,
+        `https://formsubmit.co/ajax/${siteConfig.contact.deliveryEmail}`,
         {
           method: "POST",
           headers: {

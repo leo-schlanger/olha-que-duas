@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useMetaTags, getPageBreadcrumbJsonLd } from "@/hooks/useMetaTags";
+import { siteConfig } from "@/config/site";
 
 const TermsOfService = () => {
   // SEO Meta Tags
@@ -214,7 +215,7 @@ const TermsOfService = () => {
               Para questões sobre estes Termos, contacte-nos:
             </p>
             <div className="bg-[#2a2a2a] p-4 rounded-lg mt-4">
-              <p className="text-white"><strong>Email:</strong> geral@olhaqueduas.com</p>
+              <p className="text-white"><strong>Email:</strong> {siteConfig.contact.email}</p>
             </div>
           </section>
         </div>

@@ -50,7 +50,7 @@ const servicesJsonLd = [
     description: 'Agência de comunicação e marketing digital em Portugal especializada em gestão de redes sociais, produção de vídeo, consultoria de marca, rádio online 24h e podcast.',
     url: 'https://www.olhaqueduas.com/servicos',
     telephone: '+351',
-    email: 'geral@olhaqueduas.com',
+    email: siteConfig.contact.deliveryEmail,
     image: 'https://www.olhaqueduas.com/og-image.jpg',
     priceRange: '€€',
     currenciesAccepted: 'EUR',

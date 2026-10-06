@@ -74,7 +74,7 @@ const travelJsonLd = [
     alternateName: 'Olha que Duas Trip - Promotora de Viagens',
     description: 'Promotora de viagens especializada em planeamento personalizado. Estadias exclusivas em hotéis de charme, passagens aéreas com as melhores tarifas, experiências gourmet e roteiros à medida para Portugal, Europa e todo o mundo. Orçamento gratuito e suporte 24/7.',
     url: 'https://www.olhaqueduas.com/viagens',
-    email: 'geral@olhaqueduas.com',
+    email: siteConfig.contact.deliveryEmail,
     image: {
       '@type': 'ImageObject',
       url: 'https://www.olhaqueduas.com/og-viagens.jpg',
