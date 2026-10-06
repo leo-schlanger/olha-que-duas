@@ -5,6 +5,8 @@ interface MetaTagsConfig {
   description?: string;
   image?: string;
   imageAlt?: string;
+  imageWidth?: number;
+  imageHeight?: number;
   url?: string;
   type?: 'website' | 'article';
   publishedTime?: string;
@@ -90,6 +92,8 @@ export function useMetaTags(config: MetaTagsConfig) {
       description,
       image,
       imageAlt,
+      imageWidth,
+      imageHeight,
       url,
       type = 'website',
       publishedTime,
@@ -131,8 +135,8 @@ export function useMetaTags(config: MetaTagsConfig) {
     updateMetaTag('og:description', fullDescription);
     updateMetaTag('og:image', fullImage);
     updateMetaTag('og:image:secure_url', fullImage);
-    updateMetaTag('og:image:width', '1200');
-    updateMetaTag('og:image:height', '630');
+    updateMetaTag('og:image:width', String(imageWidth ?? 1200));
+    updateMetaTag('og:image:height', String(imageHeight ?? 630));
     updateMetaTag('og:image:alt', fullImageAlt);
     updateMetaTag('og:site_name', DEFAULT_CONFIG.siteName);
     updateMetaTag('og:locale', DEFAULT_CONFIG.locale);
@@ -189,6 +193,8 @@ export function useMetaTags(config: MetaTagsConfig) {
       updateMetaTag('og:description', DEFAULT_CONFIG.defaultDescription);
       updateMetaTag('og:image', DEFAULT_CONFIG.defaultImage);
       updateMetaTag('og:image:secure_url', DEFAULT_CONFIG.defaultImage);
+      updateMetaTag('og:image:width', '1200');
+      updateMetaTag('og:image:height', '630');
       updateMetaTag('og:image:alt', DEFAULT_CONFIG.defaultImageAlt);
       updateMetaTag('twitter:url', DEFAULT_CONFIG.baseUrl, false);
       updateMetaTag('twitter:title', DEFAULT_CONFIG.defaultTitle, false);
@@ -212,6 +218,8 @@ export function useMetaTags(config: MetaTagsConfig) {
     config.description,
     config.image,
     config.imageAlt,
+    config.imageWidth,
+    config.imageHeight,
     config.url,
     config.type,
     config.publishedTime,

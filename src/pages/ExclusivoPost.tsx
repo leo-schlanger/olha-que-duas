@@ -7,8 +7,8 @@ import BackToTop from "@/components/BackToTop";
 import { Button } from "@/components/ui/button";
 import { VinagrePortrait } from "@/components/exclusivo/VinagrePortrait";
 import { useVinagrePost } from "@/hooks/useVinagrePosts";
-import { useMetaTags } from "@/hooks/useMetaTags";
-import { absoluteMediaUrl, readingMinutes, sanitizeArticleHtml } from "@/lib/articleHtml";
+import { getPageBreadcrumbJsonLd, useMetaTags } from "@/hooks/useMetaTags";
+import { absoluteMediaUrl, articleShareImage, readingMinutes, sanitizeArticleHtml } from "@/lib/articleHtml";
 import { VINAGRE_COLUMN } from "@/types/vinagre";
 
 function formatDate(iso: string | null): string {
@@ -24,16 +24,49 @@ export default function ExclusivoPost() {
   const { slug = "" } = useParams();
   const { data: post, isLoading, isError } = useVinagrePost(slug);
   const pageUrl = `https://www.olhaqueduas.com/exclusivo/${slug}`;
+  const shareImage = post ? articleShareImage(post) : undefined;
 
   useMetaTags({
     title: post?.title ?? VINAGRE_COLUMN.navLabel,
     description: post?.excerpt || post?.title || VINAGRE_COLUMN.navLabel,
     url: pageUrl,
-    image: absoluteMediaUrl(post?.cover_url ?? ""),
+    image: shareImage,
+    imageAlt: post?.title ?? VINAGRE_COLUMN.navLabel,
+    imageWidth: 1200,
+    imageHeight: 630,
     type: "article",
     publishedTime: post?.published_at ?? undefined,
+    modifiedTime: post?.updated_at ?? undefined,
     author: VINAGRE_COLUMN.author,
     section: VINAGRE_COLUMN.navLabel,
+    jsonLd: post
+      ? [
+          {
+            "@context": "https://schema.org",
+            "@type": "NewsArticle",
+            headline: post.title,
+            description: post.excerpt || post.title,
+            image: [articleShareImage(post)],
+            datePublished: post.published_at ?? undefined,
+            dateModified: post.updated_at,
+            inLanguage: "pt-PT",
+            articleSection: VINAGRE_COLUMN.navLabel,
+            author: { "@type": "Person", name: VINAGRE_COLUMN.author },
+            publisher: {
+              "@type": "Organization",
+              name: "Olha que Duas",
+              logo: {
+                "@type": "ImageObject",
+                url: "https://www.olhaqueduas.com/og-image.jpg",
+              },
+            },
+            mainEntityOfPage: pageUrl,
+          },
+          getPageBreadcrumbJsonLd(post.title, pageUrl, [
+            { name: VINAGRE_COLUMN.navLabel, url: "https://www.olhaqueduas.com/exclusivo" },
+          ]),
+        ]
+      : undefined,
   });
 
   useEffect(() => {

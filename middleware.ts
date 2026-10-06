@@ -7,9 +7,9 @@ const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || '';
 
 const CRAWLERS = ['facebookexternalhit', 'Facebot', 'Twitterbot', 'WhatsApp', 'LinkedInBot', 'Slackbot', 'TelegramBot', 'Discordbot'];
 
-// // Motores de busca. Só recebem tratamento especial em /historias/*, onde o
-// // conteúdo é o produto e a indexação não pode esperar pelo render de JS.
-// const SEARCH_CRAWLERS = ['Googlebot', 'Google-InspectionTool', 'Bingbot', 'DuckDuckBot', 'Applebot', 'YandexBot'];
+// Motores de busca na coluna Exclusivo. O site é uma SPA; sem este HTML o
+// Google fica dias com o título da homepage. O texto é o mesmo que o leitor vê.
+const SEARCH_CRAWLERS = ['googlebot', 'google-inspectiontool', 'bingbot', 'duckduckbot', 'applebot', 'yandexbot'];
 
 function escapeHtml(value: string): string {
   return value
@@ -50,10 +50,35 @@ interface Meta {
   description: string;
   image: string;
   url: string;
-  /** Corpo já em HTML. Só usado nas histórias, para os motores de busca. */
+  /** Corpo já em HTML. O texto é o mesmo que o leitor vê. */
   body?: string;
   type?: 'website' | 'article';
   publishedTime?: string;
+  imageAlt?: string;
+  imageWidth?: number;
+  imageHeight?: number;
+  author?: string;
+  section?: string;
+  jsonLd?: unknown;
+}
+
+function stripScripts(value: string): string {
+  return value
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/\son\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '');
+}
+
+function shareImage(post: { cover_url?: unknown; og_image_url?: unknown }): string {
+  const og = String(post.og_image_url || '').trim();
+  const cover = String(post.cover_url || '').trim();
+  const absolute = (value: string) =>
+    value.startsWith('http')
+      ? value
+      : `https://www.olhaqueduas.com${value.startsWith('/') ? value : `/${value}`}`;
+  if (og) return absolute(og);
+  if (cover.includes('abel-dias-betty')) return 'https://www.olhaqueduas.com/exclusivo/abel-dias-betty-og.jpg';
+  if (cover) return absolute(cover);
+  return 'https://www.olhaqueduas.com/exclusivo/abel-dias-betty-og.jpg';
 }
 
 function html(meta: Meta): Response {
@@ -71,17 +96,22 @@ function html(meta: Meta): Response {
     <meta property="og:title" content="${title}">
     <meta property="og:description" content="${description}">
     <meta property="og:image" content="${image}">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="${escapeHtml(meta.imageAlt || meta.title)}">
+    <meta property="og:image:width" content="${meta.imageWidth ?? 1200}">
+    <meta property="og:image:height" content="${meta.imageHeight ?? 630}">
     <meta property="og:url" content="${url}">
     <meta property="og:type" content="${type}">
     <meta property="og:site_name" content="Olha que Duas">
     <meta property="og:locale" content="pt_PT">
     ${meta.publishedTime ? `<meta property="article:published_time" content="${escapeHtml(meta.publishedTime)}">` : ''}
+    ${meta.author ? `<meta property="article:author" content="${escapeHtml(meta.author)}">` : ''}
+    ${meta.section ? `<meta property="article:section" content="${escapeHtml(meta.section)}">` : ''}
+    ${meta.jsonLd ? `<script type="application/ld+json">${JSON.stringify(meta.jsonLd).replace(/</g, '\\u003c')}</script>` : ''}
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${title}">
     <meta name="twitter:description" content="${description}">
     <meta name="twitter:image" content="${image}">
+    <meta name="twitter:image:alt" content="${escapeHtml(meta.imageAlt || meta.title)}">
   </head><body>${meta.body || ''}</body></html>`, {
     headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 's-maxage=3600' },
   });
@@ -97,7 +127,7 @@ async function fetchSupabase(table: string, query: string) {
 export default async function middleware(request: Request): Promise<Response | undefined> {
   const ua = (request.headers.get('user-agent') || '').toLowerCase();
   const isSocialCrawler = CRAWLERS.some(c => ua.includes(c.toLowerCase()));
-  // const isSearchCrawler = SEARCH_CRAWLERS.some(c => ua.includes(c.toLowerCase()));
+  const isSearchCrawler = SEARCH_CRAWLERS.some(c => ua.includes(c));
 
   const url = new URL(request.url);
   const path = url.pathname;
@@ -112,7 +142,7 @@ export default async function middleware(request: Request): Promise<Response | u
     // return handleStories(path, isSearchCrawler);
   // }
 
-  if (!isSocialCrawler) return;
+  if (!isSocialCrawler && !(isSearchCrawler && path.startsWith('/exclusivo'))) return;
 
   // ========== VIAGENS ==========
   if (path === '/viagens') {
@@ -231,11 +261,31 @@ export default async function middleware(request: Request): Promise<Response | u
   }
 
   if (path === '/exclusivo') {
+    let description = 'A coluna exclusiva de Eduardo Vinagre no Olha que Duas. Notícias, bastidores e o que não sai no resto da imprensa.';
+    let image = 'https://www.olhaqueduas.com/exclusivo/abel-dias-betty-og.jpg';
+    let imageAlt = 'Exclusivo Olha que Duas';
+    try {
+      const rows = await fetchSupabase(
+        'vinagre_posts',
+        'select=title,excerpt,cover_url,og_image_url&is_published=eq.true&order=published_at.desc.nullslast&limit=1',
+      );
+      const post = Array.isArray(rows) ? rows[0] : undefined;
+      if (post) {
+        image = shareImage(post);
+        if (post.excerpt) description = String(post.excerpt);
+        if (post.title) imageAlt = String(post.title);
+      }
+    } catch { /* fica a capa da crónica */ }
     return html({
       title: 'Exclusivo Olha que Duas',
-      description: 'A coluna exclusiva de Eduardo Vinagre no Olha que Duas. Notícias, bastidores e o que não sai no resto da imprensa.',
-      image: 'https://www.olhaqueduas.com/exclusivo/eduardo-vinagre.jpg',
+      description,
+      image,
+      imageAlt,
+      imageWidth: 1200,
+      imageHeight: 630,
       url: 'https://www.olhaqueduas.com/exclusivo',
+      author: 'Eduardo Vinagre',
+      section: 'Exclusivo Olha que Duas',
     });
   }
 
@@ -244,23 +294,45 @@ export default async function middleware(request: Request): Promise<Response | u
     const slug = exclusivoMatch[1];
     if (!SLUG_REGEX.test(slug) || slug.length > 140) return;
     try {
-      const [post] = await fetchSupabase(
+      const rows = await fetchSupabase(
         'vinagre_posts',
         `slug=eq.${encodeURIComponent(slug)}&is_published=eq.true`,
       );
+      const post = Array.isArray(rows) ? rows[0] : undefined;
       if (!post) return;
-      const image = post.cover_url
-        ? (String(post.cover_url).startsWith('http')
-          ? post.cover_url
-          : `https://www.olhaqueduas.com${post.cover_url}`)
-        : 'https://www.olhaqueduas.com/exclusivo/eduardo-vinagre.jpg';
+      const image = shareImage(post);
+      const pageUrl = `https://www.olhaqueduas.com/exclusivo/${slug}`;
       return html({
-        title: post.title,
-        description: post.excerpt || post.title,
+        title: String(post.title),
+        description: String(post.excerpt || post.title),
         image,
-        url: `https://www.olhaqueduas.com/exclusivo/${slug}`,
+        imageAlt: String(post.title),
+        imageWidth: 1200,
+        imageHeight: 630,
+        url: pageUrl,
         type: 'article',
         publishedTime: post.published_at || undefined,
+        author: 'Eduardo Vinagre',
+        section: 'Exclusivo Olha que Duas',
+        body: `<article><h1>${escapeHtml(String(post.title))}</h1>${stripScripts(String(post.content || ''))}</article>`,
+        jsonLd: {
+          '@context': 'https://schema.org',
+          '@type': 'NewsArticle',
+          headline: post.title,
+          description: post.excerpt || post.title,
+          image: [image],
+          datePublished: post.published_at || undefined,
+          dateModified: post.updated_at || post.published_at || undefined,
+          inLanguage: 'pt-PT',
+          articleSection: 'Exclusivo Olha que Duas',
+          author: { '@type': 'Person', name: 'Eduardo Vinagre' },
+          publisher: {
+            '@type': 'Organization',
+            name: 'Olha que Duas',
+            logo: { '@type': 'ImageObject', url: 'https://www.olhaqueduas.com/og-image.jpg' },
+          },
+          mainEntityOfPage: pageUrl,
+        },
       });
     } catch { return; }
   }

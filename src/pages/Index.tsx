@@ -21,9 +21,8 @@ const Index = () => {
   // SEO — assegura que ao voltar à home por navegação interna os metas são
   // restaurados (sem isto ficavam os da última página visitada).
   useMetaTags({
-    title: "Olha que Duas | Podcast, Rádio e Comunicação em Portugal",
     description:
-      "Somos comunicadoras com propósito. Podcast, Rádio 24h, Assessoria de Imprensa e Estratégia de Marca em Portugal.",
+      "Somos comunicadoras com propósito. Podcast, Rádio 24h, Assessoria de Imprensa e Estratégia de Marca em Portugal. Coluna Exclusivo Olha que Duas, de Eduardo Vinagre.",
     url: "https://www.olhaqueduas.com/",
     type: "website",
   });

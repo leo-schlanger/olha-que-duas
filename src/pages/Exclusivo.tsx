@@ -6,8 +6,13 @@ import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
 import { VinagrePortrait } from "@/components/exclusivo/VinagrePortrait";
 import { useVinagrePosts } from "@/hooks/useVinagrePosts";
-import { useMetaTags } from "@/hooks/useMetaTags";
+import { useMetaTags, getPageBreadcrumbJsonLd } from "@/hooks/useMetaTags";
+import { articleShareImage } from "@/lib/articleHtml";
 import { VINAGRE_COLUMN } from "@/types/vinagre";
+
+const COLUMN_DESCRIPTION =
+  "A coluna exclusiva de Eduardo Vinagre no Olha que Duas. Notícias, bastidores e o que não sai no resto da imprensa.";
+const COLUMN_URL = "https://www.olhaqueduas.com/exclusivo";
 
 function formatDate(iso: string | null): string {
   if (!iso) return "";
@@ -19,20 +24,39 @@ function formatDate(iso: string | null): string {
 }
 
 export default function Exclusivo() {
+  const { data: posts, isLoading, isError } = useVinagrePosts();
+  const lead = posts?.[0];
+  const shareImage = lead
+    ? articleShareImage(lead)
+    : "https://www.olhaqueduas.com/exclusivo/abel-dias-betty-og.jpg";
+
   useMetaTags({
-    title: `${VINAGRE_COLUMN.navLabel} | ${VINAGRE_COLUMN.author}`,
-    description:
-      "A coluna exclusiva de Eduardo Vinagre no Olha que Duas. Notícias, bastidores e o que não sai no resto da imprensa.",
-    url: "https://www.olhaqueduas.com/exclusivo",
-    image: "https://www.olhaqueduas.com/exclusivo/eduardo-vinagre.jpg",
-    imageAlt: "Eduardo Vinagre",
+    title: VINAGRE_COLUMN.navLabel,
+    description: lead?.excerpt || COLUMN_DESCRIPTION,
+    url: COLUMN_URL,
+    image: shareImage,
+    imageAlt: lead?.title || VINAGRE_COLUMN.navLabel,
+    imageWidth: 1200,
+    imageHeight: 630,
+    jsonLd: [
+      getPageBreadcrumbJsonLd(VINAGRE_COLUMN.navLabel, COLUMN_URL),
+      {
+        "@context": "https://schema.org",
+        "@type": "Blog",
+        name: VINAGRE_COLUMN.navLabel,
+        description: COLUMN_DESCRIPTION,
+        url: COLUMN_URL,
+        image: shareImage,
+        inLanguage: "pt-PT",
+        author: { "@type": "Person", name: VINAGRE_COLUMN.author },
+        publisher: { "@id": "https://www.olhaqueduas.com/#organization" },
+      },
+    ],
   });
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  const { data: posts, isLoading, isError } = useVinagrePosts();
 
   return (
     <div className="min-h-screen bg-background">

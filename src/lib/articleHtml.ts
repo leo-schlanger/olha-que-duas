@@ -74,3 +74,15 @@ export function absoluteMediaUrl(url: string): string {
   if (url.startsWith("http://") || url.startsWith("https://")) return url;
   return `https://www.olhaqueduas.com${url.startsWith("/") ? url : `/${url}`}`;
 }
+
+const ARTICLE_OG = "https://www.olhaqueduas.com/exclusivo/abel-dias-betty-og.jpg";
+
+/** Imagem 1200×630 da partilha. A capa do artigo fica inteira, sem corte. */
+export function articleShareImage(post: { cover_url: string; og_image_url?: string }): string {
+  const og = post.og_image_url?.trim() ?? "";
+  if (og) return absoluteMediaUrl(og);
+  const cover = post.cover_url.trim();
+  if (cover.includes("abel-dias-betty")) return ARTICLE_OG;
+  if (!cover) return ARTICLE_OG;
+  return absoluteMediaUrl(cover);
+}
