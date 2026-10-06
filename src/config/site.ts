@@ -24,18 +24,27 @@ export const siteConfig = {
     youtube: "https://youtube.com/@olhaqueduas-l9m?si=hKFnzKpluIODLFFk",
   },
 
-  // Links de navegação
+  // Links de navegação.
+  // desktop: "more" entra no menu Mais da barra do computador, para ela
+  // não esticar. No telemóvel e no rodapé a lista continua completa.
+  // O separador do Eduardo Vinagre chama-se "Exclusivo Olha que Duas".
   navLinks: [
     { href: "#inicio", label: "Início" },
     { href: "#sobre", label: "Sobre" },
-    { href: "/servicos", label: "Serviços", isRoute: true },
+    { href: "/servicos", label: "Serviços", isRoute: true, desktop: "more" },
     { href: "#radio", label: "Rádio" },
-    { href: "/viagens", label: "Viagens", isRoute: true },
+    { href: "/viagens", label: "Viagens", isRoute: true, desktop: "more" },
     { href: "/noticias", label: "Notícias", isRoute: true },
+    {
+      href: "/exclusivo",
+      label: "Exclusivo Olha que Duas",
+      isRoute: true,
+      accent: true,
+    },
     // { href: "/historias", label: "Histórias", isRoute: true }, — standby temporário
-    { href: "/galeria", label: "Trabalhos", isRoute: true },
-    { href: "/loja", label: "Loja", isRoute: true },
-    { href: "/kids", label: "Kids", isRoute: true },
+    { href: "/galeria", label: "Trabalhos", isRoute: true, desktop: "more" },
+    { href: "/loja", label: "Loja", isRoute: true, desktop: "more" },
+    { href: "/kids", label: "Kids", isRoute: true, desktop: "more" },
   ],
 
   // App móvel

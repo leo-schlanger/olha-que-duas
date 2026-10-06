@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, Youtube, Radio } from "lucide-react";
+import { ChevronDown, Menu, Youtube, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sheet,
   SheetContent,
@@ -48,12 +54,22 @@ const Header = () => {
   // Check if link is active
   const isLinkActive = (href: string, isRoute?: boolean) => {
     if (isRoute) {
-      return location.pathname === href;
+      return location.pathname === href || location.pathname.startsWith(`${href}/`);
     }
     // For hash links
     const sectionId = href.replace("#", "");
     return location.pathname === "/" && activeSection === sectionId;
   };
+
+  const primaryLinks = siteConfig.navLinks.filter(
+    (link) => !("desktop" in link && link.desktop === "more"),
+  );
+  const moreLinks = siteConfig.navLinks.filter(
+    (link) => "desktop" in link && link.desktop === "more",
+  );
+  const moreActive = moreLinks.some((link) =>
+    isLinkActive(link.href, "isRoute" in link && Boolean(link.isRoute)),
+  );
 
   return (
     <header
@@ -97,49 +113,84 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1 bg-background/50 backdrop-blur-sm rounded-full px-2 py-1 border border-border/50">
-            {siteConfig.navLinks.map((link) => {
+          <nav className="hidden lg:flex min-w-0 items-center gap-0.5 overflow-x-auto bg-background/50 backdrop-blur-sm rounded-full px-1.5 py-1 border border-border/50">
+            {primaryLinks.map((link) => {
               const isRoute = "isRoute" in link && link.isRoute;
+              const accent = "accent" in link && link.accent;
               const isActive = isLinkActive(link.href, isRoute);
+              const className = cn(
+                "relative whitespace-nowrap px-3 py-2 text-sm font-medium transition-all duration-300 rounded-full",
+                accent
+                  ? "text-[#7a5b16] hover:text-[#5c4310]"
+                  : isActive
+                    ? "text-primary"
+                    : "text-foreground/70 hover:text-foreground",
+              );
 
-              return isRoute ? (
+              return (
                 <Link
                   key={link.href}
-                  to={link.href}
-                  className={cn(
-                    "relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-full",
-                    isActive
-                      ? "text-primary"
-                      : "text-foreground/70 hover:text-foreground"
-                  )}
+                  to={isRoute ? link.href : `/${link.href}`}
+                  className={className}
                 >
+                  {accent && (
+                    <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-[#c6a15b] align-middle" />
+                  )}
                   {link.label}
                   {isActive && (
-                    <span className="absolute inset-0 bg-primary/10 rounded-full -z-10" />
-                  )}
-                </Link>
-              ) : (
-                <Link
-                  key={link.href}
-                  to={`/${link.href}`}
-                  className={cn(
-                    "relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-full",
-                    isActive
-                      ? "text-primary"
-                      : "text-foreground/70 hover:text-foreground"
-                  )}
-                >
-                  {link.label}
-                  {isActive && (
-                    <span className="absolute inset-0 bg-primary/10 rounded-full -z-10 animate-fade-in" />
+                    <span
+                      className={cn(
+                        "absolute inset-0 rounded-full -z-10",
+                        accent ? "bg-[#c6a15b]/20" : "bg-primary/10",
+                      )}
+                    />
                   )}
                 </Link>
               );
             })}
+            {moreLinks.length > 0 && (
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  className={cn(
+                    "relative inline-flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium outline-none",
+                    moreActive
+                      ? "text-primary"
+                      : "text-foreground/70 hover:text-foreground",
+                  )}
+                >
+                  Mais
+                  <ChevronDown className="h-3.5 w-3.5" />
+                  {moreActive && (
+                    <span className="absolute inset-0 rounded-full bg-primary/10 -z-10" />
+                  )}
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="min-w-[12rem] rounded-2xl border-border/60 bg-background/95 p-1.5 backdrop-blur-lg"
+                >
+                  {moreLinks.map((link) => {
+                    const active = isLinkActive(link.href, true);
+                    return (
+                      <DropdownMenuItem key={link.href} asChild>
+                        <Link
+                          to={link.href}
+                          className={cn(
+                            "cursor-pointer rounded-xl px-3 py-2",
+                            active && "bg-primary/10 text-primary",
+                          )}
+                        >
+                          {link.label}
+                        </Link>
+                      </DropdownMenuItem>
+                    );
+                  })}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </nav>
 
           {/* CTA Buttons - Desktop */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-3 shrink-0">
             {/* Live indicator */}
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-vermelho/10 border border-vermelho/20">
               <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
@@ -160,21 +211,23 @@ const Header = () => {
                 className="flex items-center gap-1.5"
               >
                 <Youtube className="w-4 h-4" />
-                YouTube
+                <span className="hidden xl:inline">YouTube</span>
               </a>
             </Button>
-            <Button
-              asChild
-              size="sm"
-              className="bg-primary hover:bg-primary/90 btn-shine btn-magnetic"
-            >
-              <Link to="/#contacto">Fale Connosco</Link>
-            </Button>
+            <div className="hidden xl:block">
+              <Button
+                asChild
+                size="sm"
+                className="bg-primary hover:bg-primary/90 btn-shine btn-magnetic"
+              >
+                <Link to="/#contacto">Fale Connosco</Link>
+              </Button>
+            </div>
           </div>
 
           {/* Mobile Menu */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild className="md:hidden">
+            <SheetTrigger asChild className="lg:hidden">
               <Button
                 variant="ghost"
                 size="icon"
@@ -206,6 +259,7 @@ const Header = () => {
               <nav className="flex flex-col p-4 gap-1">
                 {siteConfig.navLinks.map((link, index) => {
                   const isRoute = "isRoute" in link && link.isRoute;
+                  const accent = "accent" in link && link.accent;
                   const isActive = isLinkActive(link.href, isRoute);
 
                   return isRoute ? (
@@ -216,9 +270,12 @@ const Header = () => {
                       className={cn(
                         "px-4 py-3.5 text-base font-medium rounded-xl transition-all duration-300",
                         "hover:bg-primary/5",
-                        isActive
-                          ? "bg-primary/10 text-primary"
-                          : "text-foreground/80 hover:text-foreground"
+                        accent
+                          ? "text-[#7a5b16]"
+                          : isActive
+                            ? "bg-primary/10 text-primary"
+                            : "text-foreground/80 hover:text-foreground",
+                        accent && isActive && "bg-[#c6a15b]/15"
                       )}
                       style={{ animationDelay: `${index * 50}ms` }}
                     >

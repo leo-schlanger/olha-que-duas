@@ -93,6 +93,39 @@
 }
 
 @layer components {
+  /* Crónica do Exclusivo. O preflight tira margem aos parágrafos,
+     por isso o ritmo de blog fica explícito aqui. */
+  .vinagre-article p {
+    margin: 0 0 1.75rem;
+    font-size: 1.125rem;
+    line-height: 1.9;
+    color: hsl(var(--charcoal));
+  }
+
+  .vinagre-article h2 {
+    margin: 3.25rem 0 1rem;
+    font-size: 2rem;
+    line-height: 1.15;
+    color: #1c0a10;
+  }
+
+  .vinagre-article blockquote {
+    margin: 2rem 0 2.25rem;
+    padding: 1.15rem 1.5rem;
+    border-left: 4px solid #c6a15b;
+    border-radius: 0 1.15rem 1.15rem 0;
+    background: #f7f1e4;
+  }
+
+  .vinagre-article blockquote p {
+    margin: 0;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.7rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #1c0a10;
+  }
+
   .text-gradient-brand {
     @apply bg-clip-text text-transparent;
     background-image: linear-gradient(135deg, hsl(var(--vermelho)) 0%, hsl(var(--amarelo)) 100%);

@@ -1,5 +1,5 @@
 export const config = {
-  matcher: ['/viagens', '/servicos', '/loja', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*', '/kids', '/auditoria-gratuita', '/rockinrio'],
+  matcher: ['/viagens', '/servicos', '/loja', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*', '/exclusivo', '/exclusivo/:path*', '/kids', '/auditoria-gratuita', '/rockinrio'],
 };
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || '';
@@ -228,6 +228,41 @@ export default async function middleware(request: Request): Promise<Response | u
       image: DEFAULT_IMAGE,
       url: 'https://www.olhaqueduas.com/noticias',
     });
+  }
+
+  if (path === '/exclusivo') {
+    return html({
+      title: 'Exclusivo Olha que Duas',
+      description: 'A coluna exclusiva de Eduardo Vinagre no Olha que Duas. Notícias, bastidores e o que não sai no resto da imprensa.',
+      image: 'https://www.olhaqueduas.com/exclusivo/eduardo-vinagre.jpg',
+      url: 'https://www.olhaqueduas.com/exclusivo',
+    });
+  }
+
+  const exclusivoMatch = path.match(/^\/exclusivo\/([^/]+)$/);
+  if (exclusivoMatch) {
+    const slug = exclusivoMatch[1];
+    if (!SLUG_REGEX.test(slug) || slug.length > 140) return;
+    try {
+      const [post] = await fetchSupabase(
+        'vinagre_posts',
+        `slug=eq.${encodeURIComponent(slug)}&is_published=eq.true`,
+      );
+      if (!post) return;
+      const image = post.cover_url
+        ? (String(post.cover_url).startsWith('http')
+          ? post.cover_url
+          : `https://www.olhaqueduas.com${post.cover_url}`)
+        : 'https://www.olhaqueduas.com/exclusivo/eduardo-vinagre.jpg';
+      return html({
+        title: post.title,
+        description: post.excerpt || post.title,
+        image,
+        url: `https://www.olhaqueduas.com/exclusivo/${slug}`,
+        type: 'article',
+        publishedTime: post.published_at || undefined,
+      });
+    } catch { return; }
   }
 
   const newsMatch = path.match(/^\/noticias\/([^/]+)$/);

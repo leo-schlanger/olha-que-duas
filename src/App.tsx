@@ -39,6 +39,8 @@ const TermsOfService = lazy(() => import("./pages/TermsOfService"));
 const FAQ = lazy(() => import("./pages/FAQ"));
 const Auditoria = lazy(() => import("./pages/Auditoria"));
 const RockInRio = lazy(() => import("./pages/RockInRio"));
+const Exclusivo = lazy(() => import("./pages/Exclusivo"));
+const ExclusivoPost = lazy(() => import("./pages/ExclusivoPost"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 /**
@@ -85,6 +87,8 @@ const App = () => (
               <Route path="/viagens" element={<Viagens />} />
               <Route path="/noticias" element={<Blog />} />
               <Route path="/noticias/:slug" element={<BlogPost />} />
+              <Route path="/exclusivo" element={<Exclusivo />} />
+              <Route path="/exclusivo/:slug" element={<ExclusivoPost />} />
               <Route path="/galeria" element={<Gallery />} />
               <Route path="/galeria/:slug" element={<GalleryAlbum />} />
               <Route path="/loja" element={<Vendas />} />

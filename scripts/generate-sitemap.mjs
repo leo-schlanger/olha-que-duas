@@ -63,6 +63,7 @@ const staticPages = [
   { loc: "/galeria", lastmod: TODAY, freq: "weekly", priority: "0.8" },
   { loc: "/faq", lastmod: "2026-04-06", freq: "monthly", priority: "0.5" },
   { loc: "/noticias", lastmod: TODAY, freq: "daily", priority: "0.9" },
+  { loc: "/exclusivo", lastmod: TODAY, freq: "daily", priority: "0.9", image: { loc: "/exclusivo/eduardo-vinagre.jpg", title: "Exclusivo Olha que Duas — Eduardo Vinagre" } },
   { loc: "/loja", lastmod: "2026-03-24", freq: "weekly", priority: "0.8" },
   { loc: "/kids", lastmod: "2026-04-11", freq: "weekly", priority: "0.8", image: { loc: "/og-kids.jpg", title: "Olha que Duas Kids - Espaco Infantil" } },
   { loc: "/rockinrio", lastmod: "2026-05-16", freq: "weekly", priority: "0.9", image: { loc: "/og-rockinrio.jpg", title: "Olha que Duas x Rock in Rio Lisboa 2026" } },
@@ -105,7 +106,17 @@ async function main() {
     fetchTable("blog_posts", "is_published=eq.true&order=published_at.desc&select=slug,published_at,updated_at"),
   ]);
 
-  console.log(`  ${albums.length} gallery albums, ${posts.length} blog posts`);
+  let vinagre = [];
+  try {
+    vinagre = await fetchTable(
+      "vinagre_posts",
+      "is_published=eq.true&order=published_at.desc&select=slug,published_at,updated_at",
+    );
+  } catch (error) {
+    console.warn("vinagre_posts ignorado:", error.message);
+  }
+
+  console.log(`  ${albums.length} gallery albums, ${posts.length} blog posts, ${vinagre.length} exclusivos`);
 
   const dynamicEntries = [];
 
@@ -128,6 +139,16 @@ async function main() {
     });
   }
 
+  for (const post of vinagre) {
+    const date = (post.updated_at || post.published_at || "").slice(0, 10);
+    dynamicEntries.push({
+      loc: `/exclusivo/${post.slug}`,
+      lastmod: date || TODAY,
+      freq: "monthly",
+      priority: "0.8",
+    });
+  }
+
   // Build XML
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
   xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n`;
@@ -140,6 +161,8 @@ async function main() {
     for (const e of dynamicEntries.filter((e) => e.loc.startsWith("/galeria/"))) xml += urlEntry(e);
     xml += `\n  <!-- Dynamic: Blog Posts -->\n`;
     for (const e of dynamicEntries.filter((e) => e.loc.startsWith("/noticias/"))) xml += urlEntry(e);
+    xml += `\n  <!-- Dynamic: Exclusivo Olha que Duas -->\n`;
+    for (const e of dynamicEntries.filter((e) => e.loc.startsWith("/exclusivo/"))) xml += urlEntry(e);
   }
 
   xml += `\n</urlset>\n`;
