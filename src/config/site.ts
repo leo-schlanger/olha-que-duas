@@ -26,7 +26,8 @@ export const siteConfig = {
 
   // Links de navegação.
   // desktop: "more" entra no menu Mais da barra do computador, para ela
-  // não esticar. No telemóvel e no rodapé a lista continua completa.
+  // não esticar. Trabalhos fica na barra. No telemóvel e no rodapé a
+  // lista continua completa.
   // O separador do Eduardo Vinagre chama-se "Exclusivo Olha que Duas".
   navLinks: [
     { href: "#inicio", label: "Início" },
@@ -42,7 +43,7 @@ export const siteConfig = {
       accent: true,
     },
     // { href: "/historias", label: "Histórias", isRoute: true }, — standby temporário
-    { href: "/galeria", label: "Trabalhos", isRoute: true, desktop: "more" },
+    { href: "/galeria", label: "Trabalhos", isRoute: true },
     { href: "/loja", label: "Loja", isRoute: true, desktop: "more" },
     { href: "/kids", label: "Kids", isRoute: true, desktop: "more" },
   ],

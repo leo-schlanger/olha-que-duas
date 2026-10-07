@@ -4,6 +4,8 @@ import { Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
+import { StoryRow } from "@/components/exclusivo/StoryRow";
+import { formatVinagreDate } from "@/lib/vinagreDate";
 import { VinagrePortrait } from "@/components/exclusivo/VinagrePortrait";
 import { useVinagrePosts } from "@/hooks/useVinagrePosts";
 import { useMetaTags, getPageBreadcrumbJsonLd } from "@/hooks/useMetaTags";
@@ -14,18 +16,10 @@ const COLUMN_DESCRIPTION =
   "A coluna exclusiva de Eduardo Vinagre no Olha que Duas. Notícias, bastidores e o que não sai no resto da imprensa.";
 const COLUMN_URL = "https://www.olhaqueduas.com/exclusivo";
 
-function formatDate(iso: string | null): string {
-  if (!iso) return "";
-  return new Date(iso).toLocaleDateString("pt-PT", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-}
-
 export default function Exclusivo() {
   const { data: posts, isLoading, isError } = useVinagrePosts();
   const lead = posts?.[0];
+  const rest = posts?.slice(1) ?? [];
   const shareImage = lead
     ? articleShareImage(lead)
     : "https://www.olhaqueduas.com/exclusivo/abel-dias-betty-og.jpg";
@@ -59,106 +53,79 @@ export default function Exclusivo() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#f6f1e8]">
       <Header />
       <main id="main-content" className="pt-24 md:pt-28">
-        <section className="container mx-auto px-4 sm:px-6 pb-16">
-          <div className="relative overflow-hidden rounded-[2rem] bg-[#1c0a10] text-[#f6efe4] px-6 py-14 md:px-12 md:py-16">
-            <div
-              className="pointer-events-none absolute inset-0 opacity-[0.18]"
-              style={{
-                backgroundImage:
-                  "linear-gradient(rgba(228,197,106,0.35) 1px, transparent 1px), linear-gradient(90deg, rgba(228,197,106,0.35) 1px, transparent 1px)",
-                backgroundSize: "48px 48px",
-              }}
-            />
-            <div className="pointer-events-none absolute -left-16 top-0 h-56 w-56 rounded-full bg-[#e4c56a]/15 blur-3xl" />
-            <div className="pointer-events-none absolute -right-10 bottom-0 h-48 w-48 rounded-full bg-[#7a1d2e]/50 blur-3xl" />
-
-            <div className="relative mx-auto flex max-w-3xl flex-col items-center text-center">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-[#e4c56a]">
-                Olha que Duas
-              </p>
-              <VinagrePortrait className="mt-6" />
-              <h1 className="mt-8 font-display text-5xl font-semibold leading-none text-[#f7f1e6] md:text-7xl">
-                Olha que Duas{" "}
-                <span className="text-[#e4c56a]">e Eu</span>
+        <section className="container mx-auto overflow-x-clip px-4 pb-20 sm:px-6">
+          <header className="flex flex-col gap-4 border-b border-[#1c0a10]/10 pb-8 sm:flex-row sm:items-center sm:gap-6">
+            <VinagrePortrait size="md" />
+            <div>
+              <h1 className="font-display text-4xl leading-none text-[#1c0a10] md:text-6xl">
+                {VINAGRE_COLUMN.title}
               </h1>
-              <p className="mt-3 font-display text-3xl text-white md:text-4xl">
-                Eduardo Vinagre
-              </p>
-              <p className="mt-6 max-w-xl text-sm leading-relaxed text-[#f6efe4]/75 md:text-base">
-                Coluna exclusiva. O que o Eduardo Vinagre ouve, vê e escreve
-                para o Olha que Duas.
+              <p className="mt-3 max-w-xl text-base leading-relaxed text-[#1c0a10]/75 md:text-lg">
+                {VINAGRE_COLUMN.author}. O que ele ouve, vê e escreve para o Olha que Duas.
               </p>
             </div>
-          </div>
+          </header>
 
-          <div className="mx-auto mt-12 max-w-5xl">
-            <div className="mb-6 flex items-end justify-between gap-4">
-              <h2 className="font-display text-3xl text-charcoal md:text-4xl">
-                Notícias
-              </h2>
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#7a5b16]">
-                {VINAGRE_COLUMN.navLabel}
-              </span>
+          {isLoading && (
+            <div className="flex justify-center py-24 text-[#7a5b16]">
+              <Loader2 className="h-6 w-6 animate-spin" />
+              <span className="sr-only">A carregar notícias</span>
             </div>
+          )}
 
-            {isLoading && (
-              <div className="flex justify-center py-20 text-muted-foreground">
-                <Loader2 className="h-6 w-6 animate-spin" />
-                <span className="sr-only">A carregar notícias</span>
+          {isError && (
+            <p className="py-16 text-center text-[#1c0a10]/70">
+              Não foi possível carregar as notícias. Tenta outra vez daqui a pouco.
+            </p>
+          )}
+
+          {!isLoading && !isError && !lead && (
+            <p className="py-16 text-center text-[#1c0a10]/70">
+              A primeira notícia está a caminho.
+            </p>
+          )}
+
+          {lead && (
+            <Link
+              to={`/exclusivo/${lead.slug}`}
+              className="group mt-8 grid min-w-0 grid-cols-[minmax(0,1fr)] items-start gap-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary md:mt-10 md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] md:gap-12"
+            >
+              <div className="min-w-0 overflow-hidden rounded-2xl bg-[#1c0a10]">
+                {lead.cover_url ? (
+                  <img src={lead.cover_url} alt="" className="block h-auto w-full" />
+                ) : (
+                  <div className="aspect-[16/10] w-full bg-[#2a1018]" />
+                )}
               </div>
-            )}
+              <div className="md:pt-2">
+                {lead.published_at && (
+                  <time dateTime={lead.published_at} className="text-sm text-[#7a5b16]">
+                    {formatVinagreDate(lead.published_at)}
+                  </time>
+                )}
+                <h2 className="mt-3 font-display text-4xl leading-[1.08] text-[#1c0a10] transition-colors duration-200 group-hover:text-primary md:text-5xl">
+                  {lead.title}
+                </h2>
+                {lead.excerpt && (
+                  <p className="mt-4 max-w-xl text-lg leading-relaxed text-[#1c0a10]/75">
+                    {lead.excerpt}
+                  </p>
+                )}
+                <p className="mt-6 text-sm font-semibold text-primary">Ler a notícia</p>
+              </div>
+            </Link>
+          )}
 
-            {isError && (
-              <p className="rounded-2xl border border-border bg-cream px-6 py-10 text-center text-muted-foreground">
-                Não foi possível carregar as notícias. Tenta outra vez daqui a pouco.
-              </p>
-            )}
-
-            {!isLoading && !isError && (posts?.length ?? 0) === 0 && (
-              <p className="rounded-2xl border border-border bg-cream px-6 py-10 text-center text-muted-foreground">
-                A primeira notícia está a caminho.
-              </p>
-            )}
-
-            <div className="grid gap-6 md:grid-cols-2">
-              {posts?.map((post) => (
-                <Link
-                  key={post.id}
-                  to={`/exclusivo/${post.slug}`}
-                  className="group overflow-hidden rounded-3xl border border-[#e4c56a]/25 bg-[#1c0a10] text-[#f6efe4] shadow-sm transition-transform duration-300 hover:-translate-y-0.5"
-                >
-                  {post.cover_url ? (
-                    <img
-                      src={post.cover_url}
-                      alt=""
-                      className="aspect-[16/9] w-full object-cover"
-                    />
-                  ) : (
-                    <div className="aspect-[16/9] w-full bg-[#2a1018]" />
-                  )}
-                  <div className="space-y-3 p-5 md:p-6">
-                    <div className="flex items-center justify-between gap-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#e4c56a]">
-                      <span>Exclusivo</span>
-                      <time dateTime={post.published_at ?? undefined}>
-                        {formatDate(post.published_at)}
-                      </time>
-                    </div>
-                    <h3 className="font-display text-2xl leading-tight text-white group-hover:text-[#e4c56a] md:text-3xl">
-                      {post.title}
-                    </h3>
-                    {post.excerpt && (
-                      <p className="line-clamp-3 text-sm leading-relaxed text-[#f6efe4]/75">
-                        {post.excerpt}
-                      </p>
-                    )}
-                  </div>
-                </Link>
+          {rest.length > 0 && (
+            <div className="mt-12 border-t border-[#1c0a10]/10 md:mt-16">
+              {rest.map((post) => (
+                <StoryRow key={post.id} post={post} />
               ))}
             </div>
-          </div>
+          )}
         </section>
       </main>
       <Footer />

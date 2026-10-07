@@ -119,7 +119,7 @@ const Header = () => {
               const accent = "accent" in link && link.accent;
               const isActive = isLinkActive(link.href, isRoute);
               const className = cn(
-                "relative whitespace-nowrap px-3 py-2 text-sm font-medium transition-all duration-300 rounded-full",
+                "relative whitespace-nowrap px-2.5 py-2 text-sm font-medium transition-all duration-300 rounded-full xl:px-3",
                 accent
                   ? "text-[#7a5b16] hover:text-[#5c4310]"
                   : isActive
@@ -152,7 +152,7 @@ const Header = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger
                   className={cn(
-                    "relative inline-flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium outline-none",
+                    "relative inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-2 text-sm font-medium outline-none xl:px-3",
                     moreActive
                       ? "text-primary"
                       : "text-foreground/70 hover:text-foreground",
