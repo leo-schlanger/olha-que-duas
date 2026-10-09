@@ -15,6 +15,7 @@ const ALLOWED = new Set([
   "LI",
   "A",
   "BLOCKQUOTE",
+  "IMG",
 ]);
 
 function sanitizeNode(node: Node): Node | null {
@@ -41,6 +42,14 @@ function sanitizeNode(node: Node): Node | null {
       clean.setAttribute("rel", "noopener noreferrer");
     }
   }
+  if (node.tagName === "IMG") {
+    const src = node.getAttribute("src") ?? "";
+    if (!/^https:/i.test(src)) return null;
+    clean.setAttribute("src", src);
+    clean.setAttribute("alt", node.getAttribute("alt") ?? "");
+    clean.setAttribute("loading", "lazy");
+    return clean;
+  }
   node.childNodes.forEach((child) => {
     const next = sanitizeNode(child);
     if (next) clean.appendChild(next);
@@ -48,7 +57,7 @@ function sanitizeNode(node: Node): Node | null {
   return clean;
 }
 
-/** HTML do editor, limitado às marcas de texto. Corre no browser. */
+/** HTML do editor, limitado às marcas de texto e fotos. Corre no browser. */
 export function sanitizeArticleHtml(html: string): string {
   const parsed = new DOMParser().parseFromString(html, "text/html");
   const root = document.createElement("div");

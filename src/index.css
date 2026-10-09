@@ -117,6 +117,17 @@
     background: #f7f1e4;
   }
 
+  .vinagre-article img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    max-height: 80vh;
+    height: auto;
+    margin: 2.25rem auto;
+    border-radius: 1rem;
+    background: #1c0a10;
+  }
+
   .vinagre-article blockquote p {
     margin: 0;
     font-family: "Cormorant Garamond", serif;
