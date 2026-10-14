@@ -4,6 +4,7 @@ import { Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
+import { CoverFrame } from "@/components/exclusivo/CoverFrame";
 import { ProgramPortrait } from "@/components/exclusivo/VinagrePortrait";
 import { useExclusivePrograms } from "@/hooks/useExclusivePrograms";
 import { useMetaTags, getPageBreadcrumbJsonLd } from "@/hooks/useMetaTags";
@@ -80,38 +81,36 @@ export default function Exclusivo() {
             </p>
           )}
 
-          <div className="mt-10 grid gap-14">
+          <div className="mt-10 grid max-w-3xl gap-12 sm:grid-cols-2 sm:gap-10">
             {(programs ?? []).map((program) => (
               <Link
                 key={program.id}
                 to={exclusivoProgramPath(program.slug)}
-                className="group grid min-w-0 grid-cols-[minmax(0,1fr)] items-center gap-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:gap-12"
+                className="group flex min-w-0 flex-col gap-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               >
-                <div className="min-w-0 overflow-hidden rounded-2xl bg-[#1c0a10]">
-                  {program.cover_url ? (
-                    <img src={program.cover_url} alt="" className="block h-auto w-full" />
-                  ) : (
-                    <div className="flex aspect-[4/5] items-center justify-center bg-[#2a1018] sm:aspect-[16/10]">
-                      <ProgramPortrait
-                        src={program.portrait_url}
-                        alt=""
-                        focus={program.portrait_focus}
-                        size="lg"
-                      />
-                    </div>
-                  )}
-                </div>
+                {program.cover_url ? (
+                  <CoverFrame src={program.cover_url} className="w-full max-w-xs" />
+                ) : (
+                  <div className="flex aspect-[3/4] w-full max-w-xs items-center justify-center rounded-2xl bg-[#2a1018]">
+                    <ProgramPortrait
+                      src={program.portrait_url}
+                      alt=""
+                      focus={program.portrait_focus}
+                      size="lg"
+                    />
+                  </div>
+                )}
                 <div>
                   <p className="text-sm text-[#7a5b16]">{program.author}</p>
-                  <h2 className="mt-2 font-display text-4xl leading-[1.08] text-[#1c0a10] transition-colors duration-200 group-hover:text-primary md:text-5xl">
+                  <h2 className="mt-2 font-display text-4xl leading-[1.08] text-[#1c0a10] transition-colors duration-200 group-hover:text-primary">
                     {program.title}
                   </h2>
                   {program.description && (
-                    <p className="mt-4 max-w-xl text-lg leading-relaxed text-[#1c0a10]/75">
+                    <p className="mt-3 text-base leading-relaxed text-[#1c0a10]/75">
                       {program.description}
                     </p>
                   )}
-                  <p className="mt-6 text-sm font-semibold text-primary">Ver o programa</p>
+                  <p className="mt-4 text-sm font-semibold text-primary">Ver o programa</p>
                 </div>
               </Link>
             ))}
