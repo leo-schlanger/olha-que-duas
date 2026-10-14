@@ -65,17 +65,61 @@
 
   <url>
     <loc>https://www.olhaqueduas.com/exclusivo</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <image:image>
-      <image:loc>https://www.olhaqueduas.com/exclusivo/eduardo-vinagre.jpg</image:loc>
-      <image:title>Exclusivo Olha que Duas — Eduardo Vinagre</image:title>
+      <image:loc>https://www.olhaqueduas.com/exclusivo/curtas-biografias.jpg</image:loc>
+      <image:title>Exclusivo Olha que Duas</image:title>
     </image:image>
   </url>
 
   <url>
-    <loc>https://www.olhaqueduas.com/exclusivo/abel-dias-o-ze-nunca-bateu-na-betty</loc>
+    <loc>https://www.olhaqueduas.com/exclusivo/olha-que-duas-e-eu</loc>
+    <lastmod>2026-10-13</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://www.olhaqueduas.com/exclusivo/eduardo-vinagre.jpg</image:loc>
+      <image:title>Olha que Duas e Eu — Eduardo Vinagre</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://www.olhaqueduas.com/exclusivo/curtas-biografias</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://www.olhaqueduas.com/exclusivo/curtas-biografias.jpg</image:loc>
+      <image:title>Curtas Biografias — Alexandra Serra</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://www.olhaqueduas.com/exclusivo/curtas-biografias/marluce-revoredo-silva</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://www.olhaqueduas.com/exclusivo/marluce-revoredo-silva.jpg</image:loc>
+      <image:title>A reviravolta inacreditável de Marluce Revorêdo Silva</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://www.olhaqueduas.com/exclusivo/curtas-biografias/antonio-sala</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://www.olhaqueduas.com/exclusivo/antonio-sala.jpg</image:loc>
+      <image:title>António Sala, lenda da rádio e da televisão</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://www.olhaqueduas.com/exclusivo/olha-que-duas-e-eu/abel-dias-o-ze-nunca-bateu-na-betty</loc>
     <lastmod>2026-10-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -85,7 +129,84 @@
     </image:image>
   </url>
 
+    <url>
+    <loc>https://www.olhaqueduas.com/exclusivo/olha-que-duas-e-eu/david-antunes-morte-netinho</loc>
+    <lastmod>2026-10-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://jjifjbdfpvgeseqbjpkg.supabase.co/storage/v1/object/public/media-library/vinagre-og-1791915054968111982.jpg</image:loc>
+      <image:title>David Antunes em choque com morte de Netinho: "Descansa em paz, meu querido amigo!"</image:title>
+    </image:image>
+  </url>
+
   <url>
+    <loc>https://www.olhaqueduas.com/exclusivo/olha-que-duas-e-eu/pedro-mourinho-fora-do-now</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://jjifjbdfpvgeseqbjpkg.supabase.co/storage/v1/object/public/media-library/vinagre-og-1791828952801019418.jpg</image:loc>
+      <image:title>Pedro Mourinho fora do NOW: "Decidi sair. Não vou..."</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://www.olhaqueduas.com/exclusivo/olha-que-duas-e-eu/papa-leao-xiv-nodulo-pulmao-vai-ser-operado</loc>
+    <lastmod>2026-10-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://jjifjbdfpvgeseqbjpkg.supabase.co/storage/v1/object/public/media-library/vinagre-og-1791722624245102701.jpg</image:loc>
+      <image:title>"Rezem por mim!" Papa Leão XIV anuncia nódulo no pulmão e vai ser operado</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://www.olhaqueduas.com/exclusivo/olha-que-duas-e-eu/susana-da-silva-tribunal-antonio-pedro-cerdeira-romance-comandante-melides</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://jjifjbdfpvgeseqbjpkg.supabase.co/storage/v1/object/public/media-library/vinagre-og-1791656899047672848.jpg</image:loc>
+      <image:title>Susana da Silva, em tribunal por violência de António Pedro Cerdeira, assume romance com comandante milionário de Melides</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://www.olhaqueduas.com/exclusivo/olha-que-duas-e-eu/cristina-ferreira-joao-monteiro-realizam-sonho-fabio-marques-np4game</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://jjifjbdfpvgeseqbjpkg.supabase.co/storage/v1/object/public/media-library/vinagre-og-1791571381754742984.jpg</image:loc>
+      <image:title>Cristina Ferreira e João Monteiro realizam sonho de Fábio Marques, da NP4 Game, e filho Tiago também é presenteado</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://www.olhaqueduas.com/exclusivo/olha-que-duas-e-eu/biografia-diogo-jota-livro-oficial-liverpool</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://jjifjbdfpvgeseqbjpkg.supabase.co/storage/v1/object/public/media-library/vinagre-og-1791479419119.jpg</image:loc>
+      <image:title>Biografia de Diogo Jota vai ser lançada em Inglaterra: veja em primeira mão a capa do livro oficial do Liverpool</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://www.olhaqueduas.com/exclusivo/olha-que-duas-e-eu/ronaldo-nao-voltara-a-ser-cr7</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://jjifjbdfpvgeseqbjpkg.supabase.co/storage/v1/object/public/media-library/vinagre-og-1791397809511.jpg</image:loc>
+      <image:title>Jorge Jesus: "Ronaldo não voltará a ser CR7, o mentiroso não o voltará a convocar"</image:title>
+    </image:image>
+  </url>
+
+<url>
     <loc>https://www.olhaqueduas.com/loja</loc>
     <lastmod>2026-03-24</lastmod>
     <changefreq>weekly</changefreq>

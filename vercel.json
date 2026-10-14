@@ -16,6 +16,13 @@
       ]
     }
   ],
+  "redirects": [
+    {
+      "source": "/exclusivo/:slug(abel-dias-o-ze-nunca-bateu-na-betty|ronaldo-nao-voltara-a-ser-cr7|biografia-diogo-jota-livro-oficial-liverpool|cristina-ferreira-joao-monteiro-realizam-sonho-fabio-marques-np4game|susana-da-silva-tribunal-antonio-pedro-cerdeira-romance-comandante-melides|papa-leao-xiv-nodulo-pulmao-vai-ser-operado|pedro-mourinho-fora-do-now|david-antunes-morte-netinho)",
+      "destination": "/exclusivo/olha-que-duas-e-eu/:slug",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     { "source": "/sitemap-historias.xml", "destination": "/api/sitemap-historias" },
     { "source": "/((?!api/).*)", "destination": "/" }

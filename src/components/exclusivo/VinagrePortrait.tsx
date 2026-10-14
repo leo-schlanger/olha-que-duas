@@ -1,13 +1,19 @@
 import { cn } from "@/lib/utils";
 
 /**
- * Retrato do Eduardo Vinagre, recortado da capa do programa.
- * O anel dourado é desenhado aqui. A foto original do cartaz não entra.
+ * Retrato circular do autor do programa. O anel dourado é desenhado aqui.
+ * `focus` é um object-position CSS ("center" ou "center 64%").
  */
-export function VinagrePortrait({
+export function ProgramPortrait({
+  src,
+  alt,
+  focus = "center",
   size = "lg",
   className,
 }: {
+  src: string;
+  alt: string;
+  focus?: string;
   size?: "sm" | "md" | "lg";
   className?: string;
 }) {
@@ -30,13 +36,16 @@ export function VinagrePortrait({
           photo,
         )}
       >
-        <img
-          src="/exclusivo/eduardo-vinagre.jpg"
-          alt="Eduardo Vinagre"
-          width={size === "lg" ? 224 : size === "md" ? 96 : 56}
-          height={size === "lg" ? 224 : size === "md" ? 96 : 56}
-          className="h-full w-full scale-110 object-cover object-[center_64%]"
-        />
+        {src ? (
+          <img
+            src={src}
+            alt={alt}
+            width={size === "lg" ? 224 : size === "md" ? 96 : 56}
+            height={size === "lg" ? 224 : size === "md" ? 96 : 56}
+            className="h-full w-full scale-110 object-cover"
+            style={{ objectPosition: focus }}
+          />
+        ) : null}
       </span>
     </div>
   );

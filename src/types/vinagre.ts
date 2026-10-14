@@ -1,3 +1,12 @@
+export interface VinagreProgramRef {
+  slug: string;
+  title: string;
+  author: string;
+  portrait_url: string;
+  portrait_focus: string;
+  tagline: string;
+}
+
 export interface VinagrePost {
   id: string;
   slug: string;
@@ -10,6 +19,8 @@ export interface VinagrePost {
   published_at: string | null;
   created_at: string;
   updated_at: string;
+  program_id: string;
+  program: VinagreProgramRef | null;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -19,6 +30,23 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 function str(row: Record<string, unknown>, key: string): string | null {
   const value = row[key];
   return typeof value === "string" ? value : null;
+}
+
+function parseProgramRef(value: unknown): VinagreProgramRef | null {
+  const row = Array.isArray(value) ? value[0] : value;
+  if (!isRecord(row)) return null;
+  const slug = str(row, "slug");
+  const title = str(row, "title");
+  const author = str(row, "author");
+  if (!slug || !title || !author) return null;
+  return {
+    slug,
+    title,
+    author,
+    portrait_url: str(row, "portrait_url") ?? "",
+    portrait_focus: str(row, "portrait_focus") ?? "center",
+    tagline: str(row, "tagline") ?? "",
+  };
 }
 
 export function parseVinagrePost(value: unknown): VinagrePost | null {
@@ -49,6 +77,8 @@ export function parseVinagrePost(value: unknown): VinagrePost | null {
     excerpt: typeof excerpt === "string" ? excerpt : "",
     cover_url: typeof cover === "string" ? cover : "",
     og_image_url: typeof ogImage === "string" ? ogImage : "",
+    program_id: str(value, "program_id") ?? "",
+    program: parseProgramRef(value.program),
   };
 }
 
@@ -56,5 +86,5 @@ export const VINAGRE_COLUMN = {
   navLabel: "Exclusivo Olha que Duas",
   title: "Olha que Duas e Eu",
   author: "Eduardo Vinagre",
-  path: "/exclusivo",
+  path: "/exclusivo/olha-que-duas-e-eu",
 } as const;

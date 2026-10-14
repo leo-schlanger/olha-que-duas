@@ -261,47 +261,46 @@ export default async function middleware(request: Request): Promise<Response | u
   }
 
   if (path === '/exclusivo') {
-    let description = 'A coluna exclusiva de Eduardo Vinagre no Olha que Duas. Notícias, bastidores e o que não sai no resto da imprensa.';
-    let image = 'https://www.olhaqueduas.com/exclusivo/abel-dias-betty-og.jpg';
-    let imageAlt = 'Exclusivo Olha que Duas';
+    const description = 'Os programas exclusivos do Olha que Duas. Olha que Duas e Eu, com Eduardo Vinagre, e Curtas Biografias, com Alexandra Serra.';
+    let image = 'https://www.olhaqueduas.com/exclusivo/curtas-biografias-og.jpg';
     try {
       const rows = await fetchSupabase(
         'vinagre_posts',
-        'select=title,excerpt,cover_url,og_image_url&is_published=eq.true&order=published_at.desc.nullslast&limit=1',
+        'select=og_image_url,cover_url&is_published=eq.true&order=published_at.desc.nullslast&limit=1',
       );
       const post = Array.isArray(rows) ? rows[0] : undefined;
-      if (post) {
-        image = shareImage(post);
-        if (post.excerpt) description = String(post.excerpt);
-        if (post.title) imageAlt = String(post.title);
-      }
-    } catch { /* fica a capa da crónica */ }
+      if (post) image = shareImage(post);
+    } catch { /* fica a capa do programa */ }
     return html({
       title: 'Exclusivo Olha que Duas',
       description,
       image,
-      imageAlt,
+      imageAlt: 'Exclusivo Olha que Duas',
       imageWidth: 1200,
       imageHeight: 630,
       url: 'https://www.olhaqueduas.com/exclusivo',
-      author: 'Eduardo Vinagre',
       section: 'Exclusivo Olha que Duas',
     });
   }
 
-  const exclusivoMatch = path.match(/^\/exclusivo\/([^/]+)$/);
-  if (exclusivoMatch) {
-    const slug = exclusivoMatch[1];
-    if (!SLUG_REGEX.test(slug) || slug.length > 140) return;
+  const postMatch = path.match(/^\/exclusivo\/([^/]+)\/([^/]+)$/);
+  if (postMatch) {
+    const programSlug = postMatch[1];
+    const postSlug = postMatch[2];
+    if (!SLUG_REGEX.test(programSlug) || !SLUG_REGEX.test(postSlug) || postSlug.length > 140) return;
     try {
       const rows = await fetchSupabase(
         'vinagre_posts',
-        `slug=eq.${encodeURIComponent(slug)}&is_published=eq.true`,
+        `select=title,excerpt,content,cover_url,og_image_url,published_at,updated_at,exclusive_programs!inner(slug,title,author)&slug=eq.${encodeURIComponent(postSlug)}&is_published=eq.true&exclusive_programs.slug=eq.${encodeURIComponent(programSlug)}`,
       );
       const post = Array.isArray(rows) ? rows[0] : undefined;
       if (!post) return;
+      const embedded = post.exclusive_programs;
+      const program = Array.isArray(embedded) ? embedded[0] : embedded;
+      const author = program && program.author ? String(program.author) : 'Olha que Duas';
+      const section = program && program.title ? String(program.title) : 'Exclusivo Olha que Duas';
       const image = shareImage(post);
-      const pageUrl = `https://www.olhaqueduas.com/exclusivo/${slug}`;
+      const pageUrl = `https://www.olhaqueduas.com/exclusivo/${programSlug}/${postSlug}`;
       return html({
         title: String(post.title),
         description: String(post.excerpt || post.title),
@@ -312,8 +311,8 @@ export default async function middleware(request: Request): Promise<Response | u
         url: pageUrl,
         type: 'article',
         publishedTime: post.published_at || undefined,
-        author: 'Eduardo Vinagre',
-        section: 'Exclusivo Olha que Duas',
+        author,
+        section,
         body: `<article><h1>${escapeHtml(String(post.title))}</h1>${stripScripts(String(post.content || ''))}</article>`,
         jsonLd: {
           '@context': 'https://schema.org',
@@ -324,8 +323,8 @@ export default async function middleware(request: Request): Promise<Response | u
           datePublished: post.published_at || undefined,
           dateModified: post.updated_at || post.published_at || undefined,
           inLanguage: 'pt-PT',
-          articleSection: 'Exclusivo Olha que Duas',
-          author: { '@type': 'Person', name: 'Eduardo Vinagre' },
+          articleSection: section,
+          author: { '@type': 'Person', name: author },
           publisher: {
             '@type': 'Organization',
             name: 'Olha que Duas',
@@ -334,6 +333,64 @@ export default async function middleware(request: Request): Promise<Response | u
           mainEntityOfPage: pageUrl,
         },
       });
+    } catch { return; }
+  }
+
+  const exclusivoMatch = path.match(/^\/exclusivo\/([^/]+)$/);
+  if (exclusivoMatch) {
+    const slug = exclusivoMatch[1];
+    if (!SLUG_REGEX.test(slug) || slug.length > 140) return;
+    try {
+      const programs = await fetchSupabase(
+        'exclusive_programs',
+        `select=title,author,description,cover_url&slug=eq.${encodeURIComponent(slug)}&is_published=eq.true`,
+      );
+      const program = Array.isArray(programs) ? programs[0] : undefined;
+      if (program) {
+        let image = program.cover_url
+          ? shareImage({ cover_url: program.cover_url })
+          : 'https://www.olhaqueduas.com/exclusivo/curtas-biografias-og.jpg';
+        let description = String(program.description || program.title);
+        try {
+          const leads = await fetchSupabase(
+            'vinagre_posts',
+            `select=excerpt,cover_url,og_image_url,exclusive_programs!inner(slug)&is_published=eq.true&exclusive_programs.slug=eq.${encodeURIComponent(slug)}&order=published_at.desc.nullslast&limit=1`,
+          );
+          const lead = Array.isArray(leads) ? leads[0] : undefined;
+          if (lead) {
+            image = shareImage(lead);
+            if (lead.excerpt) description = String(lead.excerpt);
+          }
+        } catch { /* fica a descrição do programa */ }
+        return html({
+          title: `${program.title} — ${program.author}`,
+          description,
+          image,
+          imageAlt: String(program.title),
+          imageWidth: 1200,
+          imageHeight: 630,
+          url: `https://www.olhaqueduas.com/exclusivo/${slug}`,
+          author: String(program.author),
+          section: 'Exclusivo Olha que Duas',
+        });
+      }
+
+      const legacy = await fetchSupabase(
+        'vinagre_posts',
+        `select=slug,exclusive_programs!inner(slug)&slug=eq.${encodeURIComponent(slug)}&is_published=eq.true`,
+      );
+      const oldPost = Array.isArray(legacy) ? legacy[0] : undefined;
+      const embedded = oldPost && oldPost.exclusive_programs;
+      const owner = Array.isArray(embedded) ? embedded[0] : embedded;
+      if (oldPost && owner && owner.slug) {
+        return new Response(null, {
+          status: 301,
+          headers: {
+            Location: `https://www.olhaqueduas.com/exclusivo/${owner.slug}/${oldPost.slug}`,
+            'Cache-Control': 's-maxage=86400',
+          },
+        });
+      }
     } catch { return; }
   }
 

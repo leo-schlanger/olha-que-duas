@@ -1,7 +1,7 @@
 // Olha que Duas - Service Worker
 // PWA com cache inteligente
 
-const CACHE_NAME = 'olhaqueduas-v8';
+const CACHE_NAME = 'olhaqueduas-v9';
 const OFFLINE_URL = '/offline.html';
 
 // Assets para cache imediato (instalar)

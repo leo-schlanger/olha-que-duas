@@ -5,15 +5,19 @@ import { parseVinagrePost, type VinagrePost } from "@/types/vinagre";
 const liveFilter = () =>
   `published_at.is.null,published_at.lte.${new Date().toISOString()}`;
 
-export function useVinagrePosts() {
+const POST_COLUMNS =
+  "*, program:exclusive_programs!inner(slug, title, author, portrait_url, portrait_focus, tagline)";
+
+export function useProgramPosts(programId: string | undefined) {
   return useQuery({
-    queryKey: ["vinagre-posts"],
+    queryKey: ["vinagre-posts", programId ?? ""],
     queryFn: async (): Promise<VinagrePost[]> => {
       const supabase = getSupabase();
-      if (!supabase) return [];
+      if (!supabase || !programId) return [];
       const { data, error } = await supabase
         .from("vinagre_posts")
-        .select("*")
+        .select(POST_COLUMNS)
+        .eq("program_id", programId)
         .eq("is_published", true)
         .or(liveFilter())
         .order("published_at", { ascending: false });
@@ -22,7 +26,7 @@ export function useVinagrePosts() {
         .map(parseVinagrePost)
         .filter((post): post is VinagrePost => post !== null);
     },
-    enabled: isSupabaseConfigured(),
+    enabled: isSupabaseConfigured() && Boolean(programId),
     staleTime: 60_000,
   });
 }
@@ -35,7 +39,7 @@ export function useVinagrePost(slug: string) {
       if (!supabase || !slug) return null;
       const { data, error } = await supabase
         .from("vinagre_posts")
-        .select("*")
+        .select(POST_COLUMNS)
         .eq("slug", slug)
         .eq("is_published", true)
         .or(liveFilter())

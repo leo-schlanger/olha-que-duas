@@ -1,39 +1,44 @@
 import { useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { ArrowLeft, Calendar, Clock, Loader2, Share2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
 import { Button } from "@/components/ui/button";
 import { StoryRow } from "@/components/exclusivo/StoryRow";
-import { formatVinagreDate } from "@/lib/vinagreDate";
-import { VinagrePortrait } from "@/components/exclusivo/VinagrePortrait";
-import { useVinagrePost, useVinagrePosts } from "@/hooks/useVinagrePosts";
+import { ProgramPortrait } from "@/components/exclusivo/VinagrePortrait";
+import { useProgramPosts, useVinagrePost } from "@/hooks/useVinagrePosts";
 import { getPageBreadcrumbJsonLd, useMetaTags } from "@/hooks/useMetaTags";
 import { articleShareImage, readingMinutes, sanitizeArticleHtml } from "@/lib/articleHtml";
-import { VINAGRE_COLUMN } from "@/types/vinagre";
+import { exclusivoPostPath, exclusivoProgramPath } from "@/lib/exclusivoPaths";
+import { formatVinagreDate } from "@/lib/vinagreDate";
+import { EXCLUSIVO_HUB } from "@/types/exclusivo";
 
 export default function ExclusivoPost() {
-  const { slug = "" } = useParams();
-  const { data: post, isLoading, isError } = useVinagrePost(slug);
-  const { data: posts } = useVinagrePosts();
-  const others = (posts ?? []).filter((item) => item.slug !== slug).slice(0, 3);
-  const pageUrl = `https://www.olhaqueduas.com/exclusivo/${slug}`;
+  const { programSlug = "", postSlug = "" } = useParams();
+  const { data: post, isLoading, isError } = useVinagrePost(postSlug);
+  const program = post?.program ?? null;
+  const { data: posts } = useProgramPosts(post?.program_id || undefined);
+  const others = (posts ?? []).filter((item) => item.slug !== postSlug).slice(0, 3);
+  const canonicalProgram = program?.slug || programSlug;
+  const pageUrl = `https://www.olhaqueduas.com${exclusivoPostPath(canonicalProgram, postSlug)}`;
   const shareImage = post ? articleShareImage(post) : undefined;
+  const section = program?.title || EXCLUSIVO_HUB.label;
+  const author = program?.author || EXCLUSIVO_HUB.label;
 
   useMetaTags({
-    title: post?.title ?? VINAGRE_COLUMN.navLabel,
-    description: post?.excerpt || post?.title || VINAGRE_COLUMN.navLabel,
+    title: post?.title ?? EXCLUSIVO_HUB.label,
+    description: post?.excerpt || post?.title || EXCLUSIVO_HUB.label,
     url: pageUrl,
     image: shareImage,
-    imageAlt: post?.title ?? VINAGRE_COLUMN.navLabel,
+    imageAlt: post?.title ?? EXCLUSIVO_HUB.label,
     imageWidth: 1200,
     imageHeight: 630,
     type: "article",
     publishedTime: post?.published_at ?? undefined,
     modifiedTime: post?.updated_at ?? undefined,
-    author: VINAGRE_COLUMN.author,
-    section: VINAGRE_COLUMN.navLabel,
+    author,
+    section,
     jsonLd: post
       ? [
           {
@@ -45,8 +50,8 @@ export default function ExclusivoPost() {
             datePublished: post.published_at ?? undefined,
             dateModified: post.updated_at,
             inLanguage: "pt-PT",
-            articleSection: VINAGRE_COLUMN.navLabel,
-            author: { "@type": "Person", name: VINAGRE_COLUMN.author },
+            articleSection: section,
+            author: { "@type": "Person", name: author },
             publisher: {
               "@type": "Organization",
               name: "Olha que Duas",
@@ -58,7 +63,11 @@ export default function ExclusivoPost() {
             mainEntityOfPage: pageUrl,
           },
           getPageBreadcrumbJsonLd(post.title, pageUrl, [
-            { name: VINAGRE_COLUMN.navLabel, url: "https://www.olhaqueduas.com/exclusivo" },
+            { name: EXCLUSIVO_HUB.label, url: EXCLUSIVO_HUB.url },
+            {
+              name: section,
+              url: `https://www.olhaqueduas.com${exclusivoProgramPath(canonicalProgram)}`,
+            },
           ]),
         ]
       : undefined,
@@ -66,7 +75,11 @@ export default function ExclusivoPost() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [slug]);
+  }, [programSlug, postSlug]);
+
+  if (post && program && program.slug !== programSlug) {
+    return <Navigate to={exclusivoPostPath(program.slug, post.slug)} replace />;
+  }
 
   const share = async () => {
     const url = window.location.href;
@@ -88,11 +101,11 @@ export default function ExclusivoPost() {
         <article className="container mx-auto px-4 pb-20 sm:px-6">
           <div className="mx-auto max-w-3xl">
             <Link
-              to="/exclusivo"
+              to={program ? exclusivoProgramPath(program.slug) : EXCLUSIVO_HUB.path}
               className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-[#7a5b16] hover:text-[#5c4310]"
             >
               <ArrowLeft className="h-4 w-4" />
-              Exclusivo Olha que Duas
+              {program?.title || EXCLUSIVO_HUB.label}
             </Link>
 
             {isLoading && (
@@ -106,28 +119,31 @@ export default function ExclusivoPost() {
               <div className="px-6 py-16 text-center">
                 <p className="font-display text-3xl text-[#1c0a10]">Esta notícia não está disponível.</p>
                 <Button asChild className="mt-6 bg-[#1c0a10] text-[#f6efe4] hover:bg-[#1c0a10]/90">
-                  <Link to="/exclusivo">Ver as notícias</Link>
+                  <Link to={EXCLUSIVO_HUB.path}>Ver os programas</Link>
                 </Button>
               </div>
             )}
 
-            {post && (
+            {post && program && (
               <>
                 <h1 className="font-display text-4xl leading-[1.08] text-[#1c0a10] md:text-6xl">
                   {post.title}
                 </h1>
                 {post.excerpt && (
-                  <p className="mt-5 max-w-2xl text-xl leading-relaxed text-[#1c0a10]/75">
-                    {post.excerpt}
-                  </p>
+                  <p className="mt-5 max-w-2xl text-xl leading-relaxed text-[#1c0a10]/75">{post.excerpt}</p>
                 )}
 
                 <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-y border-[#1c0a10]/10 py-4">
                   <div className="flex items-center gap-3">
-                    <VinagrePortrait size="sm" />
+                    <ProgramPortrait
+                      src={program.portrait_url}
+                      alt=""
+                      focus={program.portrait_focus}
+                      size="sm"
+                    />
                     <div>
-                      <p className="font-medium text-[#1c0a10]">{VINAGRE_COLUMN.author}</p>
-                      <p className="text-sm text-[#7a5b16]">{VINAGRE_COLUMN.title}</p>
+                      <p className="font-medium text-[#1c0a10]">{program.author}</p>
+                      <p className="text-sm text-[#7a5b16]">{program.title}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -163,9 +179,9 @@ export default function ExclusivoPost() {
 
                 {others.length > 0 && (
                   <div className="mt-16 border-t border-[#1c0a10]/10 pt-8">
-                    <h2 className="font-display text-3xl text-[#1c0a10]">Nesta coluna</h2>
+                    <h2 className="font-display text-3xl text-[#1c0a10]">Neste programa</h2>
                     {others.map((item) => (
-                      <StoryRow key={item.id} post={item} />
+                      <StoryRow key={item.id} post={item} programSlug={program.slug} />
                     ))}
                   </div>
                 )}

@@ -40,6 +40,7 @@ const FAQ = lazy(() => import("./pages/FAQ"));
 const Auditoria = lazy(() => import("./pages/Auditoria"));
 const RockInRio = lazy(() => import("./pages/RockInRio"));
 const Exclusivo = lazy(() => import("./pages/Exclusivo"));
+const ExclusivoPrograma = lazy(() => import("./pages/ExclusivoPrograma"));
 const ExclusivoPost = lazy(() => import("./pages/ExclusivoPost"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
@@ -88,7 +89,8 @@ const App = () => (
               <Route path="/noticias" element={<Blog />} />
               <Route path="/noticias/:slug" element={<BlogPost />} />
               <Route path="/exclusivo" element={<Exclusivo />} />
-              <Route path="/exclusivo/:slug" element={<ExclusivoPost />} />
+              <Route path="/exclusivo/:programSlug" element={<ExclusivoPrograma />} />
+              <Route path="/exclusivo/:programSlug/:postSlug" element={<ExclusivoPost />} />
               <Route path="/galeria" element={<Gallery />} />
               <Route path="/galeria/:slug" element={<GalleryAlbum />} />
               <Route path="/loja" element={<Vendas />} />

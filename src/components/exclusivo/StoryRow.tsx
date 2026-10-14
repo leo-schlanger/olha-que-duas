@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { formatVinagreDate } from "@/lib/vinagreDate";
+import { exclusivoPostPath } from "@/lib/exclusivoPaths";
 import type { VinagrePost } from "@/types/vinagre";
 
 function Cover({ url }: { url: string }) {
@@ -10,10 +11,10 @@ function Cover({ url }: { url: string }) {
 }
 
 /** Notícia seguinte na coluna. A foto fica inteira, mesmo quando é quadrada. */
-export function StoryRow({ post }: { post: VinagrePost }) {
+export function StoryRow({ post, programSlug }: { post: VinagrePost; programSlug: string }) {
   return (
     <Link
-      to={`/exclusivo/${post.slug}`}
+      to={exclusivoPostPath(programSlug, post.slug)}
       className="group grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-4 border-b border-[#1c0a10]/10 py-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-6 sm:py-6"
     >
       <div className="aspect-square overflow-hidden rounded-xl bg-[#1c0a10] sm:aspect-[16/10]">
