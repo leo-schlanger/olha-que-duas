@@ -1,17 +1,25 @@
 import { Link } from "react-router-dom";
-import { CoverFrame } from "@/components/exclusivo/CoverFrame";
 import { formatVinagreDate } from "@/lib/vinagreDate";
 import { exclusivoPostPath } from "@/lib/exclusivoPaths";
 import type { VinagrePost } from "@/types/vinagre";
 
-/** Next piece in the column. The thumb uses the same 3:4 frame as the other covers. */
+function Cover({ url }: { url: string }) {
+  if (!url) {
+    return <div className="h-full w-full bg-[#2a1018]" />;
+  }
+  return <img src={url} alt="" className="h-full w-full object-contain" />;
+}
+
+/** Notícia seguinte na coluna. A foto fica inteira, mesmo quando é quadrada. */
 export function StoryRow({ post, programSlug }: { post: VinagrePost; programSlug: string }) {
   return (
     <Link
       to={exclusivoPostPath(programSlug, post.slug)}
-      className="group grid grid-cols-[6.25rem_minmax(0,1fr)] items-center gap-4 border-b border-[#1c0a10]/10 py-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:grid-cols-[8.5rem_minmax(0,1fr)] sm:gap-6 sm:py-6"
+      className="group grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-4 border-b border-[#1c0a10]/10 py-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-6 sm:py-6"
     >
-      <CoverFrame src={post.cover_url} className="rounded-xl" />
+      <div className="aspect-square overflow-hidden rounded-xl bg-[#1c0a10] sm:aspect-[16/10]">
+        <Cover url={post.cover_url} />
+      </div>
       <div className="min-w-0">
         {post.published_at && (
           <time dateTime={post.published_at} className="text-sm text-[#7a5b16]">

@@ -5,7 +5,6 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
 import { Button } from "@/components/ui/button";
-import { CoverFrame } from "@/components/exclusivo/CoverFrame";
 import { StoryRow } from "@/components/exclusivo/StoryRow";
 import { ProgramPortrait } from "@/components/exclusivo/VinagrePortrait";
 import { useProgramPosts, useVinagrePost } from "@/hooks/useVinagrePosts";
@@ -166,10 +165,10 @@ export default function ExclusivoPost() {
                 </div>
 
                 {post.cover_url && (
-                  <CoverFrame
+                  <img
                     src={post.cover_url}
                     alt={post.title}
-                    className="mx-auto mt-8 w-full max-w-sm"
+                    className="mt-8 h-auto w-full max-w-full rounded-2xl bg-[#1c0a10] object-contain"
                   />
                 )}
 

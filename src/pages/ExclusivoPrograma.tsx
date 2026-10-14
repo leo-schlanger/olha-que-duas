@@ -4,7 +4,6 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
-import { CoverFrame } from "@/components/exclusivo/CoverFrame";
 import { StoryRow } from "@/components/exclusivo/StoryRow";
 import { ProgramPortrait } from "@/components/exclusivo/VinagrePortrait";
 import { useExclusiveProgram } from "@/hooks/useExclusivePrograms";
@@ -128,10 +127,16 @@ export default function ExclusivoPrograma() {
           {program && lead && (
             <Link
               to={exclusivoPostPath(program.slug, lead.slug)}
-              className="group mt-8 grid min-w-0 grid-cols-[minmax(0,1fr)] items-center gap-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary md:mt-10 md:grid-cols-[20rem_minmax(0,1fr)] md:gap-12"
+              className="group mt-8 grid min-w-0 grid-cols-[minmax(0,1fr)] items-start gap-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary md:mt-10 md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] md:gap-12"
             >
-              <CoverFrame src={lead.cover_url} className="mx-auto w-full max-w-xs md:max-w-none" />
-              <div>
+              <div className="min-w-0 overflow-hidden rounded-2xl bg-[#1c0a10]">
+                {lead.cover_url ? (
+                  <img src={lead.cover_url} alt="" className="block h-auto w-full" />
+                ) : (
+                  <div className="aspect-[16/10] w-full bg-[#2a1018]" />
+                )}
+              </div>
+              <div className="md:pt-2">
                 {lead.published_at && (
                   <time dateTime={lead.published_at} className="text-sm text-[#7a5b16]">
                     {formatVinagreDate(lead.published_at)}
