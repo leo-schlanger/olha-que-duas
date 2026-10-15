@@ -81,7 +81,7 @@ export default function Exclusivo() {
             </p>
           )}
 
-          <div className="mt-10 grid max-w-3xl gap-12 sm:grid-cols-2 sm:gap-10">
+          <div className="mt-10 grid gap-12 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3 lg:gap-10">
             {(programs ?? []).map((program) => (
               <Link
                 key={program.id}
@@ -89,9 +89,9 @@ export default function Exclusivo() {
                 className="group flex min-w-0 flex-col gap-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               >
                 {program.cover_url ? (
-                  <CoverFrame src={program.cover_url} className="w-full max-w-xs" />
+                  <CoverFrame src={program.cover_url} className="w-full" />
                 ) : (
-                  <div className="flex aspect-[3/4] w-full max-w-xs items-center justify-center rounded-2xl bg-[#2a1018]">
+                  <div className="flex aspect-[3/4] w-full items-center justify-center rounded-2xl bg-[#2a1018]">
                     <ProgramPortrait
                       src={program.portrait_url}
                       alt=""
@@ -102,7 +102,7 @@ export default function Exclusivo() {
                 )}
                 <div>
                   <p className="text-sm text-[#7a5b16]">{program.author}</p>
-                  <h2 className="mt-2 font-display text-4xl leading-[1.08] text-[#1c0a10] transition-colors duration-200 group-hover:text-primary">
+                  <h2 className="mt-2 font-display text-3xl leading-[1.08] lg:text-4xl text-[#1c0a10] transition-colors duration-200 group-hover:text-primary">
                     {program.title}
                   </h2>
                   {program.description && (
