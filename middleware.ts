@@ -117,6 +117,20 @@ function html(meta: Meta): Response {
   });
 }
 
+// Exclusivo slug that does not exist: a real 404 for crawlers instead of the
+// SPA's 200 (soft 404).
+function notFound(url: string): Response {
+  return new Response(`<!DOCTYPE html><html lang="pt-PT"><head>
+    <meta charset="utf-8">
+    <title>Página não encontrada | Olha que Duas</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="${escapeHtml(url)}">
+  </head><body><h1>Página não encontrada</h1><p><a href="https://www.olhaqueduas.com/exclusivo">Ver os programas do Exclusivo</a></p></body></html>`, {
+    status: 404,
+    headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 's-maxage=300' },
+  });
+}
+
 async function fetchSupabase(table: string, query: string) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${query}`, {
     headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
@@ -293,8 +307,9 @@ export default async function middleware(request: Request): Promise<Response | u
         'vinagre_posts',
         `select=title,excerpt,content,cover_url,og_image_url,published_at,updated_at,exclusive_programs!inner(slug,title,author)&slug=eq.${encodeURIComponent(postSlug)}&is_published=eq.true&exclusive_programs.slug=eq.${encodeURIComponent(programSlug)}`,
       );
-      const post = Array.isArray(rows) ? rows[0] : undefined;
-      if (!post) return;
+      if (!Array.isArray(rows)) return;
+      const post = rows[0];
+      if (!post) return notFound(`https://www.olhaqueduas.com${path}`);
       const embedded = post.exclusive_programs;
       const program = Array.isArray(embedded) ? embedded[0] : embedded;
       const author = program && program.author ? String(program.author) : 'Olha que Duas';
@@ -343,25 +358,23 @@ export default async function middleware(request: Request): Promise<Response | u
     try {
       const programs = await fetchSupabase(
         'exclusive_programs',
-        `select=title,author,description,cover_url&slug=eq.${encodeURIComponent(slug)}&is_published=eq.true`,
+        `select=title,author,tagline,description,cover_url&slug=eq.${encodeURIComponent(slug)}&is_published=eq.true`,
       );
       const program = Array.isArray(programs) ? programs[0] : undefined;
       if (program) {
         let image = program.cover_url
           ? shareImage({ cover_url: program.cover_url })
           : 'https://www.olhaqueduas.com/exclusivo/curtas-biografias-og.jpg';
-        let description = String(program.description || program.title);
+        // The program's own description; the latest post only lends its 1200×630 image.
+        const description = String(program.description || program.tagline || program.title);
         try {
           const leads = await fetchSupabase(
             'vinagre_posts',
-            `select=excerpt,cover_url,og_image_url,exclusive_programs!inner(slug)&is_published=eq.true&exclusive_programs.slug=eq.${encodeURIComponent(slug)}&order=published_at.desc.nullslast&limit=1`,
+            `select=cover_url,og_image_url,exclusive_programs!inner(slug)&is_published=eq.true&exclusive_programs.slug=eq.${encodeURIComponent(slug)}&order=published_at.desc.nullslast&limit=1`,
           );
           const lead = Array.isArray(leads) ? leads[0] : undefined;
-          if (lead) {
-            image = shareImage(lead);
-            if (lead.excerpt) description = String(lead.excerpt);
-          }
-        } catch { /* fica a descrição do programa */ }
+          if (lead) image = shareImage(lead);
+        } catch { /* fica a capa do programa */ }
         return html({
           title: `${program.title} — ${program.author}`,
           description,
@@ -391,6 +404,7 @@ export default async function middleware(request: Request): Promise<Response | u
           },
         });
       }
+      if (Array.isArray(programs) && Array.isArray(legacy)) return notFound(`https://www.olhaqueduas.com${path}`);
     } catch { return; }
   }
 

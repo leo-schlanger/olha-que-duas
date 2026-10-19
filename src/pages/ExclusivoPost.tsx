@@ -34,6 +34,7 @@ export default function ExclusivoPost() {
     imageAlt: post?.title ?? EXCLUSIVO_HUB.label,
     imageWidth: 1200,
     imageHeight: 630,
+    noindex: !isLoading && !isError && !post,
     type: "article",
     publishedTime: post?.published_at ?? undefined,
     modifiedTime: post?.updated_at ?? undefined,

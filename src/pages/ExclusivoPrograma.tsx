@@ -30,9 +30,12 @@ export default function ExclusivoPrograma() {
     ? articleShareImage(lead)
     : program?.cover_url || "https://www.olhaqueduas.com/exclusivo/curtas-biografias-og.jpg";
 
+  const missing = programQuery.isSuccess && !program && legacyQuery.isSuccess && !legacyQuery.data;
+
   useMetaTags({
     title: program ? `${program.title} — ${program.author}` : EXCLUSIVO_HUB.label,
-    description: lead?.excerpt || program?.description || EXCLUSIVO_HUB.description,
+    description: program?.description || program?.tagline || EXCLUSIVO_HUB.description,
+    noindex: missing,
     url: pageUrl,
     image: shareImage,
     imageAlt: lead?.title || program?.title || EXCLUSIVO_HUB.label,
@@ -68,7 +71,6 @@ export default function ExclusivoPrograma() {
   }
 
   const loading = programQuery.isLoading || (Boolean(program) && postsQuery.isLoading) || legacyQuery.isLoading;
-  const missing = programQuery.isSuccess && !program && legacyQuery.isSuccess && !legacyQuery.data;
 
   return (
     <div className="min-h-screen bg-[#f6f1e8]">
