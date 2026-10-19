@@ -156,6 +156,17 @@ export default async function middleware(request: Request): Promise<Response | u
     // return handleStories(path, isSearchCrawler);
   // }
 
+  // One canonical form for every visitor: /Exclusivo/Mente-Aberta/ -> /exclusivo/mente-aberta.
+  if (/^\/exclusivo/i.test(path)) {
+    const canonical = path.toLowerCase().replace(/\/+$/, '') || '/';
+    if (canonical !== path) {
+      return new Response(null, {
+        status: 301,
+        headers: { Location: `https://www.olhaqueduas.com${canonical}${url.search}`, 'Cache-Control': 's-maxage=86400' },
+      });
+    }
+  }
+
   if (!isSocialCrawler && !(isSearchCrawler && path.startsWith('/exclusivo'))) return;
 
   // ========== VIAGENS ==========
