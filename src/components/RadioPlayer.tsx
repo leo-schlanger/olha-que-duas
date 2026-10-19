@@ -659,12 +659,38 @@ const RadioPlayer = () => {
 
           {/* Schedule Section */}
           <div className="lg:col-span-8 flex flex-col gap-5">
-            <DailySoundtrackPanel
+              <DailySoundtrackPanel
               dailySchedule={mergedSchedule}
               currentPeriod={currentPeriod}
             />
           </div>
 
+        </div>
+
+        {/* Destaque estratégico para Dedicatórias na Rádio */}
+        <div className="max-w-6xl mx-auto mt-8">
+          <a
+            href="#dedicatorias"
+            className="group relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 sm:px-7 rounded-2xl bg-gradient-to-r from-[#3a0d12] via-vermelho/90 to-[#3a0d12] border border-amarelo/40 shadow-xl hover:border-amarelo transition-all duration-300 overflow-hidden"
+          >
+            <div className="absolute -right-10 -top-10 w-36 h-36 bg-amarelo/15 rounded-full blur-2xl pointer-events-none" />
+            <div className="flex items-center gap-4 relative z-10">
+              <div className="w-12 h-12 rounded-full bg-amarelo/20 border border-amarelo/50 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                <Radio className="w-5 h-5 text-amarelo" />
+              </div>
+              <div>
+                <span className="inline-block text-[10px] font-bold uppercase tracking-widest text-amarelo mb-0.5">
+                  A sua voz na nossa rádio • O amor no tom certo
+                </span>
+                <p className="text-sm sm:text-base font-display font-bold text-cream">
+                  Quer emocionar alguém especial com uma dedicatória em áudio, poema ou música na rádio?
+                </p>
+              </div>
+            </div>
+            <span className="relative z-10 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amarelo text-charcoal font-bold text-xs sm:text-sm whitespace-nowrap group-hover:bg-amarelo-soft transition-colors shadow-md">
+              Pedir Orçamento →
+            </span>
+          </a>
         </div>
       </div>
 

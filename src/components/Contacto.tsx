@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Mail, Instagram, Facebook, Youtube, Send, ArrowRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { siteConfig } from "@/config/site";
@@ -74,6 +74,23 @@ const Contacto = () => {
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [newsletterConsent, setNewsletterConsent] = useState(false);
   const { signup: signupNewsletter, loading: newsletterLoading } = useNewsletterSignup();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const assuntoParam = params.get("assunto");
+    if (assuntoParam) {
+      setFormData((prev) => ({ ...prev, assunto: assuntoParam }));
+    }
+
+    const handleSelectSubject = (e: Event) => {
+      const subject = (e as CustomEvent<string>).detail;
+      if (subject) {
+        setFormData((prev) => ({ ...prev, assunto: subject }));
+      }
+    };
+    window.addEventListener("select-contact-subject", handleSelectSubject);
+    return () => window.removeEventListener("select-contact-subject", handleSelectSubject);
+  }, []);
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -271,6 +288,8 @@ const Contacto = () => {
                         <SelectValue placeholder="Seleciona um assunto" />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="dedicatorias">Dedicatória na Rádio - Pedir Orçamento</SelectItem>
+                        <SelectItem value="dedicatorias-kids">Dedicatória Kids na Rádio - Pedir Orçamento (Pais)</SelectItem>
                         <SelectItem value="podcast">Participar no Podcast</SelectItem>
                         <SelectItem value="assessoria">Assessoria de Imprensa</SelectItem>
                         <SelectItem value="marcas">Representação de Marcas</SelectItem>

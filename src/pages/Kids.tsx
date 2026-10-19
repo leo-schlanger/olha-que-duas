@@ -16,9 +16,11 @@ import {
   ExternalLink,
   Calendar,
   Mic,
+  Heart,
 } from 'lucide-react';
 import { siteConfig } from '@/config/site';
 import KidsRadioPlayer from '@/components/kids/KidsRadioPlayer';
+import KidsDedicatoriasSection from '@/components/kids/KidsDedicatoriasSection';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -406,7 +408,7 @@ const Kids = () => {
                 </span>
               </p>
 
-              <div className="mt-8 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <div className="mt-8 md:mt-10 flex flex-wrap items-center justify-center gap-4">
                 <Button
                   asChild
                   size="lg"
@@ -422,10 +424,10 @@ const Kids = () => {
                   size="lg"
                   className="h-14 px-8 text-base font-extrabold rounded-full bg-yellow-400 hover:bg-yellow-500 text-pink-700 shadow-[0_10px_0_rgba(202,138,4,0.6)] hover:shadow-[0_6px_0_rgba(202,138,4,0.6)] hover:translate-y-1 transition-all duration-200 border-4 border-white"
                 >
-                  <Link to="/#contacto" className="inline-flex items-center gap-2">
-                    <Mail className="w-5 h-5" />
-                    Quero saber mais
-                  </Link>
+                  <a href="#dedicatorias-kids" className="inline-flex items-center gap-2">
+                    <Heart className="w-5 h-5 fill-pink-600 text-pink-600" />
+                    Pais: Dedicatórias na Rádio
+                  </a>
                 </Button>
               </div>
             </Animated>
@@ -612,7 +614,7 @@ const Kids = () => {
                     </div>
                   </div>
 
-                  {/* Botões: Ouve aqui + Fale connosco */}
+                  {/* Botões: Ouve aqui + Dedicatória na Rádio */}
                   <div className="pt-2 flex flex-col sm:flex-row gap-3">
                     <Button
                       asChild
@@ -634,10 +636,10 @@ const Kids = () => {
                       size="lg"
                       className="h-14 px-8 text-base font-extrabold rounded-full bg-yellow-400 hover:bg-yellow-500 text-pink-700 shadow-[0_10px_0_rgba(202,138,4,0.6)] hover:shadow-[0_6px_0_rgba(202,138,4,0.6)] hover:translate-y-1 transition-all border-4 border-white"
                     >
-                      <Link to="/#contacto" className="inline-flex items-center gap-2">
-                        <Bell className="w-5 h-5" />
-                        Fale connosco
-                      </Link>
+                      <a href="#dedicatorias-kids" className="inline-flex items-center gap-2">
+                        <Heart className="w-5 h-5 fill-pink-600 text-pink-600" />
+                        Pedir Dedicatória
+                      </a>
                     </Button>
                   </div>
                 </div>
@@ -645,6 +647,9 @@ const Kids = () => {
             </div>
           </div>
         </section>
+
+        {/* DEDICATÓRIAS KIDS — Especial para Pais & Família */}
+        <KidsDedicatoriasSection />
 
         {/* O QUE VEM AÍ */}
         <section className="py-20 md:py-28 bg-gradient-to-b from-[#fff9e6] to-background">

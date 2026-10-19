@@ -4,6 +4,7 @@ import Hero from "@/components/Hero";
 import VideoShowcase from "@/components/VideoShowcase";
 import SobreNos from "@/components/SobreNos";
 import Podcast from "@/components/Podcast";
+import DedicatoriasRadio from "@/components/DedicatoriasRadio";
 import AppDownload from "@/components/AppDownload";
 import Parceiros from "@/components/Parceiros";
 import Contacto from "@/components/Contacto";
@@ -70,6 +71,9 @@ const Index = () => {
         >
           <RadioPlayer />
         </Suspense>
+
+        {/* Campanha de Dedicatórias na Rádio - A sua voz na nossa rádio */}
+        <DedicatoriasRadio />
 
         {/* App móvel - Google Play (CTA logo após experiência da rádio) */}
         <AppDownload />
