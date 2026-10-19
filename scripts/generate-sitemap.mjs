@@ -1,8 +1,9 @@
 /**
  * generate-sitemap.mjs
  *
- * Gera public/sitemap.xml com URLs dinâmicas (galeria + blog) a partir
- * do Supabase, preservando as entradas estáticas.
+ * Gera public/sitemap.xml com URLs dinâmicas (galeria, blog e programas do
+ * Exclusivo com as suas peças) a partir do Supabase, preservando as entradas
+ * estáticas.
  *
  * Uso:  node scripts/generate-sitemap.mjs
  */
@@ -89,7 +90,8 @@ function urlEntry({ loc, lastmod, freq, priority, image }) {
   if (priority) xml += `    <priority>${priority}</priority>\n`;
   if (image) {
     xml += `    <image:image>\n`;
-    xml += `      <image:loc>${escapeXml(BASE + image.loc)}</image:loc>\n`;
+    const src = /^https?:/.test(image.loc) ? image.loc : BASE + image.loc;
+    xml += `      <image:loc>${escapeXml(src)}</image:loc>\n`;
     xml += `      <image:title>${escapeXml(image.title)}</image:title>\n`;
     xml += `    </image:image>\n`;
   }
@@ -106,17 +108,29 @@ async function main() {
     fetchTable("blog_posts", "is_published=eq.true&order=published_at.desc&select=slug,published_at,updated_at"),
   ]);
 
+  let programs = [];
   let vinagre = [];
   try {
+    programs = await fetchTable(
+      "exclusive_programs",
+      "is_published=eq.true&order=sort_order.asc&select=slug,title,author,cover_url,updated_at",
+    );
+    // Post URLs live under their program: /exclusivo/:programa/:slug.
     vinagre = await fetchTable(
       "vinagre_posts",
-      "is_published=eq.true&order=published_at.desc&select=slug,published_at,updated_at",
+      "is_published=eq.true&order=published_at.desc" +
+        "&select=slug,title,og_image_url,cover_url,published_at,updated_at,exclusive_programs!inner(slug,is_published)" +
+        "&exclusive_programs.is_published=eq.true",
     );
   } catch (error) {
-    console.warn("vinagre_posts ignorado:", error.message);
+    console.warn("Exclusivo ignorado:", error.message);
   }
+  const now = new Date().toISOString();
+  vinagre = vinagre.filter((post) => !post.published_at || post.published_at <= now);
 
-  console.log(`  ${albums.length} gallery albums, ${posts.length} blog posts, ${vinagre.length} exclusivos`);
+  console.log(
+    `  ${albums.length} gallery albums, ${posts.length} blog posts, ${programs.length} programas, ${vinagre.length} exclusivos`,
+  );
 
   const dynamicEntries = [];
 
@@ -139,13 +153,25 @@ async function main() {
     });
   }
 
+  for (const program of programs) {
+    dynamicEntries.push({
+      loc: `/exclusivo/${program.slug}`,
+      lastmod: (program.updated_at || "").slice(0, 10) || TODAY,
+      freq: "weekly",
+      priority: "0.8",
+      image: program.cover_url ? { loc: program.cover_url, title: `${program.title} — ${program.author}` } : undefined,
+    });
+  }
+
   for (const post of vinagre) {
     const date = (post.updated_at || post.published_at || "").slice(0, 10);
+    const image = post.og_image_url || post.cover_url;
     dynamicEntries.push({
-      loc: `/exclusivo/${post.slug}`,
+      loc: `/exclusivo/${post.exclusive_programs.slug}/${post.slug}`,
       lastmod: date || TODAY,
       freq: "monthly",
-      priority: "0.8",
+      priority: "0.7",
+      image: image ? { loc: image, title: post.title } : undefined,
     });
   }
 

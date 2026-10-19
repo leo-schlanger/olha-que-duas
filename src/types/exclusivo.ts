@@ -17,7 +17,7 @@ export interface ExclusiveProgram {
 export const EXCLUSIVO_HUB = {
   label: "Exclusivo Olha que Duas",
   description:
-    "Os programas exclusivos do Olha que Duas. Olha que Duas e Eu, com Eduardo Vinagre, e Curtas Biografias e Pimenta na Língua, com Alexandra Serra.",
+    "Os programas exclusivos do Olha que Duas: Eduardo Vinagre, Alexandra Serra, Marluce Revorêdo e a redação, em crónicas, biografias, opinião e notícias.",
   path: "/exclusivo",
   url: "https://www.olhaqueduas.com/exclusivo",
 } as const;

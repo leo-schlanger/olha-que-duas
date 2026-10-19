@@ -261,7 +261,7 @@ export default async function middleware(request: Request): Promise<Response | u
   }
 
   if (path === '/exclusivo') {
-    const description = 'Os programas exclusivos do Olha que Duas. Olha que Duas e Eu, com Eduardo Vinagre, e Curtas Biografias e Pimenta na Língua, com Alexandra Serra.';
+    const description = 'Os programas exclusivos do Olha que Duas: Eduardo Vinagre, Alexandra Serra, Marluce Revorêdo e a redação, em crónicas, biografias, opinião e notícias.';
     let image = 'https://www.olhaqueduas.com/exclusivo/curtas-biografias-og.jpg';
     try {
       const rows = await fetchSupabase(
