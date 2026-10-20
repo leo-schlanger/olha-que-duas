@@ -146,6 +146,11 @@ export const siteConfig = {
       logo: "/partners/motivar-lotus.jpg",
       url: "https://motivar.pt",
     },
+    {
+      name: "ClickSaber",
+      logo: "/partners/clicksaber.jpg",
+      url: "https://clicksaber.org",
+    },
   ],
   // Rock in Rio Lisboa — Festival Mode
   // enabled: true → decorações festivas em todo o site (durante o festival)
