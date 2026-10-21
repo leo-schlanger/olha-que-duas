@@ -4,7 +4,7 @@
 
   <url>
     <loc>https://www.olhaqueduas.com/</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -44,7 +44,7 @@
 
   <url>
     <loc>https://www.olhaqueduas.com/galeria</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -58,14 +58,14 @@
 
   <url>
     <loc>https://www.olhaqueduas.com/noticias</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://www.olhaqueduas.com/exclusivo</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -228,6 +228,54 @@
   </url>
 
   <!-- Dynamic: Blog Posts -->
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/antigo-governador-do-banco-central-hungaro-detido-em-investigacao-por-fraude-financeira</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/putin-defende-encontro-entre-trump-e-xi-jinping-na-china</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/ex-governador-do-banco-central-da-hungria-detido-por-suspeita-de-corrupcao</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/putin-aceita-retomar-negociacoes-trilaterais-com-kiev-e-washington-para-fim-da-guerra-na-ucrania</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/enviado-de-trump-na-russia-para-conversacoes-sobre-a-ucrania</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/antigo-general-dos-eua-alerta-para-apoio-de-trump-a-russia-e-fragilizacao-da-defesa-da-ucrania</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/parlamento-constitui-se-assistente-em-processo-judicial-relativo-a-gabinete-de-ventura</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/andre-ventura-nega-recuo-na-lei-das-rendas-apos-apresentacao-de-pacote-de-habitacao</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
   <url>
     <loc>https://www.olhaqueduas.com/noticias/movimento-interno-do-pan-solicita-demissao-de-ines-sousa-real-e-convocacao-de-novo-congresso</loc>
     <lastmod>2026-07-16</lastmod>
@@ -6180,54 +6228,6 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/nuno-mendes-e-rosto-da-campanha-portuguesa-backyard-legends-da-adidas</loc>
-    <lastmod>2026-06-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/selecao-nacional-recebida-pelo-primeiro-ministro-antes-da-participacao-no-mundial</loc>
-    <lastmod>2026-06-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/eslovenia-encerra-controlos-de-fronteiras-com-hungria-e-croacia</loc>
-    <lastmod>2026-06-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/proposta-legislativa-sobre-vitimas-de-trafico-e-encaminhada-para-comissao-especializada</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/governo-aprova-modelo-de-declaracao-para-imposto-minimo-global-das-multinacionais</loc>
-    <lastmod>2026-06-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/autoridades-filipinas-reveem-em-baixa-numero-de-vitimas-apos-terramoto-com-base-em-verificacoes-mult</loc>
-    <lastmod>2026-06-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/assembleia-da-republica-aprova-medidas-para-agilizar-processos-judiciais</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/parlamento-aprova-na-generalidade-propostas-de-isencao-fiscal-para-indemnizacoes-a-vitimas-da-igreja</loc>
-    <lastmod>2026-06-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
 
   <!-- Dynamic: Exclusivo Olha que Duas -->
   <url>
@@ -6278,6 +6278,16 @@
     <image:image>
       <image:loc>https://jjifjbdfpvgeseqbjpkg.supabase.co/storage/v1/object/public/media-library/programa-capa-noticias-olha-que-duas.jpg</image:loc>
       <image:title>Notícias Olha que Duas — Olha que Duas</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/exclusivo/olha-que-duas-e-eu/guilherme-castelo-branco-tem-razao-sentenca-janeiro-2027</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://jjifjbdfpvgeseqbjpkg.supabase.co/storage/v1/object/public/media-library/vinagre-guilherme-castelo-branco-og.jpg</image:loc>
+      <image:title>Explosivo! Sentença em Janeiro de 2027: Guilherme Castelo Branco tem razão, a data da audiência estava marcada desde Junho</image:title>
     </image:image>
   </url>
   <url>
