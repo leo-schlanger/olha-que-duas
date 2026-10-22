@@ -66,8 +66,8 @@ export const siteConfig = {
 
   // Vídeo de apresentação
   video: {
-    youtubeId: "Lfl2DttvXK0",
-    url: "https://www.youtube.com/watch?v=Lfl2DttvXK0",
+    youtubeId: "vwpPd8hhSvs",
+    url: "https://www.youtube.com/watch?v=vwpPd8hhSvs",
     title: "Conheça Olha que Duas",
   },
 
