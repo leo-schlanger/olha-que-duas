@@ -1,17 +1,19 @@
 import { useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
-import { ArrowLeft, Calendar, Clock, Loader2, Share2 } from "lucide-react";
+import { Calendar, Clock, Loader2, Share2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
 import { Button } from "@/components/ui/button";
-import { StoryRow } from "@/components/exclusivo/StoryRow";
+import { PostCard, ProgramChip } from "@/components/exclusivo/PostCard";
+import { ProgramTabs } from "@/components/exclusivo/ProgramTabs";
 import { ProgramPortrait } from "@/components/exclusivo/VinagrePortrait";
-import { useProgramPosts, useVinagrePost } from "@/hooks/useVinagrePosts";
+import { useLatestExclusivePosts, useProgramPosts, useVinagrePost } from "@/hooks/useVinagrePosts";
 import { getPageBreadcrumbJsonLd, useMetaTags } from "@/hooks/useMetaTags";
 import { articleShareImage, readingMinutes, sanitizeArticleHtml } from "@/lib/articleHtml";
 import { exclusivoPostPath, exclusivoProgramPath } from "@/lib/exclusivoPaths";
 import { formatVinagreDate } from "@/lib/vinagreDate";
+import { articleHeadline } from "@/lib/seo";
 import { EXCLUSIVO_HUB } from "@/types/exclusivo";
 
 export default function ExclusivoPost() {
@@ -20,6 +22,12 @@ export default function ExclusivoPost() {
   const program = post?.program ?? null;
   const { data: posts } = useProgramPosts(post?.program_id || undefined);
   const others = (posts ?? []).filter((item) => item.slug !== postSlug).slice(0, 3);
+  const { data: latest } = useLatestExclusivePosts(12);
+  // One recent piece per other program: internal links across the section.
+  const elsewhere = (latest ?? [])
+    .filter((item) => item.program_id !== post?.program_id)
+    .filter((item, index, list) => list.findIndex((other) => other.program_id === item.program_id) === index)
+    .slice(0, 4);
   const canonicalProgram = program?.slug || programSlug;
   const pageUrl = `https://www.olhaqueduas.com${exclusivoPostPath(canonicalProgram, postSlug)}`;
   const shareImage = post ? articleShareImage(post) : undefined;
@@ -28,7 +36,8 @@ export default function ExclusivoPost() {
 
   useMetaTags({
     title: post?.title ?? EXCLUSIVO_HUB.label,
-    description: post?.excerpt || post?.title || EXCLUSIVO_HUB.label,
+    seoTitle: post?.seo_title || undefined,
+    description: post?.seo_description || post?.excerpt || post?.title || EXCLUSIVO_HUB.label,
     url: pageUrl,
     image: shareImage,
     imageAlt: post?.title ?? EXCLUSIVO_HUB.label,
@@ -45,8 +54,8 @@ export default function ExclusivoPost() {
           {
             "@context": "https://schema.org",
             "@type": "NewsArticle",
-            headline: post.title,
-            description: post.excerpt || post.title,
+            headline: articleHeadline(post.title, post.seo_title),
+            description: post.seo_description || post.excerpt || post.title,
             image: [articleShareImage(post)],
             datePublished: post.published_at ?? undefined,
             dateModified: post.updated_at,
@@ -101,13 +110,18 @@ export default function ExclusivoPost() {
       <main id="main-content" className="pt-24 md:pt-28">
         <article className="container mx-auto px-4 pb-20 sm:px-6">
           <div className="mx-auto max-w-3xl">
-            <Link
-              to={program ? exclusivoProgramPath(program.slug) : EXCLUSIVO_HUB.path}
-              className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-[#7a5b16] hover:text-[#5c4310]"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              {program?.title || EXCLUSIVO_HUB.label}
-            </Link>
+            <div className="mb-8">
+              <ProgramTabs active={program?.slug ?? programSlug} />
+            </div>
+            <nav aria-label="Caminho" className="mb-5 flex flex-wrap items-center gap-2 text-sm">
+              <Link to={EXCLUSIVO_HUB.path} className="text-[#7a5b16] hover:text-[#5c4310]">Exclusivo</Link>
+              <span aria-hidden className="text-[#1c0a10]/30">/</span>
+              {program ? (
+                <Link to={exclusivoProgramPath(program.slug)}>
+                  <ProgramChip slug={program.slug} />
+                </Link>
+              ) : null}
+            </nav>
 
             {isLoading && (
               <div className="flex justify-center py-24">
@@ -179,12 +193,29 @@ export default function ExclusivoPost() {
                 />
 
                 {others.length > 0 && (
-                  <div className="mt-16 border-t border-[#1c0a10]/10 pt-8">
-                    <h2 className="font-display text-3xl text-[#1c0a10]">Neste programa</h2>
-                    {others.map((item) => (
-                      <StoryRow key={item.id} post={item} programSlug={program.slug} />
-                    ))}
-                  </div>
+                  <section className="mt-16 border-t border-[#1c0a10]/10 pt-8" aria-labelledby="peca-programa">
+                    <h2 id="peca-programa" className="font-display text-3xl text-[#1c0a10]">
+                      Mais de {program.title}
+                    </h2>
+                    <div className="mt-6 grid gap-x-6 gap-y-10 sm:grid-cols-2">
+                      {others.slice(0, 2).map((item) => (
+                        <PostCard key={item.id} post={item} showProgram={false} />
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {elsewhere.length > 0 && (
+                  <section className="mt-14 border-t border-[#1c0a10]/10 pt-8" aria-labelledby="peca-exclusivo">
+                    <h2 id="peca-exclusivo" className="font-display text-3xl text-[#1c0a10]">
+                      Mais do Exclusivo
+                    </h2>
+                    <div className="mt-6 grid gap-x-6 gap-y-10 sm:grid-cols-2">
+                      {elsewhere.map((item) => (
+                        <PostCard key={item.id} post={item} />
+                      ))}
+                    </div>
+                  </section>
                 )}
               </>
             )}

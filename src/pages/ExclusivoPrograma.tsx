@@ -1,10 +1,12 @@
 import { useEffect } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { Navigate, useParams } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
-import { StoryRow } from "@/components/exclusivo/StoryRow";
+import { PostCard, PostCardCover, PostCardText } from "@/components/exclusivo/PostCard";
+import { ProgramTabs } from "@/components/exclusivo/ProgramTabs";
+import { programTheme } from "@/lib/exclusivoTheme";
 import { ProgramPortrait } from "@/components/exclusivo/VinagrePortrait";
 import { useExclusiveProgram } from "@/hooks/useExclusivePrograms";
 import { useProgramPosts, useVinagrePost } from "@/hooks/useVinagrePosts";
@@ -23,6 +25,7 @@ export default function ExclusivoPrograma() {
   const legacyQuery = useVinagrePost(legacySlug);
 
   const posts = postsQuery.data;
+  const theme = programTheme(program?.slug ?? programSlug);
   const lead = posts?.[0];
   const rest = posts?.slice(1) ?? [];
   const pageUrl = `https://www.olhaqueduas.com${exclusivoProgramPath(programSlug)}`;
@@ -77,30 +80,37 @@ export default function ExclusivoPrograma() {
       <Header />
       <main id="main-content" className="pt-24 md:pt-28">
         <section className="container mx-auto overflow-x-clip px-4 pb-20 sm:px-6">
-          <Link
-            to={EXCLUSIVO_HUB.path}
-            className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-[#7a5b16] hover:text-[#5c4310]"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            {EXCLUSIVO_HUB.label}
-          </Link>
+          <ProgramTabs active={program?.slug ?? programSlug} />
 
           {program && (
-            <header className="flex flex-col gap-4 border-b border-[#1c0a10]/10 pb-8 sm:flex-row sm:items-center sm:gap-6">
+            <header
+              className="mt-6 flex flex-col gap-5 rounded-2xl p-5 sm:flex-row sm:items-center sm:gap-7 sm:p-7"
+              style={{ backgroundColor: theme.soft, borderLeft: `6px solid ${theme.accent}` }}
+            >
               <ProgramPortrait
                 src={program.portrait_url}
                 alt={program.author}
                 focus={program.portrait_focus}
                 size="md"
               />
-              <div>
-                <h1 className="font-display text-4xl leading-none text-[#1c0a10] md:text-6xl">
+              <div className="min-w-0">
+                <p className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color: theme.accent }}>
+                  {program.author}
+                </p>
+                <h1 className="mt-2 font-display text-4xl leading-none text-[#1c0a10] md:text-6xl">
                   {program.title}
                 </h1>
-                <p className="mt-3 max-w-xl text-base leading-relaxed text-[#1c0a10]/75 md:text-lg">
-                  {program.author}
-                  {program.tagline ? `. ${program.tagline}` : ""}
-                </p>
+                {program.tagline && (
+                  <p className="mt-3 text-lg leading-relaxed text-[#1c0a10]/80">{program.tagline}</p>
+                )}
+                {program.description && program.description !== program.tagline && (
+                  <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#1c0a10]/65">{program.description}</p>
+                )}
+                {posts && posts.length > 0 && (
+                  <p className="mt-3 text-sm text-[#7a5b16]">
+                    {posts.length} {posts.length === 1 ? "peça" : "peças"} · a mais recente a {formatVinagreDate(lead?.published_at ?? null)}
+                  </p>
+                )}
               </div>
             </header>
           )}
@@ -127,40 +137,23 @@ export default function ExclusivoPrograma() {
           )}
 
           {program && lead && (
-            <Link
-              to={exclusivoPostPath(program.slug, lead.slug)}
-              className="group mt-8 grid min-w-0 grid-cols-[minmax(0,1fr)] items-start gap-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary md:mt-10 md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] md:gap-12"
-            >
-              <div className="min-w-0 overflow-hidden rounded-2xl bg-[#1c0a10]">
-                {lead.cover_url ? (
-                  <img src={lead.cover_url} alt="" className="block h-auto w-full" />
-                ) : (
-                  <div className="aspect-[16/10] w-full bg-[#2a1018]" />
-                )}
-              </div>
-              <div className="md:pt-2">
-                {lead.published_at && (
-                  <time dateTime={lead.published_at} className="text-sm text-[#7a5b16]">
-                    {formatVinagreDate(lead.published_at)}
-                  </time>
-                )}
-                <h2 className="mt-3 font-display text-4xl leading-[1.08] text-[#1c0a10] transition-colors duration-200 group-hover:text-primary md:text-5xl">
-                  {lead.title}
-                </h2>
-                {lead.excerpt && (
-                  <p className="mt-4 max-w-xl text-lg leading-relaxed text-[#1c0a10]/75">{lead.excerpt}</p>
-                )}
-                <p className="mt-6 text-sm font-semibold text-primary">Ler a notícia</p>
-              </div>
-            </Link>
+            <div className="mt-10 grid gap-6 md:mt-12 md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:items-center md:gap-10">
+              <PostCardCover post={lead} eager />
+              <PostCardText post={lead} showProgram={false} />
+            </div>
           )}
 
           {program && rest.length > 0 && (
-            <div className="mt-12 border-t border-[#1c0a10]/10 md:mt-16">
-              {rest.map((post) => (
-                <StoryRow key={post.id} post={post} programSlug={program.slug} />
-              ))}
-            </div>
+            <section className="mt-14 md:mt-16" aria-labelledby="programa-mais">
+              <h2 id="programa-mais" className="border-b border-[#1c0a10]/10 pb-3 font-display text-3xl text-[#1c0a10]">
+                Mais de {program.title}
+              </h2>
+              <div className="mt-8 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+                {rest.map((post) => (
+                  <PostCard key={post.id} post={post} showProgram={false} />
+                ))}
+              </div>
+            </section>
           )}
         </section>
       </main>

@@ -6,7 +6,7 @@ const liveFilter = () =>
   `published_at.is.null,published_at.lte.${new Date().toISOString()}`;
 
 const POST_COLUMNS =
-  "*, program:exclusive_programs!inner(slug, title, author, portrait_url, portrait_focus, tagline)";
+  "*, program:exclusive_programs!inner(slug, title, author, portrait_url, portrait_focus, tagline, is_published)";
 
 export function useProgramPosts(programId: string | undefined) {
   return useQuery({
@@ -48,6 +48,31 @@ export function useVinagrePost(slug: string) {
       return parseVinagrePost(data);
     },
     enabled: isSupabaseConfigured() && slug.length > 0,
+    staleTime: 60_000,
+  });
+}
+
+/** As peças mais recentes de todos os programas, para a capa do Exclusivo. */
+export function useLatestExclusivePosts(limit = 9) {
+  return useQuery({
+    queryKey: ["vinagre-posts-latest", limit],
+    queryFn: async (): Promise<VinagrePost[]> => {
+      const supabase = getSupabase();
+      if (!supabase) return [];
+      const { data, error } = await supabase
+        .from("vinagre_posts")
+        .select(POST_COLUMNS)
+        .eq("is_published", true)
+        .eq("program.is_published", true)
+        .or(liveFilter())
+        .order("published_at", { ascending: false })
+        .limit(limit);
+      if (error) throw error;
+      return (data ?? [])
+        .map(parseVinagrePost)
+        .filter((post): post is VinagrePost => post !== null);
+    },
+    enabled: isSupabaseConfigured(),
     staleTime: 60_000,
   });
 }

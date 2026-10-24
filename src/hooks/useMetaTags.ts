@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
+import { documentTitle, metaDescription } from '@/lib/seo';
 
 interface MetaTagsConfig {
   title?: string;
+  /** Título curto para o Google (<title>); og:title continua a ser o title. */
+  seoTitle?: string;
   description?: string;
   image?: string;
   imageAlt?: string;
@@ -89,6 +92,7 @@ export function useMetaTags(config: MetaTagsConfig) {
   useEffect(() => {
     const {
       title,
+      seoTitle,
       description,
       image,
       imageAlt,
@@ -106,10 +110,10 @@ export function useMetaTags(config: MetaTagsConfig) {
     } = config;
 
     const fullTitle = title
-      ? `${title} | ${DEFAULT_CONFIG.siteName}`
+      ? documentTitle(seoTitle || title)
       : DEFAULT_CONFIG.defaultTitle;
 
-    const fullDescription = description || DEFAULT_CONFIG.defaultDescription;
+    const fullDescription = metaDescription(description || DEFAULT_CONFIG.defaultDescription);
     const fullImage = image || DEFAULT_CONFIG.defaultImage;
     const fullImageAlt = imageAlt || DEFAULT_CONFIG.defaultImageAlt;
     const fullUrl = url || DEFAULT_CONFIG.baseUrl;
@@ -215,6 +219,7 @@ export function useMetaTags(config: MetaTagsConfig) {
   // eslint-disable-next-line react-hooks/exhaustive-deps -- individual properties tracked
   }, [
     config.title,
+    config.seoTitle,
     config.description,
     config.image,
     config.imageAlt,

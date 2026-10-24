@@ -24,6 +24,11 @@
     }
   ],
   "rewrites": [
+    { "source": "/sitemap.xml", "destination": "/api/sitemap?t=index" },
+    { "source": "/sitemap-site.xml", "destination": "/api/sitemap?t=site" },
+    { "source": "/sitemap-noticias.xml", "destination": "/api/sitemap?t=noticias" },
+    { "source": "/sitemap-exclusivo.xml", "destination": "/api/sitemap?t=exclusivo" },
+    { "source": "/sitemap-google-news.xml", "destination": "/api/sitemap?t=news" },
     { "source": "/sitemap-historias.xml", "destination": "/api/sitemap-historias" },
     { "source": "/((?!api/).*)", "destination": "/" }
   ]

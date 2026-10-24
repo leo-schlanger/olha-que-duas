@@ -1,3 +1,4 @@
+import { articleHeadline, documentTitle, metaDescription } from './src/lib/seo';
 export const config = {
   matcher: ['/viagens', '/servicos', '/loja', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*', '/exclusivo', '/exclusivo/:path*', '/kids', '/auditoria-gratuita', '/rockinrio'],
 };
@@ -47,6 +48,8 @@ function albumCoverUrl(slug: string): string {
 
 interface Meta {
   title: string;
+  /** Título curto para o Google; sem ele, documentTitle corta o título. */
+  seoTitle?: string;
   description: string;
   image: string;
   url: string;
@@ -83,14 +86,15 @@ function shareImage(post: { cover_url?: unknown; og_image_url?: unknown }): stri
 
 function html(meta: Meta): Response {
   const title = escapeHtml(meta.title);
-  const description = escapeHtml(meta.description);
+  const docTitle = escapeHtml(documentTitle(meta.seoTitle || meta.title));
+  const description = escapeHtml(metaDescription(meta.description));
   const image = escapeHtml(meta.image);
   const url = escapeHtml(meta.url);
   const type = meta.type || 'website';
 
   return new Response(`<!DOCTYPE html><html lang="pt-PT"><head>
     <meta charset="utf-8">
-    <title>${title} | Olha que Duas</title>
+    <title>${docTitle}</title>
     <meta name="description" content="${description}">
     <link rel="canonical" href="${url}">
     <meta property="og:title" content="${title}">
@@ -316,7 +320,7 @@ export default async function middleware(request: Request): Promise<Response | u
     try {
       const rows = await fetchSupabase(
         'vinagre_posts',
-        `select=title,excerpt,content,cover_url,og_image_url,published_at,updated_at,exclusive_programs!inner(slug,title,author)&slug=eq.${encodeURIComponent(postSlug)}&is_published=eq.true&exclusive_programs.slug=eq.${encodeURIComponent(programSlug)}`,
+        `select=title,seo_title,seo_description,excerpt,content,cover_url,og_image_url,published_at,updated_at,exclusive_programs!inner(slug,title,author)&slug=eq.${encodeURIComponent(postSlug)}&is_published=eq.true&exclusive_programs.slug=eq.${encodeURIComponent(programSlug)}`,
       );
       if (!Array.isArray(rows)) return;
       const post = rows[0];
@@ -329,7 +333,8 @@ export default async function middleware(request: Request): Promise<Response | u
       const pageUrl = `https://www.olhaqueduas.com/exclusivo/${programSlug}/${postSlug}`;
       return html({
         title: String(post.title),
-        description: String(post.excerpt || post.title),
+        seoTitle: post.seo_title ? String(post.seo_title) : undefined,
+        description: String(post.seo_description || post.excerpt || post.title),
         image,
         imageAlt: String(post.title),
         imageWidth: 1200,
@@ -343,8 +348,8 @@ export default async function middleware(request: Request): Promise<Response | u
         jsonLd: {
           '@context': 'https://schema.org',
           '@type': 'NewsArticle',
-          headline: post.title,
-          description: post.excerpt || post.title,
+          headline: articleHeadline(String(post.title), post.seo_title),
+          description: post.seo_description || post.excerpt || post.title,
           image: [image],
           datePublished: post.published_at || undefined,
           dateModified: post.updated_at || post.published_at || undefined,
