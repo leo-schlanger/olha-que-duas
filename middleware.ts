@@ -333,14 +333,35 @@ export default async function middleware(request: Request): Promise<Response | u
     try {
       const rows = await fetchSupabase(
         'vinagre_posts',
-        `select=title,seo_title,seo_description,excerpt,content,cover_url,og_image_url,published_at,updated_at,exclusive_programs!inner(slug,title,author)&slug=eq.${encodeURIComponent(postSlug)}&is_published=eq.true&exclusive_programs.slug=eq.${encodeURIComponent(programSlug)}`,
+        `select=title,author,seo_title,seo_description,excerpt,content,cover_url,og_image_url,published_at,updated_at,exclusive_programs!inner(slug,title,author)&slug=eq.${encodeURIComponent(postSlug)}&is_published=eq.true&exclusive_programs.slug=eq.${encodeURIComponent(programSlug)}`,
       );
       if (!Array.isArray(rows)) return;
       const post = rows[0];
-      if (!post) return notFound(`https://www.olhaqueduas.com${path}`);
+      if (!post) {
+        // The piece may have moved to another program (Rute Cardoso → Notícias): 301 there.
+        const moved = await fetchSupabase(
+          'vinagre_posts',
+          `select=slug,exclusive_programs!inner(slug,is_published)&slug=eq.${encodeURIComponent(postSlug)}&is_published=eq.true&exclusive_programs.is_published=eq.true&or=(published_at.is.null,published_at.lte.${new Date().toISOString()})`,
+        );
+        const row = Array.isArray(moved) ? moved[0] : undefined;
+        const embeddedOwner = row && row.exclusive_programs;
+        const owner = Array.isArray(embeddedOwner) ? embeddedOwner[0] : embeddedOwner;
+        if (owner && owner.slug && owner.slug !== programSlug) {
+          return new Response(null, {
+            status: 301,
+            headers: {
+              Location: `https://www.olhaqueduas.com/exclusivo/${owner.slug}/${row.slug}`,
+              'Cache-Control': 's-maxage=86400',
+            },
+          });
+        }
+        return notFound(`https://www.olhaqueduas.com${path}`);
+      }
       const embedded = post.exclusive_programs;
       const program = Array.isArray(embedded) ? embedded[0] : embedded;
-      const author = program && program.author ? String(program.author) : 'Olha que Duas';
+      const author = post.author
+        ? String(post.author)
+        : program && program.author ? String(program.author) : 'Olha que Duas';
       const section = program && program.title ? String(program.title) : 'Exclusivo Olha que Duas';
       const image = shareImage(post);
       const pageUrl = `https://www.olhaqueduas.com/exclusivo/${programSlug}/${postSlug}`;

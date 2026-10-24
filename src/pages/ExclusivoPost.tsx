@@ -32,7 +32,8 @@ export default function ExclusivoPost() {
   const pageUrl = `https://www.olhaqueduas.com${exclusivoPostPath(canonicalProgram, postSlug)}`;
   const shareImage = post ? articleShareImage(post) : undefined;
   const section = program?.title || EXCLUSIVO_HUB.label;
-  const author = program?.author || EXCLUSIVO_HUB.label;
+  // A piece can be signed by someone other than the program's author.
+  const author = post?.author || program?.author || EXCLUSIVO_HUB.label;
 
   useMetaTags({
     title: post?.title ?? EXCLUSIVO_HUB.label,
@@ -159,7 +160,7 @@ export default function ExclusivoPost() {
                       size="sm"
                     />
                     <div>
-                      <p className="font-medium text-[#1c0a10]">{program.author}</p>
+                      <p className="font-medium text-[#1c0a10]">{author}</p>
                       <p className="text-sm text-[#7a5b16]">{program.title}</p>
                     </div>
                   </div>
