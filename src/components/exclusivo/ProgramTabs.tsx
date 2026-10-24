@@ -10,9 +10,14 @@ import { EXCLUSIVO_HUB } from "@/types/exclusivo";
 export function ProgramTabs({ active }: { active?: string }) {
   const { data: programs } = useExclusivePrograms();
   const activeRef = useRef<HTMLAnchorElement>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
 
+  // Bring the active tab into view horizontally only; the page must not jump.
   useEffect(() => {
-    activeRef.current?.scrollIntoView({ block: "nearest", inline: "center" });
+    const row = rowRef.current;
+    const tab = activeRef.current;
+    if (!row || !tab) return;
+    row.scrollLeft = tab.offsetLeft - (row.clientWidth - tab.offsetWidth) / 2;
   }, [active, programs]);
 
   const tab = (isActive: boolean) =>
@@ -25,7 +30,7 @@ export function ProgramTabs({ active }: { active?: string }) {
 
   return (
     <nav aria-label="Programas do Exclusivo" className="-mx-4 sm:-mx-6">
-      <div className="flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:px-6 [&::-webkit-scrollbar]:hidden">
+      <div ref={rowRef} className="relative flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:px-6 [&::-webkit-scrollbar]:hidden">
         <Link
           to={EXCLUSIVO_HUB.path}
           ref={!active ? activeRef : undefined}
