@@ -4,7 +4,7 @@
 
   <url>
     <loc>https://www.olhaqueduas.com/</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -44,7 +44,7 @@
 
   <url>
     <loc>https://www.olhaqueduas.com/galeria</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -58,14 +58,14 @@
 
   <url>
     <loc>https://www.olhaqueduas.com/noticias</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://www.olhaqueduas.com/exclusivo</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -229,6 +229,162 @@
 
   <!-- Dynamic: Blog Posts -->
   <url>
+    <loc>https://www.olhaqueduas.com/noticias/ministerio-publico-inicia-inquerito-a-intervencao-policial-em-protesto-no-porto</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/operacao-europeia-identifica-nove-vitimas-de-trafico-humano-em-portugal</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/ministerio-publico-inicia-inquerito-a-atuacao-da-psp-em-manifestacao-no-porto</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/el-salvador-pondera-prisao-perpetua-para-lideres-criminosos</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/pcp-livre-e-pan-solicitam-audicao-do-presidente-do-ihru-no-parlamento</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/tufao-champi-resulta-numa-morte-e-163-feridos-em-taiwan</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/casa-branca-anuncia-cessar-fogo-localizado-em-oleshky-ucrania</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/ps-solicita-esclarecimentos-ao-governo-sobre-revisao-da-lei-de-programacao-militar-e-substituicao-do</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/israel-prepara-operacao-militar-na-cisjordania-e-irao-alerta-para-resposta</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/guerra-na-ucrania-declaracoes-sobre-starlink-e-ataques-russos</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/derrame-de-petroleo-atinge-praias-dos-eau-apos-incidente-com-petroleiro</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/exercito-israelita-inicia-operacoes-na-cisjordania-ocupada-apos-ataque</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/donald-trump-afirma-que-elon-musk-restaurou-acesso-starlink-na-ucrania</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/tufao-champi-afeta-taiwan-com-impacto-em-viagens-e-educacao</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/irao-e-as-acusacoes-de-donald-trump-sobre-a-expansao-da-guerra-e-o-preco-do-petroleo</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/lula-e-flavio-bolsonaro-acordam-levantamento-reciproco-de-sigilo-bancario</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/aproximacao-de-trump-a-putin-gera-preocupacao-na-ucrania-e-europa</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/despesas-de-campanha-de-ventura-e-donativos-recebidos-nas-presidenciais</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/sete-navios-tanque-danificados-no-estreito-de-ormuz-segundo-a-guarda-revolucionaria-iraniana</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/russia-disponivel-para-negociacoes-de-acordo-de-paz-definitivo-afirma-putin</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/mais-de-250-detencoes-por-incendio-florestal-registadas-este-ano</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/sondagem-indica-afastamento-do-psd-em-relacao-ao-ps-e-chega</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/kremlin-confirma-reuniao-entre-vladimir-putin-e-enviado</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/lula-solicita-investigacao-a-denuncia-de-richarlison-contra-flavio-bolsonaro</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/franca-detencoes-e-prisoes-preventivas-apos-confrontos-de-17-de-outubro</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/aguiar-branco-sublinha-necessidade-de-esclarecimento-sobre-alegado-assalto-a-gabinete-de-ventura</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.olhaqueduas.com/noticias/palantir-garante-autonomia-operacional-de-sistema-de-ia-da-nato</loc>
     <lastmod>2026-10-22</lastmod>
     <changefreq>monthly</changefreq>
@@ -237,6 +393,24 @@
   <url>
     <loc>https://www.olhaqueduas.com/noticias/jd-vance-nega-envolvimento-em-eleicoes-israelitas-e-recusa-apoio-a-netanyahu</loc>
     <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/posicionamento-do-chega-sobre-rendas-gera-preocupacao-no-governo</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/ataque-russo-a-kiev-ocorre-apos-reuniao-diplomatica</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/donald-trump-e-interacoes-com-jornalistas-da-cnn-e-abc-news</loc>
+    <lastmod>2026-10-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -253,8 +427,20 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.olhaqueduas.com/noticias/donald-trump-considera-prolongamento-de-conflito-com-o-irao-para-paz-duradoura</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.olhaqueduas.com/noticias/luis-dias-critica-lideranca-do-primeiro-ministro-e-nova-lei-das-rendas</loc>
     <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/eleicao-presidencial-no-brasil-apelo-ao-consenso-face-a-sondagens-indecisas</loc>
+    <lastmod>2026-10-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -385,8 +571,20 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.olhaqueduas.com/noticias/lula-e-flavio-mantem-empate-tecnico-na-segunda-volta</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.olhaqueduas.com/noticias/antigo-governador-do-banco-central-hungaro-detido-em-investigacao-por-fraude-financeira</loc>
     <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/governo-aborda-angustia-com-habitacao-e-critica-imobilismo-do-ps</loc>
+    <lastmod>2026-10-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -433,14 +631,38 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.olhaqueduas.com/noticias/camara-de-ourique-cria-cinco-novas-habitacoes-sociais</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/programa-de-recompensa-por-denuncia-de-fraude-no-governo-dos-eua</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.olhaqueduas.com/noticias/ucrania-enfrenta-pressao-devido-a-alinhamento-politico-segundo-jorge-rodrigues</loc>
     <lastmod>2026-10-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.olhaqueduas.com/noticias/lider-da-bancada-do-cds-alerta-andre-ventura-sobre-lei-do-arrendamento</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.olhaqueduas.com/noticias/enviado-de-trump-na-russia-para-conversacoes-sobre-a-ucrania</loc>
     <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/a-influencia-de-atores-menores-em-conflitos-globais</loc>
+    <lastmod>2026-10-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -463,6 +685,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.olhaqueduas.com/noticias/franca-prepara-operacao-de-seguranca-com-militares-para-proximos-protestos</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.olhaqueduas.com/noticias/irao-e-eua-mantem-negociacoes-indiretas-para-fim-de-conflito</loc>
     <lastmod>2026-10-21</lastmod>
     <changefreq>monthly</changefreq>
@@ -477,6 +705,18 @@
   <url>
     <loc>https://www.olhaqueduas.com/noticias/maria-corina-machado-apela-a-protestos-na-venezuela-por-calendario-eleitoral</loc>
     <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/trump-comenta-situacao-migratoria-em-espanha-e-na-europa</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/flavio-bolsonaro-solicita-anulacao-da-candidatura-de-lula-por-alegada-propaganda-ilegal</loc>
+    <lastmod>2026-10-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -5455,12 +5695,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.olhaqueduas.com/noticias/lideres-da-russia-e-ucrania-dirigem-mensagens-ao-presidente-dos-eua-pelos-80-anos</loc>
-    <lastmod>2026-06-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://www.olhaqueduas.com/noticias/joias-avaliadas-em-13-milhoes-de-euros-encontradas-em-cofre-de-antigo-primeiro-ministro-espanhol</loc>
     <lastmod>2026-06-15</lastmod>
     <changefreq>monthly</changefreq>
@@ -5468,6 +5702,12 @@
   </url>
   <url>
     <loc>https://www.olhaqueduas.com/noticias/conego-de-joane-alega-ter-sido-impedido-de-se-defender-em-caso-de-denuncia-de-abuso-sexual</loc>
+    <lastmod>2026-06-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/noticias/lideres-da-russia-e-ucrania-dirigem-mensagens-ao-presidente-dos-eua-pelos-80-anos</loc>
     <lastmod>2026-06-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -5719,13 +5959,13 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.olhaqueduas.com/noticias/estados-unidos-e-irao-apresentam-posicoes-divergentes-sobre-acordo-de-paz</loc>
+    <loc>https://www.olhaqueduas.com/noticias/trump-anuncia-assinatura-de-acordo-de-paz-mas-irao-nao-confirma-declaracoes</loc>
     <lastmod>2026-06-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.olhaqueduas.com/noticias/trump-anuncia-assinatura-de-acordo-de-paz-mas-irao-nao-confirma-declaracoes</loc>
+    <loc>https://www.olhaqueduas.com/noticias/estados-unidos-e-irao-apresentam-posicoes-divergentes-sobre-acordo-de-paz</loc>
     <lastmod>2026-06-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -5988,246 +6228,6 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/trump-anuncia-assinatura-de-acordo-de-paz-com-irao-teerao-desmente-fechamento-do-acordo</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/reeleicao-de-viktor-orban-para-a-presidencia-do-fidesz</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/governo-afirma-estar-preparado-para-apoio-financeiro-aos-bombeiros-durante-epoca-de-incendios</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/ucrania-anuncia-aumento-de-salarios-para-militares-em-operacoes-na-linha-da-frente</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/incidente-em-porto-russo-resulta-em-vitimas-apos-operacao-ucraniana</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/viktor-orban-reeleito-para-a-lideranca-do-partido-fidesz-apos-resultados-eleitorais-de-abril</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/viktor-orban-reeleito-presidente-do-fidesz-na-hungria-apos-derrota-parlamentar</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/george-russell-garante-pole-position-no-grande-premio-de-barcelona-catalunha</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/bosnia-participa-no-mundial-com-musica-de-15-anos-como-referencia-cultural-entre-adeptos</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/alegacoes-russas-de-incidente-na-central-nuclear-de-zaporijia</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/operacoes-militares-israelitas-no-sul-do-libano-resultam-em-evacuacoes-em-massa</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/paquistao-preve-acordo-iminente-entre-eua-e-irao-enquanto-operacoes-militares-continuam</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/selecao-portuguesa-prepara-se-para-estreia-no-mundial-de-2026-frente-a-republica-democratica-do-cong</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/numero-de-conflitos-armados-entre-estados-atinge-niveis-nao-registados-desde-o-final-da-segunda-guer</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/ucrania-regista-ataques-em-multiplas-regioes-processo-de-adesao-a-uniao-europeia-prossegue</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/lisboa-desenvolve-projeto-municipal-de-inventariacao-de-moldes-da-calcada-portuguesa</loc>
-    <lastmod>2026-06-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/exercito-israelita-emite-apelo-de-evacuacao-para-aldeias-no-sul-do-libano</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/numero-de-conflitos-armados-entre-estados-atinge-niveis-nao-registados-desde-a-segunda-guerra-mundia</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/primeiro-ministro-do-paquistao-declara-perspectivas-de-acordo-de-paz-para-as-proximas-24-horas</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/paquistao-anuncia-possivel-acordo-entre-estados-unidos-e-irao-para-este-fim-de-semana</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/remocao-do-nome-de-donald-trump-do-kennedy-center-por-ordem-judicial</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/remocao-do-nome-de-donald-trump-no-kennedy-center-prossegue-apos-decisao-judicial</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/anthropic-desativa-modelos-de-ia-apos-diretiva-da-administracao-trump</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/parlamento-europeu-agendado-para-votar-sobre-novas-regras-de-retorno-de-migrantes-irregulares</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/presidente-cubano-anuncia-reformas-economicas-visando-investimento-e-descentralizacao</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/alemanha-reforca-defesas-antidrone-face-a-preocupacoes-de-seguranca</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/abatimento-de-drones-iranianos-pelos-eua-e-situacao-no-estreito-de-ormuz</loc>
-    <lastmod>2026-06-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/tel-aviv-realiza-marcha-do-orgulho-com-participacao-de-milhares-de-pessoas</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/lituania-detecta-aeronave-nao-tripulada-e-activa-interceptores-da-nato</loc>
-    <lastmod>2026-06-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/investigadora-da-universidade-de-lisboa-realiza-navegacao-ate-veneza-para-recolha-de-amostras-de-pla</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/selecao-portuguesa-inicia-preparacao-para-o-mundial-2026-nos-eua</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/tajani-apresenta-posicao-italiana-sobre-conflitos-no-medio-oriente-e-leste-europeu</loc>
-    <lastmod>2026-06-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/analise-sobre-convergencias-politicas-entre-o-governo-e-o-chega</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/estados-unidos-reportam-intercecao-de-drones-iranianos-no-estreito-de-ormuz</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/comando-central-dos-eua-reporta-intercecao-de-drones-iranianos-no-estreito-de-ormuz</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/hassan-youssef-fundador-do-hamas-transferido-para-hospital-apos-libertacao-por-israel</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/ferro-rodrigues-solicita-rejeicao-do-orcamento-de-estado-de-2027-pelo-ps</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/donald-trump-anuncia-acordo-de-paz-entre-estados-unidos-e-irao</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/uniao-europeia-retoma-negociacoes-de-adesao-com-a-ucrania</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.olhaqueduas.com/noticias/departamento-de-justica-dos-eua-aprova-aquisicao-da-warner-bros-pela-paramount</loc>
-    <lastmod>2026-06-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
 
   <!-- Dynamic: Exclusivo Olha que Duas -->
   <url>
@@ -6278,6 +6278,26 @@
     <image:image>
       <image:loc>https://jjifjbdfpvgeseqbjpkg.supabase.co/storage/v1/object/public/media-library/programa-capa-noticias-olha-que-duas.jpg</image:loc>
       <image:title>Notícias Olha que Duas — Olha que Duas</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/exclusivo/curtas-biografias/rute-cardoso</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://jjifjbdfpvgeseqbjpkg.supabase.co/storage/v1/object/public/media-library/curtas-biografias-rute-cardoso-og.jpg</image:loc>
+      <image:title>«Espero que estejas orgulhoso de mim»: o refúgio emocionante de Rute Cardoso para sobreviver ao luto de Diogo Jota</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.olhaqueduas.com/exclusivo/noticias-olha-que-duas/dulce-pontes-cancela-concerto-escritaria-penafiel</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://jjifjbdfpvgeseqbjpkg.supabase.co/storage/v1/object/public/media-library/noticias-dulce-pontes-og.jpg</image:loc>
+      <image:title>Dulce Pontes obrigada a cancelar concerto esgotado no festival Escritaria, em Penafiel, por motivos de saúde</image:title>
     </image:image>
   </url>
   <url>
