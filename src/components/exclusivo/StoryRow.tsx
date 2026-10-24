@@ -10,14 +10,14 @@ function Cover({ url }: { url: string }) {
   return <img src={url} alt="" className="h-full w-full object-contain" />;
 }
 
-/** Notícia seguinte na coluna. A foto fica inteira, mesmo quando é quadrada. */
+/** Notícia seguinte na coluna. Capas 16:10; as antigas noutro formato ficam inteiras. */
 export function StoryRow({ post, programSlug }: { post: VinagrePost; programSlug: string }) {
   return (
     <Link
       to={exclusivoPostPath(programSlug, post.slug)}
-      className="group grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-4 border-b border-[#1c0a10]/10 py-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-6 sm:py-6"
+      className="group grid grid-cols-[7.5rem_minmax(0,1fr)] items-center gap-4 border-b border-[#1c0a10]/10 py-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-6 sm:py-6"
     >
-      <div className="aspect-square overflow-hidden rounded-xl bg-[#1c0a10] sm:aspect-[16/10]">
+      <div className="aspect-[16/10] overflow-hidden rounded-xl bg-[#1c0a10]">
         <Cover url={post.cover_url} />
       </div>
       <div className="min-w-0">
