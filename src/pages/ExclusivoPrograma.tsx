@@ -12,7 +12,7 @@ import { useExclusiveProgram } from "@/hooks/useExclusivePrograms";
 import { useProgramPosts, useVinagrePost } from "@/hooks/useVinagrePosts";
 import { useMetaTags, getPageBreadcrumbJsonLd } from "@/hooks/useMetaTags";
 import { articleShareImage } from "@/lib/articleHtml";
-import { exclusivoPostPath, exclusivoProgramPath, VINAGRE_PROGRAM_SLUG } from "@/lib/exclusivoPaths";
+import { exclusivoPostPath, exclusivoProgramPath, LEGACY_PROGRAM_SLUG } from "@/lib/exclusivoPaths";
 import { EXCLUSIVO_HUB } from "@/types/exclusivo";
 import { formatVinagreDate } from "@/lib/vinagreDate";
 
@@ -36,7 +36,11 @@ export default function ExclusivoPrograma() {
   const missing = programQuery.isSuccess && !program && legacyQuery.isSuccess && !legacyQuery.data;
 
   useMetaTags({
-    title: program ? `${program.title} — ${program.author}` : EXCLUSIVO_HUB.label,
+    title: program
+      ? program.title.includes(program.author)
+        ? program.title
+        : `${program.title} — ${program.author}`
+      : EXCLUSIVO_HUB.label,
     description: program?.description || program?.tagline || EXCLUSIVO_HUB.description,
     noindex: missing,
     url: pageUrl,
@@ -69,7 +73,7 @@ export default function ExclusivoPrograma() {
   }, [programSlug]);
 
   if (legacyQuery.data) {
-    const target = legacyQuery.data.program?.slug || VINAGRE_PROGRAM_SLUG;
+    const target = legacyQuery.data.program?.slug || LEGACY_PROGRAM_SLUG;
     return <Navigate to={exclusivoPostPath(target, legacyQuery.data.slug)} replace />;
   }
 

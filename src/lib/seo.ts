@@ -10,6 +10,29 @@ export const DESCRIPTION_MAX = 155;
 
 const SUFFIX = ` | ${SITE_NAME}`;
 
+// A cut title must not end on these: "…jogador do Benfica devido a" reads broken.
+const DANGLING = new Set(
+  "a o as os à às ao aos de da do das dos em na no nas nos num numa e ou com sem por para pela pelo pelas pelos que se mas um uma uns umas sobre entre até após contra devido como quando onde".split(" "),
+);
+
+function tidyEnd(text: string): string {
+  let out = text.replace(/[\s,;:«"'(–—-]+$/, "");
+  for (;;) {
+    const words = out.split(" ");
+    const last = words[words.length - 1]?.toLowerCase();
+    if (words.length > 3 && last && DANGLING.has(last)) out = words.slice(0, -1).join(" ").replace(/[\s,;:«"'(–—-]+$/, "");
+    else break;
+  }
+  // An opening quote left without its closing one: cut before it.
+  for (const [open, close] of [["«", "»"], ["“", "”"]] as const) {
+    if (out.split(open).length > out.split(close).length) out = tidyEnd(out.slice(0, out.lastIndexOf(open)));
+  }
+  for (const q of ["'", '"']) {
+    if (out.split(q).length % 2 === 0) out = tidyEnd(out.slice(0, out.lastIndexOf(q)));
+  }
+  return out;
+}
+
 /** Corta num ponto natural (:, —, !, ?, .) e, não havendo, na última palavra que cabe. */
 function cutAt(text: string, max: number): string {
   if (text.length <= max) return text;
@@ -23,7 +46,7 @@ function cutAt(text: string, max: number): string {
     return head.slice(0, mark === "!" || mark === "?" ? i + 1 : i).trim();
   }
   const space = head.lastIndexOf(" ", max);
-  return head.slice(0, space > max * 0.6 ? space : max).replace(/[\s,;:«"(–—-]+$/, "");
+  return tidyEnd(head.slice(0, space > max * 0.6 ? space : max));
 }
 
 /** `<title>`: junta « | Olha que Duas» só quando cabe. */

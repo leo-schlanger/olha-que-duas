@@ -17,6 +17,14 @@ describe("documentTitle", () => {
     expect(out).not.toMatch(/\.\.\.|…$/);
   });
 
+  it("does not end on a preposition or an open quote", () => {
+    const a = documentTitle("UEFA suspende provisoriamente jogador do Benfica devido a insultos racistas no jogo");
+    expect(a).not.toMatch(/\s(a|de|em|com|e)$/);
+    const b = documentTitle("Netanyahu afirma que conflito com Irão não será 'guerra sem fim' e promete resposta");
+    expect(b.split("'").length % 2).toBe(1);
+    expect(b.length).toBeLessThanOrEqual(60);
+  });
+
   it("falls back to the site name when empty", () => {
     expect(documentTitle("  ")).toBe("Olha que Duas");
   });

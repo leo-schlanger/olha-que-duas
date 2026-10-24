@@ -30,7 +30,10 @@ export function ProgramTabs({ active }: { active?: string }) {
 
   return (
     <nav aria-label="Programas do Exclusivo" className="-mx-4 sm:-mx-6">
-      <div ref={rowRef} className="relative flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:px-6 [&::-webkit-scrollbar]:hidden">
+      <div
+        ref={rowRef}
+        className="relative flex gap-2 overflow-x-auto px-4 pb-1 [mask-image:linear-gradient(90deg,transparent,#000_16px,#000_calc(100%-32px),transparent)] [scrollbar-width:none] sm:px-6 [&::-webkit-scrollbar]:hidden"
+      >
         <Link
           to={EXCLUSIVO_HUB.path}
           ref={!active ? activeRef : undefined}
@@ -51,7 +54,7 @@ export function ProgramTabs({ active }: { active?: string }) {
             >
               <span
                 aria-hidden
-                className="h-2 w-2 rounded-full"
+                className={cn("h-2 w-2 rounded-full", isActive && "ring-2 ring-[#f6efe4]")}
                 style={{ backgroundColor: programTheme(program.slug).accent }}
               />
               {program.title}

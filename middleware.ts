@@ -150,6 +150,19 @@ export default async function middleware(request: Request): Promise<Response | u
   const url = new URL(request.url);
   const path = url.pathname;
 
+  // Eduardo Vinagre left on 2026-10-24: his program's pieces now live in Notícias.
+  // vercel.json redirects too; this covers crawlers if middleware runs first.
+  const oldProgram = path.match(/^\/exclusivo\/olha-que-duas-e-eu(\/[^/]+)?\/?$/);
+  if (oldProgram) {
+    return new Response(null, {
+      status: 301,
+      headers: {
+        Location: `https://www.olhaqueduas.com/exclusivo/noticias-olha-que-duas${oldProgram[1] ?? ''}`,
+        'Cache-Control': 's-maxage=86400',
+      },
+    });
+  }
+
   // // ========== HISTÓRIAS ==========
   // // Único sítio onde os motores de busca recebem HTML pré-renderizado: o
   // // site é uma SPA e o Googlebot só executa JS dias depois, o que atrasaria
@@ -290,7 +303,7 @@ export default async function middleware(request: Request): Promise<Response | u
   }
 
   if (path === '/exclusivo') {
-    const description = 'Os programas exclusivos do Olha que Duas: Eduardo Vinagre, Alexandra Serra, Marluce Revorêdo e a redação, em crónicas, biografias, opinião e notícias.';
+    const description = 'Os programas exclusivos do Olha que Duas: notícias, biografias, opinião e reflexão, com Alexandra Serra, Marluce Revorêdo e a redação.';
     let image = 'https://www.olhaqueduas.com/exclusivo/curtas-biografias-og.jpg';
     try {
       const rows = await fetchSupabase(
@@ -355,7 +368,9 @@ export default async function middleware(request: Request): Promise<Response | u
           dateModified: post.updated_at || post.published_at || undefined,
           inLanguage: 'pt-PT',
           articleSection: section,
-          author: { '@type': 'Person', name: author },
+          author: author === 'Olha que Duas'
+            ? { '@type': 'Organization', name: author, url: 'https://www.olhaqueduas.com' }
+            : { '@type': 'Person', name: author },
           publisher: {
             '@type': 'Organization',
             name: 'Olha que Duas',
@@ -392,7 +407,9 @@ export default async function middleware(request: Request): Promise<Response | u
           if (lead) image = shareImage(lead);
         } catch { /* fica a capa do programa */ }
         return html({
-          title: `${program.title} — ${program.author}`,
+          title: String(program.title).includes(String(program.author))
+            ? String(program.title)
+            : `${program.title} — ${program.author}`,
           description,
           image,
           imageAlt: String(program.title),

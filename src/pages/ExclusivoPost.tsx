@@ -61,7 +61,9 @@ export default function ExclusivoPost() {
             dateModified: post.updated_at,
             inLanguage: "pt-PT",
             articleSection: section,
-            author: { "@type": "Person", name: author },
+            author: author === "Olha que Duas"
+              ? { "@type": "Organization", name: author, url: "https://www.olhaqueduas.com" }
+              : { "@type": "Person", name: author },
             publisher: {
               "@type": "Organization",
               name: "Olha que Duas",
@@ -109,10 +111,10 @@ export default function ExclusivoPost() {
       <Header />
       <main id="main-content" className="pt-24 md:pt-28">
         <article className="container mx-auto px-4 pb-20 sm:px-6">
+          <div className="mb-8">
+            <ProgramTabs active={program?.slug ?? programSlug} />
+          </div>
           <div className="mx-auto max-w-3xl">
-            <div className="mb-8">
-              <ProgramTabs active={program?.slug ?? programSlug} />
-            </div>
             <nav aria-label="Caminho" className="mb-5 flex flex-wrap items-center gap-2 text-sm">
               <Link to={EXCLUSIVO_HUB.path} className="text-[#7a5b16] hover:text-[#5c4310]">Exclusivo</Link>
               <span aria-hidden className="text-[#1c0a10]/30">/</span>
@@ -161,7 +163,7 @@ export default function ExclusivoPost() {
                       <p className="text-sm text-[#7a5b16]">{program.title}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-4 text-sm text-[#6b5a4e]">
                     {post.published_at && (
                       <span className="inline-flex items-center gap-1.5">
                         <Calendar className="h-4 w-4" />

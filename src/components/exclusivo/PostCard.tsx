@@ -79,7 +79,7 @@ export function PostCardText({
           {post.excerpt}
         </p>
       )}
-      {size === "lg" && <p className="mt-5 text-sm font-semibold text-primary">Ler a peça</p>}
+      {size === "lg" && <p className="mt-5 text-sm font-semibold text-[#a31f17]">Ler a peça</p>}
     </Link>
   );
 }

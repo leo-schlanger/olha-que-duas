@@ -23,7 +23,7 @@ const Index = () => {
   // restaurados (sem isto ficavam os da última página visitada).
   useMetaTags({
     description:
-      "Somos comunicadoras com propósito. Podcast, Rádio 24h, Assessoria de Imprensa e Estratégia de Marca em Portugal. Coluna Exclusivo Olha que Duas, de Eduardo Vinagre.",
+      "Somos comunicadoras com propósito: podcast, rádio 24h, assessoria de imprensa e estratégia de marca em Portugal, e o Exclusivo Olha que Duas.",
     url: "https://www.olhaqueduas.com/",
     type: "website",
   });

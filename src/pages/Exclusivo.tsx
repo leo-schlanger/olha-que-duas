@@ -69,7 +69,7 @@ export default function Exclusivo() {
       <main id="main-content" className="pt-24 md:pt-28">
         <section className="container mx-auto overflow-x-clip px-4 pb-20 sm:px-6">
           <header className="pb-6">
-            <p className="text-xs font-bold uppercase tracking-[0.28em] text-primary">Só aqui</p>
+            <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#a31f17]">Só aqui</p>
             <h1 className="mt-2 font-display text-4xl leading-none text-[#1c0a10] md:text-6xl">
               {EXCLUSIVO_HUB.label}
             </h1>

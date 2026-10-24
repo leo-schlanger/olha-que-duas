@@ -86,9 +86,3 @@ export function parseVinagrePost(value: unknown): VinagrePost | null {
   };
 }
 
-export const VINAGRE_COLUMN = {
-  navLabel: "Exclusivo Olha que Duas",
-  title: "Olha que Duas e Eu",
-  author: "Eduardo Vinagre",
-  path: "/exclusivo/olha-que-duas-e-eu",
-} as const;
