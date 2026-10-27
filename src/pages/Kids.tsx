@@ -21,6 +21,7 @@ import {
 import { siteConfig } from '@/config/site';
 import KidsRadioPlayer from '@/components/kids/KidsRadioPlayer';
 import KidsDedicatoriasSection from '@/components/kids/KidsDedicatoriasSection';
+import { HalloweenKidsSlot, useSeasonalLogo } from '@/components/seasonal/halloween';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -252,6 +253,7 @@ const upcoming = [
 ];
 
 const Kids = () => {
+  const heroLogo = useSeasonalLogo(logoKids, 'kids');
   useMetaTags({
     title: 'Kids — Espaço Infantil de Rádio, Música e Histórias',
     description:
@@ -354,7 +356,7 @@ const Kids = () => {
                     }}
                   />
                   <img
-                    src={logoKids}
+                    src={heroLogo}
                     alt="Olha que Duas Kids"
                     className="relative w-32 sm:w-48 md:w-64 lg:w-80 h-auto drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
                     loading="eager"
@@ -432,6 +434,9 @@ const Kids = () => {
               </div>
             </Animated>
           </div>
+
+          {/* Dia das Bruxas — pumpkin patch easter egg, self-expiring */}
+          <HalloweenKidsSlot variant="patch" />
 
           {/* Wavy hill bottom */}
           <div className="absolute bottom-0 left-0 right-0 -z-0 pointer-events-none">

@@ -12,6 +12,7 @@ import { CookieConsent } from "./components/CookieConsent";
 import { WhatsAppFloat } from "./components/WhatsAppFloat";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import RockInRioOverlay from "./components/RockInRioOverlay";
+import { HalloweenOverlaySlot } from "./components/seasonal/halloween";
 
 // Lazy load pages (except Index which is the landing page)
 const Servicos = lazy(() => import("./pages/Servicos"));
@@ -120,6 +121,8 @@ const App = () => (
         </ErrorBoundary>
         {/* Rock in Rio Lisboa — festival overlay (global) */}
         <RockInRioOverlay />
+        {/* Dia das Bruxas / Pão-por-Deus — seasonal overlay, self-expiring */}
+        <HalloweenOverlaySlot />
         {/* PWA Install Prompt */}
         <PWAInstallPrompt />
         {/* WhatsApp Channel Float */}

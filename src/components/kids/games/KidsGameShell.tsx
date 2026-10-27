@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import { useGamesMute } from './useGamesMute';
+import { HalloweenKidsSlot, useSeasonalLogo } from '@/components/seasonal/halloween';
 import logoKids from '@/assets/kids/logo-kids.webp';
 import leoCartoon from '@/assets/kids/leo-cartoon.webp';
 import alexandraCartoon from '@/assets/kids/alexandra-cartoon.webp';
@@ -52,6 +53,7 @@ export default function KidsGameShell({
   hero,
 }: KidsGameShellProps) {
   const { muted, toggle } = useGamesMute();
+  const heroLogo = useSeasonalLogo(logoKids, 'kids');
 
   return (
     <div className="min-h-screen bg-[#bae6fd] overflow-x-hidden">
@@ -70,6 +72,9 @@ export default function KidsGameShell({
             <div className="relative w-16 h-16 md:w-24 md:h-24 rounded-full bg-gradient-to-br from-yellow-200 via-yellow-300 to-amber-400 shadow-[0_0_60px_rgba(253,224,71,0.7)]" />
           </div>
         </div>
+
+        {/* Dia das Bruxas — ghost by the sun on the games hub, self-expiring */}
+        {hero && <HalloweenKidsSlot variant="sky" />}
 
         <Cloud className="top-20 left-[4%] w-24 md:w-36 opacity-90 motion-safe:animate-cloud-slow" />
         <Cloud className="top-36 right-[6%] w-20 md:w-32 opacity-85 motion-safe:animate-cloud-medium" />
@@ -120,7 +125,7 @@ export default function KidsGameShell({
           {hero ?? (
             <div className="text-center mb-6">
               <img
-                src={logoKids}
+                src={heroLogo}
                 alt="Olha que Duas Kids"
                 className="mx-auto mb-3 h-16 w-16 md:h-20 md:w-20 object-contain drop-shadow-lg"
               />

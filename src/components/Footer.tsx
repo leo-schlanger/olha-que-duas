@@ -1,10 +1,12 @@
 import { Instagram, Facebook, Heart, Youtube } from "lucide-react";
 import { Link } from "react-router-dom";
-import logo from "@/assets/logo-olha-que-duas.webp";
+import logoDefault from "@/assets/logo-olha-que-duas.webp";
 import { siteConfig } from "@/config/site";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
+import { useSeasonalLogo } from "@/components/seasonal/halloween";
 
 const Footer = () => {
+  const logo = useSeasonalLogo(logoDefault);
   return (
     <footer className="bg-gradient-to-b from-beige-dark to-charcoal text-cream relative overflow-hidden">
       {/* Decorative elements */}

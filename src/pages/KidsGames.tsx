@@ -5,6 +5,7 @@ import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
 import KidsGameShell from '@/components/kids/games/KidsGameShell';
 import { BabySharkArt, MemoryArt, QuizArt, SnakeArt } from '@/components/kids/games/GameArts';
 import logoKids from '@/assets/kids/logo-kids.webp';
+import { useSeasonalLogo } from '@/components/seasonal/halloween';
 import alexandraCartoon from '@/assets/kids/alexandra-cartoon.webp';
 import marluceCartoon from '@/assets/kids/marluce-cartoon.webp';
 import leoCartoon from '@/assets/kids/leo-cartoon.webp';
@@ -99,6 +100,7 @@ const gamesJsonLd = [
 ];
 
 export default function KidsGames() {
+  const heroLogo = useSeasonalLogo(logoKids, 'kids');
   useMetaTags({
     title: 'Jogos do Cantinho — Quiz, Memória, Baby Shark e Cobra Arco-Íris',
     description:
@@ -140,7 +142,7 @@ export default function KidsGames() {
               className="h-24 sm:h-32 md:h-40 object-contain drop-shadow-lg motion-safe:animate-bob-slow"
             />
             <img
-              src={logoKids}
+              src={heroLogo}
               alt="Olha que Duas Kids"
               className="relative z-10 h-28 sm:h-36 md:h-44 w-auto object-contain drop-shadow-xl -mx-2 motion-safe:animate-bob-fast"
             />

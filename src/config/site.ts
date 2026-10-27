@@ -166,4 +166,13 @@ export const siteConfig = {
     partnerLogoWhite: "/rock-in-rio-branco.png",
     partnerLetteringWhite: "/rock-in-rio-lettering-branco.png",
   },
+  // Dia das Bruxas + Pão-por-Deus — tema sazonal (src/components/seasonal/halloween/).
+  // Liga e desliga sozinho pela janela [start, end); enabled:false desliga já.
+  // Lisboa está em WET (UTC+0) desde 25/10/2026, por isso as horas são UTC.
+  halloween: {
+    enabled: true,
+    start: "2026-10-27T00:00:00+00:00",
+    end: "2026-11-02T00:00:00+00:00",
+    paoPorDeus: "2026-11-01T00:00:00+00:00",
+  },
 } as const;

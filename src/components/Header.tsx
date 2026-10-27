@@ -15,12 +15,14 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import logo from "@/assets/logo-olha-que-duas.webp";
+import logoDefault from "@/assets/logo-olha-que-duas.webp";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import RockInRioBanner from "./RockInRioBanner";
+import { HalloweenBannerSlot, useSeasonalLogo } from "./seasonal/halloween";
 
 const Header = () => {
+  const logo = useSeasonalLogo(logoDefault);
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("inicio");
@@ -82,6 +84,8 @@ const Header = () => {
     >
       {/* Rock in Rio Lisboa — announcement banner */}
       <RockInRioBanner />
+      {/* Dia das Bruxas / Pão-por-Deus — seasonal, self-expiring */}
+      <HalloweenBannerSlot />
 
       <div className={cn(
         "container mx-auto px-4 sm:px-6 transition-all duration-500",
