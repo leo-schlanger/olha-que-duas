@@ -128,6 +128,33 @@
     background: #1c0a10;
   }
 
+  /* Preflight removes list markers; restore them for article lists. */
+  .vinagre-article ul,
+  .vinagre-article ol {
+    margin: 0 0 1.75rem;
+    padding-left: 1.5rem;
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: hsl(var(--charcoal));
+  }
+
+  .vinagre-article ul {
+    list-style: disc;
+  }
+
+  .vinagre-article ol {
+    list-style: decimal;
+  }
+
+  .vinagre-article li {
+    margin: 0 0 0.75rem;
+    padding-left: 0.25rem;
+  }
+
+  .vinagre-article li::marker {
+    color: #c6a15b;
+  }
+
   .vinagre-article blockquote p {
     margin: 0;
     font-family: "Cormorant Garamond", serif;
