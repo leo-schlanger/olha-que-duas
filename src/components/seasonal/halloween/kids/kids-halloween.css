@@ -1,0 +1,199 @@
+/*
+ * Kids area in Halloween mode. Everything is keyed on the wrapper
+ * `.kids-scope[data-kids-season="halloween"]`, which only exists inside the
+ * window (useKidsHalloween), and this file ships in the lazy art chunk.
+ * Inline styles in the pages need !important; Tailwind utilities do not.
+ */
+
+.kids-scope[data-kids-season="halloween"] {
+  --kh-night: #1d1450;
+  --kh-indigo: #2e1f7a;
+  --kh-violet: #7c3aed;
+  --kh-violet-deep: #5b21b6;
+  --kh-lavender: #efe7ff;
+  --kh-orange: #ff7a1a;
+  --kh-orange-deep: #c2410c;
+  --kh-lime: #a3e635;
+  --kh-ink: #24123f;
+  --kh-on-night: #f5f0ff;
+  --kh-web: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%237c3aed' stroke-opacity='.55' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M64 0L4 60M64 0L30 62M64 0L2 32M64 0L62 64M64 0L0 6'/%3E%3Cpath d='M52 2q-2 8 4 12q4 6 8 4M40 2q-3 14 8 22q10 8 16 6M28 2q-4 20 12 34q16 12 24 10M16 2q-4 28 18 46q20 16 30 12'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* ---------- hero (/kids) ---------- */
+
+/* The sky sits at -z-10: isolate so it paints above the page background. */
+.kids-scope[data-kids-season="halloween"] .kh-hero {
+  isolation: isolate;
+  background: var(--kh-night);
+  /* room for the seasonal strip above the fixed header */
+  padding-top: 8.5rem;
+}
+@media (min-width: 768px) {
+  .kids-scope[data-kids-season="halloween"] .kh-hero { padding-top: 9.5rem; }
+}
+
+.kids-scope[data-kids-season="halloween"] .kh-sun,
+.kids-scope[data-kids-season="halloween"] .kh-day-hill {
+  display: none;
+}
+
+.kids-scope[data-kids-season="halloween"] .kh-cloud g { fill: #8d6fe0; }
+.kids-scope[data-kids-season="halloween"] .kh-cloud {
+  opacity: 0.6;
+  filter: drop-shadow(0 6px 10px rgba(18, 12, 58, 0.45));
+}
+/* Phones: the lower hero clouds would sit behind the title. */
+@media (max-width: 767px) {
+  .kids-scope[data-kids-season="halloween"] .kh-hero > svg.kh-cloud:nth-of-type(n + 3) { display: none; }
+  .kids-scope[data-kids-season="halloween"] .kh-hero > .kh-dot.top-\[60\%\] { display: none; }
+}
+.kids-scope[data-kids-season="halloween"] .kh-dot { color: var(--kh-lime); }
+.kids-scope[data-kids-season="halloween"] .kh-dot:nth-of-type(even) { color: var(--kh-orange); }
+
+.kids-scope[data-kids-season="halloween"] .kh-pill {
+  border-color: var(--kh-orange);
+  box-shadow: 0 0 0 4px rgba(255, 122, 26, 0.25), 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+.kids-scope[data-kids-season="halloween"] .kh-pill .kh-pill-text { color: var(--kh-violet-deep); }
+
+.kids-scope[data-kids-season="halloween"] .kh-title-1 { color: var(--kh-on-night); }
+.kids-scope[data-kids-season="halloween"] .kh-title-2 {
+  background: linear-gradient(180deg, #fff1b8 0%, #ffb347 50%, #ff8c32 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  filter: drop-shadow(0 5px 0 rgba(36, 18, 63, 0.55)) !important;
+}
+.kids-scope[data-kids-season="halloween"] .kh-sub { color: var(--kh-on-night); }
+.kids-scope[data-kids-season="halloween"] .kh-sub svg { color: var(--kh-lime); }
+
+/* Buttons: pumpkin and lime, dark ink text (AA on both). */
+.kids-scope[data-kids-season="halloween"] .kh-btn-primary {
+  background-color: var(--kh-orange);
+  color: var(--kh-ink);
+  box-shadow: 0 10px 0 var(--kh-orange-deep);
+}
+.kids-scope[data-kids-season="halloween"] .kh-btn-primary:hover { background-color: #ff8f3d; box-shadow: 0 6px 0 var(--kh-orange-deep); }
+.kids-scope[data-kids-season="halloween"] .kh-btn-secondary {
+  background-color: var(--kh-lime);
+  color: var(--kh-ink);
+  box-shadow: 0 10px 0 #4d7c0f;
+}
+.kids-scope[data-kids-season="halloween"] .kh-btn-secondary:hover { background-color: #b5ef5a; box-shadow: 0 6px 0 #4d7c0f; }
+.kids-scope[data-kids-season="halloween"] .kh-btn-secondary svg { fill: var(--kh-violet-deep); color: var(--kh-violet-deep); }
+
+/* ---------- sections ---------- */
+
+.kids-scope[data-kids-season="halloween"] .kh-cantinho {
+  background: linear-gradient(180deg, #1f4b45 0, #3b2a7a 70px, #efe7ff 170px, #fff3e4 100%) !important;
+}
+.kids-scope[data-kids-season="halloween"] .kh-badge-solid {
+  background-color: var(--kh-violet);
+}
+.kids-scope[data-kids-season="halloween"] .kh-accent { color: var(--kh-violet-deep); }
+
+.kids-scope[data-kids-season="halloween"] .kh-dedicatorias {
+  background: linear-gradient(180deg, #fff3e4 0%, #f3ebff 45%, #ffe9d6 85%, #fff3e4 100%) !important;
+}
+
+.kids-scope[data-kids-season="halloween"] .kh-mundo {
+  position: relative;
+  background-image: linear-gradient(180deg, #2e1f7a 0, #5b34b5 90px, #efe7ff 220px, #fff3e4 100%);
+}
+.kids-scope[data-kids-season="halloween"] .kh-mundo .kh-on-dark-pill {
+  background-color: #fff;
+  border-color: var(--kh-orange);
+}
+.kids-scope[data-kids-season="halloween"] .kh-mundo .kh-on-dark-pill span,
+.kids-scope[data-kids-season="halloween"] .kh-mundo .kh-on-dark-pill svg { color: var(--kh-violet-deep); }
+
+/* Cards: pumpkin border, a soft web in the corner. */
+.kids-scope[data-kids-season="halloween"] .kh-card {
+  border-color: #fdba74;
+  box-shadow: 0 10px 0 rgba(124, 58, 237, 0.18), 0 18px 30px rgba(36, 18, 63, 0.12);
+}
+.kids-scope[data-kids-season="halloween"] .kh-card:hover { border-color: var(--kh-violet); }
+.kids-scope[data-kids-season="halloween"] .kh-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 58px;
+  height: 58px;
+  background: var(--kh-web) no-repeat top right / contain;
+  pointer-events: none;
+}
+.kids-scope[data-kids-season="halloween"] .kh-grid > :nth-child(4n + 1) .kh-card-icon { background-image: linear-gradient(135deg, #ffa24c, #ea580c); }
+.kids-scope[data-kids-season="halloween"] .kh-grid > :nth-child(4n + 2) .kh-card-icon { background-image: linear-gradient(135deg, #a78bfa, #6d28d9); }
+.kids-scope[data-kids-season="halloween"] .kh-grid > :nth-child(4n + 3) .kh-card-icon { background-image: linear-gradient(135deg, #a3e635, #4d7c0f); }
+.kids-scope[data-kids-season="halloween"] .kh-grid > :nth-child(4n + 4) .kh-card-icon { background-image: linear-gradient(135deg, #f472b6, #9d174d); }
+
+.kids-scope[data-kids-season="halloween"] .kh-cta {
+  background: linear-gradient(135deg, #2e1f7a 0%, #6d28d9 52%, #c2410c 100%) !important;
+}
+.kids-scope[data-kids-season="halloween"] .kh-cta::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 90px;
+  height: 90px;
+  transform: scaleX(-1);
+  background: var(--kh-web) no-repeat top right / contain;
+  opacity: 0.9;
+  filter: brightness(2.4);
+  pointer-events: none;
+}
+
+/* ---------- games (KidsGameShell) ---------- */
+
+.kids-scope[data-kids-season="halloween"].kh-shell { background-color: var(--kh-night); }
+.kids-scope[data-kids-season="halloween"] .kh-shell-main { isolation: isolate; }
+.kids-scope[data-kids-season="halloween"] .kh-shell-content { padding-top: 8.5rem; }
+@media (min-width: 768px) {
+  .kids-scope[data-kids-season="halloween"] .kh-shell-content { padding-top: 9.5rem; }
+}
+.kids-scope[data-kids-season="halloween"] .kh-on-sky { color: var(--kh-on-night); }
+.kids-scope[data-kids-season="halloween"] .kh-on-sky-accent { color: #ffd166; }
+.kids-scope[data-kids-season="halloween"] .kh-game-card {
+  border-color: #fed7aa;
+}
+.kids-scope[data-kids-season="halloween"] .kh-game-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 54px;
+  height: 54px;
+  transform: scaleX(-1);
+  background: var(--kh-web) no-repeat top right / contain;
+  pointer-events: none;
+}
+
+/* ---------- motion (decor only, finite, off with reduced motion) ---------- */
+
+@keyframes kh-twinkle {
+  0%, 100% { opacity: 0.95; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.7); }
+}
+@keyframes kh-flap {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-8px) rotate(3deg); }
+}
+@keyframes kh-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.kh-twinkle { animation: kh-twinkle 3.6s ease-in-out 0s 4; }
+.kh-flap { animation: kh-flap 2.4s ease-in-out 0.4s 5; }
+.kh-flap-late { animation-delay: 1.1s; }
+.kh-float { animation: kh-float 4s ease-in-out 0.8s 3; }
+.kh-float-late { animation-delay: 1.8s; }
+.kh-glow { filter: drop-shadow(0 0 10px rgba(255, 200, 80, 0.85)); }
+
+@media (prefers-reduced-motion: reduce) {
+  .kh-twinkle,
+  .kh-flap,
+  .kh-float {
+    animation: none !important;
+  }
+}

@@ -703,7 +703,7 @@ const KidsPacman = () => {
       controls={
         <div className="space-y-3">
           <GameDPad onDir={setDirection} />
-          <p className="text-center text-sm font-bold text-sky-950/70 max-w-md mx-auto">
+          <p className="kh-on-sky text-center text-sm font-bold text-sky-950/70 max-w-md mx-auto">
             Setas, WASD ou desliza no ecrã. As bolhas douradas dão super-poder!
           </p>
         </div>

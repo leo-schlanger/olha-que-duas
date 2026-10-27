@@ -153,7 +153,7 @@ export default function KidsGames() {
             />
           </div>
           <h1 className="font-kids font-extrabold text-4xl sm:text-5xl md:text-6xl text-white drop-shadow-[0_4px_0_rgba(3,105,161,0.35)]">
-            Vamos <span className="text-yellow-200">jogar</span> no Cantinho!
+            Vamos <span className="kh-on-sky-accent text-yellow-200">jogar</span> no Cantinho!
           </h1>
           <p className="mt-3 text-lg md:text-xl font-bold text-white/95 max-w-xl mx-auto">
             Quatro brincadeiras com a Alexandra, a Marluce, o Leo e o Micro — o mascote da rádio.
@@ -166,7 +166,7 @@ export default function KidsGames() {
           <Animated key={game.title} animation="fade-up" delay={index * 80}>
             <Link to={game.route} className="group block cursor-pointer">
               <article
-                className="relative rounded-[1.75rem] bg-white border-4 border-white p-5 md:p-6 text-center transition-transform duration-200 group-hover:-translate-y-1.5"
+                className="kh-game-card relative rounded-[1.75rem] bg-white border-4 border-white p-5 md:p-6 text-center transition-transform duration-200 group-hover:-translate-y-1.5"
                 style={{ boxShadow: `0 12px 0 ${game.shadow}, inset 0 2px 0 rgba(255,255,255,0.8)` }}
               >
                 <img

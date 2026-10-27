@@ -22,6 +22,8 @@ import { siteConfig } from '@/config/site';
 import KidsRadioPlayer from '@/components/kids/KidsRadioPlayer';
 import KidsDedicatoriasSection from '@/components/kids/KidsDedicatoriasSection';
 import { HalloweenKidsSlot, useSeasonalLogo } from '@/components/seasonal/halloween';
+import { KidsHalloweenSlot } from '@/components/seasonal/halloween/kids';
+import { useKidsHalloween, kidsScopeProps } from '@/components/seasonal/halloween/kids/useKidsHalloween';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -254,6 +256,7 @@ const upcoming = [
 
 const Kids = () => {
   const heroLogo = useSeasonalLogo(logoKids, 'kids');
+  const hw = useKidsHalloween();
   useMetaTags({
     title: 'Kids — Espaço Infantil de Rádio, Música e Histórias',
     description:
@@ -276,11 +279,11 @@ const Kids = () => {
   });
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="kids-scope min-h-screen bg-background" {...kidsScopeProps(hw)}>
       <Header />
       <main>
         {/* HERO — céu com nuvens, logo + duas mascotes cartoon */}
-        <section className="relative overflow-hidden pt-20 md:pt-24 pb-20 md:pb-28">
+        <section className="kh-hero relative overflow-hidden pt-20 md:pt-24 pb-20 md:pb-28">
           {/* Sky background */}
           <div
             className="absolute inset-0 -z-10"
@@ -291,7 +294,7 @@ const Kids = () => {
           />
 
           {/* Sun */}
-          <div className="absolute top-24 right-10 md:right-24 -z-10">
+          <div className="kh-sun absolute top-24 right-10 md:right-24 -z-10">
             <div className="relative">
               <div className="absolute inset-0 rounded-full bg-yellow-300/60 blur-2xl scale-150 animate-pulse" />
               <div className="relative w-20 h-20 md:w-28 md:h-28 rounded-full bg-gradient-to-br from-yellow-200 via-yellow-300 to-amber-400 shadow-[0_0_60px_rgba(253,224,71,0.7)]" />
@@ -299,6 +302,9 @@ const Kids = () => {
           </div>
 
           {/* Floating clouds */}
+          {/* Dia das Bruxas — magic night sky over the day sky, self-expiring */}
+          <KidsHalloweenSlot piece="sky" variant="hero" />
+
           <Cloud className="top-20 left-[5%] w-28 md:w-40 opacity-95 animate-cloud-slow" />
           <Cloud className="top-40 right-[8%] w-24 md:w-36 opacity-90 animate-cloud-medium" />
           <Cloud className="top-[55%] left-[12%] w-20 md:w-32 opacity-85 animate-cloud-fast" />
@@ -314,12 +320,12 @@ const Kids = () => {
           {/* Top "Já no Ar" ribbon */}
           <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <Animated animation="fade-down" className="text-center mb-6 md:mb-10">
-              <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/90 backdrop-blur-sm border-2 border-yellow-300 shadow-[0_8px_30px_rgba(0,0,0,0.12)]">
+              <div className="kh-pill inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/90 backdrop-blur-sm border-2 border-yellow-300 shadow-[0_8px_30px_rgba(0,0,0,0.12)]">
                 <span className="relative flex h-3 w-3">
                   <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
                   <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
                 </span>
-                <span className="text-xs md:text-sm font-extrabold uppercase tracking-widest text-pink-600">
+                <span className="kh-pill-text text-xs md:text-sm font-extrabold uppercase tracking-widest text-pink-600">
                   Já no Ar!
                 </span>
                 <Sparkles className="w-4 h-4 text-amber-500" />
@@ -386,11 +392,11 @@ const Kids = () => {
             {/* Marketing message */}
             <Animated animation="fade-up" delay={500} className="text-center mt-10 md:mt-14 max-w-4xl mx-auto">
               <h1 className="font-display font-bold leading-[0.95] text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
-                <span className="block text-pink-600 drop-shadow-sm">
+                <span className="kh-title-1 block text-pink-600 drop-shadow-sm">
                   O Olha que Duas
                 </span>
                 <span
-                  className="block mt-2 md:mt-3 text-5xl sm:text-6xl md:text-7xl lg:text-8xl"
+                  className="kh-title-2 block mt-2 md:mt-3 text-5xl sm:text-6xl md:text-7xl lg:text-8xl"
                   style={{
                     background:
                       'linear-gradient(180deg, #fde047 0%, #f59e0b 50%, #ef4444 100%)',
@@ -402,7 +408,7 @@ const Kids = () => {
                   tem Espaço Kids!
                 </span>
               </h1>
-              <p className="mt-5 md:mt-7 text-lg md:text-2xl font-bold text-sky-900 drop-shadow-sm">
+              <p className="kh-sub mt-5 md:mt-7 text-lg md:text-2xl font-bold text-sky-900 drop-shadow-sm">
                 <span className="inline-flex items-center gap-2">
                   <PartyPopper className="w-5 h-5 md:w-6 md:h-6 text-pink-500" />
                   Música, histórias, brincadeiras e muita imaginação para a pequenada!
@@ -414,7 +420,7 @@ const Kids = () => {
                 <Button
                   asChild
                   size="lg"
-                  className="h-14 px-8 text-base font-extrabold rounded-full bg-pink-500 hover:bg-pink-600 text-white shadow-[0_10px_0_rgba(190,24,93,0.6)] hover:shadow-[0_6px_0_rgba(190,24,93,0.6)] hover:translate-y-1 transition-all duration-200 border-4 border-white"
+                  className="kh-btn-primary h-14 px-8 text-base font-extrabold rounded-full bg-pink-500 hover:bg-pink-600 text-white shadow-[0_10px_0_rgba(190,24,93,0.6)] hover:shadow-[0_6px_0_rgba(190,24,93,0.6)] hover:translate-y-1 transition-all duration-200 border-4 border-white"
                 >
                   <a href="#cantinho" className="inline-flex items-center gap-2">
                     <Bell className="w-5 h-5" />
@@ -424,7 +430,7 @@ const Kids = () => {
                 <Button
                   asChild
                   size="lg"
-                  className="h-14 px-8 text-base font-extrabold rounded-full bg-yellow-400 hover:bg-yellow-500 text-pink-700 shadow-[0_10px_0_rgba(202,138,4,0.6)] hover:shadow-[0_6px_0_rgba(202,138,4,0.6)] hover:translate-y-1 transition-all duration-200 border-4 border-white"
+                  className="kh-btn-secondary h-14 px-8 text-base font-extrabold rounded-full bg-yellow-400 hover:bg-yellow-500 text-pink-700 shadow-[0_10px_0_rgba(202,138,4,0.6)] hover:shadow-[0_6px_0_rgba(202,138,4,0.6)] hover:translate-y-1 transition-all duration-200 border-4 border-white"
                 >
                   <a href="#dedicatorias-kids" className="inline-flex items-center gap-2">
                     <Heart className="w-5 h-5 fill-pink-600 text-pink-600" />
@@ -439,7 +445,7 @@ const Kids = () => {
           <HalloweenKidsSlot variant="patch" />
 
           {/* Wavy hill bottom */}
-          <div className="absolute bottom-0 left-0 right-0 -z-0 pointer-events-none">
+          <div className="kh-day-hill absolute bottom-0 left-0 right-0 -z-0 pointer-events-none">
             <svg viewBox="0 0 1440 180" className="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
               <path
                 fill="#7CC576"
@@ -452,17 +458,21 @@ const Kids = () => {
               />
             </svg>
           </div>
+          <KidsHalloweenSlot piece="hill" variant="hero" />
         </section>
 
         {/* Cantinho da Pequenada */}
         <section
           id="cantinho"
-          className="relative py-20 md:py-28 overflow-hidden"
+          className="kh-cantinho relative py-20 md:py-28 overflow-hidden"
           style={{
             background:
               'linear-gradient(180deg, #5BAE52 0%, #fef3c7 30%, #fff9e6 100%)',
           }}
         >
+          <KidsHalloweenSlot piece="garland" />
+          <KidsHalloweenSlot piece="treats" />
+
           {/* Confetti dots */}
           <ConfettiDots />
 
@@ -471,7 +481,7 @@ const Kids = () => {
 
           <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <Animated animation="fade-up" className="text-center mb-12 md:mb-16">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-500 text-white shadow-lg mb-6 border-4 border-white">
+              <div className="kh-badge-solid inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-500 text-white shadow-lg mb-6 border-4 border-white">
                 <Radio className="w-4 h-4" />
                 <span className="text-xs font-extrabold uppercase tracking-widest">
                   No Ar · Programa Infantil
@@ -624,7 +634,7 @@ const Kids = () => {
                     <Button
                       asChild
                       size="lg"
-                      className="h-14 px-8 text-base font-extrabold rounded-full bg-pink-500 hover:bg-pink-600 text-white shadow-[0_10px_0_rgba(190,24,93,0.6)] hover:shadow-[0_6px_0_rgba(190,24,93,0.6)] hover:translate-y-1 transition-all border-4 border-white"
+                      className="kh-btn-primary h-14 px-8 text-base font-extrabold rounded-full bg-pink-500 hover:bg-pink-600 text-white shadow-[0_10px_0_rgba(190,24,93,0.6)] hover:shadow-[0_6px_0_rgba(190,24,93,0.6)] hover:translate-y-1 transition-all border-4 border-white"
                     >
                       <a
                         href={siteConfig.app.androidUrl}
@@ -639,7 +649,7 @@ const Kids = () => {
                     <Button
                       asChild
                       size="lg"
-                      className="h-14 px-8 text-base font-extrabold rounded-full bg-yellow-400 hover:bg-yellow-500 text-pink-700 shadow-[0_10px_0_rgba(202,138,4,0.6)] hover:shadow-[0_6px_0_rgba(202,138,4,0.6)] hover:translate-y-1 transition-all border-4 border-white"
+                      className="kh-btn-secondary h-14 px-8 text-base font-extrabold rounded-full bg-yellow-400 hover:bg-yellow-500 text-pink-700 shadow-[0_10px_0_rgba(202,138,4,0.6)] hover:shadow-[0_6px_0_rgba(202,138,4,0.6)] hover:translate-y-1 transition-all border-4 border-white"
                     >
                       <a href="#dedicatorias-kids" className="inline-flex items-center gap-2">
                         <Heart className="w-5 h-5 fill-pink-600 text-pink-600" />
@@ -657,10 +667,11 @@ const Kids = () => {
         <KidsDedicatoriasSection />
 
         {/* O QUE VEM AÍ */}
-        <section className="py-20 md:py-28 bg-gradient-to-b from-[#fff9e6] to-background">
+        <section className="kh-mundo py-20 md:py-28 bg-gradient-to-b from-[#fff9e6] to-background">
+          <KidsHalloweenSlot piece="garland" />
           <div className="container mx-auto px-4 sm:px-6">
             <Animated animation="fade-up" className="text-center mb-14">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sky-100 border-2 border-sky-300 mb-6">
+              <div className="kh-on-dark-pill inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sky-100 border-2 border-sky-300 mb-6">
                 <Sparkles className="w-4 h-4 text-sky-600" />
                 <span className="text-xs font-extrabold uppercase tracking-widest text-sky-700">
                   O Que Vem Aí
@@ -675,12 +686,12 @@ const Kids = () => {
               </p>
             </Animated>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            <div className="kh-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
               {upcoming.map(({ icon: Icon, title, text, color, route, href }, index) => {
                 const inner = (
-                  <div className="group relative h-full p-6 rounded-3xl bg-white border-2 border-pink-100 hover:border-pink-300 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+                  <div className="kh-card group relative h-full p-6 rounded-3xl bg-white border-2 border-pink-100 hover:border-pink-300 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
                     <div
-                      className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center shadow-lg mb-4 group-hover:scale-110 group-hover:rotate-6 transition-transform`}
+                      className={`kh-card-icon w-14 h-14 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center shadow-lg mb-4 group-hover:scale-110 group-hover:rotate-6 transition-transform`}
                     >
                       <Icon className="w-7 h-7 text-white" />
                     </div>
@@ -743,7 +754,7 @@ const Kids = () => {
               {/* Box "Fica atento!" */}
               <Animated animation="zoom-in" className="flex-1 w-full max-w-3xl">
                 <div
-                  className="relative rounded-[2rem] overflow-hidden p-10 md:p-14 text-center border-4 border-white shadow-2xl"
+                  className="kh-cta relative rounded-[2rem] overflow-hidden p-10 md:p-14 text-center border-4 border-white shadow-2xl"
                   style={{
                     background:
                       'linear-gradient(135deg, #f472b6 0%, #fb923c 50%, #fde047 100%)',
@@ -790,7 +801,7 @@ const Cloud = ({ className = '' }: { className?: string }) => (
   <svg
     viewBox="0 0 200 120"
     xmlns="http://www.w3.org/2000/svg"
-    className={`absolute pointer-events-none drop-shadow-md ${className}`}
+    className={`kh-cloud absolute pointer-events-none drop-shadow-md ${className}`}
   >
     <g fill="white">
       <ellipse cx="60" cy="70" rx="40" ry="30" />
@@ -802,7 +813,7 @@ const Cloud = ({ className = '' }: { className?: string }) => (
 );
 
 const FloatingDot = ({ className = '' }: { className?: string }) => (
-  <div className={`absolute pointer-events-none ${className}`}>
+  <div className={`kh-dot absolute pointer-events-none ${className}`}>
     <Sparkles className="w-6 h-6 md:w-8 md:h-8 fill-current" />
   </div>
 );

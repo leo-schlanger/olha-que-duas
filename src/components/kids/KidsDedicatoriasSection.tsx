@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Animated } from "@/components/ui/animated";
 import { siteConfig } from "@/config/site";
 import logoKids from "@/assets/kids/logo-kids.webp";
+import { KidsHalloweenSlot } from "@/components/seasonal/halloween/kids";
 
 const kidsPillars = [
   {
@@ -90,12 +91,13 @@ export default function KidsDedicatoriasSection() {
     <section
       id="dedicatorias-kids"
       aria-labelledby="dedicatorias-kids-heading"
-      className="relative py-20 md:py-28 overflow-hidden"
+      className="kh-dedicatorias relative py-20 md:py-28 overflow-hidden"
       style={{
         background:
           "linear-gradient(180deg, #fff9e6 0%, #fdf2f8 45%, #e0f2fe 85%, #fff9e6 100%)",
       }}
     >
+      <KidsHalloweenSlot piece="treats" />
       {/* Decorative floating elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
         <div className="absolute -top-16 -left-16 w-72 h-72 rounded-full bg-pink-300/25 blur-3xl" />

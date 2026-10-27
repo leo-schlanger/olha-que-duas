@@ -6,6 +6,8 @@ import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import { useGamesMute } from './useGamesMute';
 import { HalloweenKidsSlot, useSeasonalLogo } from '@/components/seasonal/halloween';
+import { KidsHalloweenSlot } from '@/components/seasonal/halloween/kids';
+import { useKidsHalloween, kidsScopeProps } from '@/components/seasonal/halloween/kids/useKidsHalloween';
 import logoKids from '@/assets/kids/logo-kids.webp';
 import leoCartoon from '@/assets/kids/leo-cartoon.webp';
 import alexandraCartoon from '@/assets/kids/alexandra-cartoon.webp';
@@ -28,7 +30,7 @@ function Cloud({ className = '' }: { className?: string }) {
     <svg
       viewBox="0 0 200 120"
       xmlns="http://www.w3.org/2000/svg"
-      className={`absolute pointer-events-none drop-shadow-md ${className}`}
+      className={`kh-cloud absolute pointer-events-none drop-shadow-md ${className}`}
       aria-hidden
     >
       <g fill="white">
@@ -54,11 +56,12 @@ export default function KidsGameShell({
 }: KidsGameShellProps) {
   const { muted, toggle } = useGamesMute();
   const heroLogo = useSeasonalLogo(logoKids, 'kids');
+  const hw = useKidsHalloween();
 
   return (
-    <div className="min-h-screen bg-[#bae6fd] overflow-x-hidden">
+    <div className="kids-scope kh-shell min-h-screen bg-[#bae6fd] overflow-x-hidden" {...kidsScopeProps(hw)}>
       <Header />
-      <main className="relative font-kids">
+      <main className="kh-shell-main relative font-kids">
         <div
           className="absolute inset-0 -z-10"
           style={{
@@ -66,12 +69,15 @@ export default function KidsGameShell({
           }}
         />
 
-        <div className="absolute top-24 right-8 md:right-24 -z-0 pointer-events-none" aria-hidden>
+        <div className="kh-sun absolute top-24 right-8 md:right-24 -z-0 pointer-events-none" aria-hidden>
           <div className="relative">
             <div className="absolute inset-0 rounded-full bg-yellow-300/60 blur-2xl scale-150 motion-safe:animate-pulse" />
             <div className="relative w-16 h-16 md:w-24 md:h-24 rounded-full bg-gradient-to-br from-yellow-200 via-yellow-300 to-amber-400 shadow-[0_0_60px_rgba(253,224,71,0.7)]" />
           </div>
         </div>
+
+        {/* Dia das Bruxas — night sky (decor only, never over the board) */}
+        <KidsHalloweenSlot piece="sky" variant="shell" />
 
         {/* Dia das Bruxas — ghost by the sun on the games hub, self-expiring */}
         {hero && <HalloweenKidsSlot variant="sky" />}
@@ -100,7 +106,7 @@ export default function KidsGameShell({
           </>
         )}
 
-        <div className="container mx-auto px-4 sm:px-6 pt-24 md:pt-28 pb-28 relative z-10">
+        <div className="kh-shell-content container mx-auto px-4 sm:px-6 pt-24 md:pt-28 pb-28 relative z-10">
           <div className="flex items-center justify-between gap-3 mb-5">
             <Button
               asChild
@@ -147,7 +153,7 @@ export default function KidsGameShell({
           {controls && <div className="mt-6">{controls}</div>}
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 pointer-events-none z-0">
+        <div className="kh-day-hill absolute bottom-0 left-0 right-0 pointer-events-none z-0">
           <svg viewBox="0 0 1440 140" className="w-full h-auto" xmlns="http://www.w3.org/2000/svg" aria-hidden>
             <path
               fill="#7CC576"
@@ -157,6 +163,7 @@ export default function KidsGameShell({
             <path fill="#5BAE52" d="M0 100 C240 60, 520 140, 760 100 S1220 60, 1440 100 L1440 140 L0 140 Z" />
           </svg>
         </div>
+        <KidsHalloweenSlot piece="hill" variant="shell" />
       </main>
       <Footer />
       <BackToTop />

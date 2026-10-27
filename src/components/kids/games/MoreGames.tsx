@@ -15,7 +15,7 @@ export default function MoreGames() {
 
   return (
     <nav aria-label="Outros jogos" className="mt-10">
-      <p className="text-center font-kids font-bold text-sky-900/70 mb-3">Queres outro jogo?</p>
+      <p className="kh-on-sky text-center font-kids font-bold text-sky-900/70 mb-3">Queres outro jogo?</p>
       <div className="flex flex-wrap justify-center gap-3">
         {others.map((g) => (
           <Link
