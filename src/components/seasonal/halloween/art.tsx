@@ -5,7 +5,7 @@
 
 export const INK = "hsl(25 30% 18%)";
 export const GHOST_FILL = "hsl(40 45% 98%)";
-export const PUMPKIN_RED = "hsl(14 78% 52%)"; // brand vermelho pulled towards orange
+export const PUMPKIN_RED = "hsl(22 90% 52%)"; // pumpkin orange
 export const PUMPKIN_YELLOW = "hsl(var(--amarelo))";
 export const STEM = "hsl(80 28% 34%)";
 export const GLOW = "hsl(45 95% 62%)";
@@ -84,10 +84,56 @@ export function GhostIcon({ className }: { className?: string }) {
   );
 }
 
-export function PumpkinIcon({ className }: { className?: string }) {
+export function PumpkinIcon({ className, lit = false }: { className?: string; lit?: boolean }) {
   return (
     <svg viewBox="0 0 80 68" className={className} aria-hidden="true" focusable="false">
-      <PumpkinShape />
+      <PumpkinShape face={lit} lit={lit} />
     </svg>
+  );
+}
+
+export const NIGHT_INK = "hsl(265 45% 5%)";
+
+/** Bat silhouette in a 64×28 box. */
+export function BatShape({ fill = NIGHT_INK }: { fill?: string }) {
+  return (
+    <path
+      fill={fill}
+      d="M32 9.5c-1.4-2.8-3.1-4.3-4.8-4.5.5 1.7.4 3-.5 3.9C22.4 6 16 4 8.4 5.4c3.3 1.5 5.3 3.6 6 6.2-3.7-1.2-8.1-1.1-12.9.6 5.5 1.4 9.5 3.9 11.7 7.5 3.8-2.5 8.5-2.8 12.3-.6 1.4-3 3.6-4.5 6.5-4.5s5.1 1.5 6.5 4.5c3.8-2.2 8.5-1.9 12.3.6 2.2-3.6 6.2-6.1 11.7-7.5-4.8-1.7-9.2-1.8-12.9-.6.7-2.6 2.7-4.7 6-6.2C48 4 41.6 6 37.3 8.9c-.9-.9-1-2.2-.5-3.9-1.7.2-3.4 1.7-4.8 4.5Z"
+    />
+  );
+}
+
+export function BatIcon({ className, fill }: { className?: string; fill?: string }) {
+  return (
+    <svg viewBox="0 0 64 28" className={className} aria-hidden="true" focusable="false">
+      <BatShape fill={fill} />
+    </svg>
+  );
+}
+
+/** Full moon with soft craters, 100×100. */
+export function MoonShape({ id = "hw-moon" }: { id?: string }) {
+  return (
+    <g>
+      <defs>
+        <radialGradient id={`${id}-glow`} cx="50%" cy="50%" r="50%">
+          <stop offset="55%" stopColor="hsl(45 90% 85%)" stopOpacity="0.35" />
+          <stop offset="100%" stopColor="hsl(45 90% 85%)" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id={`${id}-face`} cx="40%" cy="38%" r="65%">
+          <stop offset="0%" stopColor="hsl(48 80% 96%)" />
+          <stop offset="100%" stopColor="hsl(42 55% 82%)" />
+        </radialGradient>
+      </defs>
+      <circle cx={50} cy={50} r={50} fill={`url(#${id}-glow)`} />
+      <circle cx={50} cy={50} r={30} fill={`url(#${id}-face)`} />
+      <g fill="hsl(40 35% 74%)" opacity={0.45}>
+        <circle cx={41} cy={42} r={5.5} />
+        <circle cx={58} cy={56} r={4} />
+        <circle cx={47} cy={62} r={2.6} />
+        <circle cx={62} cy={40} r={2.2} />
+      </g>
+    </g>
   );
 }

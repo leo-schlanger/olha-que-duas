@@ -1,0 +1,169 @@
+/*
+ * Halloween season tokens. Inert unless <html data-season="halloween">,
+ * which index.tsx sets only inside siteConfig.halloween's window.
+ *
+ * Palette (hex):
+ *   noite        #160d26  262 50% 10%   night sky, header, footer base
+ *   beringela    #2e1a3d  275 40% 17%   dark sections, body text on light
+ *   ameixa       #4a1f4f  294 44% 22%   horizon glow, gradients
+ *   abobora      #f97924  24 95% 56%    pumpkin on night (text + fills, night text on it)
+ *   abobora-fund #c2410c  21 88% 40%    pumpkin on light (text + buttons with cream text)
+ *   vela         #fab62e  40 95% 58%    candle / amber accents
+ *   violeta      #b47ef1  268 80% 72%   accent on night
+ *   lima         #9de236  84 75% 55%    tiny accent (eyes, sparks) on night only
+ *   luar         #f7f1de  45 60% 92%    moon / text on night
+ *   bruma        #f4f0f8  268 30% 96%   light alternating sections
+ */
+
+html[data-season="halloween"] {
+  --hw-noite: 262 50% 10%;
+  --hw-beringela: 275 40% 17%;
+  --hw-ameixa: 294 44% 22%;
+  --hw-abobora: 24 95% 56%;
+  --hw-abobora-fundo: 21 88% 40%;
+  --hw-vela: 40 95% 58%;
+  --hw-violeta: 268 80% 72%;
+  --hw-lima: 84 75% 55%;
+  --hw-luar: 45 60% 92%;
+
+  /* light zones (default page body) */
+  --vermelho: var(--hw-abobora-fundo);
+  --vermelho-soft: 22 90% 46%;
+  --amarelo: var(--hw-vela);
+  --amarelo-soft: 42 92% 70%;
+  --beige-light: 268 33% 97%;
+  --beige: 268 28% 94%;
+  --beige-medium: 266 22% 86%;
+  --beige-warm: 262 18% 70%;
+  --beige-dark: var(--hw-noite);
+  --charcoal: var(--hw-beringela);
+  --warm-gray: 265 12% 45%;
+  --background: 270 30% 99%;
+  --foreground: var(--hw-beringela);
+  --card: 270 33% 98%;
+  --card-foreground: var(--hw-beringela);
+  --popover: 270 33% 98%;
+  --popover-foreground: var(--hw-beringela);
+  --primary: var(--hw-abobora-fundo);
+  --primary-foreground: 40 45% 97%;
+  --secondary: var(--hw-vela);
+  --secondary-foreground: var(--hw-beringela);
+  --muted: 268 28% 94%;
+  --muted-foreground: 265 12% 42%;
+  --accent: 268 30% 95%;
+  --accent-foreground: var(--hw-beringela);
+  --border: 268 25% 88%;
+  --input: 268 25% 88%;
+  --ring: var(--hw-abobora-fundo);
+}
+
+html[data-season="halloween"] ::selection {
+  background: hsl(var(--hw-vela));
+  color: hsl(var(--hw-noite));
+}
+
+/* ── Night zones: header, home hero, footer and the site's dark sections ── */
+html[data-season="halloween"] .hw-header,
+html[data-season="halloween"] #inicio,
+html[data-season="halloween"] .hw-footer,
+html[data-season="halloween"] #radio,
+html[data-season="halloween"] #podcast,
+html[data-season="halloween"] #app {
+  --vermelho: var(--hw-abobora);
+  --vermelho-soft: 28 100% 64%;
+  --primary: var(--hw-abobora);
+  --primary-foreground: var(--hw-noite);
+  --ring: var(--hw-abobora);
+}
+
+/* Any other dark section (page heroes, cards painted with charcoal/beige-dark)
+ * gets the bright pumpkin so orange text keeps AA on night. */
+html[data-season="halloween"] :is([class*="from-charcoal"], [class*="from-beige-dark"], .bg-charcoal, .bg-beige-dark) {
+  --vermelho: var(--hw-abobora);
+  --vermelho-soft: 28 100% 64%;
+  --primary: var(--hw-abobora);
+  --primary-foreground: var(--hw-noite);
+}
+html[data-season="halloween"] :is([class*="from-charcoal"], [class*="from-beige-dark"], .bg-charcoal, .bg-beige-dark) :is(.bg-vermelho, .btn-primary-glow, .bg-primary),
+html[data-season="halloween"] :is([class*="from-charcoal"], [class*="from-beige-dark"], .bg-charcoal, .bg-beige-dark) :is(.bg-vermelho, .btn-primary-glow, .bg-primary) :is(.text-cream, .text-white) {
+  color: hsl(var(--hw-noite));
+}
+
+/* Header: the gold "Exclusivo" link was tuned for a light bar. */
+html[data-season="halloween"] .hw-header .text-\[\#7a5b16\] {
+  color: hsl(var(--hw-vela));
+}
+html[data-season="halloween"] .hw-header .hover\:text-\[\#5c4310\]:hover {
+  color: hsl(42 92% 70%);
+}
+
+/* On the night zones where charcoal is TEXT (header, hero), swap to moonlight. */
+html[data-season="halloween"] .hw-header,
+html[data-season="halloween"] #inicio {
+  --charcoal: var(--hw-luar);
+  --foreground: var(--hw-luar);
+  --background: var(--hw-noite);
+  --card: 268 45% 16%;
+  --muted: 268 40% 20%;
+  --muted-foreground: 262 25% 78%;
+  --border: 268 35% 32%;
+  --accent: 268 40% 22%;
+  --accent-foreground: var(--hw-luar);
+  --primary-foreground: var(--hw-noite);
+}
+
+/* Filled pumpkin on night: dark text (6.99:1) instead of cream (2.5:1). */
+html[data-season="halloween"] :is(.hw-header, #inicio, .hw-footer, #radio, #podcast, #app) :is(.bg-vermelho, .btn-primary-glow),
+html[data-season="halloween"] :is(.hw-header, #inicio, .hw-footer, #radio, #podcast, #app) :is(.bg-vermelho, .btn-primary-glow) :is(.text-cream, .text-white),
+html[data-season="halloween"] .hw-header .hover\:text-white:hover {
+  color: hsl(var(--hw-noite));
+}
+
+/* Hero exceptions: things that sit on yellow or on the photo keep dark ink. */
+html[data-season="halloween"] #inicio :is(.from-amarelo, .from-charcoal\/60) {
+  --charcoal: var(--hw-beringela);
+}
+
+/* Header is night on every page during the season (no transparent state). */
+html[data-season="halloween"] .hw-header {
+  background-color: hsl(var(--hw-noite) / 0.94);
+  box-shadow: 0 1px 0 hsl(var(--hw-abobora) / 0.25), 0 10px 30px -12px hsl(var(--hw-noite) / 0.6);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Home hero: night sky. */
+html[data-season="halloween"] .bg-hero-gradient {
+  background:
+    radial-gradient(120% 60% at 50% 115%, hsl(24 95% 50% / 0.38) 0%, transparent 60%),
+    radial-gradient(70% 50% at 85% 0%, hsl(var(--hw-violeta) / 0.18) 0%, transparent 70%),
+    linear-gradient(180deg, hsl(258 55% 7%) 0%, hsl(var(--hw-noite)) 35%, hsl(275 42% 15%) 70%, hsl(var(--hw-ameixa)) 100%);
+}
+
+/* Dark sections: deepen the old brown gradients into night. */
+html[data-season="halloween"] :is(#radio, #podcast, #app, .hw-footer) {
+  background-image: linear-gradient(180deg, hsl(var(--hw-noite)) 0%, hsl(var(--hw-beringela)) 100%);
+}
+
+/* Gradient brand text: pumpkin to candle. */
+html[data-season="halloween"] .text-gradient-brand {
+  background-image: linear-gradient(135deg, hsl(var(--hw-abobora-fundo)) 0%, hsl(24 95% 50%) 55%, hsl(36 95% 48%) 100%);
+}
+
+/* Cobweb in the top-right corner of cards (decorative, below content). */
+html[data-season="halloween"] :is(.rounded-xl, .rounded-2xl, .rounded-3xl, .rounded-lg).border.bg-card:not([class*="bg-gradient"]) {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%232e1a3d' stroke-opacity='.22' stroke-width='.8' stroke-linecap='round'%3E%3Cpath d='M64 0 18 0M64 0 22 22M64 0 42 40M64 0 64 46'/%3E%3Cpath d='M51 0q2 6 4 7 4 2 9 2M38 0q3 11 7 13 6 4 19 5M27 0q4 16 10 20 9 6 27 9'/%3E%3Cpath d='M55 7q-1 5 4 6M45 13q-2 8 6 10M37 20q-3 11 8 14'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: top right;
+  background-size: 56px 56px;
+}
+
+/* Gradient text on night: pumpkin to candle (start colour 6.99:1 on noite). */
+html[data-season="halloween"] :is(.hw-header, #inicio, .hw-footer, #radio, #podcast, #app, [class*="from-charcoal"], [class*="from-beige-dark"], .bg-charcoal, .bg-beige-dark) .text-gradient-brand {
+  background-image: linear-gradient(135deg, hsl(var(--hw-abobora)) 0%, hsl(var(--hw-vela)) 100%);
+}
+
+/* Footer fine print: cream/40 was 3.6:1 on night; lift to AA. */
+html[data-season="halloween"] .hw-footer :is(.text-cream\/30, .text-cream\/40, .text-cream\/50) {
+  color: hsl(var(--cream) / 0.68);
+}

@@ -1,20 +1,37 @@
 /**
  * Seasonal theme gate: Halloween + Pão-por-Deus.
- * Outside siteConfig.halloween's window these slots render null and the
- * lazy chunks (art, CSS) are never requested. To remove the theme for good,
- * delete this folder, the four slot usages and siteConfig.halloween.
+ * Outside siteConfig.halloween's window these slots render null, the lazy
+ * chunks (art, decorations) are never requested and <html data-season> is not
+ * set, so season.css (token overrides, scoped to that attribute) stays inert.
+ * To remove the theme: delete this folder, the slot usages and siteConfig.halloween.
  */
 import { lazy, Suspense, useState } from "react";
+import { siteConfig } from "@/config/site";
 import { isHalloweenActive, BANNER_DISMISS_KEY } from "./isHalloweenActive";
+import "./season.css";
 import logoHalloween from "@/assets/seasonal/halloween/logo-halloween.webp";
 import logoKidsHalloween from "@/assets/seasonal/halloween/logo-kids-halloween.webp";
 
 const Banner = lazy(() => import("./HalloweenBanner"));
 const Overlay = lazy(() => import("./HalloweenOverlay"));
-const HeroAccent = lazy(() => import("./HalloweenHeroAccent"));
+const HeroScene = lazy(() => import("./HalloweenHeroScene"));
+const FooterScene = lazy(() => import("./HalloweenFooterScene"));
 const KidsAccent = lazy(() => import("./HalloweenKidsAccent"));
 
 export { BANNER_DISMISS_KEY };
+
+// Set the season attribute before the first render (no flash of the normal
+// palette) and drop it at the end of the window if the tab stays open.
+if (typeof document !== "undefined" && isHalloweenActive(new Date())) {
+  const root = document.documentElement;
+  root.dataset.season = "halloween";
+  const msLeft = Date.parse(siteConfig.halloween.end) - Date.now();
+  if (msLeft > 0 && msLeft < 2 ** 31 - 1) {
+    window.setTimeout(() => {
+      if (root.dataset.season === "halloween") delete root.dataset.season;
+    }, msLeft);
+  }
+}
 
 function useActive() {
   const [active] = useState(() => isHalloweenActive(new Date()));
@@ -45,7 +62,7 @@ export function HalloweenBannerSlot() {
   const [dismissed] = useState(() => readSession(BANNER_DISMISS_KEY));
   if (!active || dismissed) return null;
   return (
-    <Suspense fallback={<div className="h-10 bg-[hsl(25_30%_14%)]" aria-hidden="true" />}>
+    <Suspense fallback={<div className="h-10 bg-[hsl(24_95%_56%)]" aria-hidden="true" />}>
       <Banner />
     </Suspense>
   );
@@ -62,13 +79,24 @@ export function HalloweenOverlaySlot() {
   );
 }
 
-/** Pumpkins + ghost resting on the home Hero. Parent must be `relative`. */
+/** Night sky (moon, bats, pumpkin patch) behind the home Hero. Parent must be `relative`. */
 export function HalloweenHeroSlot() {
   const active = useActive();
   if (!active) return null;
   return (
     <Suspense fallback={null}>
-      <HeroAccent />
+      <HeroScene />
+    </Suspense>
+  );
+}
+
+/** Moon, bats and pumpkins in the Footer. Parent must be `relative`. */
+export function HalloweenFooterSlot() {
+  const active = useActive();
+  if (!active) return null;
+  return (
+    <Suspense fallback={null}>
+      <FooterScene />
     </Suspense>
   );
 }

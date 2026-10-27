@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { X } from "lucide-react";
-import { GhostIcon, PumpkinIcon } from "./art";
+import { BatIcon, GhostIcon } from "./art";
 import { getHalloweenPhase, BANNER_DISMISS_KEY } from "./isHalloweenActive";
 import "./halloween.css";
 
@@ -34,15 +34,15 @@ const HalloweenBanner = () => {
   };
 
   return (
-    <div className="h-10 bg-[hsl(25_30%_14%)] text-[hsl(40_45%_97%)]">
+    <div className="hw-banner relative h-10 overflow-hidden text-[hsl(262_50%_10%)]">
       <div className="container mx-auto h-full px-3 sm:px-6 flex items-center gap-3">
         <p className="flex-1 min-w-0 flex items-center justify-center gap-2 sm:gap-3 whitespace-nowrap">
-          <PumpkinIcon className="h-[18px] w-auto shrink-0" />
+          <BatIcon className="h-[14px] w-auto shrink-0" fill="hsl(262 50% 10%)" />
           <span
             className={
               area === "kids"
-                ? "font-kids font-extrabold text-[13px] text-amarelo"
-                : "font-sans font-semibold text-[10.5px] sm:text-[11px] uppercase tracking-[0.14em] sm:tracking-[0.18em] text-amarelo"
+                ? "font-kids font-extrabold text-[13px]"
+                : "font-sans font-bold text-[10.5px] sm:text-[11px] uppercase tracking-[0.14em] sm:tracking-[0.18em]"
             }
           >
             <span className="sm:hidden">{copy.labelShort}</span>
@@ -52,7 +52,7 @@ const HalloweenBanner = () => {
             className={
               area === "kids"
                 ? "font-kids font-semibold text-[13px] truncate"
-                : "font-display italic text-[15px] sm:text-base leading-none truncate [font-variant-numeric:lining-nums]"
+                : "font-display italic font-semibold text-[16px] sm:text-[17px] leading-none truncate [font-variant-numeric:lining-nums]"
             }
           >
             <span className="sm:hidden">{copy.short}</span>
@@ -63,7 +63,7 @@ const HalloweenBanner = () => {
         <button
           type="button"
           onClick={dismiss}
-          className="shrink-0 -mr-2 flex h-10 w-10 items-center justify-center rounded-full text-[hsl(40_45%_97%/0.75)] hover:text-[hsl(40_45%_97%)] hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amarelo transition-colors"
+          className="shrink-0 -mr-2 flex h-10 w-10 items-center justify-center rounded-full text-[hsl(262_50%_10%/0.8)] hover:text-[hsl(262_50%_10%)] hover:bg-black/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[hsl(262_50%_10%)] transition-colors"
           aria-label="Fechar aviso do Dia das Bruxas"
         >
           <X className="h-4 w-4" />

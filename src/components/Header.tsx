@@ -76,7 +76,8 @@ const Header = () => {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+        // hw-header: hook for the seasonal night palette (seasonal/halloween/season.css)
+        "hw-header fixed top-0 left-0 right-0 z-50 transition-all duration-500",
         isScrolled
           ? "bg-background/95 backdrop-blur-lg shadow-lg shadow-black/5"
           : "bg-transparent"

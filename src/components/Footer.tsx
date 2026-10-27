@@ -3,17 +3,19 @@ import { Link } from "react-router-dom";
 import logoDefault from "@/assets/logo-olha-que-duas.webp";
 import { siteConfig } from "@/config/site";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
-import { useSeasonalLogo } from "@/components/seasonal/halloween";
+import { HalloweenFooterSlot, useSeasonalLogo } from "@/components/seasonal/halloween";
 
 const Footer = () => {
   const logo = useSeasonalLogo(logoDefault);
   return (
-    <footer className="bg-gradient-to-b from-beige-dark to-charcoal text-cream relative overflow-hidden">
+    <footer className="hw-footer bg-gradient-to-b from-beige-dark to-charcoal text-cream relative overflow-hidden">
       {/* Decorative elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/4 w-64 h-32 bg-vermelho/5 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-48 h-24 bg-amarelo/5 rounded-full blur-3xl" />
       </div>
+      {/* Dia das Bruxas — moon, bats, pumpkins; self-expiring */}
+      <HalloweenFooterSlot />
 
       <div className="container mx-auto px-4 sm:px-6 pt-12 md:pt-16 pb-20 md:pb-24 relative z-10">
         {/* Main Footer Content */}
