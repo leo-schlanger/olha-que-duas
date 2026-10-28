@@ -129,7 +129,7 @@ function notFound(url: string): Response {
     <title>Página não encontrada | Olha que Duas</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="canonical" href="${escapeHtml(url)}">
-  </head><body><h1>Página não encontrada</h1><p><a href="https://www.olhaqueduas.com/exclusivo">Ver os programas do Exclusivo</a></p></body></html>`, {
+  </head><body><h1>Página não encontrada</h1><p><a href="https://www.olhaqueduas.com/exclusivo">Ver os programas dos Especiais</a></p></body></html>`, {
     status: 404,
     headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 's-maxage=300' },
   });
@@ -303,7 +303,7 @@ export default async function middleware(request: Request): Promise<Response | u
   }
 
   if (path === '/exclusivo') {
-    const description = 'Os programas exclusivos do Olha que Duas: notícias, biografias, opinião e reflexão, com Alexandra Serra, Marluce Revorêdo e a redação.';
+    const description = 'Os programas especiais do Olha que Duas: notícias, biografias, opinião e reflexão, com Alexandra Serra, Marluce Revorêdo e a redação.';
     let image = 'https://www.olhaqueduas.com/exclusivo/curtas-biografias-og.jpg';
     try {
       const rows = await fetchSupabase(
@@ -314,14 +314,14 @@ export default async function middleware(request: Request): Promise<Response | u
       if (post) image = shareImage(post);
     } catch { /* fica a capa do programa */ }
     return html({
-      title: 'Exclusivo Olha que Duas',
+      title: 'Especiais Olha que Duas',
       description,
       image,
-      imageAlt: 'Exclusivo Olha que Duas',
+      imageAlt: 'Especiais Olha que Duas',
       imageWidth: 1200,
       imageHeight: 630,
       url: 'https://www.olhaqueduas.com/exclusivo',
-      section: 'Exclusivo Olha que Duas',
+      section: 'Especiais Olha que Duas',
     });
   }
 
@@ -362,7 +362,7 @@ export default async function middleware(request: Request): Promise<Response | u
       const author = post.author
         ? String(post.author)
         : program && program.author ? String(program.author) : 'Olha que Duas';
-      const section = program && program.title ? String(program.title) : 'Exclusivo Olha que Duas';
+      const section = program && program.title ? String(program.title) : 'Especiais Olha que Duas';
       const image = shareImage(post);
       const pageUrl = `https://www.olhaqueduas.com/exclusivo/${programSlug}/${postSlug}`;
       return html({
@@ -438,7 +438,7 @@ export default async function middleware(request: Request): Promise<Response | u
           imageHeight: 630,
           url: `https://www.olhaqueduas.com/exclusivo/${slug}`,
           author: String(program.author),
-          section: 'Exclusivo Olha que Duas',
+          section: 'Especiais Olha que Duas',
         });
       }
 

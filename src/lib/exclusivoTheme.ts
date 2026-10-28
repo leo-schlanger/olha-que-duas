@@ -20,7 +20,7 @@ const THEMES: Record<string, ProgramTheme> = {
   "mente-aberta": { accent: "#4d6b50", onAccent: "#f6f3ea", soft: "#e6ede2", label: "Mente Aberta" },
 };
 
-const FALLBACK: ProgramTheme = { accent: "#1c0a10", onAccent: "#f6efe4", soft: "#efe7da", label: "Exclusivo" };
+const FALLBACK: ProgramTheme = { accent: "#1c0a10", onAccent: "#f6efe4", soft: "#efe7da", label: "Especiais" };
 
 export function programTheme(slug: string | undefined | null): ProgramTheme {
   return (slug && THEMES[slug]) || FALLBACK;

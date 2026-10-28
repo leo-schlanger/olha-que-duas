@@ -89,7 +89,7 @@ html[data-season="halloween"] :is([class*="from-charcoal"], [class*="from-beige-
   color: hsl(var(--hw-noite));
 }
 
-/* Header: the gold "Exclusivo" link was tuned for a light bar. */
+/* Header: the gold "Especiais" link was tuned for a light bar. */
 html[data-season="halloween"] .hw-header .text-\[\#7a5b16\] {
   color: hsl(var(--hw-vela));
 }

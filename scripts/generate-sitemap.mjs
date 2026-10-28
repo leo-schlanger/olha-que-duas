@@ -64,7 +64,7 @@ const staticPages = [
   { loc: "/galeria", lastmod: TODAY, freq: "weekly", priority: "0.8" },
   { loc: "/faq", lastmod: "2026-04-06", freq: "monthly", priority: "0.5" },
   { loc: "/noticias", lastmod: TODAY, freq: "daily", priority: "0.9" },
-  { loc: "/exclusivo", lastmod: TODAY, freq: "daily", priority: "0.9", image: { loc: "/exclusivo/eduardo-vinagre.jpg", title: "Exclusivo Olha que Duas — Eduardo Vinagre" } },
+  { loc: "/exclusivo", lastmod: TODAY, freq: "daily", priority: "0.9", image: { loc: "/exclusivo/eduardo-vinagre.jpg", title: "Especiais Olha que Duas — Eduardo Vinagre" } },
   { loc: "/loja", lastmod: "2026-03-24", freq: "weekly", priority: "0.8" },
   { loc: "/kids", lastmod: "2026-04-11", freq: "weekly", priority: "0.8", image: { loc: "/og-kids.jpg", title: "Olha que Duas Kids - Espaco Infantil" } },
   { loc: "/rockinrio", lastmod: "2026-05-16", freq: "weekly", priority: "0.9", image: { loc: "/og-rockinrio.jpg", title: "Olha que Duas x Rock in Rio Lisboa 2026" } },
@@ -187,7 +187,7 @@ async function main() {
     for (const e of dynamicEntries.filter((e) => e.loc.startsWith("/galeria/"))) xml += urlEntry(e);
     xml += `\n  <!-- Dynamic: Blog Posts -->\n`;
     for (const e of dynamicEntries.filter((e) => e.loc.startsWith("/noticias/"))) xml += urlEntry(e);
-    xml += `\n  <!-- Dynamic: Exclusivo Olha que Duas -->\n`;
+    xml += `\n  <!-- Dynamic: Especiais Olha que Duas -->\n`;
     for (const e of dynamicEntries.filter((e) => e.loc.startsWith("/exclusivo/"))) xml += urlEntry(e);
   }
 

@@ -117,7 +117,7 @@ export default function ExclusivoPost() {
           </div>
           <div className="mx-auto max-w-3xl">
             <nav aria-label="Caminho" className="mb-5 flex flex-wrap items-center gap-2 text-sm">
-              <Link to={EXCLUSIVO_HUB.path} className="text-[#7a5b16] hover:text-[#5c4310]">Exclusivo</Link>
+              <Link to={EXCLUSIVO_HUB.path} className="text-[#7a5b16] hover:text-[#5c4310]">Especiais</Link>
               <span aria-hidden className="text-[#1c0a10]/30">/</span>
               {program ? (
                 <Link to={exclusivoProgramPath(program.slug)}>
@@ -211,7 +211,7 @@ export default function ExclusivoPost() {
                 {elsewhere.length > 0 && (
                   <section className="mt-14 border-t border-[#1c0a10]/10 pt-8" aria-labelledby="peca-exclusivo">
                     <h2 id="peca-exclusivo" className="font-display text-3xl text-[#1c0a10]">
-                      Mais do Exclusivo
+                      Mais dos Especiais
                     </h2>
                     <div className="mt-6 grid gap-x-6 gap-y-10 sm:grid-cols-2">
                       {elsewhere.map((item) => (

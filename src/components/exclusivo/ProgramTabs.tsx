@@ -29,7 +29,7 @@ export function ProgramTabs({ active }: { active?: string }) {
     );
 
   return (
-    <nav aria-label="Programas do Exclusivo" className="-mx-4 sm:-mx-6">
+    <nav aria-label="Programas dos Especiais" className="-mx-4 sm:-mx-6">
       <div
         ref={rowRef}
         className="relative flex gap-2 overflow-x-auto px-4 pb-1 [mask-image:linear-gradient(90deg,transparent,#000_16px,#000_calc(100%-32px),transparent)] [scrollbar-width:none] sm:px-6 [&::-webkit-scrollbar]:hidden"

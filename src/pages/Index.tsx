@@ -23,7 +23,7 @@ const Index = () => {
   // restaurados (sem isto ficavam os da última página visitada).
   useMetaTags({
     description:
-      "Somos comunicadoras com propósito: podcast, rádio 24h, assessoria de imprensa e estratégia de marca em Portugal, e o Exclusivo Olha que Duas.",
+      "Somos comunicadoras com propósito: podcast, rádio 24h, assessoria de imprensa e estratégia de marca em Portugal, e os Especiais Olha que Duas.",
     url: "https://www.olhaqueduas.com/",
     type: "website",
   });

@@ -83,13 +83,13 @@ export default function Exclusivo() {
           {(isLoading || latestQuery.isLoading) && (
             <div className="flex justify-center py-24 text-[#7a5b16]">
               <Loader2 className="h-6 w-6 animate-spin" />
-              <span className="sr-only">A carregar o Exclusivo</span>
+              <span className="sr-only">A carregar os Especiais</span>
             </div>
           )}
 
           {(isError || latestQuery.isError) && (
             <p className="py-16 text-center text-[#1c0a10]/70">
-              Não foi possível carregar o Exclusivo. Tenta outra vez daqui a pouco.
+              Não foi possível carregar os Especiais. Tenta outra vez daqui a pouco.
             </p>
           )}
 

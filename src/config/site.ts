@@ -28,7 +28,7 @@ export const siteConfig = {
   // desktop: "more" entra no menu Mais da barra do computador, para ela
   // não esticar. Trabalhos fica na barra. No telemóvel e no rodapé a
   // lista continua completa.
-  // O separador chama-se "Exclusivo Olha que Duas" e abre a lista de programas.
+  // O separador chama-se "Especiais Olha que Duas" e abre a lista de programas.
   navLinks: [
     { href: "#inicio", label: "Início" },
     { href: "#sobre", label: "Sobre" },
@@ -38,7 +38,7 @@ export const siteConfig = {
     { href: "/noticias", label: "Notícias", isRoute: true },
     {
       href: "/exclusivo",
-      label: "Exclusivo Olha que Duas",
+      label: "Especiais Olha que Duas",
       isRoute: true,
       accent: true,
     },
