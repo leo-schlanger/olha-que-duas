@@ -19,10 +19,13 @@ import logoDefault from "@/assets/logo-olha-que-duas.webp";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import RockInRioBanner from "./RockInRioBanner";
-import { HalloweenBannerSlot, useSeasonalLogo } from "./seasonal/halloween";
+import { HalloweenBannerSlot, useSeasonalLogoSet } from "./seasonal/halloween";
+
+// Rendered height: h-16 (64 px) on phones, h-20 (80 px) from md.
+const HEADER_LOGO_SIZES = "(min-width: 768px) 80px, 64px";
 
 const Header = () => {
-  const logo = useSeasonalLogo(logoDefault);
+  const seasonalLogo = useSeasonalLogoSet();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("inicio");
@@ -103,18 +106,25 @@ const Header = () => {
               }
             }}
           >
-            <img
-              src={logo}
-              alt="Olha que Duas"
-              width={80}
-              height={80}
-              className={cn(
-                "w-auto shrink-0 object-contain transition-all duration-300 group-hover:scale-105",
-                isScrolled ? "h-14 md:h-16" : "h-16 md:h-20"
+            <picture className="contents">
+              {seasonalLogo && (
+                <source type="image/webp" srcSet={seasonalLogo.webpSrcSet} sizes={HEADER_LOGO_SIZES} />
               )}
-              loading="eager"
-              fetchPriority="high"
-            />
+              <img
+                src={seasonalLogo?.src ?? logoDefault}
+                srcSet={seasonalLogo?.srcSet}
+                sizes={seasonalLogo ? HEADER_LOGO_SIZES : undefined}
+                alt="Olha que Duas"
+                width={80}
+                height={80}
+                className={cn(
+                  "w-auto shrink-0 object-contain transition-all duration-300 group-hover:scale-105",
+                  isScrolled ? "h-14 md:h-16" : "h-16 md:h-20"
+                )}
+                loading="eager"
+                fetchPriority="high"
+              />
+            </picture>
           </Link>
 
           {/* Desktop Navigation */}
@@ -252,7 +262,19 @@ const Header = () => {
               <SheetHeader className="p-6 pb-4 border-b border-border/50">
                 <div className="flex items-center justify-between">
                   <SheetTitle className="text-left">
-                    <img src={logo} alt="Olha que Duas" className="h-12" loading="eager" />
+                    <picture className="contents">
+                      {seasonalLogo && <source type="image/webp" srcSet={seasonalLogo.webpSrcSet} sizes="48px" />}
+                      <img
+                        src={seasonalLogo?.src ?? logoDefault}
+                        srcSet={seasonalLogo?.srcSet}
+                        sizes={seasonalLogo ? "48px" : undefined}
+                        alt="Olha que Duas"
+                        width={48}
+                        height={48}
+                        className="h-12 w-auto"
+                        loading="eager"
+                      />
+                    </picture>
                   </SheetTitle>
                   {/* Live badge mobile */}
                   <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-vermelho/10 border border-vermelho/20">

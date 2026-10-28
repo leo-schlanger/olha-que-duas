@@ -3,10 +3,13 @@ import { Link } from "react-router-dom";
 import logoDefault from "@/assets/logo-olha-que-duas.webp";
 import { siteConfig } from "@/config/site";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
-import { HalloweenFooterSlot, useSeasonalLogo } from "@/components/seasonal/halloween";
+import { HalloweenFooterSlot, useSeasonalLogoSet } from "@/components/seasonal/halloween";
+
+// Rendered height: h-20 (80 px) on phones, h-24 (96 px) from md.
+const FOOTER_LOGO_SIZES = "(min-width: 768px) 96px, 80px";
 
 const Footer = () => {
-  const logo = useSeasonalLogo(logoDefault);
+  const seasonalLogo = useSeasonalLogoSet();
   return (
     <footer className="hw-footer bg-gradient-to-b from-beige-dark to-charcoal text-cream relative overflow-hidden">
       {/* Decorative elements */}
@@ -23,12 +26,21 @@ const Footer = () => {
           {/* Brand */}
           <div className="flex flex-col items-center md:items-start">
             <div className="flex items-center gap-5 md:gap-6 mb-5">
-              <img
-                src={logo}
-                alt={siteConfig.info.name}
-                className="h-20 md:h-24 w-auto"
-                loading="lazy"
-              />
+              <picture className="contents">
+                {seasonalLogo && (
+                  <source type="image/webp" srcSet={seasonalLogo.webpSrcSet} sizes={FOOTER_LOGO_SIZES} />
+                )}
+                <img
+                  src={seasonalLogo?.src ?? logoDefault}
+                  srcSet={seasonalLogo?.srcSet}
+                  sizes={seasonalLogo ? FOOTER_LOGO_SIZES : undefined}
+                  alt={siteConfig.info.name}
+                  width={96}
+                  height={96}
+                  className="h-20 md:h-24 w-auto"
+                  loading="lazy"
+                />
+              </picture>
               {siteConfig.rockInRio.enabled && (
                 <>
                   <div className="h-12 w-px bg-gradient-to-b from-transparent via-cream/15 to-transparent" />

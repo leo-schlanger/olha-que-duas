@@ -9,7 +9,15 @@ import { lazy, Suspense, useLayoutEffect, useState } from "react";
 import { siteConfig } from "@/config/site";
 import { isHalloweenActive, BANNER_DISMISS_KEY } from "./isHalloweenActive";
 import "./season.css";
-import logoHalloween from "@/assets/seasonal/halloween/logo-halloween.webp";
+// Medallion logo (client art, 28/10): circular cut with alpha, one file per size.
+import logo64 from "@/assets/seasonal/halloween/logo-halloween-64.webp";
+import logo96 from "@/assets/seasonal/halloween/logo-halloween-96.webp";
+import logo128 from "@/assets/seasonal/halloween/logo-halloween-128.webp";
+import logo192 from "@/assets/seasonal/halloween/logo-halloween-192.webp";
+import logo256 from "@/assets/seasonal/halloween/logo-halloween-256.webp";
+import logo288 from "@/assets/seasonal/halloween/logo-halloween-288.webp";
+import logoPng128 from "@/assets/seasonal/halloween/logo-halloween-128.png";
+import logoPng256 from "@/assets/seasonal/halloween/logo-halloween-256.png";
 import logoKidsHalloween from "@/assets/seasonal/halloween/logo-kids-halloween.webp";
 
 const Banner = lazy(() => import("./HalloweenBanner"));
@@ -45,7 +53,20 @@ function useActive() {
 export function useSeasonalLogo(fallback: string, kind: "site" | "kids" = "site") {
   const active = useActive();
   if (!active) return fallback;
-  return kind === "kids" ? logoKidsHalloween : logoHalloween;
+  return kind === "kids" ? logoKidsHalloween : logo288;
+}
+
+export type SeasonalLogoSet = { src: string; srcSet: string; webpSrcSet: string };
+
+const SITE_LOGO_SET: SeasonalLogoSet = {
+  src: logoPng128,
+  srcSet: `${logoPng128} 128w, ${logoPng256} 256w`,
+  webpSrcSet: `${logo64} 64w, ${logo96} 96w, ${logo128} 128w, ${logo192} 192w, ${logo256} 256w, ${logo288} 288w`,
+};
+
+/** Responsive site logo for <picture> (WebP + PNG fallback); null outside the season. */
+export function useSeasonalLogoSet(): SeasonalLogoSet | null {
+  return useActive() ? SITE_LOGO_SET : null;
 }
 
 function readSession(key: string) {
