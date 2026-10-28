@@ -209,7 +209,7 @@ const Podcast = () => {
           {/* Coming Soon Card - Right side */}
           <div className="lg:col-span-2">
             <Animated animation="fade-left" delay={200}>
-              <div className="sticky top-28 bg-gradient-to-br from-vermelho via-vermelho to-vermelho-soft rounded-2xl p-6 md:p-8 shadow-2xl shadow-vermelho/30 border border-vermelho-soft/30 relative overflow-hidden">
+              <div className="sticky top-[calc(7rem_+_var(--seasonal-bar-h,0px))] bg-gradient-to-br from-vermelho via-vermelho to-vermelho-soft rounded-2xl p-6 md:p-8 shadow-2xl shadow-vermelho/30 border border-vermelho-soft/30 relative overflow-hidden">
                 {/* Decorative elements */}
                 <div className="absolute -top-10 -right-10 w-40 h-40 bg-amarelo/20 rounded-full blur-2xl" />
                 <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />

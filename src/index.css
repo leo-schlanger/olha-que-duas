@@ -77,12 +77,16 @@
 
   html {
     scroll-behavior: smooth;
+    /* Seasonal strip in the fixed header (0 when absent or closed). */
+    scroll-padding-top: var(--seasonal-bar-h, 0px);
   }
 
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', sans-serif;
     letter-spacing: -0.01em;
+    /* Page offsets are tuned for the bare header; push content below the strip. */
+    padding-top: var(--seasonal-bar-h, 0px);
   }
 
   h1, h2, h3, h4, h5, h6 {

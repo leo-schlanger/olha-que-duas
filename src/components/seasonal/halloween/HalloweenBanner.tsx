@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { X } from "lucide-react";
 import { BatIcon, GhostIcon } from "./art";
@@ -16,16 +15,14 @@ const COPY = {
   },
 } as const;
 
-const HalloweenBanner = () => {
+const HalloweenBanner = ({ onClose }: { onClose: () => void }) => {
   const { pathname } = useLocation();
-  const [visible, setVisible] = useState(true);
-  if (!visible) return null;
 
   const area = pathname.startsWith("/kids") ? "kids" : "site";
   const copy = COPY[area][getHalloweenPhase(new Date())];
 
   const dismiss = () => {
-    setVisible(false);
+    onClose();
     try {
       sessionStorage.setItem(BANNER_DISMISS_KEY, "1");
     } catch {

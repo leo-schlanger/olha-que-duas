@@ -521,7 +521,7 @@ const RadioPlayer = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-6xl mx-auto items-start">
 
-          <div className="lg:col-span-4 flex flex-col lg:sticky lg:top-24">
+          <div className="lg:col-span-4 flex flex-col lg:sticky lg:top-[calc(6rem_+_var(--seasonal-bar-h,0px))]">
             <Card className="bg-gradient-to-br from-vermelho via-vermelho to-vermelho-dark border-0 text-cream shadow-2xl overflow-hidden relative group">
               <AlbumArtBackground artSrc={artSrc} />
               <div className="absolute inset-0 bg-black/10 opacity-40 group-hover:opacity-20 transition-opacity duration-500" />

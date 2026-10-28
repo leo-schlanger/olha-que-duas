@@ -5,7 +5,7 @@
  * set, so season.css (token overrides, scoped to that attribute) stays inert.
  * To remove the theme: delete this folder, the slot usages and siteConfig.halloween.
  */
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useLayoutEffect, useState } from "react";
 import { siteConfig } from "@/config/site";
 import { isHalloweenActive, BANNER_DISMISS_KEY } from "./isHalloweenActive";
 import "./season.css";
@@ -56,14 +56,30 @@ function readSession(key: string) {
   }
 }
 
-/** Thin strip inside the fixed Header. Same-height fallback avoids layout shift. */
+/** Strip height (h-10). Published as --seasonal-bar-h so page offsets clear it. */
+export const SEASONAL_BAR_H = "2.5rem";
+
+/**
+ * Thin strip inside the fixed Header. Same-height fallback avoids layout shift.
+ * While it shows, :root gets --seasonal-bar-h (body padding, sticky tops and
+ * anchor scroll-padding add it in index.css); closing it resets the var to 0.
+ */
 export function HalloweenBannerSlot() {
   const active = useActive();
-  const [dismissed] = useState(() => readSession(BANNER_DISMISS_KEY));
-  if (!active || dismissed) return null;
+  const [open, setOpen] = useState(() => !readSession(BANNER_DISMISS_KEY));
+  const show = active && open;
+  useLayoutEffect(() => {
+    if (!show) return;
+    const root = document.documentElement;
+    root.style.setProperty("--seasonal-bar-h", SEASONAL_BAR_H);
+    return () => {
+      root.style.removeProperty("--seasonal-bar-h");
+    };
+  }, [show]);
+  if (!show) return null;
   return (
     <Suspense fallback={<div className="h-10 bg-[hsl(24_95%_56%)]" aria-hidden="true" />}>
-      <Banner />
+      <Banner onClose={() => setOpen(false)} />
     </Suspense>
   );
 }
