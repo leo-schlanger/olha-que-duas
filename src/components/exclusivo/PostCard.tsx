@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Play } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { exclusivoPostPath } from "@/lib/exclusivoPaths";
 import { programTheme } from "@/lib/exclusivoTheme";
@@ -27,7 +28,7 @@ const focusRing = "focus-visible:outline-none focus-visible:ring-2 focus-visible
 export function PostCardCover({ post, eager = false }: { post: VinagrePost; eager?: boolean }) {
   return (
     <Link to={pathOf(post)} tabIndex={-1} aria-hidden className={cn("group block", focusRing)}>
-      <div className="aspect-[16/10] overflow-hidden rounded-xl bg-[#1c0a10]">
+      <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-[#1c0a10]">
         {post.cover_url ? (
           <img
             src={post.cover_url}
@@ -35,6 +36,12 @@ export function PostCardCover({ post, eager = false }: { post: VinagrePost; eage
             loading={eager ? "eager" : "lazy"}
             className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.03]"
           />
+        ) : null}
+        {post.video_url ? (
+          <span className="absolute bottom-2 left-2 inline-flex items-center gap-1.5 rounded-full bg-black/70 px-2.5 py-1 text-xs font-semibold text-white">
+            <Play className="h-3.5 w-3.5 fill-current" aria-hidden />
+            Vídeo
+          </span>
         ) : null}
       </div>
     </Link>

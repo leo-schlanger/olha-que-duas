@@ -1,4 +1,5 @@
 import { articleHeadline, documentTitle, metaDescription } from './src/lib/seo';
+import { articleVideo, videoObjectJsonLd, type ArticleVideo } from './src/lib/articleVideo';
 export const config = {
   matcher: ['/viagens', '/servicos', '/loja', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*', '/exclusivo', '/exclusivo/:path*', '/kids', '/auditoria-gratuita', '/rockinrio'],
 };
@@ -63,6 +64,8 @@ interface Meta {
   author?: string;
   section?: string;
   jsonLd?: unknown;
+  /** Reel 9:16 da peça: og:video para as redes. */
+  video?: ArticleVideo | null;
 }
 
 function stripScripts(value: string): string {
@@ -107,6 +110,11 @@ function html(meta: Meta): Response {
     <meta property="og:type" content="${type}">
     <meta property="og:site_name" content="Olha que Duas">
     <meta property="og:locale" content="pt_PT">
+    ${meta.video ? `<meta property="og:video" content="${escapeHtml(meta.video.src)}">
+    <meta property="og:video:secure_url" content="${escapeHtml(meta.video.src)}">
+    <meta property="og:video:type" content="video/mp4">
+    <meta property="og:video:width" content="720">
+    <meta property="og:video:height" content="1280">` : ''}
     ${meta.publishedTime ? `<meta property="article:published_time" content="${escapeHtml(meta.publishedTime)}">` : ''}
     ${meta.author ? `<meta property="article:author" content="${escapeHtml(meta.author)}">` : ''}
     ${meta.section ? `<meta property="article:section" content="${escapeHtml(meta.section)}">` : ''}
@@ -333,7 +341,7 @@ export default async function middleware(request: Request): Promise<Response | u
     try {
       const rows = await fetchSupabase(
         'vinagre_posts',
-        `select=title,author,seo_title,seo_description,excerpt,content,cover_url,og_image_url,published_at,updated_at,exclusive_programs!inner(slug,title,author)&slug=eq.${encodeURIComponent(postSlug)}&is_published=eq.true&exclusive_programs.slug=eq.${encodeURIComponent(programSlug)}`,
+        `select=*,exclusive_programs!inner(slug,title,author)&slug=eq.${encodeURIComponent(postSlug)}&is_published=eq.true&exclusive_programs.slug=eq.${encodeURIComponent(programSlug)}`,
       );
       if (!Array.isArray(rows)) return;
       const post = rows[0];
@@ -365,10 +373,35 @@ export default async function middleware(request: Request): Promise<Response | u
       const section = program && program.title ? String(program.title) : 'Especiais Olha que Duas';
       const image = shareImage(post);
       const pageUrl = `https://www.olhaqueduas.com/exclusivo/${programSlug}/${postSlug}`;
+      const video = articleVideo(post);
+      const description = String(post.seo_description || post.excerpt || post.title);
+      const videoTag = video
+        ? `<video src="${escapeHtml(video.src)}"${video.poster ? ` poster="${escapeHtml(video.poster)}"` : ''} controls playsinline preload="none"></video>`
+        : '';
+      const article = {
+        '@context': 'https://schema.org',
+        '@type': 'NewsArticle',
+        headline: articleHeadline(String(post.title), post.seo_title),
+        description: post.seo_description || post.excerpt || post.title,
+        image: [image],
+        datePublished: post.published_at || undefined,
+        dateModified: post.updated_at || post.published_at || undefined,
+        inLanguage: 'pt-PT',
+        articleSection: section,
+        author: author === 'Olha que Duas'
+          ? { '@type': 'Organization', name: author, url: 'https://www.olhaqueduas.com' }
+          : { '@type': 'Person', name: author },
+        publisher: {
+          '@type': 'Organization',
+          name: 'Olha que Duas',
+          logo: { '@type': 'ImageObject', url: 'https://www.olhaqueduas.com/og-image.jpg' },
+        },
+        mainEntityOfPage: pageUrl,
+      };
       return html({
         title: String(post.title),
         seoTitle: post.seo_title ? String(post.seo_title) : undefined,
-        description: String(post.seo_description || post.excerpt || post.title),
+        description,
         image,
         imageAlt: String(post.title),
         imageWidth: 1200,
@@ -378,27 +411,11 @@ export default async function middleware(request: Request): Promise<Response | u
         publishedTime: post.published_at || undefined,
         author,
         section,
-        body: `<article><h1>${escapeHtml(String(post.title))}</h1>${stripScripts(String(post.content || ''))}</article>`,
-        jsonLd: {
-          '@context': 'https://schema.org',
-          '@type': 'NewsArticle',
-          headline: articleHeadline(String(post.title), post.seo_title),
-          description: post.seo_description || post.excerpt || post.title,
-          image: [image],
-          datePublished: post.published_at || undefined,
-          dateModified: post.updated_at || post.published_at || undefined,
-          inLanguage: 'pt-PT',
-          articleSection: section,
-          author: author === 'Olha que Duas'
-            ? { '@type': 'Organization', name: author, url: 'https://www.olhaqueduas.com' }
-            : { '@type': 'Person', name: author },
-          publisher: {
-            '@type': 'Organization',
-            name: 'Olha que Duas',
-            logo: { '@type': 'ImageObject', url: 'https://www.olhaqueduas.com/og-image.jpg' },
-          },
-          mainEntityOfPage: pageUrl,
-        },
+        video,
+        body: `<article><h1>${escapeHtml(String(post.title))}</h1>${videoTag}${stripScripts(String(post.content || ''))}</article>`,
+        jsonLd: video
+          ? [article, videoObjectJsonLd(video, { name: String(post.title), description, pageUrl, uploadDate: post.published_at, fallbackThumbnail: image })]
+          : article,
       });
     } catch { return; }
   }

@@ -8,9 +8,11 @@ import { Button } from "@/components/ui/button";
 import { PostCard, ProgramChip } from "@/components/exclusivo/PostCard";
 import { ProgramTabs } from "@/components/exclusivo/ProgramTabs";
 import { ProgramPortrait } from "@/components/exclusivo/VinagrePortrait";
+import { ArticleVideo } from "@/components/exclusivo/ArticleVideo";
 import { useLatestExclusivePosts, useProgramPosts, useVinagrePost } from "@/hooks/useVinagrePosts";
 import { getPageBreadcrumbJsonLd, useMetaTags } from "@/hooks/useMetaTags";
 import { articleShareImage, readingMinutes, sanitizeArticleHtml } from "@/lib/articleHtml";
+import { articleVideo, videoObjectJsonLd } from "@/lib/articleVideo";
 import { exclusivoPostPath, exclusivoProgramPath } from "@/lib/exclusivoPaths";
 import { formatVinagreDate } from "@/lib/vinagreDate";
 import { articleHeadline } from "@/lib/seo";
@@ -34,6 +36,7 @@ export default function ExclusivoPost() {
   const section = program?.title || EXCLUSIVO_HUB.label;
   // A piece can be signed by someone other than the program's author.
   const author = post?.author || program?.author || EXCLUSIVO_HUB.label;
+  const video = post ? articleVideo(post) : null;
 
   useMetaTags({
     title: post?.title ?? EXCLUSIVO_HUB.label,
@@ -75,6 +78,17 @@ export default function ExclusivoPost() {
             },
             mainEntityOfPage: pageUrl,
           },
+          ...(video
+            ? [
+                videoObjectJsonLd(video, {
+                  name: post.title,
+                  description: post.seo_description || post.excerpt || post.title,
+                  pageUrl,
+                  uploadDate: post.published_at,
+                  fallbackThumbnail: articleShareImage(post),
+                }),
+              ]
+            : []),
           getPageBreadcrumbJsonLd(post.title, pageUrl, [
             { name: EXCLUSIVO_HUB.label, url: EXCLUSIVO_HUB.url },
             {
@@ -182,7 +196,9 @@ export default function ExclusivoPost() {
                   </div>
                 </div>
 
-                {post.cover_url && (
+                {video ? (
+                  <ArticleVideo video={video} title={post.title} />
+                ) : post.cover_url && (
                   <img
                     src={post.cover_url}
                     alt={post.title}
