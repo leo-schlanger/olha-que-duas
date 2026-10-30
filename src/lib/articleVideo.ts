@@ -1,10 +1,15 @@
 /**
- * Vídeo de uma peça dos Especiais (reel 9:16 no media-library).
- * Partilhado pelo SPA (ExclusivoPost) e pelo middleware dos crawlers.
+ * Vídeo de uma peça dos Especiais (reel 9:16): YouTube (embed youtube-nocookie)
+ * ou MP4 https. Partilhado pelo SPA (ExclusivoPost) e pelo middleware dos crawlers.
  */
+import { getYouTubeEmbedUrl, getYouTubeId, getYouTubeThumbnail, getYouTubeWatchUrl } from "./youtube";
 
 export interface ArticleVideo {
+  kind: "youtube" | "mp4";
+  /** MP4 file, or the YouTube watch URL. */
   src: string;
+  /** youtube-nocookie embed; empty for MP4. */
+  embedUrl: string;
   poster: string;
   durationSeconds: number | null;
 }
@@ -21,16 +26,30 @@ const httpsUrl = (value: unknown): string => {
   return /^https:\/\/[^\s"'<>]+$/i.test(url) ? url : "";
 };
 
-/** null when the piece has no playable https video. Poster falls back to the cover. */
+const YOUTUBE_HOST = /^https:\/\/(www\.|m\.)?(youtube\.com|youtube-nocookie\.com|youtu\.be)\//i;
+
+/**
+ * null when the piece has no playable https video.
+ * Poster: video_poster_url, else the YouTube thumbnail (YouTube) or the cover (MP4).
+ */
 export function articleVideo(post: VideoFields): ArticleVideo | null {
-  const src = httpsUrl(post.video_url);
-  if (!src) return null;
+  const url = httpsUrl(post.video_url);
+  if (!url) return null;
   const seconds = Number(post.video_duration_seconds);
-  return {
-    src,
-    poster: httpsUrl(post.video_poster_url) || httpsUrl(post.cover_url),
-    durationSeconds: Number.isInteger(seconds) && seconds > 0 ? seconds : null,
-  };
+  const durationSeconds = Number.isInteger(seconds) && seconds > 0 ? seconds : null;
+  const ownPoster = httpsUrl(post.video_poster_url);
+  if (YOUTUBE_HOST.test(url)) {
+    const id = getYouTubeId(url);
+    if (!id) return null;
+    return {
+      kind: "youtube",
+      src: getYouTubeWatchUrl(id),
+      embedUrl: getYouTubeEmbedUrl(id),
+      poster: ownPoster || getYouTubeThumbnail(id),
+      durationSeconds,
+    };
+  }
+  return { kind: "mp4", src: url, embedUrl: "", poster: ownPoster || httpsUrl(post.cover_url), durationSeconds };
 }
 
 /** ISO 8601 duration for schema.org (125 → "PT2M5S"). */
@@ -53,7 +72,7 @@ export function videoObjectJsonLd(
     description: meta.description,
     thumbnailUrl: [video.poster || meta.fallbackThumbnail],
     uploadDate: meta.uploadDate || undefined,
-    contentUrl: video.src,
+    ...(video.kind === "youtube" ? { embedUrl: video.embedUrl } : { contentUrl: video.src }),
     ...(video.durationSeconds ? { duration: isoDuration(video.durationSeconds) } : {}),
     inLanguage: "pt-PT",
     url: meta.pageUrl,

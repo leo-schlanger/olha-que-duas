@@ -18,8 +18,7 @@ const THEMES: Record<string, ProgramTheme> = {
   "curtas-biografias": { accent: "#16213a", onAccent: "#e2c48d", soft: "#e7e9ef", label: "Curtas Biografias" },
   "pimenta-na-lingua": { accent: "#b3241a", onAccent: "#fff4e6", soft: "#f6ebe0", label: "Opinião" },
   "mente-aberta": { accent: "#4d6b50", onAccent: "#f6f3ea", soft: "#e6ede2", label: "Mente Aberta" },
-  // Night + candle from the reels' palette (Desktop/video/projetos/lendas-portugal-2026/arte/LEIA-ME.md §2).
-  "lendas-de-portugal": { accent: "#1a2230", onAccent: "#f2b866", soft: "#ece6d8", label: "Lendas" },
+  "lendas-de-portugal": { accent: "#2b2420", onAccent: "#f2b866", soft: "#f1e8d8", label: "Lendas" },
 };
 
 const FALLBACK: ProgramTheme = { accent: "#1c0a10", onAccent: "#f6efe4", soft: "#efe7da", label: "Especiais" };

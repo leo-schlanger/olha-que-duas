@@ -172,7 +172,8 @@ ${maps.map((m) => `  <sitemap><loc>${SITE}/${m}</loc><lastmod>${today}</lastmod>
       if (slug && !latestByProgram.has(slug)) latestByProgram.set(slug, day(p.published_at) ?? today);
     }
     return urlset([
-      ...programs.map((p) => ({
+      // Only programs with at least one live piece (same rule as the site).
+      ...programs.filter((p) => latestByProgram.has(p.slug)).map((p) => ({
         loc: `/exclusivo/${p.slug}`,
         lastmod: latestByProgram.get(p.slug) ?? day(p.updated_at),
         freq: 'daily',

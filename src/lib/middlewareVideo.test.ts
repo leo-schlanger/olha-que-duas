@@ -59,3 +59,42 @@ describe("middleware: peça com vídeo", () => {
     expect(ld["@type"]).toBe("NewsArticle");
   });
 });
+
+describe("middleware: YouTube e programas sem peças", () => {
+  it("peça com YouTube: iframe nocookie no HTML, VideoObject com embedUrl, sem og:video", async () => {
+    const { res } = await crawl(postRow({ video_url: "https://youtube.com/shorts/dQw4w9WgXcQ", video_poster_url: "https://x.pt/poster.jpg" }));
+    const html = await res!.text();
+    expect(html).toContain('<iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ"');
+    expect(html).not.toContain("og:video");
+    const ld = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)![1]);
+    expect(ld[1]).toMatchObject({ "@type": "VideoObject", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" });
+    expect(ld[1].thumbnailUrl).toEqual(["https://x.pt/poster.jpg"]);
+  });
+
+  async function programPage(leads: unknown[]) {
+    const fetchMock = vi.fn(async (url: string) =>
+      new Response(JSON.stringify(url.includes("/exclusive_programs?")
+        ? [{ title: "Lendas de Portugal", author: "Alexandra Serra", tagline: "", description: "d", cover_url: "" }]
+        : leads)),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    const res = await middleware(
+      new Request("https://www.olhaqueduas.com/exclusivo/lendas-de-portugal", {
+        headers: { "user-agent": "Mozilla/5.0 (compatible; Googlebot/2.1)" },
+      }),
+    );
+    return { res: res!, fetchMock };
+  }
+
+  it("programa sem peças vivas dá 404 noindex", async () => {
+    const { res, fetchMock } = await programPage([]);
+    expect(res.status).toBe(404);
+    expect(await res.text()).toContain("noindex");
+    expect(String(fetchMock.mock.calls[1][0])).toContain("published_at.lte.");
+  });
+
+  it("programa com peça viva dá 200", async () => {
+    const { res } = await programPage([{ cover_url: "https://x.pt/c.jpg", og_image_url: "https://x.pt/og.jpg" }]);
+    expect(res.status).toBe(200);
+  });
+});

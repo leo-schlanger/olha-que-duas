@@ -110,7 +110,7 @@ function html(meta: Meta): Response {
     <meta property="og:type" content="${type}">
     <meta property="og:site_name" content="Olha que Duas">
     <meta property="og:locale" content="pt_PT">
-    ${meta.video ? `<meta property="og:video" content="${escapeHtml(meta.video.src)}">
+    ${meta.video && meta.video.kind === 'mp4' ? `<meta property="og:video" content="${escapeHtml(meta.video.src)}">
     <meta property="og:video:secure_url" content="${escapeHtml(meta.video.src)}">
     <meta property="og:video:type" content="video/mp4">
     <meta property="og:video:width" content="720">
@@ -375,9 +375,11 @@ export default async function middleware(request: Request): Promise<Response | u
       const pageUrl = `https://www.olhaqueduas.com/exclusivo/${programSlug}/${postSlug}`;
       const video = articleVideo(post);
       const description = String(post.seo_description || post.excerpt || post.title);
-      const videoTag = video
-        ? `<video src="${escapeHtml(video.src)}"${video.poster ? ` poster="${escapeHtml(video.poster)}"` : ''} controls playsinline preload="none"></video>`
-        : '';
+      const videoTag = !video
+        ? ''
+        : video.kind === 'youtube'
+          ? `<iframe src="${escapeHtml(video.embedUrl)}" title="${escapeHtml(String(post.title))}" width="360" height="640" loading="lazy" allowfullscreen></iframe>`
+          : `<video src="${escapeHtml(video.src)}"${video.poster ? ` poster="${escapeHtml(video.poster)}"` : ''} controls playsinline preload="none"></video>`;
       const article = {
         '@context': 'https://schema.org',
         '@type': 'NewsArticle',
@@ -439,8 +441,10 @@ export default async function middleware(request: Request): Promise<Response | u
         try {
           const leads = await fetchSupabase(
             'vinagre_posts',
-            `select=cover_url,og_image_url,exclusive_programs!inner(slug)&is_published=eq.true&exclusive_programs.slug=eq.${encodeURIComponent(slug)}&order=published_at.desc.nullslast&limit=1`,
+            `select=cover_url,og_image_url,exclusive_programs!inner(slug)&is_published=eq.true&exclusive_programs.slug=eq.${encodeURIComponent(slug)}&or=(published_at.is.null,published_at.lte.${new Date().toISOString()})&order=published_at.desc.nullslast&limit=1`,
           );
+          // A program is only listed with at least one live piece: without one it does not exist yet.
+          if (Array.isArray(leads) && leads.length === 0) return notFound(`https://www.olhaqueduas.com${path}`);
           const lead = Array.isArray(leads) ? leads[0] : undefined;
           if (lead) image = shareImage(lead);
         } catch { /* fica a capa do programa */ }

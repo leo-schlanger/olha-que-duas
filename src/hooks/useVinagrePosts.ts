@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getSupabase, isSupabaseConfigured } from "@/lib/supabase";
 import { parseVinagrePost, type VinagrePost } from "@/types/vinagre";
 
-const liveFilter = () =>
+export const liveFilter = () =>
   `published_at.is.null,published_at.lte.${new Date().toISOString()}`;
 
 const POST_COLUMNS =

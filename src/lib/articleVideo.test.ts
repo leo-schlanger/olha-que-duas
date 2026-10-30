@@ -92,3 +92,37 @@ describe("parseVinagrePost com vídeo", () => {
     expect(post?.video_duration_seconds).toBeNull();
   });
 });
+
+describe("articleVideo com YouTube", () => {
+  const ID = "dQw4w9WgXcQ";
+  it("reconhece shorts, watch e youtu.be e usa o embed youtube-nocookie", () => {
+    for (const url of [`https://youtube.com/shorts/${ID}`, `https://www.youtube.com/watch?v=${ID}`, `https://youtu.be/${ID}`]) {
+      const video = articleVideo({ video_url: url });
+      expect(video?.kind).toBe("youtube");
+      expect(video?.embedUrl).toBe(`https://www.youtube-nocookie.com/embed/${ID}`);
+      expect(video?.src).toBe(`https://www.youtube.com/watch?v=${ID}`);
+    }
+  });
+
+  it("poster próprio primeiro, senão a miniatura do YouTube (nunca a capa 16:10)", () => {
+    expect(articleVideo({ video_url: `https://youtu.be/${ID}`, video_poster_url: "https://x.pt/p.jpg" })?.poster).toBe("https://x.pt/p.jpg");
+    expect(articleVideo({ video_url: `https://youtu.be/${ID}`, cover_url: "https://x.pt/c.jpg" })?.poster).toBe(
+      `https://i.ytimg.com/vi/${ID}/hqdefault.jpg`,
+    );
+  });
+
+  it("URL do YouTube sem id válido não dá vídeo", () => {
+    expect(articleVideo({ video_url: "https://www.youtube.com/channel/abc" })).toBeNull();
+  });
+
+  it("VideoObject com embedUrl e sem contentUrl", () => {
+    const ld = videoObjectJsonLd(articleVideo({ video_url: `https://youtu.be/${ID}` })!, {
+      name: "x",
+      description: "y",
+      pageUrl: "https://www.olhaqueduas.com/",
+      fallbackThumbnail: "https://x.pt/og.jpg",
+    });
+    expect(ld.embedUrl).toBe(`https://www.youtube-nocookie.com/embed/${ID}`);
+    expect("contentUrl" in ld).toBe(false);
+  });
+});
