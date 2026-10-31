@@ -16,6 +16,8 @@ export interface ScheduleItemRaw {
   end_time: string | null;
   is_all_day: boolean;
   event: ScheduleEvent | ScheduleEvent[] | null;
+  /** true = row from `schedule_dates` (one-off event, an overlay on the radio) */
+  is_dated?: boolean;
 }
 
 export interface GroupedSchedule {
@@ -26,6 +28,8 @@ export interface GroupedSchedule {
   endTimes: (string | null)[];
   isAllDay: boolean;
   iconUrl: string;
+  /** Dated event (schedule_dates): routine programs it covers are nested, not hidden */
+  isDated?: boolean;
 }
 
 const DAYS_MAP: Record<number, string> = {
@@ -82,6 +86,7 @@ export function datedRowsToWeekly(rows: ScheduleDateRaw[], today: string): Sched
         end_time: r.end_time,
         is_all_day: r.is_all_day,
         event: r.event,
+        is_dated: true,
       };
     });
 }
@@ -128,6 +133,7 @@ export function groupScheduleRows(rows: ScheduleItemRaw[]): GroupedSchedule[] {
         endTimes: isAllDay ? [] : [endTime],
         isAllDay,
         iconUrl: event.icon_url,
+        ...(item.is_dated && { isDated: true }),
       });
     }
   }
