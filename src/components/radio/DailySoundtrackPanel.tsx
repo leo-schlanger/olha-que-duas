@@ -29,10 +29,6 @@ const FALLBACK_ICONS: Record<string, React.ReactNode> = {
   'Olha que Duas!': <Users className="w-full h-full p-2.5" />,
 };
 
-/** Mostra "19h–21h" para intervalos, ou só "19h" para horas únicas. */
-function timeLabel(slot: DailySlot): string {
-  return slot.endTime ? `${slot.time}–${slot.endTime}` : slot.time;
-}
 
 /**
  * Renderiza a imagem do programa OU um placeholder seguro. Se o `iconUrl`
@@ -119,8 +115,15 @@ function SlotTimeCol({ slot, isCurrent }: { slot: DailySlot; isCurrent: boolean 
   }
   return (
     <div className="shrink-0 w-[3.4rem] mt-0.5 leading-tight font-mono">
-      <div className={`text-[11px] whitespace-nowrap ${isCurrent ? 'text-amarelo/85' : 'text-cream/55'}`}>
-        {timeLabel(slot)}
+      {/* Long ranges ("18h30–19h30") wrap at the dash instead of overflowing the column */}
+      <div className={`text-[11px] ${isCurrent ? 'text-amarelo/85' : 'text-cream/55'}`}>
+        <span className="whitespace-nowrap">{slot.time}</span>
+        {slot.endTime && (
+          <>
+            <wbr />
+            <span className="whitespace-nowrap">–{slot.endTime}</span>
+          </>
+        )}
       </div>
       {slot.duration && (
         <div className={`text-[10px] ${isCurrent ? 'text-amarelo/45' : 'text-cream/25'}`}>
