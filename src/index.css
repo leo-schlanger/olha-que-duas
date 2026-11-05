@@ -127,9 +127,28 @@
     max-width: 100%;
     max-height: 80vh;
     height: auto;
-    margin: 2.25rem auto;
+    margin: 2.25rem auto 0.4rem;
     border-radius: 1rem;
     background: #1c0a10;
+  }
+
+  /* Credit under a photo. It must not read as the next paragraph of the piece. */
+  .vinagre-article p:has(img) {
+    margin-bottom: 0.35rem;
+  }
+
+  .vinagre-article p:has(img) + p:has(> em:only-child) {
+    margin: 0 auto 2.6rem;
+    max-width: 38rem;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+    text-align: center;
+    color: hsl(var(--charcoal) / 0.55);
+  }
+
+  .vinagre-article p:has(img) + p:has(> em:only-child) em {
+    font-style: normal;
   }
 
   /* Preflight removes list markers; restore them for article lists. */
