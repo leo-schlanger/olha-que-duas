@@ -112,11 +112,6 @@ export const siteConfig = {
   // Parceiros gerais
   partners: [
     {
-      name: "Sóller Collection",
-      logo: "/partners/soller.jpg",
-      url: "https://www.instagram.com/soller_collection/",
-    },
-    {
       name: "Oriflame",
       logo: "/partners/oriflame.jpg",
       url: "https://shop.oriflame.com/PT-alexandraserra/bGOLVwKh5",
