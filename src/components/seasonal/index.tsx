@@ -21,6 +21,7 @@ import {
   NatalHeroSlot,
   NatalKidsSlot,
   NatalOverlaySlot,
+  NATAL_HERO_IMAGE,
   NATAL_LOGOS,
 } from "./natal";
 
@@ -54,6 +55,31 @@ export function useSeasonalLogoSet(variant: "full" | "compact" = "full"): Season
   if (!season) return null;
   const logos = LOGOS[season];
   return variant === "compact" ? (logos.compact ?? logos.set) : logos.set;
+}
+
+export type SeasonalHeroImage = {
+  src: string;
+  webpSrcSet: string;
+  width: number;
+  height: number;
+  objectPosition: string;
+};
+
+// Seasons that swap the home hero photo (others keep the regular one).
+const HERO_IMAGES: Partial<Record<Season, SeasonalHeroImage>> = {
+  natal: NATAL_HERO_IMAGE,
+};
+
+/** Hero photo for `now`, or null (regular photo). Window = the season's own config. */
+export function seasonalHeroImage(now: Date = new Date()): SeasonalHeroImage | null {
+  const season = activeSeason(now);
+  return (season && HERO_IMAGES[season]) || null;
+}
+
+/** Seasonal home hero photo, read once per mount; null outside a season. */
+export function useSeasonalHeroImage(): SeasonalHeroImage | null {
+  const season = useSeason();
+  return (season && HERO_IMAGES[season]) || null;
 }
 
 /** Strip inside the fixed Header (publishes --seasonal-bar-h). */

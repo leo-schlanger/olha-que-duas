@@ -2,9 +2,15 @@ import { useEffect, useState, useRef } from "react";
 import { ArrowRight, Play, Mic, Radio, Video, Sparkles, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import fotoJuntas from "@/assets/olha-que-duas-foto.jpg";
-import { SeasonalHeroSlot } from "@/components/seasonal";
+import { SeasonalHeroSlot, useSeasonalHeroImage } from "@/components/seasonal";
+
+const HERO_ALT = "Alexandra e Marluce - Fundadoras do Olha que Duas";
+// Rendered width of the photo box: max-w-xs / sm / md / lg.
+const HERO_SIZES = "(min-width: 1024px) 512px, (min-width: 768px) 448px, (min-width: 640px) 384px, 320px";
 
 const Hero = () => {
+  // Seasonal photo (e.g. Natal) inside its window; regular photo otherwise.
+  const seasonalPhoto = useSeasonalHeroImage();
   const [scrollY, setScrollY] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
@@ -240,15 +246,31 @@ const Hero = () => {
 
               {/* Main image container with 3D tilt on hover */}
               <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-black/40 card-3d">
-                <img
-                  src={fotoJuntas}
-                  alt="Alexandra e Marluce - Fundadoras do Olha que Duas"
-                  width={1024}
-                  height={1536}
-                  className="w-full aspect-[4/5] object-cover transition-transform duration-700 group-hover:scale-105"
-                  loading="eager"
-                  fetchPriority="high"
-                />
+                {seasonalPhoto ? (
+                  <picture>
+                    <source type="image/webp" srcSet={seasonalPhoto.webpSrcSet} sizes={HERO_SIZES} />
+                    <img
+                      src={seasonalPhoto.src}
+                      alt={HERO_ALT}
+                      width={seasonalPhoto.width}
+                      height={seasonalPhoto.height}
+                      className="w-full aspect-[4/5] object-cover transition-transform duration-700 group-hover:scale-105"
+                      style={{ objectPosition: seasonalPhoto.objectPosition }}
+                      loading="eager"
+                      fetchPriority="high"
+                    />
+                  </picture>
+                ) : (
+                  <img
+                    src={fotoJuntas}
+                    alt={HERO_ALT}
+                    width={1024}
+                    height={1536}
+                    className="w-full aspect-[4/5] object-cover transition-transform duration-700 group-hover:scale-105"
+                    loading="eager"
+                    fetchPriority="high"
+                  />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 via-charcoal/10 to-transparent" />
 
                 {/* Shimmer overlay on hover */}

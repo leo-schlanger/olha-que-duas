@@ -27,6 +27,14 @@ import compact96 from "@/assets/seasonal/natal/logo-natal-compacto-96.webp";
 import compact128 from "@/assets/seasonal/natal/logo-natal-compacto-128.webp";
 import compact192 from "@/assets/seasonal/natal/logo-natal-compacto-192.webp";
 import compactPng128 from "@/assets/seasonal/natal/logo-natal-compacto-128.png";
+// Home hero photo (client, 13/11): WebP ladder + JPEG fallback, 1149×1369 source.
+import hero320 from "@/assets/seasonal/natal/hero-natal-320.webp";
+import hero480 from "@/assets/seasonal/natal/hero-natal-480.webp";
+import hero640 from "@/assets/seasonal/natal/hero-natal-640.webp";
+import hero800 from "@/assets/seasonal/natal/hero-natal-800.webp";
+import hero960 from "@/assets/seasonal/natal/hero-natal-960.webp";
+import hero1149 from "@/assets/seasonal/natal/hero-natal-1149.webp";
+import heroJpg800 from "@/assets/seasonal/natal/hero-natal-800.jpg";
 
 const Banner = lazy(() => import("./NatalBanner"));
 const Overlay = lazy(() => import("./NatalOverlay"));
@@ -69,6 +77,16 @@ export const NATAL_LOGOS = {
     srcSet: `${compactPng128} 128w`,
     webpSrcSet: `${compact48} 48w, ${compact64} 64w, ${compact96} 96w, ${compact128} 128w, ${compact192} 192w`,
   },
+};
+
+/** Home hero photo while the season runs (shared hook in ../index.tsx). */
+export const NATAL_HERO_IMAGE = {
+  src: heroJpg800,
+  webpSrcSet: `${hero320} 320w, ${hero480} 480w, ${hero640} 640w, ${hero800} 800w, ${hero960} 960w, ${hero1149} 1149w`,
+  width: 1149,
+  height: 1369,
+  // The 4/5 box trims ~2% per side only; both faces sit in the middle band.
+  objectPosition: "50% 50%",
 };
 
 function readSession(key: string) {
