@@ -62,15 +62,20 @@ function Sky({ variant }: { variant: "hero" | "shell" }) {
       >
         <StarShape />
       </svg>
-      <svg viewBox="0 0 24 24" className="absolute top-[12rem] left-[34%] w-8 md:top-44 md:left-[20%] md:w-12 opacity-70">
-        <SnowflakeShape />
-      </svg>
-      <svg viewBox="0 0 24 24" className="absolute top-[22rem] right-[5%] w-7 md:top-[17rem] md:right-[24%] md:w-10 opacity-60">
-        <SnowflakeShape />
-      </svg>
-      <svg viewBox="0 0 24 24" className="absolute hidden md:block top-[26rem] left-[8%] w-10 opacity-60">
-        <SnowflakeShape />
-      </svg>
+      {/* flakes only on the /kids hero: on the games pages they sat behind titles and links (qa 13/11) */}
+      {hero && (
+        <>
+        <svg viewBox="0 0 24 24" className="absolute top-[12rem] left-[34%] w-8 md:top-44 md:left-[20%] md:w-12 opacity-70">
+          <SnowflakeShape />
+        </svg>
+        <svg viewBox="0 0 24 24" className="absolute top-[22rem] right-[5%] w-7 md:top-[17rem] md:right-[24%] md:w-10 opacity-60">
+          <SnowflakeShape />
+        </svg>
+        <svg viewBox="0 0 24 24" className="absolute hidden md:block top-[26rem] left-[8%] w-10 opacity-60">
+          <SnowflakeShape />
+        </svg>
+        </>
+      )}
       {hero && (
         <>
           <svg viewBox="0 0 40 48" className="absolute hidden sm:block top-[30rem] left-[3%] w-10 md:w-14 kh-float">
@@ -89,10 +94,17 @@ function Hill({ variant }: { variant: "hero" | "shell" }) {
   return (
     <div className="kh-night-hill absolute bottom-0 left-0 right-0 z-0 pointer-events-none" aria-hidden="true">
       {/* pines, a snowman and gifts on the right; the left belongs to the easter egg */}
-      <div className="absolute z-[1] bottom-[40%] right-[3%] md:bottom-[30%] md:right-[8%] flex items-end gap-0.5 md:gap-1">
-        <svg viewBox="0 -10 56 92" className="w-8 md:w-12 hidden sm:block">
-          <SnowmanShape />
-        </svg>
+      {/* games pages: tight to the right edge, the "outro jogo" buttons sit just above the hill */}
+      <div
+        className={`absolute z-[1] flex items-end gap-0.5 md:gap-1 ${
+          variant === "hero" ? "bottom-[40%] right-[3%] md:bottom-[30%] md:right-[8%]" : "bottom-[30%] right-[1%] md:bottom-[24%] md:right-[2%]"
+        }`}
+      >
+        {variant === "hero" && (
+          <svg viewBox="0 -10 56 92" className="w-8 md:w-12 hidden sm:block">
+            <SnowmanShape />
+          </svg>
+        )}
         <svg viewBox="0 -4 60 94" className="w-10 md:w-16">
           <PineShape lights star />
         </svg>
@@ -103,16 +115,6 @@ function Hill({ variant }: { variant: "hero" | "shell" }) {
           <GiftShape />
         </svg>
       </div>
-      {variant === "hero" && (
-        <div className="absolute z-[1] bottom-[40%] left-[46%] hidden md:flex items-end gap-1">
-          <svg viewBox="0 0 48 48" className="w-10 rotate-6">
-            <GiftShape box={NT.dourado} ribbon={NT.vivo} />
-          </svg>
-          <svg viewBox="0 -4 60 94" className="w-12">
-            <PineShape lights />
-          </svg>
-        </div>
-      )}
       <svg viewBox="0 0 1440 180" className="relative w-full h-auto block" preserveAspectRatio="none">
         <path fill="#dfe8ef" d="M0 90 C240 30, 480 150, 720 90 S1200 30, 1440 90 L1440 180 L0 180 Z" />
         <path fill="#ffffff" d="M0 130 C240 80, 520 180, 760 130 S1220 80, 1440 130 L1440 180 L0 180 Z" />

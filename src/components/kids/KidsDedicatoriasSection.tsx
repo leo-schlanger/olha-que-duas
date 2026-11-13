@@ -17,6 +17,7 @@ import { Animated } from "@/components/ui/animated";
 import { siteConfig } from "@/config/site";
 import logoKids from "@/assets/kids/logo-kids.webp";
 import { KidsSeasonSlot } from "@/components/seasonal/kids";
+import { useSeasonalLogo } from "@/components/seasonal";
 
 const kidsPillars = [
   {
@@ -79,6 +80,7 @@ const parentSteps = [
 ];
 
 export default function KidsDedicatoriasSection() {
+  const kidsLogo = useSeasonalLogo(logoKids, "kids");
   const emailSubject = encodeURIComponent(
     "Pedido de Orçamento — Dedicatória Kids na Rádio (Pedido dos Pais)"
   );
@@ -157,7 +159,7 @@ export default function KidsDedicatoriasSection() {
                 <div className="flex items-center gap-3">
                   <div className="w-16 h-16 rounded-2xl bg-white/95 p-1.5 shadow-lg border-2 border-yellow-300 flex items-center justify-center">
                     <img
-                      src={logoKids}
+                      src={kidsLogo}
                       alt="Olha que Duas Kids"
                       className="w-full h-full object-contain"
                       loading="lazy"

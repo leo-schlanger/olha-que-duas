@@ -24,6 +24,11 @@ describe("natalCopy", () => {
     expect(natalCopy("kids", "countdown", 1).long).toBe("Falta 1 dia para o Pai Natal chegar!");
   });
 
+  it("26 Dec on /kids reads «Boas Festas! Bom Ano Novo!» (capital after «!»)", () => {
+    const k = natalCopy("kids", "boasFestas", 0);
+    expect(`${k.labelShort} ${k.short}`).toBe("Boas Festas! Bom Ano Novo!");
+  });
+
   it("never says «falta» from 24 Dec on", () => {
     for (const phase of ["consoada", "natal", "boasFestas"] as const) {
       expect(all(phase)).not.toMatch(/falta/i);

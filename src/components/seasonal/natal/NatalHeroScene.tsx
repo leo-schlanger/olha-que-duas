@@ -8,12 +8,10 @@ const STARS: Array<[number, number, number]> = [
   [24, 41, 1], [56, 44, 1], [86, 39, 1], [41, 34, 1.5],
 ];
 
+// Right edge only: the text column (left on desktop, full width on phones) stays clear.
 const FLAKES: Array<{ c: string; o: number }> = [
-  { c: "top-[22%] left-[6%] w-5 md:w-7", o: 0.55 },
-  { c: "top-[38%] left-[46%] hidden lg:block w-5", o: 0.4 },
-  { c: "top-[58%] left-[3%] w-4 md:w-6", o: 0.45 },
-  { c: "top-[30%] right-[4%] w-4 md:w-6", o: 0.5 },
-  { c: "top-[64%] right-[8%] hidden md:block w-7", o: 0.4 },
+  { c: "top-[30%] right-[2%] hidden lg:block w-6", o: 0.5 },
+  { c: "top-[64%] right-[3%] hidden lg:block w-7", o: 0.4 },
 ];
 
 // Trees on the snowy hill: edges only, the middle stays free for the CTAs.

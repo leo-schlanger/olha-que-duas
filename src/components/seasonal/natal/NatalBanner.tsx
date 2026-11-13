@@ -20,7 +20,7 @@ export function natalCopy(area: "site" | "kids", phase: NatalPhase, n: number): 
       case "natal":
         return { label: "Feliz Natal!", labelShort: "Feliz Natal!", short: "Já abriste os presentes?", long: "Já abriste os presentes?" };
       default:
-        return { label: "Boas Festas!", labelShort: "Boas Festas!", short: "e bom Ano Novo!", long: "Boas Festas e um bom Ano Novo!" };
+        return { label: "Boas Festas!", labelShort: "Boas Festas!", short: "Bom Ano Novo!", long: "Boas Festas e um bom Ano Novo!" };
     }
   }
   switch (phase) {

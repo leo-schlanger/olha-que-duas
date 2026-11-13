@@ -9,6 +9,7 @@ import alexandraCartoon from '@/assets/kids/alexandra-cartoon.webp';
 import marluceCartoon from '@/assets/kids/marluce-cartoon.webp';
 import leoCartoon from '@/assets/kids/leo-cartoon.webp';
 import logoKids from '@/assets/kids/logo-kids.webp';
+import { useSeasonalLogo } from '@/components/seasonal';
 
 type Difficulty = 'easy' | 'normal';
 
@@ -109,6 +110,7 @@ const memoryJsonLd = [
 ];
 
 const KidsMemory = () => {
+  const kidsLogo = useSeasonalLogo(logoKids, 'kids');
   useMetaTags({
     title: 'Memória das Duas — Encontra os pares do Cantinho',
     description:
@@ -254,7 +256,7 @@ const KidsMemory = () => {
                     background: 'linear-gradient(135deg, #ec4899 0%, #f59e0b 50%, #38bdf8 100%)',
                   }}
                 >
-                  <img src={logoKids} alt="" className="h-10 w-10 sm:h-12 sm:w-12 object-contain" />
+                  <img src={kidsLogo} alt="" className="h-10 w-10 sm:h-12 sm:w-12 object-contain" />
                 </div>
                 <div
                   className={`card-face card-front border-4 flex-col gap-1 ${

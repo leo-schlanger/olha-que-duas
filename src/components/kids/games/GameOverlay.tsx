@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Play, RotateCcw, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import logoKids from '@/assets/kids/logo-kids.webp';
+import { useSeasonalLogo } from '@/components/seasonal';
 
 interface GameOverlayProps {
   variant: 'start' | 'win' | 'lose' | 'pause';
@@ -61,6 +62,7 @@ export default function GameOverlay({
   howTo,
 }: GameOverlayProps) {
   const showConfetti = variant === 'win';
+  const kidsLogo = useSeasonalLogo(logoKids, 'kids');
 
   return (
     <div className="absolute inset-0 z-20 flex items-center justify-center bg-sky-950/40 backdrop-blur-[3px] p-3">
@@ -71,7 +73,7 @@ export default function GameOverlay({
         className="relative mx-auto w-full max-w-sm rounded-[1.75rem] border-4 border-white bg-white p-6 md:p-8 text-center shadow-[0_14px_0_rgba(190,24,93,0.25)]"
       >
         <img
-          src={logoKids}
+          src={kidsLogo}
           alt=""
           className="mx-auto mb-3 h-16 w-16 md:h-20 md:w-20 object-contain drop-shadow-md"
         />

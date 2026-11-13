@@ -9,6 +9,7 @@ import alexandraCartoon from '@/assets/kids/alexandra-cartoon.webp';
 import marluceCartoon from '@/assets/kids/marluce-cartoon.webp';
 import leoCartoon from '@/assets/kids/leo-cartoon.webp';
 import logoKids from '@/assets/kids/logo-kids.webp';
+import { useSeasonalLogo } from '@/components/seasonal';
 
 interface Option {
   text: string;
@@ -181,6 +182,7 @@ const quizJsonLd = [
 ];
 
 const KidsQuiz = () => {
+  const kidsLogo = useSeasonalLogo(logoKids, 'kids');
   useMetaTags({
     title: 'Quiz do Cantinho — Perguntas da rádio Olha que Duas Kids',
     description:
@@ -329,7 +331,7 @@ const KidsQuiz = () => {
           </div>
         ) : (
           <div className="rounded-[1.75rem] bg-white/95 border-4 border-white p-8 md:p-10 text-center shadow-[0_12px_0_rgba(190,24,93,0.2)]">
-            <img src={logoKids} alt="" className="mx-auto h-20 w-20 object-contain mb-3" />
+            <img src={kidsLogo} alt="" className="mx-auto h-20 w-20 object-contain mb-3" />
             <h2 className="font-kids font-extrabold text-3xl md:text-4xl text-sky-950">Quiz terminado!</h2>
             <p className="mt-2 font-bold text-xl text-pink-600">{message}</p>
             <p className="mt-4 inline-flex rounded-2xl px-6 py-3 bg-gradient-to-r from-yellow-300 to-pink-400 text-white font-kids font-extrabold text-2xl">

@@ -125,6 +125,19 @@ html[data-season="natal"] .bg-hero-gradient {
     linear-gradient(180deg, hsl(345 72% 7%) 0%, hsl(var(--nt-noite)) 35%, hsl(348 70% 15%) 70%, hsl(var(--nt-bordo)) 100%);
 }
 
+/* Snowy hill (92 px, 132 px from md) sits at the bottom of the hero: keep the
+ * "24/7 No Ar" pill and the "Explorar" mouse above it (qa 13/11). */
+html[data-season="natal"] #inicio .min-h-dvh {
+  padding-bottom: 12rem;
+}
+html[data-season="natal"] #inicio .absolute.bottom-8.left-1\/2 {
+  bottom: 100px;
+}
+@media (min-width: 768px) {
+  html[data-season="natal"] #inicio .min-h-dvh { padding-bottom: 14.5rem; }
+  html[data-season="natal"] #inicio .absolute.bottom-8.left-1\/2 { bottom: 140px; }
+}
+
 /* Dark sections: bordô and pine instead of the old browns. */
 html[data-season="natal"] #radio {
   background-image: linear-gradient(180deg, hsl(var(--nt-noite)) 0%, hsl(var(--nt-bordo)) 100%);
