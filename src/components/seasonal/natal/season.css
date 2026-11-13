@@ -125,6 +125,16 @@ html[data-season="natal"] .bg-hero-gradient {
     linear-gradient(180deg, hsl(345 72% 7%) 0%, hsl(var(--nt-noite)) 35%, hsl(348 70% 15%) 70%, hsl(var(--nt-bordo)) 100%);
 }
 
+/* The string of lights hangs 13 px below the fixed header: push every page
+ * down by that much so first blocks (chips, breadcrumbs, titles) clear the
+ * bulbs (qa 13/11). Stickies already sit ≥ 6rem from the top. */
+html[data-season="natal"] {
+  scroll-padding-top: calc(var(--seasonal-bar-h, 0px) + 14px);
+}
+html[data-season="natal"] body {
+  padding-top: calc(var(--seasonal-bar-h, 0px) + 14px);
+}
+
 /* Snowy hill (92 px, 132 px from md) sits at the bottom of the hero: keep the
  * "24/7 No Ar" pill and the "Explorar" mouse above it (qa 13/11). */
 html[data-season="natal"] #inicio .min-h-dvh {
