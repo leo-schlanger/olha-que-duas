@@ -1,0 +1,147 @@
+/* Seasonal: Natal / Boas Festas. Loaded only inside the lazy chunks. */
+
+/* ── Snowfall (NatalOverlay) ─────────────────────────────────────────────
+ * Three tiled layers moved with transform only (compositor, no layout).
+ * Each layer shifts by a whole number of tiles, so the loop is seamless.
+ * The wrapper fades out after ~32 s (WCAG 2.2.2) and the banner can stop
+ * or restart it. Off with prefers-reduced-motion (also in JS). */
+.nt-snow {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  overflow: hidden;
+  contain: strict;
+  animation: nt-snow-life 32s linear 1 both;
+}
+.nt-snow-sway {
+  position: absolute;
+  inset: 0 -24px;
+  animation: nt-sway 6s ease-in-out infinite alternate;
+}
+.nt-snow-layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: calc(100% + 480px);
+  will-change: transform;
+}
+/* flake = white core + faint blue-grey rim, so it also reads on white */
+.nt-snow-a {
+  background-image:
+    radial-gradient(circle at 30px 40px, #fff 0 2px, rgba(140, 165, 190, 0.5) 2.6px, transparent 3.4px),
+    radial-gradient(circle at 150px 20px, #fff 0 1.6px, rgba(140, 165, 190, 0.45) 2.2px, transparent 3px),
+    radial-gradient(circle at 200px 130px, #fff 0 2.2px, rgba(140, 165, 190, 0.5) 2.8px, transparent 3.6px),
+    radial-gradient(circle at 90px 170px, #fff 0 1.8px, rgba(140, 165, 190, 0.45) 2.4px, transparent 3.2px),
+    radial-gradient(circle at 60px 220px, #fff 0 1.4px, rgba(140, 165, 190, 0.4) 2px, transparent 2.8px);
+  background-size: 240px 240px;
+  animation: nt-fall 11s linear infinite;
+}
+.nt-snow-b {
+  background-image:
+    radial-gradient(circle at 20px 30px, rgba(255, 255, 255, 0.9) 0 1.2px, rgba(140, 165, 190, 0.35) 1.7px, transparent 2.3px),
+    radial-gradient(circle at 110px 90px, rgba(255, 255, 255, 0.9) 0 1px, rgba(140, 165, 190, 0.35) 1.5px, transparent 2px),
+    radial-gradient(circle at 70px 140px, rgba(255, 255, 255, 0.9) 0 1.3px, rgba(140, 165, 190, 0.35) 1.8px, transparent 2.4px);
+  background-size: 160px 160px;
+  animation: nt-fall 17s linear infinite;
+  opacity: 0.85;
+}
+.nt-snow-c {
+  display: none;
+  background-image:
+    radial-gradient(circle at 120px 60px, #fff 0 3px, rgba(140, 165, 190, 0.45) 3.8px, transparent 4.8px),
+    radial-gradient(circle at 380px 300px, #fff 0 2.6px, rgba(140, 165, 190, 0.45) 3.4px, transparent 4.4px);
+  background-size: 480px 480px;
+  animation: nt-fall 8s linear infinite;
+}
+@media (min-width: 768px) {
+  .nt-snow-c { display: block; }
+}
+@keyframes nt-fall {
+  from { transform: translate3d(0, -480px, 0); }
+  to   { transform: translate3d(0, 0, 0); }
+}
+@keyframes nt-sway {
+  from { transform: translate3d(-12px, 0, 0); }
+  to   { transform: translate3d(12px, 0, 0); }
+}
+@keyframes nt-snow-life {
+  0%   { opacity: 0; }
+  5%   { opacity: 1; }
+  82%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ── String lights (header, footer): tiled SVG, a glow layer twinkles a few times ── */
+.nt-lights {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 22px;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='22' viewBox='0 0 192 22'%3E%3Cpath d='M0 3Q24 12 48 3T96 3T144 3T192 3' fill='none' stroke='%231b120c' stroke-width='1.4'/%3E%3Cg%3E%3Crect x='22' y='6.5' width='4' height='3' rx='.8' fill='%23c8962c'/%3E%3Cellipse cx='24' cy='14' rx='3.6' ry='5' fill='%23d4213d'/%3E%3Crect x='70' y='1.5' width='4' height='3' rx='.8' fill='%23c8962c'/%3E%3Cellipse cx='72' cy='9' rx='3.6' ry='5' fill='%23f2c14e'/%3E%3Crect x='118' y='6.5' width='4' height='3' rx='.8' fill='%23c8962c'/%3E%3Cellipse cx='120' cy='14' rx='3.6' ry='5' fill='%233fb871'/%3E%3Crect x='166' y='1.5' width='4' height='3' rx='.8' fill='%23c8962c'/%3E%3Cellipse cx='168' cy='9' rx='3.6' ry='5' fill='%23fff8e7'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: 192px 22px;
+}
+.nt-lights::after {
+  content: "";
+  position: absolute;
+  inset: -6px 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='34' viewBox='0 0 192 34'%3E%3Cg%3E%3Ccircle cx='24' cy='20' r='9' fill='%23ff4d6a' fill-opacity='.45'/%3E%3Ccircle cx='72' cy='15' r='9' fill='%23ffd56b' fill-opacity='.5'/%3E%3Ccircle cx='120' cy='20' r='9' fill='%2366e39a' fill-opacity='.4'/%3E%3Ccircle cx='168' cy='15' r='9' fill='%23fffbe8' fill-opacity='.5'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: 192px 34px;
+  filter: blur(3px);
+  opacity: 0.9;
+  animation: nt-twinkle 1.6s ease-in-out 0.8s 6 alternate;
+}
+@keyframes nt-twinkle {
+  from { opacity: 0.9; }
+  to   { opacity: 0.25; }
+}
+
+/* ── Small motions for the scenes (finite) ── */
+@keyframes nt-glow {
+  0%, 100% { filter: drop-shadow(0 0 10px rgba(242, 193, 78, 0.85)); }
+  50%      { filter: drop-shadow(0 0 22px rgba(242, 193, 78, 1)); }
+}
+@keyframes nt-pop {
+  0%   { transform: translateY(18px) scale(0.85); opacity: 0; }
+  60%  { transform: translateY(-4px) scale(1.03); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+@keyframes nt-sway-soft {
+  0%, 100% { transform: rotate(-4deg); }
+  50%      { transform: rotate(4deg); }
+}
+.nt-star-glow {
+  filter: drop-shadow(0 0 14px rgba(242, 193, 78, 0.9));
+  animation: nt-glow 3s ease-in-out 0.6s 3;
+}
+.nt-pop { animation: nt-pop 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) 1 both; }
+.nt-swing {
+  transform-origin: 50% 0;
+  animation: nt-sway-soft 3.4s ease-in-out 1s 3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nt-snow,
+  .nt-snow-sway,
+  .nt-snow-layer,
+  .nt-lights::after,
+  .nt-star-glow,
+  .nt-pop,
+  .nt-swing {
+    animation: none !important;
+  }
+}
+
+/* ── Announcement strip: bordô band, gold label, faint snowflakes ── */
+.nt-banner {
+  background-color: #7a1226;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 40'%3E%3Cg fill='none' stroke='%23fff' stroke-opacity='.16' stroke-width='1.2' stroke-linecap='round'%3E%3Cpath d='M14 8v12M8.8 11l10.4 6M8.8 17l10.4-6M100 22v10M95.7 24.5l8.6 5M95.7 29.5l8.6-5M58 2v7M55 3.7l6 3.6M55 7.3l6-3.6M140 12v8M136.5 14l7 4M136.5 18l7-4'/%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(90deg, #5c0f1f 0%, #9b1730 50%, #5c0f1f 100%);
+  background-size: 160px 40px, 100% 100%;
+  box-shadow: inset 0 -2px 0 #c8962c;
+}

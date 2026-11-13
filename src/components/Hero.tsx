@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { ArrowRight, Play, Mic, Radio, Video, Sparkles, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import fotoJuntas from "@/assets/olha-que-duas-foto.jpg";
-import { HalloweenHeroSlot } from "@/components/seasonal/halloween";
+import { SeasonalHeroSlot } from "@/components/seasonal";
 
 const Hero = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -105,8 +105,8 @@ const Hero = () => {
         />
       </div>
 
-      {/* Dia das Bruxas — seasonal accent, self-expiring */}
-      <HalloweenHeroSlot />
+      {/* Seasonal scene (Natal: night, star, snowy hill), self-expiring */}
+      <SeasonalHeroSlot />
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-dvh pt-40 pb-20 md:pt-36 md:pb-16">

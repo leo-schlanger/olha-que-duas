@@ -170,4 +170,12 @@ export const siteConfig = {
     end: "2026-11-02T00:00:00+00:00",
     paoPorDeus: "2026-11-01T00:00:00+00:00",
   },
+  // Natal / Boas Festas — tema sazonal (src/components/seasonal/natal/).
+  // Janela [start, end): o dia 26/12 inteiro ainda é natalino. Lisboa em WET = UTC.
+  natal: {
+    enabled: true,
+    start: "2026-11-13T00:00:00+00:00",
+    end: "2026-12-27T00:00:00+00:00",
+    christmas: "2026-12-25T00:00:00+00:00",
+  },
 } as const;

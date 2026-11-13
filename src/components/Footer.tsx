@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import logoDefault from "@/assets/logo-olha-que-duas.webp";
 import { siteConfig } from "@/config/site";
 import { TikTokIcon } from "@/components/icons/TikTokIcon";
-import { HalloweenFooterSlot, useSeasonalLogoSet } from "@/components/seasonal/halloween";
+import { SeasonalFooterSlot, useSeasonalLogoSet } from "@/components/seasonal";
 
 // Rendered height: h-20 (80 px) on phones, h-24 (96 px) from md.
 const FOOTER_LOGO_SIZES = "(min-width: 768px) 96px, 80px";
@@ -17,8 +17,8 @@ const Footer = () => {
         <div className="absolute top-0 left-1/4 w-64 h-32 bg-vermelho/5 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-48 h-24 bg-amarelo/5 rounded-full blur-3xl" />
       </div>
-      {/* Dia das Bruxas — moon, bats, pumpkins; self-expiring */}
-      <HalloweenFooterSlot />
+      {/* Seasonal scene (Natal: lights, holly, snowy pines), self-expiring */}
+      <SeasonalFooterSlot />
 
       <div className="container mx-auto px-4 sm:px-6 pt-12 md:pt-16 pb-20 md:pb-24 relative z-10">
         {/* Main Footer Content */}

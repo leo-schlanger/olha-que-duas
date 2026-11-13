@@ -64,6 +64,9 @@ const SITE_LOGO_SET: SeasonalLogoSet = {
   webpSrcSet: `${logo64} 64w, ${logo96} 96w, ${logo128} 128w, ${logo192} 192w, ${logo256} 256w, ${logo288} 288w`,
 };
 
+/** Logo files for the shared hooks in ../index.tsx. */
+export const HALLOWEEN_LOGOS = { single: logo288, kids: logoKidsHalloween, set: SITE_LOGO_SET };
+
 /** Responsive site logo for <picture> (WebP + PNG fallback); null outside the season. */
 export function useSeasonalLogoSet(): SeasonalLogoSet | null {
   return useActive() ? SITE_LOGO_SET : null;

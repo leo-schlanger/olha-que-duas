@@ -19,13 +19,14 @@ import logoDefault from "@/assets/logo-olha-que-duas.webp";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import RockInRioBanner from "./RockInRioBanner";
-import { HalloweenBannerSlot, useSeasonalLogoSet } from "./seasonal/halloween";
+import { SeasonalBannerSlot, SeasonalHeaderSlot, useSeasonalLogoSet } from "./seasonal";
 
 // Rendered height: h-16 (64 px) on phones, h-20 (80 px) from md.
 const HEADER_LOGO_SIZES = "(min-width: 768px) 80px, 64px";
 
 const Header = () => {
-  const seasonalLogo = useSeasonalLogoSet();
+  // Compact seasonal art: header (64/80 px) and mobile menu (48 px).
+  const seasonalLogo = useSeasonalLogoSet("compact");
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("inicio");
@@ -79,7 +80,7 @@ const Header = () => {
   return (
     <header
       className={cn(
-        // hw-header: hook for the seasonal night palette (seasonal/halloween/season.css)
+        // hw-header: hook for the seasonal night palette (seasonal/<season>/season.css)
         "hw-header fixed top-0 left-0 right-0 z-50 transition-all duration-500",
         isScrolled
           ? "bg-background/95 backdrop-blur-lg shadow-lg shadow-black/5"
@@ -88,8 +89,10 @@ const Header = () => {
     >
       {/* Rock in Rio Lisboa — announcement banner */}
       <RockInRioBanner />
-      {/* Dia das Bruxas / Pão-por-Deus — seasonal, self-expiring */}
-      <HalloweenBannerSlot />
+      {/* Seasonal strip (Natal: Boas Festas), self-expiring */}
+      <SeasonalBannerSlot />
+      {/* Seasonal decoration under the header (Natal: string of lights) */}
+      <SeasonalHeaderSlot />
 
       <div className={cn(
         "container mx-auto px-4 sm:px-6 transition-all duration-500",

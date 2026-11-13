@@ -5,9 +5,8 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import { useGamesMute } from './useGamesMute';
-import { HalloweenKidsSlot, useSeasonalLogo } from '@/components/seasonal/halloween';
-import { KidsHalloweenSlot } from '@/components/seasonal/halloween/kids';
-import { useKidsHalloween, kidsScopeProps } from '@/components/seasonal/halloween/kids/useKidsHalloween';
+import { SeasonalKidsAccentSlot, useSeasonalLogo } from '@/components/seasonal';
+import { KidsSeasonSlot, useKidsSeason, kidsScopeProps } from '@/components/seasonal/kids';
 import logoKids from '@/assets/kids/logo-kids.webp';
 import leoCartoon from '@/assets/kids/leo-cartoon.webp';
 import alexandraCartoon from '@/assets/kids/alexandra-cartoon.webp';
@@ -56,10 +55,10 @@ export default function KidsGameShell({
 }: KidsGameShellProps) {
   const { muted, toggle } = useGamesMute();
   const heroLogo = useSeasonalLogo(logoKids, 'kids');
-  const hw = useKidsHalloween();
+  const season = useKidsSeason();
 
   return (
-    <div className="kids-scope kh-shell min-h-screen bg-[#bae6fd] overflow-x-hidden" {...kidsScopeProps(hw)}>
+    <div className="kids-scope kh-shell min-h-screen bg-[#bae6fd] overflow-x-hidden" {...kidsScopeProps(season)}>
       <Header />
       <main className="kh-shell-main relative font-kids">
         <div
@@ -76,11 +75,11 @@ export default function KidsGameShell({
           </div>
         </div>
 
-        {/* Dia das Bruxas — night sky (decor only, never over the board) */}
-        <KidsHalloweenSlot piece="sky" variant="shell" />
+        {/* Seasonal night sky (decor only, never over the board) */}
+        <KidsSeasonSlot piece="sky" variant="shell" />
 
-        {/* Dia das Bruxas — ghost by the sun on the games hub, self-expiring */}
-        {hero && <HalloweenKidsSlot variant="sky" />}
+        {/* Seasonal accent by the sun on the games hub, self-expiring */}
+        {hero && <SeasonalKidsAccentSlot variant="sky" />}
 
         <Cloud className="top-20 left-[4%] w-24 md:w-36 opacity-90 motion-safe:animate-cloud-slow" />
         <Cloud className="top-36 right-[6%] w-20 md:w-32 opacity-85 motion-safe:animate-cloud-medium" />
@@ -163,7 +162,7 @@ export default function KidsGameShell({
             <path fill="#5BAE52" d="M0 100 C240 60, 520 140, 760 100 S1220 60, 1440 100 L1440 140 L0 140 Z" />
           </svg>
         </div>
-        <KidsHalloweenSlot piece="hill" variant="shell" />
+        <KidsSeasonSlot piece="hill" variant="shell" />
       </main>
       <Footer />
       <BackToTop />

@@ -1,0 +1,179 @@
+/*
+ * Christmas season tokens. Inert unless <html data-season="natal">,
+ * which index.tsx sets only inside siteConfig.natal's window.
+ * Palette from the client's wreath logo (hex, contrast measured WCAG 2.x):
+ *   noite          #2b0710  345 72% 10%   header, hero night, creme on it 16.7:1
+ *   bordo          #5c0f1f  348 72% 21%   dark sections, creme on it 12.3:1
+ *   vermelho       #b3122a  351 82% 39%   red on light: text 6.9:1 on white, creme text on it 6.3:1
+ *   vivo           #d4213d  351 73% 48%   ornaments, hover (white text 5.1:1)
+ *   dourado        #f2c14e  42 86% 63%    gold on night: 11:1 on noite, 7.2:1 on pinheiro; noite text on it 11:1
+ *   pinheiro       #0f3e22  144 61% 15%   body text on light 12.1:1 (/70 on white ≥ 5:1), dark green sections
+ *   pinheiro-noite #0b2e1c  149 61% 11%   footer base
+ *   neve / creme   #ffffff / #fbf3e4
+ */
+
+html[data-season="natal"] {
+  --nt-noite: 345 72% 10%;
+  --nt-bordo: 348 72% 21%;
+  --nt-vermelho: 351 82% 39%;
+  --nt-vivo: 351 73% 48%;
+  --nt-dourado: 42 86% 63%;
+  --nt-pinheiro: 144 61% 15%;
+  --nt-pinheiro-noite: 149 61% 11%;
+  --nt-creme: 39 74% 94%;
+
+  /* light zones (default page body): red, pine-green ink, snow and mint */
+  --vermelho: var(--nt-vermelho);
+  --vermelho-soft: var(--nt-vivo);
+  --amarelo: var(--nt-dourado);
+  --amarelo-soft: 44 90% 76%;
+  --beige-light: 40 70% 97%;
+  --beige: 140 30% 94%;
+  --beige-medium: 140 20% 85%;
+  --beige-warm: 35 35% 72%;
+  --beige-dark: var(--nt-bordo);
+  --charcoal: var(--nt-pinheiro);
+  --warm-gray: 150 10% 38%;
+  --background: 40 100% 99%;
+  --foreground: var(--nt-pinheiro);
+  --card: 40 70% 97%;
+  --card-foreground: var(--nt-pinheiro);
+  --popover: 40 70% 97%;
+  --popover-foreground: var(--nt-pinheiro);
+  --primary: var(--nt-vermelho);
+  --primary-foreground: 40 45% 97%;
+  --secondary: var(--nt-dourado);
+  --secondary-foreground: var(--nt-noite);
+  --muted: 140 25% 94%;
+  --muted-foreground: 150 13% 32%;
+  --accent: 140 30% 95%;
+  --accent-foreground: var(--nt-pinheiro);
+  --border: 140 18% 86%;
+  --input: 140 18% 86%;
+  --ring: var(--nt-vermelho);
+}
+
+html[data-season="natal"] ::selection {
+  background: hsl(var(--nt-dourado));
+  color: hsl(var(--nt-noite));
+}
+
+/* ── Night zones: header, home hero, footer and the site's dark sections ──
+ * Red text would fail on bordô/green, so "vermelho" becomes gold there and
+ * filled gold gets dark ink (11:1). */
+html[data-season="natal"] :is(.hw-header, #inicio, .hw-footer, #radio, #podcast, #app, #dedicatorias, [class*="from-charcoal"], [class*="from-beige-dark"], .bg-charcoal, .bg-beige-dark) {
+  --vermelho: var(--nt-dourado);
+  --vermelho-soft: 44 90% 72%;
+  --primary: var(--nt-dourado);
+  --primary-foreground: var(--nt-noite);
+  --ring: var(--nt-dourado);
+}
+html[data-season="natal"] :is(.hw-header, #inicio, .hw-footer, #radio, #podcast, #app, #dedicatorias, [class*="from-charcoal"], [class*="from-beige-dark"], .bg-charcoal, .bg-beige-dark) :is(.bg-vermelho, .btn-primary-glow, .bg-primary),
+html[data-season="natal"] :is(.hw-header, #inicio, .hw-footer, #radio, #podcast, #app, #dedicatorias, [class*="from-charcoal"], [class*="from-beige-dark"], .bg-charcoal, .bg-beige-dark) :is(.bg-vermelho, .btn-primary-glow, .bg-primary) :is([class*="text-cream"], [class*="text-white"]),
+html[data-season="natal"] .hw-header .hover\:text-white:hover {
+  color: hsl(var(--nt-noite));
+}
+
+/* Red gradient cards on night (radio player, podcast "Novos Episódios") were
+ * drawn for creme text: keep them Christmas red (creme on #d4213d 4.7:1). */
+html[data-season="natal"] :is(.hw-header, #inicio, .hw-footer, #radio, #podcast, #app, #dedicatorias, [class*="from-charcoal"], [class*="from-beige-dark"], .bg-charcoal, .bg-beige-dark) .from-vermelho {
+  --vermelho: var(--nt-vivo);
+  --vermelho-soft: 351 75% 44%;
+}
+
+/* Header: the gold "Especiais" link was tuned for a light bar. */
+html[data-season="natal"] .hw-header .text-\[\#7a5b16\] {
+  color: hsl(var(--nt-dourado));
+}
+html[data-season="natal"] .hw-header .hover\:text-\[\#5c4310\]:hover {
+  color: hsl(44 90% 76%);
+}
+
+/* On the night zones where charcoal is TEXT (header, hero), swap to creme. */
+html[data-season="natal"] .hw-header,
+html[data-season="natal"] #inicio {
+  --charcoal: var(--nt-creme);
+  --foreground: var(--nt-creme);
+  --background: var(--nt-noite);
+  --card: 348 60% 16%;
+  --muted: 348 50% 20%;
+  --muted-foreground: 25 35% 82%;
+  --border: 348 40% 32%;
+  --accent: 348 50% 22%;
+  --accent-foreground: var(--nt-creme);
+}
+
+/* Hero exceptions: things that sit on yellow or on the photo keep dark ink. */
+html[data-season="natal"] #inicio :is(.from-amarelo, .from-charcoal\/60) {
+  --charcoal: var(--nt-pinheiro);
+}
+
+/* Header is night bordô on every page during the season, with a gold rim
+ * (the string of lights hangs from it, NatalHeaderLights). */
+html[data-season="natal"] .hw-header {
+  background-color: hsl(var(--nt-noite) / 0.95);
+  box-shadow: inset 0 -2px 0 hsl(var(--nt-dourado) / 0.55), 0 12px 30px -12px hsl(var(--nt-noite) / 0.7);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Home hero: Christmas night, bordô like the centre of the logo. */
+html[data-season="natal"] .bg-hero-gradient {
+  background:
+    radial-gradient(120% 60% at 50% 115%, hsl(42 86% 63% / 0.22) 0%, transparent 60%),
+    radial-gradient(70% 50% at 85% 0%, hsl(351 73% 48% / 0.28) 0%, transparent 70%),
+    linear-gradient(180deg, hsl(345 72% 7%) 0%, hsl(var(--nt-noite)) 35%, hsl(348 70% 15%) 70%, hsl(var(--nt-bordo)) 100%);
+}
+
+/* Dark sections: bordô and pine instead of the old browns. */
+html[data-season="natal"] #radio {
+  background-image: linear-gradient(180deg, hsl(var(--nt-noite)) 0%, hsl(var(--nt-bordo)) 100%);
+}
+html[data-season="natal"] #podcast {
+  background-image: linear-gradient(180deg, hsl(var(--nt-pinheiro-noite)) 0%, hsl(var(--nt-pinheiro)) 55%, hsl(var(--nt-pinheiro-noite)) 100%);
+}
+html[data-season="natal"] #app {
+  background-image: linear-gradient(135deg, hsl(var(--nt-bordo)) 0%, hsl(var(--nt-noite)) 55%, hsl(var(--nt-pinheiro-noite)) 100%);
+}
+/* Footer: wine, not pine (the wreath logo sits there and its branches melt into green). */
+html[data-season="natal"] .hw-footer {
+  background-image: linear-gradient(180deg, hsl(var(--nt-bordo)) 0%, hsl(var(--nt-noite)) 100%);
+}
+
+/* Gradient brand text: red to bordô to pine on light (all ≥ 6:1 on white). */
+html[data-season="natal"] .text-gradient-brand {
+  background-image: linear-gradient(135deg, hsl(var(--nt-vermelho)) 0%, hsl(348 70% 30%) 50%, hsl(var(--nt-pinheiro)) 100%);
+}
+/* …and gold to creme on night. */
+html[data-season="natal"] :is(.hw-header, #inicio, .hw-footer, #radio, #podcast, #app, #dedicatorias, [class*="from-charcoal"], [class*="from-beige-dark"], .bg-charcoal, .bg-beige-dark) .text-gradient-brand {
+  background-image: linear-gradient(135deg, hsl(var(--nt-dourado)) 0%, hsl(44 90% 82%) 100%);
+}
+
+/* Primary buttons: thin gold rim, like ribbon on a gift. */
+html[data-season="natal"] .btn-primary-glow {
+  box-shadow: inset 0 0 0 1.5px hsl(var(--nt-dourado) / 0.75), 0 10px 22px -10px hsl(var(--nt-vermelho) / 0.6);
+}
+html[data-season="natal"] :is(.hw-header, #inicio, .hw-footer, #radio, #podcast, #app, #dedicatorias, [class*="from-charcoal"], [class*="from-beige-dark"], .bg-charcoal, .bg-beige-dark) .btn-primary-glow {
+  box-shadow: inset 0 0 0 1.5px hsl(var(--nt-vivo) / 0.6), 0 10px 26px -10px hsl(var(--nt-dourado) / 0.55);
+}
+
+/* Holly sprig in the top-right corner of cards (decorative, below content). */
+html[data-season="natal"] :is(.rounded-xl, .rounded-2xl, .rounded-3xl, .rounded-lg).border.bg-card:not([class*="bg-gradient"]) {
+  border-color: hsl(42 55% 80%);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 32'%3E%3Cpath d='M24 16C18 6 8 4 2 8c3 1 3 4 1 6 3 0 5 2 4 5 3-2 6-1 7 2 1-3 4-4 7-3-1-1 0-2 3-2Z' fill='%231f7a45'/%3E%3Cpath d='M24 16c6-10 16-12 22-8-3 1-3 4-1 6-3 0-5 2-4 5-3-2-6-1-7 2-1-3-4-4-7-3 1-1 0-2-3-2Z' fill='%2314532d'/%3E%3Ccircle cx='21' cy='18' r='4' fill='%23d4213d'/%3E%3Ccircle cx='27.5' cy='18.5' r='4' fill='%23b3122a'/%3E%3Ccircle cx='24' cy='23.5' r='4' fill='%23d4213d'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: top 6px right 6px;
+  background-size: 42px 28px;
+}
+
+/* Dividers: gold hairline. */
+html[data-season="natal"] hr,
+html[data-season="natal"] [data-orientation="horizontal"][role="none"].bg-border {
+  border-color: hsl(42 60% 70%);
+  background-color: hsl(42 60% 70%);
+}
+
+/* Fine print on night: creme/30–50 is below AA on bordô and pine; lift it. */
+html[data-season="natal"] :is(.hw-footer, #radio, #podcast, #app, #dedicatorias, [class*="from-charcoal"], [class*="from-beige-dark"], .bg-charcoal, .bg-beige-dark) :is(.text-cream\/30, .text-cream\/40, .text-cream\/50) {
+  color: hsl(var(--cream) / 0.72);
+}

@@ -5,7 +5,7 @@ import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
 import KidsGameShell from '@/components/kids/games/KidsGameShell';
 import { BabySharkArt, MemoryArt, QuizArt, SnakeArt } from '@/components/kids/games/GameArts';
 import logoKids from '@/assets/kids/logo-kids.webp';
-import { useSeasonalLogo } from '@/components/seasonal/halloween';
+import { useSeasonalLogo } from '@/components/seasonal';
 import alexandraCartoon from '@/assets/kids/alexandra-cartoon.webp';
 import marluceCartoon from '@/assets/kids/marluce-cartoon.webp';
 import leoCartoon from '@/assets/kids/leo-cartoon.webp';

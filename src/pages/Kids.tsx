@@ -21,9 +21,8 @@ import {
 import { siteConfig } from '@/config/site';
 import KidsRadioPlayer from '@/components/kids/KidsRadioPlayer';
 import KidsDedicatoriasSection from '@/components/kids/KidsDedicatoriasSection';
-import { HalloweenKidsSlot, useSeasonalLogo } from '@/components/seasonal/halloween';
-import { KidsHalloweenSlot } from '@/components/seasonal/halloween/kids';
-import { useKidsHalloween, kidsScopeProps } from '@/components/seasonal/halloween/kids/useKidsHalloween';
+import { SeasonalKidsAccentSlot, useSeasonalLogo } from '@/components/seasonal';
+import { KidsSeasonSlot, useKidsSeason, kidsScopeProps } from '@/components/seasonal/kids';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -256,7 +255,7 @@ const upcoming = [
 
 const Kids = () => {
   const heroLogo = useSeasonalLogo(logoKids, 'kids');
-  const hw = useKidsHalloween();
+  const season = useKidsSeason();
   useMetaTags({
     title: 'Kids — Espaço Infantil de Rádio, Música e Histórias',
     description:
@@ -279,7 +278,7 @@ const Kids = () => {
   });
 
   return (
-    <div className="kids-scope min-h-screen bg-background" {...kidsScopeProps(hw)}>
+    <div className="kids-scope min-h-screen bg-background" {...kidsScopeProps(season)}>
       <Header />
       <main>
         {/* HERO — céu com nuvens, logo + duas mascotes cartoon */}
@@ -302,8 +301,8 @@ const Kids = () => {
           </div>
 
           {/* Floating clouds */}
-          {/* Dia das Bruxas — magic night sky over the day sky, self-expiring */}
-          <KidsHalloweenSlot piece="sky" variant="hero" />
+          {/* Seasonal night sky over the day sky (Natal, Halloween), self-expiring */}
+          <KidsSeasonSlot piece="sky" variant="hero" />
 
           <Cloud className="top-20 left-[5%] w-28 md:w-40 opacity-95 animate-cloud-slow" />
           <Cloud className="top-40 right-[8%] w-24 md:w-36 opacity-90 animate-cloud-medium" />
@@ -441,8 +440,8 @@ const Kids = () => {
             </Animated>
           </div>
 
-          {/* Dia das Bruxas — pumpkin patch easter egg, self-expiring */}
-          <HalloweenKidsSlot variant="patch" />
+          {/* Seasonal easter egg on the hill (Natal: gifts), self-expiring */}
+          <SeasonalKidsAccentSlot variant="patch" />
 
           {/* Wavy hill bottom */}
           <div className="kh-day-hill absolute bottom-0 left-0 right-0 -z-0 pointer-events-none">
@@ -458,7 +457,7 @@ const Kids = () => {
               />
             </svg>
           </div>
-          <KidsHalloweenSlot piece="hill" variant="hero" />
+          <KidsSeasonSlot piece="hill" variant="hero" />
         </section>
 
         {/* Cantinho da Pequenada */}
@@ -470,8 +469,8 @@ const Kids = () => {
               'linear-gradient(180deg, #5BAE52 0%, #fef3c7 30%, #fff9e6 100%)',
           }}
         >
-          <KidsHalloweenSlot piece="garland" />
-          <KidsHalloweenSlot piece="treats" />
+          <KidsSeasonSlot piece="garland" />
+          <KidsSeasonSlot piece="treats" />
 
           {/* Confetti dots */}
           <ConfettiDots />
@@ -668,7 +667,7 @@ const Kids = () => {
 
         {/* O QUE VEM AÍ */}
         <section className="kh-mundo py-20 md:py-28 bg-gradient-to-b from-[#fff9e6] to-background">
-          <KidsHalloweenSlot piece="garland" />
+          <KidsSeasonSlot piece="garland" />
           <div className="container mx-auto px-4 sm:px-6">
             <Animated animation="fade-up" className="text-center mb-14">
               <div className="kh-on-dark-pill inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sky-100 border-2 border-sky-300 mb-6">
