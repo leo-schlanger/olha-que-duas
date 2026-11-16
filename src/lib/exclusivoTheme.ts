@@ -19,6 +19,7 @@ const THEMES: Record<string, ProgramTheme> = {
   "pimenta-na-lingua": { accent: "#b3241a", onAccent: "#fff4e6", soft: "#f6ebe0", label: "Opinião" },
   "mente-aberta": { accent: "#4d6b50", onAccent: "#f6f3ea", soft: "#e6ede2", label: "Mente Aberta" },
   "lendas-de-portugal": { accent: "#2b2420", onAccent: "#f2b866", soft: "#f1e8d8", label: "Lendas" },
+  "ceu-de-cada-mes": { accent: "#33226a", onAccent: "#e3c27e", soft: "#ece8f6", label: "Céu de Cada Mês" },
 };
 
 const FALLBACK: ProgramTheme = { accent: "#1c0a10", onAccent: "#f6efe4", soft: "#efe7da", label: "Especiais" };
