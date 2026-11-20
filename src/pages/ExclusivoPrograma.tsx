@@ -165,14 +165,15 @@ export default function ExclusivoPrograma() {
             <p className="py-16 text-center text-[#1c0a10]/70">A primeira notícia está a caminho.</p>
           )}
 
-          {program && lead && (
+          {/* Everything waits for `loading`: the list used to paint before the header (CLS, qa r8) */}
+          {program && !loading && lead && (
             <div className="mt-10 grid gap-6 md:mt-12 md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:items-center md:gap-10">
               <PostCardCover post={lead} eager />
               <PostCardText post={lead} showProgram={false} />
             </div>
           )}
 
-          {program && rest.length > 0 && (
+          {program && !loading && rest.length > 0 && (
             <section className="mt-14 md:mt-16" aria-labelledby="programa-mais">
               <h2 id="programa-mais" className="border-b border-[#1c0a10]/10 pb-3 font-display text-3xl text-[#1c0a10]">
                 Mais de {program.title}
