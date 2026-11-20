@@ -34,19 +34,23 @@ describe("middleware: /exclusivo -> /programas", () => {
 });
 
 describe("vercel.json redirects", () => {
-  const redirects = vercel.redirects as Array<{ source: string; destination: string; permanent: boolean }>;
+  const redirects = vercel.redirects as Array<{ source: string; destination: string; statusCode: number }>;
   const find = (source: string) => redirects.find((r) => r.source === source);
 
   it.each(["/loja", "/loja/:path*", "/viagens", "/viagens/:path*"])("%s -> 301 /", (source) => {
-    expect(find(source)).toMatchObject({ destination: "/", permanent: true });
+    expect(find(source)).toMatchObject({ destination: "/", statusCode: 301 });
   });
 
   it("sends /exclusivo/* to /programas/* except files", () => {
     const rule = redirects.find((r) => r.destination === "/programas/:path");
-    expect(rule?.permanent).toBe(true);
+    expect(rule?.statusCode).toBe(301);
     const re = new RegExp(`^${rule!.source.replace("/exclusivo/:path", "/exclusivo/")}$`);
     expect(re.test("/exclusivo/mente-aberta/peca")).toBe(true);
     expect(re.test("/exclusivo/capa.jpg")).toBe(false);
+  });
+
+  it("all redirects are 301 (not Vercel's default 308)", () => {
+    expect(redirects.every((r) => r.statusCode === 301)).toBe(true);
   });
 
   it("no redirect still points to /exclusivo", () => {
