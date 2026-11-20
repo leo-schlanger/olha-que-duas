@@ -256,9 +256,9 @@ export default async function middleware(request: Request): Promise<Response | u
   // ========== SERVIÇOS ==========
   if (path === '/servicos') {
     return html({
-      title: 'Serviços de Comunicação e Marketing Digital',
-      description: 'Serviços completos de comunicação e marketing digital: gestão de redes sociais, produção de vídeo, consultoria de marca, rádio online 24h, podcast e criação de websites. Peça o seu orçamento.',
-      image: DEFAULT_IMAGE,
+      title: 'Serviços de comunicação para negócios',
+      description: 'Consultoria de comunicação, gestão de redes sociais, anúncios na rádio e reels para o seu negócio. Agência com rádio própria. Peça um orçamento à medida.',
+      image: 'https://www.olhaqueduas.com/og-image.jpg',
       url: 'https://www.olhaqueduas.com/servicos',
     });
   }

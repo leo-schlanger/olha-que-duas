@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Mail, Send } from "lucide-react";
 import { toast } from "sonner";
 import { siteConfig } from "@/config/site";
@@ -58,7 +58,16 @@ async function fetchWithRetry(
   throw lastError ?? new Error("fetch falhou");
 }
 
-const Contacto = () => {
+/**
+ * Contact form. `variant="home"` (default): the whole #contacto section.
+ * `variant="servicos"`: only the form, for /servicos#fale-connosco (the page
+ * owns the heading and the aside); button «Enviar pedido» and a success
+ * message in place of the form.
+ */
+const Contacto = ({ variant = "home" }: { variant?: "home" | "servicos" }) => {
+  const embedded = variant === "servicos";
+  const [status, setStatus] = useState<"idle" | "sent" | "error">("idle");
+  const sentRef = useRef<HTMLDivElement>(null);
   const [formData, setFormData] = useState({
     nome: "",
     email: "",
@@ -98,6 +107,7 @@ const Contacto = () => {
     }
 
     setIsSubmitting(true);
+    setStatus("idle");
     try {
       const data = parsed.data;
       const payload = {
@@ -134,7 +144,9 @@ const Contacto = () => {
       });
 
       setFormData({ nome: "", email: "", assunto: "", mensagem: "" });
+      setStatus("sent");
     } catch (error) {
+      setStatus("error");
       const isAbort = error instanceof DOMException && error.name === "AbortError";
       toast.error("Erro ao enviar mensagem", {
         description: isAbort
@@ -161,6 +173,154 @@ const Contacto = () => {
     }
   };
 
+  const formCard = embedded && status === "sent" ? (
+    <div ref={sentRef} tabIndex={-1} role="status" className="rounded-2xl bg-white p-6 text-[#2b1a12] shadow-xl md:p-8">
+      <p className="font-display text-2xl font-semibold">Pedido enviado. Obrigado!</p>
+      <p className="mt-2 text-base text-[#5c4f45]">Respondemos em breve com um orçamento à medida, sem compromisso.</p>
+      <button type="button" onClick={() => setStatus("idle")} className="mt-4 text-base font-semibold text-vermelho-forte underline underline-offset-2">
+        Enviar outro pedido
+      </button>
+    </div>
+  ) : (
+    <Card
+      className={embedded
+        ? "border-0 bg-white text-[#2b1a12] shadow-xl" // opaque on the dark /servicos band (AA)
+        : "border-border/30 bg-card/80 backdrop-blur-sm shadow-xl shadow-primary/5"}
+    >
+      <CardContent className="p-6 md:p-8">
+        <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="nome" className="text-sm">
+                Nome
+              </Label>
+              <Input
+                id="nome"
+                name="nome"
+                value={formData.nome}
+                onChange={handleChange}
+                placeholder="O teu nome"
+                required
+                aria-required="true"
+                aria-invalid={!!fieldErrors.nome}
+                aria-describedby={fieldErrors.nome ? "nome-error" : undefined}
+                className="h-12 sm:h-10"
+                disabled={isSubmitting}
+              />
+              {fieldErrors.nome && (
+                <p id="nome-error" role="alert" className="text-xs text-destructive mt-1">
+                  {fieldErrors.nome}
+                </p>
+              )}
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="email" className="text-sm">
+                Email
+              </Label>
+              <Input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="o.teu@email.com"
+                required
+                aria-required="true"
+                aria-invalid={!!fieldErrors.email}
+                aria-describedby={fieldErrors.email ? "email-error" : undefined}
+                className="h-12 sm:h-10"
+                disabled={isSubmitting}
+              />
+              {fieldErrors.email && (
+                <p id="email-error" role="alert" className="text-xs text-destructive mt-1">
+                  {fieldErrors.email}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="assunto" className="text-sm">
+              Assunto
+            </Label>
+            <Select
+              value={formData.assunto}
+              onValueChange={(value) =>
+                setFormData({ ...formData, assunto: value })
+              }
+              disabled={isSubmitting}
+            >
+              <SelectTrigger className="h-12 sm:h-10">
+                <SelectValue placeholder="Seleciona um assunto" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="consultoria">Consultoria de comunicação</SelectItem>
+                <SelectItem value="redes">Gestão de redes e conteúdos</SelectItem>
+                <SelectItem value="radio">Anúncio na rádio</SelectItem>
+                <SelectItem value="video">Vídeo e reels</SelectItem>
+                <SelectItem value="dedicatorias">Dedicatória na Rádio - Pedir Orçamento</SelectItem>
+                <SelectItem value="dedicatorias-kids">Dedicatória Kids na Rádio - Pedir Orçamento (Pais)</SelectItem>
+                <SelectItem value="podcast">Participar no Podcast</SelectItem>
+                <SelectItem value="assessoria">Assessoria de Imprensa</SelectItem>
+                <SelectItem value="marcas">Representação de Marcas</SelectItem>
+                <SelectItem value="negocios">Promoção de Negócios</SelectItem>
+                <SelectItem value="outro">Outro Assunto</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="mensagem" className="text-sm">
+              Mensagem
+            </Label>
+            <Textarea
+              id="mensagem"
+              name="mensagem"
+              value={formData.mensagem}
+              onChange={handleChange}
+              placeholder="Conta-nos mais sobre o teu projeto..."
+              rows={4}
+              required
+              aria-required="true"
+              aria-invalid={!!fieldErrors.mensagem}
+              aria-describedby={fieldErrors.mensagem ? "mensagem-error" : undefined}
+              className="resize-none"
+              disabled={isSubmitting}
+            />
+            {fieldErrors.mensagem && (
+              <p id="mensagem-error" role="alert" className="text-xs text-destructive mt-1">
+                {fieldErrors.mensagem}
+              </p>
+            )}
+          </div>
+
+          {status === "error" && (
+            <p role="alert" className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
+              Não foi possível enviar. Tente de novo ou escreva para {siteConfig.contact.email}.
+            </p>
+          )}
+          <Button
+            type="submit"
+            className={embedded
+              ? "w-full h-[52px] rounded-full bg-vermelho-forte text-lg font-bold text-white hover:bg-vermelho-forte/90"
+              : "w-full bg-primary hover:bg-primary/90 h-12 sm:h-10 font-medium"}
+            disabled={isSubmitting}
+          >
+            <Send className="w-4 h-4 mr-2" />
+            {isSubmitting ? "A enviar..." : embedded ? "Enviar pedido" : "Enviar Mensagem"}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+  );
+
+  // Move focus to the success message (servicos) so screen readers hear it.
+  useEffect(() => {
+    if (status === "sent") sentRef.current?.focus();
+  }, [status]);
+
+  if (embedded) return formCard;
+
   return (
     <section id="contacto" className="py-16 md:py-24 bg-background relative overflow-hidden">
       {/* Subtle background decoration */}
@@ -183,121 +343,7 @@ const Contacto = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
           {/* Contact Form */}
           <div className="min-w-0 lg:col-span-2">
-            <Card className="border-border/30 bg-card/80 backdrop-blur-sm shadow-xl shadow-primary/5">
-              <CardContent className="p-6 md:p-8">
-                <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <Label htmlFor="nome" className="text-sm">
-                        Nome
-                      </Label>
-                      <Input
-                        id="nome"
-                        name="nome"
-                        value={formData.nome}
-                        onChange={handleChange}
-                        placeholder="O teu nome"
-                        required
-                        aria-required="true"
-                        aria-invalid={!!fieldErrors.nome}
-                        aria-describedby={fieldErrors.nome ? "nome-error" : undefined}
-                        className="h-12 sm:h-10"
-                        disabled={isSubmitting}
-                      />
-                      {fieldErrors.nome && (
-                        <p id="nome-error" role="alert" className="text-xs text-destructive mt-1">
-                          {fieldErrors.nome}
-                        </p>
-                      )}
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label htmlFor="email" className="text-sm">
-                        Email
-                      </Label>
-                      <Input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        placeholder="o.teu@email.com"
-                        required
-                        aria-required="true"
-                        aria-invalid={!!fieldErrors.email}
-                        aria-describedby={fieldErrors.email ? "email-error" : undefined}
-                        className="h-12 sm:h-10"
-                        disabled={isSubmitting}
-                      />
-                      {fieldErrors.email && (
-                        <p id="email-error" role="alert" className="text-xs text-destructive mt-1">
-                          {fieldErrors.email}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <Label htmlFor="assunto" className="text-sm">
-                      Assunto
-                    </Label>
-                    <Select
-                      value={formData.assunto}
-                      onValueChange={(value) =>
-                        setFormData({ ...formData, assunto: value })
-                      }
-                      disabled={isSubmitting}
-                    >
-                      <SelectTrigger className="h-12 sm:h-10">
-                        <SelectValue placeholder="Seleciona um assunto" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="dedicatorias">Dedicatória na Rádio - Pedir Orçamento</SelectItem>
-                        <SelectItem value="dedicatorias-kids">Dedicatória Kids na Rádio - Pedir Orçamento (Pais)</SelectItem>
-                        <SelectItem value="podcast">Participar no Podcast</SelectItem>
-                        <SelectItem value="assessoria">Assessoria de Imprensa</SelectItem>
-                        <SelectItem value="marcas">Representação de Marcas</SelectItem>
-                        <SelectItem value="negocios">Promoção de Negócios</SelectItem>
-                        <SelectItem value="outro">Outro Assunto</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <Label htmlFor="mensagem" className="text-sm">
-                      Mensagem
-                    </Label>
-                    <Textarea
-                      id="mensagem"
-                      name="mensagem"
-                      value={formData.mensagem}
-                      onChange={handleChange}
-                      placeholder="Conta-nos mais sobre o teu projeto..."
-                      rows={4}
-                      required
-                      aria-required="true"
-                      aria-invalid={!!fieldErrors.mensagem}
-                      aria-describedby={fieldErrors.mensagem ? "mensagem-error" : undefined}
-                      className="resize-none"
-                      disabled={isSubmitting}
-                    />
-                    {fieldErrors.mensagem && (
-                      <p id="mensagem-error" role="alert" className="text-xs text-destructive mt-1">
-                        {fieldErrors.mensagem}
-                      </p>
-                    )}
-                  </div>
-
-                  <Button
-                    type="submit"
-                    className="w-full bg-primary hover:bg-primary/90 h-12 sm:h-10 font-medium"
-                    disabled={isSubmitting}
-                  >
-                    <Send className="w-4 h-4 mr-2" />
-                    {isSubmitting ? "A enviar..." : "Enviar Mensagem"}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+            {formCard}
           </div>
 
           {/* Aside: services for brands, email, WhatsApp (social and newsletter live in the footer) */}
