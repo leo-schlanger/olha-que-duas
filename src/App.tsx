@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import Index from "./pages/Index";
 import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
@@ -16,12 +16,10 @@ import { SeasonalOverlaySlot } from "./components/seasonal";
 
 // Lazy load pages (except Index which is the landing page)
 const Servicos = lazy(() => import("./pages/Servicos"));
-const Viagens = lazy(() => import("./pages/Viagens"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
 const Gallery = lazy(() => import("./pages/Gallery"));
 const GalleryAlbum = lazy(() => import("./pages/GalleryAlbum"));
-const Vendas = lazy(() => import("./pages/Vendas"));
 // Histórias em episódios — em standby temporário (páginas mantidas no repo)
 // const Stories = lazy(() => import("./pages/Stories"));
 // const StoryDetail = lazy(() => import("./pages/StoryDetail"));
@@ -72,6 +70,12 @@ const PageLoader = () => (
   </div>
 );
 
+/** /exclusivo/... (old name of Programas, 20/11/2026) -> /programas/... */
+const LegacyProgramasRedirect = () => {
+  const { pathname, search, hash } = useLocation();
+  return <Navigate to={`${pathname.replace(/^\/exclusivo/i, "/programas")}${search}${hash}`} replace />;
+};
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -86,15 +90,17 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/servicos" element={<Servicos />} />
-              <Route path="/viagens" element={<Viagens />} />
               <Route path="/noticias" element={<Blog />} />
               <Route path="/noticias/:slug" element={<BlogPost />} />
-              <Route path="/exclusivo" element={<Exclusivo />} />
-              <Route path="/exclusivo/:programSlug" element={<ExclusivoPrograma />} />
-              <Route path="/exclusivo/:programSlug/:postSlug" element={<ExclusivoPost />} />
+              <Route path="/programas" element={<Exclusivo />} />
+              <Route path="/programas/:programSlug" element={<ExclusivoPrograma />} />
+              <Route path="/programas/:programSlug/:postSlug" element={<ExclusivoPost />} />
+              {/* Old addresses (Vercel answers 301 first; these cover in-app links) */}
+              <Route path="/exclusivo/*" element={<LegacyProgramasRedirect />} />
+              <Route path="/viagens" element={<Navigate to="/" replace />} />
+              <Route path="/loja" element={<Navigate to="/" replace />} />
               <Route path="/galeria" element={<Gallery />} />
               <Route path="/galeria/:slug" element={<GalleryAlbum />} />
-              <Route path="/loja" element={<Vendas />} />
               {/* Histórias em episódios — em standby temporário
               <Route path="/historias" element={<Stories />} />
               <Route path="/historias/:storySlug" element={<StoryDetail />} />

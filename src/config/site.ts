@@ -24,27 +24,18 @@ export const siteConfig = {
     youtube: "https://youtube.com/@olhaqueduas-l9m?si=hKFnzKpluIODLFFk",
   },
 
-  // Links de navegação.
-  // desktop: "more" entra no menu Mais da barra do computador, para ela
-  // não esticar. Trabalhos fica na barra. No telemóvel e no rodapé a
-  // lista continua completa.
-  // O separador chama-se "Especiais Olha que Duas" e abre a lista de programas.
+  // Links de navegação (20/11/2026: sem Loja e Viagens; «Especiais» passou a «Programas»).
+  // desktop: "more" entra no menu Mais da barra do computador. No telemóvel e
+  // no rodapé a lista continua completa, pela mesma ordem.
   navLinks: [
     { href: "#inicio", label: "Início" },
-    { href: "#sobre", label: "Sobre" },
-    { href: "/servicos", label: "Serviços", isRoute: true, desktop: "more" },
     { href: "#radio", label: "Rádio" },
-    { href: "/viagens", label: "Viagens", isRoute: true, desktop: "more" },
+    { href: "/programas", label: "Programas", isRoute: true, accent: true },
     { href: "/noticias", label: "Notícias", isRoute: true },
-    {
-      href: "/exclusivo",
-      label: "Especiais Olha que Duas",
-      isRoute: true,
-      accent: true,
-    },
     // { href: "/historias", label: "Histórias", isRoute: true }, — standby temporário
     { href: "/galeria", label: "Trabalhos", isRoute: true },
-    { href: "/loja", label: "Loja", isRoute: true, desktop: "more" },
+    { href: "#sobre", label: "Sobre", desktop: "more" },
+    { href: "/servicos", label: "Serviços", isRoute: true, desktop: "more" },
     { href: "/kids", label: "Kids", isRoute: true, desktop: "more" },
   ],
 

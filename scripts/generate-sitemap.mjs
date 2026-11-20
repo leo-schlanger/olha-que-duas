@@ -58,14 +58,12 @@ async function fetchTable(table, query = "") {
 // --------------- static pages ---------------
 const staticPages = [
   { loc: "/", lastmod: TODAY, freq: "weekly", priority: "1.0", image: { loc: "/og-image.jpg", title: "Olha que Duas - Podcast e Radio" } },
-  { loc: "/viagens", lastmod: "2026-04-06", freq: "monthly", priority: "0.9", image: { loc: "/og-viagens.jpg", title: "Olha que Duas Trip - Promotora de Viagens" } },
   { loc: "/auditoria-gratuita", lastmod: "2026-04-21", freq: "monthly", priority: "0.9", image: { loc: "/og-auditoria.jpg", title: "Auditoria Gratuita de Comunicacao - Olha que Duas" } },
   { loc: "/servicos", lastmod: "2026-04-06", freq: "monthly", priority: "0.9" },
   { loc: "/galeria", lastmod: TODAY, freq: "weekly", priority: "0.8" },
   { loc: "/faq", lastmod: "2026-04-06", freq: "monthly", priority: "0.5" },
   { loc: "/noticias", lastmod: TODAY, freq: "daily", priority: "0.9" },
-  { loc: "/exclusivo", lastmod: TODAY, freq: "daily", priority: "0.9", image: { loc: "/exclusivo/eduardo-vinagre.jpg", title: "Especiais Olha que Duas — Eduardo Vinagre" } },
-  { loc: "/loja", lastmod: "2026-03-24", freq: "weekly", priority: "0.8" },
+  { loc: "/programas", lastmod: TODAY, freq: "daily", priority: "0.9" },
   { loc: "/kids", lastmod: "2026-04-11", freq: "weekly", priority: "0.8", image: { loc: "/og-kids.jpg", title: "Olha que Duas Kids - Espaco Infantil" } },
   { loc: "/rockinrio", lastmod: "2026-05-16", freq: "weekly", priority: "0.9", image: { loc: "/og-rockinrio.jpg", title: "Olha que Duas x Rock in Rio Lisboa 2026" } },
   { loc: "/newsletter", lastmod: "2026-03-24", freq: "monthly", priority: "0.7" },
@@ -115,7 +113,7 @@ async function main() {
       "exclusive_programs",
       "is_published=eq.true&order=sort_order.asc&select=slug,title,author,cover_url,updated_at",
     );
-    // Post URLs live under their program: /exclusivo/:programa/:slug.
+    // Post URLs live under their program: /programas/:programa/:slug.
     vinagre = await fetchTable(
       "vinagre_posts",
       "is_published=eq.true&order=published_at.desc" +
@@ -155,7 +153,7 @@ async function main() {
 
   for (const program of programs) {
     dynamicEntries.push({
-      loc: `/exclusivo/${program.slug}`,
+      loc: `/programas/${program.slug}`,
       lastmod: (program.updated_at || "").slice(0, 10) || TODAY,
       freq: "weekly",
       priority: "0.8",
@@ -167,7 +165,7 @@ async function main() {
     const date = (post.updated_at || post.published_at || "").slice(0, 10);
     const image = post.og_image_url || post.cover_url;
     dynamicEntries.push({
-      loc: `/exclusivo/${post.exclusive_programs.slug}/${post.slug}`,
+      loc: `/programas/${post.exclusive_programs.slug}/${post.slug}`,
       lastmod: date || TODAY,
       freq: "monthly",
       priority: "0.7",
@@ -187,8 +185,8 @@ async function main() {
     for (const e of dynamicEntries.filter((e) => e.loc.startsWith("/galeria/"))) xml += urlEntry(e);
     xml += `\n  <!-- Dynamic: Blog Posts -->\n`;
     for (const e of dynamicEntries.filter((e) => e.loc.startsWith("/noticias/"))) xml += urlEntry(e);
-    xml += `\n  <!-- Dynamic: Especiais Olha que Duas -->\n`;
-    for (const e of dynamicEntries.filter((e) => e.loc.startsWith("/exclusivo/"))) xml += urlEntry(e);
+    xml += `\n  <!-- Dynamic: Programas -->\n`;
+    for (const e of dynamicEntries.filter((e) => e.loc.startsWith("/programas/"))) xml += urlEntry(e);
   }
 
   xml += `\n</urlset>\n`;

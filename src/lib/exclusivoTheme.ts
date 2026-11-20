@@ -22,7 +22,7 @@ const THEMES: Record<string, ProgramTheme> = {
   "ceu-de-cada-mes": { accent: "#33226a", onAccent: "#e3c27e", soft: "#ece8f6", label: "Céu de Cada Mês" },
 };
 
-const FALLBACK: ProgramTheme = { accent: "#1c0a10", onAccent: "#f6efe4", soft: "#efe7da", label: "Especiais" };
+const FALLBACK: ProgramTheme = { accent: "#1c0a10", onAccent: "#f6efe4", soft: "#efe7da", label: "Programas" };
 
 export function programTheme(slug: string | undefined | null): ProgramTheme {
   return (slug && THEMES[slug]) || FALLBACK;

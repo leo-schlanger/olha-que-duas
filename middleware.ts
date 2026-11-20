@@ -1,7 +1,7 @@
 import { articleHeadline, documentTitle, metaDescription } from './src/lib/seo';
 import { articleVideo, videoObjectJsonLd, type ArticleVideo } from './src/lib/articleVideo';
 export const config = {
-  matcher: ['/viagens', '/servicos', '/loja', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*', '/exclusivo', '/exclusivo/:path*', '/kids', '/auditoria-gratuita', '/rockinrio'],
+  matcher: ['/servicos', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*', '/programas', '/programas/:path*', '/exclusivo', '/exclusivo/:path*', '/kids', '/auditoria-gratuita', '/rockinrio'],
 };
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || '';
@@ -137,7 +137,7 @@ function notFound(url: string): Response {
     <title>Página não encontrada | Olha que Duas</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="canonical" href="${escapeHtml(url)}">
-  </head><body><h1>Página não encontrada</h1><p><a href="https://www.olhaqueduas.com/exclusivo">Ver os programas dos Especiais</a></p></body></html>`, {
+  </head><body><h1>Página não encontrada</h1><p><a href="https://www.olhaqueduas.com/programas">Ver os Programas</a></p></body></html>`, {
     status: 404,
     headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 's-maxage=300' },
   });
@@ -159,15 +159,25 @@ export default async function middleware(request: Request): Promise<Response | u
   const path = url.pathname;
 
   // Eduardo Vinagre left on 2026-10-24: his program's pieces now live in Notícias.
-  // vercel.json redirects too; this covers crawlers if middleware runs first.
-  const oldProgram = path.match(/^\/exclusivo\/olha-que-duas-e-eu(\/[^/]+)?\/?$/);
+  const oldProgram = path.match(/^\/(?:exclusivo|programas)\/olha-que-duas-e-eu(\/[^/]+)?\/?$/i);
   if (oldProgram) {
     return new Response(null, {
       status: 301,
       headers: {
-        Location: `https://www.olhaqueduas.com/exclusivo/noticias-olha-que-duas${oldProgram[1] ?? ''}`,
+        Location: `https://www.olhaqueduas.com/programas/noticias-olha-que-duas${(oldProgram[1] ?? '').toLowerCase()}`,
         'Cache-Control': 's-maxage=86400',
       },
+    });
+  }
+
+  // «Especiais» became «Programas» on 2026-11-20: /exclusivo/... -> /programas/...
+  // (vercel.json does the same; this covers it if middleware runs first).
+  // Files under /exclusivo/ (covers used by the pieces) stay where they are.
+  if (/^\/exclusivo(\/|$)/i.test(path) && !/\.[a-z0-9]+$/i.test(path)) {
+    const rest = path.replace(/^\/exclusivo/i, '').toLowerCase().replace(/\/+$/, '');
+    return new Response(null, {
+      status: 301,
+      headers: { Location: `https://www.olhaqueduas.com/programas${rest}${url.search}`, 'Cache-Control': 's-maxage=86400' },
     });
   }
 
@@ -181,8 +191,8 @@ export default async function middleware(request: Request): Promise<Response | u
     // return handleStories(path, isSearchCrawler);
   // }
 
-  // One canonical form for every visitor: /Exclusivo/Mente-Aberta/ -> /exclusivo/mente-aberta.
-  if (/^\/exclusivo/i.test(path)) {
+  // One canonical form for every visitor: /Programas/Mente-Aberta/ -> /programas/mente-aberta.
+  if (/^\/programas/i.test(path)) {
     const canonical = path.toLowerCase().replace(/\/+$/, '') || '/';
     if (canonical !== path) {
       return new Response(null, {
@@ -192,17 +202,7 @@ export default async function middleware(request: Request): Promise<Response | u
     }
   }
 
-  if (!isSocialCrawler && !(isSearchCrawler && path.startsWith('/exclusivo'))) return;
-
-  // ========== VIAGENS ==========
-  if (path === '/viagens') {
-    return html({
-      title: 'Olha que Duas Trip — Viagens Personalizadas & Experiências Exclusivas',
-      description: 'Descubra o mundo com a Olha que Duas Trip! Planeamento de viagens à medida, estadias em hotéis de charme, passagens aéreas com as melhores tarifas e experiências gourmet inesquecíveis. Peça já o seu orçamento gratuito e viaje sem preocupações.',
-      image: 'https://www.olhaqueduas.com/og-viagens.jpg',
-      url: 'https://www.olhaqueduas.com/viagens',
-    });
-  }
+  if (!isSocialCrawler && !(isSearchCrawler && path.startsWith('/programas'))) return;
 
   // ========== KIDS ==========
   if (path === '/kids') {
@@ -241,16 +241,6 @@ export default async function middleware(request: Request): Promise<Response | u
       description: 'Serviços completos de comunicação e marketing digital: gestão de redes sociais, produção de vídeo, consultoria de marca, rádio online 24h, podcast e criação de websites. Peça o seu orçamento.',
       image: DEFAULT_IMAGE,
       url: 'https://www.olhaqueduas.com/servicos',
-    });
-  }
-
-  // ========== LOJA ==========
-  if (path === '/loja') {
-    return html({
-      title: 'Loja Olha que Duas',
-      description: 'Descubra os produtos exclusivos do Olha que Duas. Merchandising, acessórios e muito mais com a nossa marca.',
-      image: DEFAULT_IMAGE,
-      url: 'https://www.olhaqueduas.com/loja',
     });
   }
 
@@ -310,7 +300,7 @@ export default async function middleware(request: Request): Promise<Response | u
     });
   }
 
-  if (path === '/exclusivo') {
+  if (path === '/programas') {
     const description = 'Os programas especiais do Olha que Duas: notícias, biografias, opinião e reflexão, com Alexandra Serra, Marluce Revorêdo e a redação.';
     let image = 'https://www.olhaqueduas.com/exclusivo/curtas-biografias-og.jpg';
     try {
@@ -322,18 +312,18 @@ export default async function middleware(request: Request): Promise<Response | u
       if (post) image = shareImage(post);
     } catch { /* fica a capa do programa */ }
     return html({
-      title: 'Especiais Olha que Duas',
+      title: 'Programas Olha que Duas',
       description,
       image,
-      imageAlt: 'Especiais Olha que Duas',
+      imageAlt: 'Programas Olha que Duas',
       imageWidth: 1200,
       imageHeight: 630,
-      url: 'https://www.olhaqueduas.com/exclusivo',
-      section: 'Especiais Olha que Duas',
+      url: 'https://www.olhaqueduas.com/programas',
+      section: 'Programas',
     });
   }
 
-  const postMatch = path.match(/^\/exclusivo\/([^/]+)\/([^/]+)$/);
+  const postMatch = path.match(/^\/programas\/([^/]+)\/([^/]+)$/);
   if (postMatch) {
     const programSlug = postMatch[1];
     const postSlug = postMatch[2];
@@ -358,7 +348,7 @@ export default async function middleware(request: Request): Promise<Response | u
           return new Response(null, {
             status: 301,
             headers: {
-              Location: `https://www.olhaqueduas.com/exclusivo/${owner.slug}/${row.slug}`,
+              Location: `https://www.olhaqueduas.com/programas/${owner.slug}/${row.slug}`,
               'Cache-Control': 's-maxage=86400',
             },
           });
@@ -370,9 +360,9 @@ export default async function middleware(request: Request): Promise<Response | u
       const author = post.author
         ? String(post.author)
         : program && program.author ? String(program.author) : 'Olha que Duas';
-      const section = program && program.title ? String(program.title) : 'Especiais Olha que Duas';
+      const section = program && program.title ? String(program.title) : 'Programas';
       const image = shareImage(post);
-      const pageUrl = `https://www.olhaqueduas.com/exclusivo/${programSlug}/${postSlug}`;
+      const pageUrl = `https://www.olhaqueduas.com/programas/${programSlug}/${postSlug}`;
       const video = articleVideo(post);
       const description = String(post.seo_description || post.excerpt || post.title);
       const videoTag = !video
@@ -422,9 +412,9 @@ export default async function middleware(request: Request): Promise<Response | u
     } catch { return; }
   }
 
-  const exclusivoMatch = path.match(/^\/exclusivo\/([^/]+)$/);
-  if (exclusivoMatch) {
-    const slug = exclusivoMatch[1];
+  const programMatch = path.match(/^\/programas\/([^/]+)$/);
+  if (programMatch) {
+    const slug = programMatch[1];
     if (!SLUG_REGEX.test(slug) || slug.length > 140) return;
     try {
       const programs = await fetchSupabase(
@@ -457,9 +447,9 @@ export default async function middleware(request: Request): Promise<Response | u
           imageAlt: String(program.title),
           imageWidth: 1200,
           imageHeight: 630,
-          url: `https://www.olhaqueduas.com/exclusivo/${slug}`,
+          url: `https://www.olhaqueduas.com/programas/${slug}`,
           author: String(program.author),
-          section: 'Especiais Olha que Duas',
+          section: 'Programas',
         });
       }
 
@@ -474,7 +464,7 @@ export default async function middleware(request: Request): Promise<Response | u
         return new Response(null, {
           status: 301,
           headers: {
-            Location: `https://www.olhaqueduas.com/exclusivo/${owner.slug}/${oldPost.slug}`,
+            Location: `https://www.olhaqueduas.com/programas/${owner.slug}/${oldPost.slug}`,
             'Cache-Control': 's-maxage=86400',
           },
         });

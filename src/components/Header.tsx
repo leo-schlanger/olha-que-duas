@@ -185,11 +185,12 @@ const Header = () => {
                   className="min-w-[12rem] rounded-2xl border-border/60 bg-background/95 p-1.5 backdrop-blur-lg"
                 >
                   {moreLinks.map((link) => {
-                    const active = isLinkActive(link.href, true);
+                    const isRoute = "isRoute" in link && Boolean(link.isRoute);
+                    const active = isLinkActive(link.href, isRoute);
                     return (
                       <DropdownMenuItem key={link.href} asChild>
                         <Link
-                          to={link.href}
+                          to={isRoute ? link.href : `/${link.href}`}
                           className={cn(
                             "cursor-pointer rounded-xl px-3 py-2",
                             active && "bg-primary/10 text-primary",

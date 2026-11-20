@@ -24,7 +24,7 @@ async function crawl(row: Record<string, unknown>) {
   const fetchMock = vi.fn(async (_url: string) => new Response(JSON.stringify([row])));
   vi.stubGlobal("fetch", fetchMock);
   const res = await middleware(
-    new Request("https://www.olhaqueduas.com/exclusivo/lendas-de-portugal/bruxas-de-tras-os-montes", {
+    new Request("https://www.olhaqueduas.com/programas/lendas-de-portugal/bruxas-de-tras-os-montes", {
       headers: { "user-agent": "Mozilla/5.0 (compatible; Googlebot/2.1)" },
     }),
   );
@@ -79,7 +79,7 @@ describe("middleware: YouTube e programas sem peças", () => {
     );
     vi.stubGlobal("fetch", fetchMock);
     const res = await middleware(
-      new Request("https://www.olhaqueduas.com/exclusivo/lendas-de-portugal", {
+      new Request("https://www.olhaqueduas.com/programas/lendas-de-portugal", {
         headers: { "user-agent": "Mozilla/5.0 (compatible; Googlebot/2.1)" },
       }),
     );

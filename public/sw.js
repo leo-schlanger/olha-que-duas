@@ -25,7 +25,6 @@ const CACHE_PATTERNS = {
   // Network First - conteúdo dinâmico (páginas, API)
   dynamic: [
     /\/noticias/,
-    /\/loja/,
     /\/api\//,
   ],
   // Nunca cachear

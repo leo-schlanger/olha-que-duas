@@ -44,7 +44,7 @@ describe("videoObjectJsonLd", () => {
     const ld = videoObjectJsonLd(video, {
       name: "As bruxas de Trás-os-Montes",
       description: "Lenda",
-      pageUrl: "https://www.olhaqueduas.com/exclusivo/lendas-de-portugal/x",
+      pageUrl: "https://www.olhaqueduas.com/programas/lendas-de-portugal/x",
       uploadDate: "2026-10-31T20:00:00+00:00",
       fallbackThumbnail: "https://x.pt/og.jpg",
     });

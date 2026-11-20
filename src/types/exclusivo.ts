@@ -15,11 +15,11 @@ export interface ExclusiveProgram {
 }
 
 export const EXCLUSIVO_HUB = {
-  label: "Especiais Olha que Duas",
+  label: "Programas",
   description:
-    "Os programas especiais do Olha que Duas: notícias, biografias, opinião e reflexão, com Alexandra Serra, Marluce Revorêdo e a redação.",
-  path: "/exclusivo",
-  url: "https://www.olhaqueduas.com/exclusivo",
+    "Os programas do Olha que Duas: notícias, biografias, opinião e reflexão, com Alexandra Serra, Marluce Revorêdo e a redação.",
+  path: "/programas",
+  url: "https://www.olhaqueduas.com/programas",
 } as const;
 
 function isRecord(value: unknown): value is Record<string, unknown> {

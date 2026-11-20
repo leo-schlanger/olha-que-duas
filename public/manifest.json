@@ -92,10 +92,10 @@
       "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
     },
     {
-      "name": "Loja",
-      "short_name": "Loja",
-      "description": "Visitar a loja oficial",
-      "url": "/loja",
+      "name": "Programas",
+      "short_name": "Programas",
+      "description": "Ver os programas do Olha que Duas",
+      "url": "/programas",
       "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
     }
   ]

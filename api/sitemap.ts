@@ -3,13 +3,14 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 /**
  * Sitemaps do site, lidos da base a cada pedido (cache de 15 min no edge).
  *
- * Uma notícia nova, uma peça do Exclusivo agendada ou um álbum novo entram
+ * Uma notícia nova, uma peça dos Programas agendada ou um álbum novo entram
  * sozinhos, sem regenerar ficheiros nem fazer deploy. O vercel.json aponta:
  *   /sitemap.xml              → índice
  *   /sitemap-site.xml         → páginas fixas e galeria
  *   /sitemap-noticias.xml     → notícias (/noticias/:slug)
- *   /sitemap-exclusivo.xml    → programas e peças do Exclusivo, com imagem
- *   /sitemap-google-news.xml  → peças do Exclusivo das últimas 48 h (Google Notícias)
+ *   /sitemap-programas.xml    → programas e peças (/programas/...), com imagem
+ *                               (/sitemap-exclusivo.xml, nome antigo, dá o mesmo)
+ *   /sitemap-google-news.xml  → peças dos Programas das últimas 48 h (Google Notícias)
  */
 
 const SITE = 'https://www.olhaqueduas.com';
@@ -30,12 +31,10 @@ interface Entry {
 const STATIC_PAGES: Entry[] = [
   { loc: '/', freq: 'daily', priority: '1.0', image: { loc: '/og-image.jpg', title: 'Olha que Duas - Podcast e Rádio' } },
   { loc: '/noticias', freq: 'hourly', priority: '0.9' },
-  { loc: '/exclusivo', freq: 'daily', priority: '0.9' },
-  { loc: '/viagens', lastmod: '2026-04-06', freq: 'monthly', priority: '0.8', image: { loc: '/og-viagens.jpg', title: 'Olha que Duas Trip - Promotora de Viagens' } },
+  { loc: '/programas', freq: 'daily', priority: '0.9' },
   { loc: '/auditoria-gratuita', lastmod: '2026-04-21', freq: 'monthly', priority: '0.8', image: { loc: '/og-auditoria.jpg', title: 'Auditoria Gratuita de Comunicação - Olha que Duas' } },
   { loc: '/servicos', lastmod: '2026-04-06', freq: 'monthly', priority: '0.8' },
   { loc: '/galeria', freq: 'weekly', priority: '0.8' },
-  { loc: '/loja', lastmod: '2026-03-24', freq: 'weekly', priority: '0.7' },
   { loc: '/kids', lastmod: '2026-04-11', freq: 'weekly', priority: '0.7', image: { loc: '/og-kids.jpg', title: 'Olha que Duas Kids - Espaço Infantil' } },
   { loc: '/rockinrio', lastmod: '2026-05-16', freq: 'monthly', priority: '0.6', image: { loc: '/og-rockinrio.jpg', title: 'Olha que Duas x Rock in Rio Lisboa 2026' } },
   { loc: '/newsletter', lastmod: '2026-03-24', freq: 'monthly', priority: '0.6' },
@@ -120,7 +119,7 @@ async function build(kind: Kind): Promise<string> {
   const today = new Date().toISOString().slice(0, 10);
 
   if (kind === 'index') {
-    const maps = ['sitemap-site.xml', 'sitemap-noticias.xml', 'sitemap-exclusivo.xml', 'sitemap-google-news.xml'];
+    const maps = ['sitemap-site.xml', 'sitemap-noticias.xml', 'sitemap-programas.xml', 'sitemap-google-news.xml'];
     return `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${maps.map((m) => `  <sitemap><loc>${SITE}/${m}</loc><lastmod>${today}</lastmod></sitemap>`).join('\n')}
@@ -174,7 +173,7 @@ ${maps.map((m) => `  <sitemap><loc>${SITE}/${m}</loc><lastmod>${today}</lastmod>
     return urlset([
       // Only programs with at least one live piece (same rule as the site).
       ...programs.filter((p) => latestByProgram.has(p.slug)).map((p) => ({
-        loc: `/exclusivo/${p.slug}`,
+        loc: `/programas/${p.slug}`,
         lastmod: latestByProgram.get(p.slug) ?? day(p.updated_at),
         freq: 'daily',
         priority: '0.8',
@@ -185,7 +184,7 @@ ${maps.map((m) => `  <sitemap><loc>${SITE}/${m}</loc><lastmod>${today}</lastmod>
         .map((p) => {
           const image = p.og_image_url || p.cover_url;
           return {
-            loc: `/exclusivo/${p.exclusive_programs!.slug}/${p.slug}`,
+            loc: `/programas/${p.exclusive_programs!.slug}/${p.slug}`,
             lastmod: day(p.updated_at) ?? day(p.published_at),
             freq: 'weekly',
             priority: '0.7',
@@ -202,7 +201,7 @@ ${maps.map((m) => `  <sitemap><loc>${SITE}/${m}</loc><lastmod>${today}</lastmod>
     .filter((p) => p.exclusive_programs && p.published_at)
     .map(
       (p) => `  <url>
-    <loc>${SITE}/exclusivo/${p.exclusive_programs!.slug}/${p.slug}</loc>
+    <loc>${SITE}/programas/${p.exclusive_programs!.slug}/${p.slug}</loc>
     <news:news>
       <news:publication><news:name>Olha que Duas</news:name><news:language>pt</news:language></news:publication>
       <news:publication_date>${p.published_at}</news:publication_date>

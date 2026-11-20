@@ -19,24 +19,35 @@
   "redirects": [
     {
       "source": "/exclusivo/:slug(abel-dias-o-ze-nunca-bateu-na-betty|ronaldo-nao-voltara-a-ser-cr7|biografia-diogo-jota-livro-oficial-liverpool|cristina-ferreira-joao-monteiro-realizam-sonho-fabio-marques-np4game|susana-da-silva-tribunal-antonio-pedro-cerdeira-romance-comandante-melides|papa-leao-xiv-nodulo-pulmao-vai-ser-operado|pedro-mourinho-fora-do-now|david-antunes-morte-netinho)",
-      "destination": "/exclusivo/noticias-olha-que-duas/:slug",
+      "destination": "/programas/noticias-olha-que-duas/:slug",
       "permanent": true
     },
     {
       "source": "/exclusivo/olha-que-duas-e-eu",
-      "destination": "/exclusivo/noticias-olha-que-duas",
+      "destination": "/programas/noticias-olha-que-duas",
       "permanent": true
     },
     {
       "source": "/exclusivo/olha-que-duas-e-eu/:slug",
-      "destination": "/exclusivo/noticias-olha-que-duas/:slug",
+      "destination": "/programas/noticias-olha-que-duas/:slug",
       "permanent": true
-    }
+    },
+    { "source": "/exclusivo", "destination": "/programas", "permanent": true },
+    {
+      "source": "/exclusivo/:path((?!.*\\.[A-Za-z0-9]+$).*)",
+      "destination": "/programas/:path",
+      "permanent": true
+    },
+    { "source": "/loja", "destination": "/", "permanent": true },
+    { "source": "/loja/:path*", "destination": "/", "permanent": true },
+    { "source": "/viagens", "destination": "/", "permanent": true },
+    { "source": "/viagens/:path*", "destination": "/", "permanent": true }
   ],
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap?t=index" },
     { "source": "/sitemap-site.xml", "destination": "/api/sitemap?t=site" },
     { "source": "/sitemap-noticias.xml", "destination": "/api/sitemap?t=noticias" },
+    { "source": "/sitemap-programas.xml", "destination": "/api/sitemap?t=exclusivo" },
     { "source": "/sitemap-exclusivo.xml", "destination": "/api/sitemap?t=exclusivo" },
     { "source": "/sitemap-google-news.xml", "destination": "/api/sitemap?t=news" },
     { "source": "/sitemap-historias.xml", "destination": "/api/sitemap-historias" },

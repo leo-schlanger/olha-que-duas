@@ -227,7 +227,7 @@ export default function ExclusivoPost() {
                 {elsewhere.length > 0 && (
                   <section className="mt-14 border-t border-[#1c0a10]/10 pt-8" aria-labelledby="peca-exclusivo">
                     <h2 id="peca-exclusivo" className="font-display text-3xl text-[#1c0a10]">
-                      Mais dos Especiais
+                      Mais dos Programas
                     </h2>
                     <div className="mt-6 grid gap-x-6 gap-y-10 sm:grid-cols-2">
                       {elsewhere.map((item) => (
