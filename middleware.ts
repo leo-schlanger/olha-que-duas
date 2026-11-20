@@ -1,12 +1,13 @@
 import { articleHeadline, documentTitle, metaDescription } from './src/lib/seo';
 import { articleVideo, videoObjectJsonLd, type ArticleVideo } from './src/lib/articleVideo';
-import { ROUTE_META, routeMeta } from './src/lib/routeMeta';
+import { MOVED_ALBUMS, ROUTE_META, routeMeta } from './src/lib/routeMeta';
 import { EVENT_SELECT, eventKeepsProgram } from './src/lib/programRadio';
 export const config = {
   matcher: ['/servicos', '/faq', '/newsletter', '/privacidade', '/termos', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*', '/programas', '/programas/:path*', '/exclusivo', '/exclusivo/:path*',
     // Any case (/Exclusivo/Mente-Aberta): vercel.json rules are case-sensitive.
     '/:legacy([Ee][Xx][Cc][Ll][Uu][Ss][Ii][Vv][Oo])', '/:legacy([Ee][Xx][Cc][Ll][Uu][Ss][Ii][Vv][Oo])/:path*',
     // Loja and Viagens left on 2026-11-20: any case, with or without the final slash.
+    '/:moved([Gg][Aa][Ll][Ee][Rr][Ii][Aa])/:path*',
     '/:gone([Ll][Oo][Jj][Aa])', '/:gone([Ll][Oo][Jj][Aa])/:path*',
     '/:gone([Vv][Ii][Aa][Gg][Ee][Nn][Ss])', '/:gone([Vv][Ii][Aa][Gg][Ee][Nn][Ss])/:path*',
     '/kids', '/auditoria-gratuita', '/rockinrio'],
@@ -37,6 +38,8 @@ export function legacyRedirect(path: string, search = ''): string | null {
   if (/\.[a-z0-9]+$/i.test(path)) return null; // files (covers under /exclusivo/) stay
   const lower = path.toLowerCase().replace(/\/+$/, '') || '/';
   if (/^\/(loja|viagens)(\/|$)/.test(lower)) return '/';
+  const album = lower.match(/^\/galeria\/([^/]+)$/);
+  if (album && MOVED_ALBUMS[album[1]]) return MOVED_ALBUMS[album[1]];
   const old = lower.match(/^\/(?:exclusivo|programas)\/olha-que-duas-e-eu(\/[^/]+)?$/);
   if (old) return `/programas/noticias-olha-que-duas${old[1] ?? ''}`;
   if (!/^\/exclusivo(\/|$)/.test(lower)) return null;

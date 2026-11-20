@@ -55,6 +55,8 @@ describe("one hop, any case (qa 20/11)", () => {
     ["/exclusivo/abel-dias-o-ze-nunca-bateu-na-betty", "/programas/noticias-olha-que-duas/abel-dias-o-ze-nunca-bateu-na-betty"],
     ["/Exclusivo/Pedro-Mourinho-Fora-Do-Now/", "/programas/noticias-olha-que-duas/pedro-mourinho-fora-do-now"],
     ["/exclusivo/olha-que-duas-e-eu", "/programas/noticias-olha-que-duas"],
+    ["/galeria/senhor-televisao-carlos-cruz-20260920", "/programas/entrevistas/carlos-cruz-senhor-televisao"],
+    ["/Galeria/Helena-Isabel-20260707/", "/programas/entrevistas/helena-isabel"],
   ])("%s -> %s", async (from, to) => {
     expect(legacyRedirect(from)).toBe(to);
     const res = await hit(from);
@@ -62,7 +64,7 @@ describe("one hop, any case (qa 20/11)", () => {
     expect(res?.headers.get("Location")).toBe(`https://www.olhaqueduas.com${to}`);
   });
 
-  it.each(["/loja", "/loja/", "/LOJA", "/Viagens/", "/viagens/a/b", "/Exclusivo/X"])("the matcher sends %s to the middleware", (path) => {
+  it.each(["/loja", "/loja/", "/LOJA", "/Viagens/", "/viagens/a/b", "/Exclusivo/X", "/Galeria/Helena-Isabel-20260707/"])("the matcher sends %s to the middleware", (path) => {
     expect(config.matcher.some((m) => pathToRegexp(m).test(path))).toBe(true);
   });
 

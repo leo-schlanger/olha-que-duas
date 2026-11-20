@@ -10,6 +10,12 @@ export interface RouteMeta {
   imageAlt?: string;
 }
 
+/** Interview albums moved to Programas › Entrevistas (20/11/2026): old /galeria slug -> new path. */
+export const MOVED_ALBUMS: Record<string, string> = {
+  "senhor-televisao-carlos-cruz-20260920": "/programas/entrevistas/carlos-cruz-senhor-televisao",
+  "helena-isabel-20260707": "/programas/entrevistas/helena-isabel",
+};
+
 export const SITE_URL = "https://www.olhaqueduas.com";
 
 export const ROUTE_META: Record<string, RouteMeta> = {

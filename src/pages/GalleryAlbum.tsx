@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useParams, useNavigate } from 'react-router-dom';
+import { MOVED_ALBUMS } from '@/lib/routeMeta';
 import { format } from 'date-fns';
 import { pt } from 'date-fns/locale';
 import {
@@ -25,7 +26,15 @@ import { getCloudinaryUrl } from '@/lib/cloudinary';
 import { getYouTubeId, getYouTubeThumbnail, getYouTubeEmbedUrl, getYouTubeWatchUrl } from '@/lib/youtube';
 import { isSupabaseConfigured } from '@/lib/supabase';
 
+/** Interviews moved to /programas/entrevistas (20/11/2026): in-app links and apps land there too. */
 export default function GalleryAlbum() {
+  const { slug } = useParams<{ slug: string }>();
+  const moved = slug ? MOVED_ALBUMS[slug.toLowerCase()] : undefined;
+  if (moved) return <Navigate to={moved} replace />;
+  return <GalleryAlbumPage />;
+}
+
+function GalleryAlbumPage() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { data: album, isLoading, error } = useGalleryAlbum(slug || '');
