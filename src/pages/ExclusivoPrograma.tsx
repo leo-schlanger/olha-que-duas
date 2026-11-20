@@ -15,7 +15,7 @@ import { articleShareImage } from "@/lib/articleHtml";
 import { exclusivoPostPath, exclusivoProgramPath, LEGACY_PROGRAM_SLUG } from "@/lib/exclusivoPaths";
 import { EXCLUSIVO_HUB } from "@/types/exclusivo";
 import { formatVinagreDate } from "@/lib/vinagreDate";
-import { RadioBox } from "@/components/exclusivo/RadioBox";
+import { RadioBox, useProgramRadio } from "@/components/exclusivo/RadioBox";
 
 export default function ExclusivoPrograma() {
   const { programSlug = "" } = useParams();
@@ -69,6 +69,9 @@ export default function ExclusivoPrograma() {
       : undefined,
   });
 
+  // The radio box is part of the first paint: waiting for it avoids the list jumping (CLS, qa r7).
+  const radioQuery = useProgramRadio(program?.event_id);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [programSlug]);
@@ -78,7 +81,11 @@ export default function ExclusivoPrograma() {
     return <Navigate to={exclusivoPostPath(target, legacyQuery.data.slug)} replace />;
   }
 
-  const loading = programQuery.isLoading || (Boolean(program) && postsQuery.isLoading) || legacyQuery.isLoading;
+  const loading =
+    programQuery.isLoading ||
+    (Boolean(program) && postsQuery.isLoading) ||
+    legacyQuery.isLoading ||
+    (Boolean(program?.event_id) && radioQuery.isLoading);
 
   return (
     <div className="min-h-screen bg-[#f6f1e8]">
@@ -143,7 +150,16 @@ export default function ExclusivoPrograma() {
             <p className="py-16 text-center text-[#1c0a10]/70">Este programa não está disponível.</p>
           )}
 
-          {program && !postsQuery.isLoading && !postsQuery.isError && !lead && (
+          {/* Radio-only program (Top 10, Vidioteca, Cantinho): the long text, no empty list */}
+          {program && !loading && !postsQuery.isError && !lead && program.long_description && (
+            <section aria-labelledby="sobre-programa" className="mt-8 max-w-3xl">
+              <h2 id="sobre-programa" className="font-display text-3xl text-[#1c0a10]">Sobre o programa</h2>
+              {program.long_description.split(/\n{2,}/).map((para, i) => (
+                <p key={i} className="mt-4 text-lg leading-relaxed text-[#1c0a10]/80">{para}</p>
+              ))}
+            </section>
+          )}
+          {program && !loading && !postsQuery.isError && !lead && !program.long_description && (
             <p className="py-16 text-center text-[#1c0a10]/70">A primeira notícia está a caminho.</p>
           )}
 

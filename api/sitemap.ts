@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { EVENT_SELECT, eventKeepsProgram, type ProgramEvent } from '../src/lib/programRadio';
 
 /**
  * Sitemaps do site, lidos da base a cada pedido (cache de 15 min no edge).
@@ -159,9 +160,9 @@ ${maps.map((m) => `  <sitemap><loc>${SITE}/${m}</loc><lastmod>${today}</lastmod>
 
   if (kind === 'exclusivo') {
     const [programs, posts] = await Promise.all([
-      query<{ slug: string; title: string; author: string; cover_url: string; updated_at: string }>(
+      query<{ slug: string; title: string; author: string; cover_url: string; updated_at: string; event_id: string | null }>(
         'exclusive_programs',
-        'is_published=eq.true&order=sort_order.asc&select=slug,title,author,cover_url,updated_at',
+        'is_published=eq.true&order=sort_order.asc&select=slug,title,author,cover_url,updated_at,event_id',
       ),
       exclusivoPosts(),
     ]);
@@ -170,9 +171,14 @@ ${maps.map((m) => `  <sitemap><loc>${SITE}/${m}</loc><lastmod>${today}</lastmod>
       const slug = p.exclusive_programs?.slug;
       if (slug && !latestByProgram.has(slug)) latestByProgram.set(slug, day(p.published_at) ?? today);
     }
+    // Same rule as the site (src/lib/programRadio.ts): a live piece OR an active radio event.
+    const eventIds = programs.map((p) => p.event_id).filter((id): id is string => Boolean(id));
+    const events = eventIds.length
+      ? await query<ProgramEvent>('events', `select=${EVENT_SELECT}&id=in.(${eventIds.join(',')})`).catch(() => [])
+      : [];
+    const byId = new Map(events.map((e) => [e.id, e]));
     return urlset([
-      // Only programs with at least one live piece (same rule as the site).
-      ...programs.filter((p) => latestByProgram.has(p.slug)).map((p) => ({
+      ...programs.filter((p) => latestByProgram.has(p.slug) || (p.event_id && eventKeepsProgram(byId.get(p.event_id)))).map((p) => ({
         loc: `/programas/${p.slug}`,
         lastmod: latestByProgram.get(p.slug) ?? day(p.updated_at),
         freq: 'daily',

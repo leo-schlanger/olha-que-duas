@@ -1,6 +1,7 @@
 import { articleHeadline, documentTitle, metaDescription } from './src/lib/seo';
 import { articleVideo, videoObjectJsonLd, type ArticleVideo } from './src/lib/articleVideo';
 import { ROUTE_META, routeMeta } from './src/lib/routeMeta';
+import { EVENT_SELECT, eventKeepsProgram } from './src/lib/programRadio';
 export const config = {
   matcher: ['/servicos', '/faq', '/newsletter', '/privacidade', '/termos', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*', '/programas', '/programas/:path*', '/exclusivo', '/exclusivo/:path*',
     // Any case (/Exclusivo/Mente-Aberta): vercel.json rules are case-sensitive.
@@ -447,7 +448,7 @@ async function handle(request: Request): Promise<Response | undefined> {
     try {
       const programs = await fetchSupabase(
         'exclusive_programs',
-        `select=title,author,tagline,description,cover_url&slug=eq.${encodeURIComponent(slug)}&is_published=eq.true`,
+        `select=title,author,tagline,description,cover_url,event_id&slug=eq.${encodeURIComponent(slug)}&is_published=eq.true`,
       );
       const program = Array.isArray(programs) ? programs[0] : undefined;
       if (program) {
@@ -461,8 +462,13 @@ async function handle(request: Request): Promise<Response | undefined> {
             'vinagre_posts',
             `select=cover_url,og_image_url,exclusive_programs!inner(slug)&is_published=eq.true&exclusive_programs.slug=eq.${encodeURIComponent(slug)}&or=(published_at.is.null,published_at.lte.${new Date().toISOString()})&order=published_at.desc.nullslast&limit=1`,
           );
-          // A program is only listed with at least one live piece: without one it does not exist yet.
-          if (Array.isArray(leads) && leads.length === 0) return notFound(`https://www.olhaqueduas.com${path}`);
+          // Listed with a live piece OR an active radio event (src/lib/programRadio.ts); else 404.
+          if (Array.isArray(leads) && leads.length === 0) {
+            const events = program.event_id
+              ? await fetchSupabase('events', `select=${EVENT_SELECT}&id=eq.${encodeURIComponent(String(program.event_id))}`)
+              : [];
+            if (!eventKeepsProgram(Array.isArray(events) ? events[0] : undefined)) return notFound(`https://www.olhaqueduas.com${path}`);
+          }
           const lead = Array.isArray(leads) ? leads[0] : undefined;
           if (lead) image = shareImage(lead);
         } catch { /* fica a capa do programa */ }

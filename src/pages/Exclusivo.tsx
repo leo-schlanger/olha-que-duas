@@ -1,6 +1,7 @@
 import { routeMeta } from "@/lib/routeMeta";
-import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { filterPrograms, HubChips, ProgramBadges, TodayOnRadio, type HubFilter } from "@/components/exclusivo/hubBits";
 import { Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -56,6 +57,14 @@ export default function Exclusivo() {
 
   const recent = latest?.slice(1, 7) ?? [];
   const loadingAny = isLoading || latestQuery.isLoading;
+  // ?tipo=ler|radio only for sharing; the canonical stays /programas.
+  const [params, setParams] = useSearchParams();
+  const tipo = params.get("tipo");
+  const [filter, setFilterState] = useState<HubFilter>(tipo === "ler" || tipo === "radio" ? tipo : "todos");
+  const setFilter = (f: HubFilter) => {
+    setFilterState(f);
+    setParams(f === "todos" ? {} : { tipo: f }, { replace: true });
+  };
   const lastByProgram = new Map<string, string>();
   for (const post of latest ?? []) {
     const slug = post.program?.slug;
@@ -79,6 +88,8 @@ export default function Exclusivo() {
           </header>
 
           <ProgramTabs />
+
+          {!loadingAny && <TodayOnRadio programs={programs ?? []} />}
 
           {loadingAny && (
             <div className="flex justify-center py-24 text-[#7a5b16]">
@@ -129,8 +140,9 @@ export default function Exclusivo() {
               >
                 Os programas
               </h2>
-              <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {(programs ?? []).map((program) => {
+              <HubChips value={filter} onChange={setFilter} />
+              <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {filterPrograms(programs ?? [], filter).map((program) => {
                   const theme = programTheme(program.slug);
                   const last = lastByProgram.get(program.slug);
                   return (
@@ -159,6 +171,7 @@ export default function Exclusivo() {
                             {program.tagline || program.description}
                           </p>
                         )}
+                        <ProgramBadges program={program} />
                         {last && (
                           <p className="mt-2 text-xs text-[#7a5b16]">Última peça: {formatVinagreDate(last)}</p>
                         )}
