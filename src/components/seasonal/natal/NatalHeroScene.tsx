@@ -1,4 +1,4 @@
-import { GiftShape, NT, OrnamentShape, PineShape, SnowflakeShape, StarShape } from "./art";
+import { ElegantGiftShape, ElegantPineShape, NT, OrnamentShape, SnowflakeShape, StarShape } from "./art";
 import "./natal.css";
 
 // Fixed star field (percent positions): no randomness, no layout work.
@@ -15,17 +15,18 @@ const FLAKES: Array<{ c: string; o: number }> = [
 ];
 
 // Trees on the snowy hill: edges only, the middle stays free for the CTAs.
-const TREES: Array<{ c: string; lights?: boolean; star?: boolean; fill?: string }> = [
-  { c: "left-[-8px] w-16 md:w-24 bottom-[18px] md:bottom-[30px]", lights: true, star: true },
-  { c: "left-[11%] w-10 md:w-14 bottom-[12px] md:bottom-[22px]", fill: NT.pinheiroClaro },
-  { c: "left-[19%] w-7 md:w-10 bottom-[10px] md:bottom-[16px] hidden sm:block" },
-  { c: "right-[13%] w-9 md:w-14 bottom-[12px] md:bottom-[24px]", fill: NT.pinheiroClaro },
-  { c: "right-[-6px] w-20 md:w-28 bottom-[16px] md:bottom-[26px]", lights: true, star: true },
+// Slender adult silhouettes (team, 20/11): no lights, no cartoon star.
+const TREES: Array<{ c: string; fill?: string }> = [
+  { c: "left-[-6px] w-14 md:w-20 bottom-[18px] md:bottom-[30px]" },
+  { c: "left-[10%] w-9 md:w-12 bottom-[12px] md:bottom-[22px]", fill: NT.pinheiroClaro },
+  { c: "left-[18%] w-6 md:w-9 bottom-[10px] md:bottom-[16px] hidden sm:block" },
+  { c: "right-[13%] w-8 md:w-12 bottom-[12px] md:bottom-[24px]", fill: NT.pinheiroClaro },
+  { c: "right-[-4px] w-16 md:w-24 bottom-[16px] md:bottom-[26px]" },
 ];
 
 /**
  * Christmas night over the home Hero: stars, a big golden star, baubles hanging
- * from the top, snowflakes and a snowy hill with pines and gifts. Sits under the
+ * from the top, snowflakes and a snowy hill with slender pines and gifts. Sits under the
  * content (z-0) and never takes pointer events.
  */
 const NatalHeroScene = () => (
@@ -80,23 +81,23 @@ const NatalHeroScene = () => (
       </svg>
       {TREES.map((t, i) => (
         <svg key={i} viewBox="0 -4 60 94" className={`absolute ${t.c}`}>
-          <PineShape fill={t.fill} lights={t.lights} star={t.star} />
+          <ElegantPineShape fill={t.fill} />
         </svg>
       ))}
       <div className="absolute bottom-[6px] left-[24%] hidden md:flex items-end gap-1">
         <svg viewBox="0 0 48 48" className="w-9">
-          <GiftShape />
+          <ElegantGiftShape box={NT.bordo} />
         </svg>
         <svg viewBox="0 0 48 48" className="w-7">
-          <GiftShape box={NT.pinheiroClaro} ribbon={NT.vivo} />
+          <ElegantGiftShape />
         </svg>
       </div>
       <div className="absolute bottom-[4px] right-[21%] flex items-end gap-1 md:bottom-[8px]">
         <svg viewBox="0 0 48 48" className="w-7 md:w-10">
-          <GiftShape box={NT.dourado} ribbon={NT.vivo} />
+          <ElegantGiftShape />
         </svg>
         <svg viewBox="0 0 48 48" className="w-6 md:w-8">
-          <GiftShape />
+          <ElegantGiftShape box={NT.bordo} />
         </svg>
       </div>
     </div>

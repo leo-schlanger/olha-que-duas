@@ -19,7 +19,7 @@ import logoDefault from "@/assets/logo-olha-que-duas.webp";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import RockInRioBanner from "./RockInRioBanner";
-import { SeasonalBannerSlot, SeasonalHeaderSlot, useSeasonalLogoSet } from "./seasonal";
+import { SeasonalBannerSlot, useSeasonalLogoSet } from "./seasonal";
 
 // Rendered height: h-16 (64 px) on phones, h-20 (80 px) from md.
 const HEADER_LOGO_SIZES = "(min-width: 768px) 80px, 64px";
@@ -91,8 +91,6 @@ const Header = () => {
       <RockInRioBanner />
       {/* Seasonal strip (Natal: Boas Festas), self-expiring */}
       <SeasonalBannerSlot />
-      {/* Seasonal decoration under the header (Natal: string of lights) */}
-      <SeasonalHeaderSlot />
 
       <div className={cn(
         "container mx-auto px-4 sm:px-6 transition-all duration-500",

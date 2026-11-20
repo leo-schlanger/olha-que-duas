@@ -38,7 +38,6 @@ import heroJpg800 from "@/assets/seasonal/natal/hero-natal-800.jpg";
 
 const Banner = lazy(() => import("./NatalBanner"));
 const Overlay = lazy(() => import("./NatalOverlay"));
-const HeaderLights = lazy(() => import("./NatalHeaderLights"));
 const HeroScene = lazy(() => import("./NatalHeroScene"));
 const FooterScene = lazy(() => import("./NatalFooterScene"));
 const KidsAccent = lazy(() => import("./NatalKidsAccent"));
@@ -138,11 +137,9 @@ function lazySlot(Component: React.ComponentType) {
 
 /** Snowfall over the whole site (App). */
 export const NatalOverlaySlot = lazySlot(Overlay);
-/** String of lights under the fixed Header. Header must be positioned. */
-export const NatalHeaderSlot = lazySlot(HeaderLights);
 /** Christmas night behind the home Hero. Parent must be `relative`. */
 export const NatalHeroSlot = lazySlot(HeroScene);
-/** Lights, holly, stars and snowy pines in the Footer. Parent must be `relative`. */
+/** Corner gifts and snowy pines in the Footer. Parent must be `relative`. */
 export const NatalFooterSlot = lazySlot(FooterScene);
 
 /** Kids: "patch" = gift pile easter egg on the /kids hill; "sky" = smiling star. */

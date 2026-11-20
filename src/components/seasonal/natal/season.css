@@ -109,7 +109,7 @@ html[data-season="natal"] #inicio :is(.from-amarelo, .from-charcoal\/60) {
 }
 
 /* Header is night bordô on every page during the season, with a gold rim
- * (the string of lights hangs from it, NatalHeaderLights). */
+ * (no string of lights since 20/11: the team found it too busy). */
 html[data-season="natal"] .hw-header {
   background-color: hsl(var(--nt-noite) / 0.95);
   box-shadow: inset 0 -2px 0 hsl(var(--nt-dourado) / 0.55), 0 12px 30px -12px hsl(var(--nt-noite) / 0.7);
@@ -125,20 +125,11 @@ html[data-season="natal"] .bg-hero-gradient {
     linear-gradient(180deg, hsl(345 72% 7%) 0%, hsl(var(--nt-noite)) 35%, hsl(348 70% 15%) 70%, hsl(var(--nt-bordo)) 100%);
 }
 
-/* The string of lights hangs 13 px below the opaque seasonal header (qa 13/11).
- * - Exclusivo, programa and peça (main#main-content.pt-24) start with chips on
- *   the light page: 14 px more top padding so they clear the bulbs.
- * - Pages whose main opens with a coloured hero (main.flex-1.pt-24: Serviços,
- *   Notícias, Galeria, Viagens, peças do blog…) must start right under the
- *   header: on phones the header is 88 px, not 96, so close that 8 px band.
- * Not on body (it opened a creme band above every hero). Stickies sit ≥ 6rem. */
-html[data-season="natal"] {
-  scroll-padding-top: calc(var(--seasonal-bar-h, 0px) + 14px);
-}
-html[data-season="natal"] main#main-content.pt-24 { padding-top: calc(6rem + 14px); }
+/* Pages whose main opens with a coloured hero (main.flex-1.pt-24: Serviços,
+ * Notícias, Galeria, Viagens, peças do blog…) must start right under the
+ * opaque seasonal header: on phones it is 88 px, not 96, so close that 8 px band. */
 html[data-season="natal"] main.flex-1.pt-24 { padding-top: 5.5rem; }
 @media (min-width: 768px) {
-  html[data-season="natal"] main#main-content.pt-24.md\:pt-28 { padding-top: calc(7rem + 14px); }
   html[data-season="natal"] main.flex-1.pt-24.md\:pt-28 { padding-top: 7rem; }
 }
 

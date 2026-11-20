@@ -17,7 +17,6 @@ import {
 import {
   NatalBannerSlot,
   NatalFooterSlot,
-  NatalHeaderSlot,
   NatalHeroSlot,
   NatalKidsSlot,
   NatalOverlaySlot,
@@ -89,9 +88,6 @@ export const SeasonalBannerSlot = () => (
     <NatalBannerSlot />
   </>
 );
-
-/** Decoration hanging from the Header's bottom edge. */
-export const SeasonalHeaderSlot = () => <NatalHeaderSlot />;
 
 /** Global decorative layer (App). */
 export const SeasonalOverlaySlot = () => (

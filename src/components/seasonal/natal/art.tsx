@@ -133,16 +133,42 @@ export function GiftShape({
   );
 }
 
-/** Holly sprig (two leaves, three berries) in a 48×32 box. */
-export function HollyShape() {
+/**
+ * Slender stylised pine in a 60×90 box for the adult site: one concave cone in
+ * pine green, a gold hairline down the lit side, three fine gold garland
+ * strokes and a small gold sparkle on top. No baubles, no cartoon star.
+ */
+export function ElegantPineShape({ fill = NT.pinheiro }: { fill?: string }) {
   return (
-    <g>
-      <path d="M24 16C18 6 8 4 2 8c3 1 3 4 1 6 3 0 5 2 4 5 3-2 6-1 7 2 1-3 4-4 7-3-1-1 0-2 3-2Z" fill={NT.pinheiroClaro} />
-      <path d="M24 16c6-10 16-12 22-8-3 1-3 4-1 6-3 0-5 2-4 5-3-2-6-1-7 2-1-3-4-4-7-3 1-1 0-2-3-2Z" fill={NT.pinheiro} />
-      <circle cx={21} cy={18} r={4} fill={NT.vivo} />
-      <circle cx={27.5} cy={18.5} r={4} fill={NT.vermelho} />
-      <circle cx={24} cy={23.5} r={4} fill={NT.vivo} />
-      <circle cx={20} cy={16.6} r={1.1} fill="#fff" opacity={0.6} />
+    <g strokeLinecap="round" strokeLinejoin="round">
+      <path d="M30 78v11" stroke={NT.douradoEsc} strokeWidth={2.4} />
+      <path d="M30 8Q33 46 51 80H9Q27 46 30 8Z" fill={fill} />
+      <path d="M30 8Q33 46 51 80" fill="none" stroke={NT.dourado} strokeWidth={1.6} opacity={0.75} />
+      <g fill="none" stroke={NT.dourado} strokeWidth={1.5} opacity={0.85}>
+        <path d="M27.5 38Q31 37.5 33.5 35" />
+        <path d="M22 56Q30 55.5 38.5 51" />
+        <path d="M15.5 72Q29 71.5 45 66" />
+      </g>
+      <path d="M30 0l1.2 3.8L35 5l-3.8 1.2L30 10l-1.2-3.8L25 5l3.8-1.2Z" fill={NT.dourado} />
+    </g>
+  );
+}
+
+/** Gift box in a 48×48 box for the adult site: sober box, thin gold ribbon, outlined gold bow. */
+export function ElegantGiftShape({ box = NT.pinheiro }: { box?: string }) {
+  return (
+    <g strokeLinecap="round" strokeLinejoin="round">
+      <rect x={8} y={22} width={32} height={24} rx={1.5} fill={box} />
+      <rect x={6} y={17} width={36} height={7} rx={1.2} fill={box} />
+      <rect x={6} y={23} width={36} height={1.2} fill="#000" opacity={0.25} />
+      <rect x={22.75} y={17} width={2.5} height={29} fill={NT.dourado} />
+      <path
+        d="M24 17C21 10 15 9 15 13s5 4.5 9 4Zm0 0c3-7 9-8 9-4s-5 4.5-9 4Z"
+        fill="none"
+        stroke={NT.dourado}
+        strokeWidth={1.8}
+      />
+      <path d="M24 17l-3.5 6M24 17l3.5 6" stroke={NT.dourado} strokeWidth={1.5} />
     </g>
   );
 }
