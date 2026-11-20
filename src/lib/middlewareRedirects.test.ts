@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import middleware from "../../middleware";
+import { pathToRegexp } from "path-to-regexp";
+import middleware, { config } from "../../middleware";
 import vercel from "../../vercel.json";
 
 // 20/11/2026: «Especiais» (/exclusivo) became «Programas» (/programas); Loja and Viagens left.
@@ -22,6 +23,19 @@ describe("middleware: /exclusivo -> /programas", () => {
     const res = await hit(from);
     expect(res?.status).toBe(301);
     expect(res?.headers.get("Location")).toBe(`https://www.olhaqueduas.com${to}`);
+  });
+
+  it.each(["/Exclusivo", "/EXCLUSIVO/Mente-Aberta", "/Exclusivo/lendas-de-portugal/X"])(
+    "the matcher sends %s to the middleware (any case)",
+    (path) => {
+      expect(config.matcher.some((m) => pathToRegexp(m).test(path))).toBe(true);
+    },
+  );
+
+  it("/EXCLUSIVO/Lendas-De-Portugal/ -> one 301 to the lower-case /programas address", async () => {
+    const res = await hit("/EXCLUSIVO/Lendas-De-Portugal/");
+    expect(res?.status).toBe(301);
+    expect(res?.headers.get("Location")).toBe("https://www.olhaqueduas.com/programas/lendas-de-portugal");
   });
 
   it("keeps the files under /exclusivo/ (covers used by the pieces)", async () => {

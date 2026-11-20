@@ -1,7 +1,10 @@
 import { articleHeadline, documentTitle, metaDescription } from './src/lib/seo';
 import { articleVideo, videoObjectJsonLd, type ArticleVideo } from './src/lib/articleVideo';
 export const config = {
-  matcher: ['/servicos', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*', '/programas', '/programas/:path*', '/exclusivo', '/exclusivo/:path*', '/kids', '/auditoria-gratuita', '/rockinrio'],
+  matcher: ['/servicos', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*', '/programas', '/programas/:path*', '/exclusivo', '/exclusivo/:path*',
+    // Any case (/Exclusivo/Mente-Aberta): vercel.json rules are case-sensitive.
+    '/:legacy([Ee][Xx][Cc][Ll][Uu][Ss][Ii][Vv][Oo])', '/:legacy([Ee][Xx][Cc][Ll][Uu][Ss][Ii][Vv][Oo])/:path*',
+    '/kids', '/auditoria-gratuita', '/rockinrio'],
 };
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || '';
