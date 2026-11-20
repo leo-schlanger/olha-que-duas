@@ -22,7 +22,7 @@ describe("hub", () => {
   it("badges: pieces and short radio pattern", () => {
     render(<ProgramBadges program={P[1]} />);
     expect(screen.getByText("Ler · 3 peças")).toBeTruthy();
-    expect(screen.getByText("Rádio · Ter 11h e 17h")).toBeTruthy();
+    expect(screen.getByText("Rádio · Ter, 11h e 17h")).toBeTruthy();
   });
 
   it("today on radio: only programs with a broadcast today (Friday 20/11: Top 10 at 20:00)", () => {

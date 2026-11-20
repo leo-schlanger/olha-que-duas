@@ -10,8 +10,14 @@ const MENTE = [
 describe("radio schedule (Europe/Lisbon)", () => {
   it("weekly pattern, long and short", () => {
     expect(weeklyPattern(MENTE)).toBe("terça, 11:00 e 17:00");
-    expect(weeklyPattern(MENTE, true)).toBe("Ter 11h e 17h");
-    expect(weeklyPattern([{ day_of_week: 6, time: "18:30:00" }], true)).toBe("Sáb 18h30");
+    expect(weeklyPattern(MENTE, true)).toBe("Ter, 11h e 17h");
+    expect(weeklyPattern([{ day_of_week: 6, time: "18:30:00" }], true)).toBe("Sáb, 18h30");
+    // Cantinho (qa r8): grouped, not day by day
+    const CANTINHO = [1, 2, 3, 4, 5, 6].map((d) => ({ day_of_week: d, time: "18:30:00" })).concat([{ day_of_week: 6, time: "11:00:00" }]);
+    expect(weeklyPattern(CANTINHO, true)).toBe("Seg a sáb, 18h30 · sáb, 11h");
+    expect(weeklyPattern(CANTINHO)).toBe("segunda a sábado, 18:30; sábado, 11:00");
+    // Vidioteca: sábado 13 e 17, domingo 11 e 17
+    expect(weeklyPattern([{ day_of_week: 6, time: "13:00" }, { day_of_week: 6, time: "17:00" }, { day_of_week: 0, time: "11:00" }, { day_of_week: 0, time: "17:00" }], true)).toBe("Sáb, 13h e 17h · dom, 11h e 17h");
   });
 
   it("next Tuesday from a Friday", () => {

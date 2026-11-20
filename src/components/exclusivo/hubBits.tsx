@@ -3,6 +3,7 @@ import type { HubProgram } from "@/hooks/useExclusivePrograms";
 import { exclusivoProgramPath } from "@/lib/exclusivoPaths";
 import { lisbonNow, nextBroadcast, weeklyPattern } from "@/lib/radioSchedule";
 
+
 export type HubFilter = "todos" | "ler" | "radio";
 
 export const isRadio = (p: HubProgram) => Boolean(p.radio?.is_active && ((p.radio.schedule ?? []).length || (p.radio.schedule_dates ?? []).length));
@@ -17,10 +18,8 @@ export function filterPrograms(programs: HubProgram[], f: HubFilter): HubProgram
 export function ProgramBadges({ program }: { program: HubProgram }) {
   const radio = isRadio(program) ? program.radio! : null;
   let radioText = radio ? weeklyPattern(radio.schedule ?? [], true) : "";
-  if (radio && !radioText) {
-    const next = nextBroadcast([], radio.schedule_dates ?? []);
-    if (next) radioText = `Próx.: ${+next.date.slice(8)} ${["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"][+next.date.slice(5, 7) - 1]}`;
-  }
+  // Only dated broadcasts (Céu de Cada Mês): a monthly program (qa r8).
+  if (radio && !radioText) radioText = "Mensal";
   if (!program.livePieces && !radioText) return null;
   return (
     <p className="mt-2 flex flex-wrap gap-2">

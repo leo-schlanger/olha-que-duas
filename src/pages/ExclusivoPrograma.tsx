@@ -83,9 +83,11 @@ export default function ExclusivoPrograma() {
 
   const loading =
     programQuery.isLoading ||
-    (Boolean(program) && postsQuery.isLoading) ||
+    (Boolean(program) && postsQuery.isPending) ||
     legacyQuery.isLoading ||
-    (Boolean(program?.event_id) && radioQuery.isLoading);
+    // isPending, not isLoading: right after the program arrives the radio query is
+    // enabled but not yet fetching, and isLoading was false for one paint (CLS, qa r8).
+    (Boolean(program?.event_id) && radioQuery.isPending);
 
   return (
     <div className="min-h-screen bg-[#f6f1e8]">

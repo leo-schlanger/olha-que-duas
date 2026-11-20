@@ -21,7 +21,7 @@ export interface ExclusiveProgram {
 export const EXCLUSIVO_HUB = {
   label: "Programas",
   description:
-    "Os programas do Olha que Duas: notícias, biografias, opinião e reflexão, com Alexandra Serra, Marluce Revorêdo e a redação.",
+    "Os programas do Olha que Duas para ler e ouvir: notícias, biografias, opinião e lendas no site, e o Top 10, a Vidioteca e o Cantinho da Pequenada na rádio, com Alexandra Serra, Marluce Revorêdo e a equipa.",
   path: "/programas",
   url: "https://www.olhaqueduas.com/programas",
 } as const;

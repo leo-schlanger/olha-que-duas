@@ -81,16 +81,54 @@ export function formatBroadcast(b: Broadcast): string {
   return `${DAYS[b.dow]}, ${+d} ${MONTHS[+m - 1]}, ${b.time}`;
 }
 
-/** Weekly pattern: long «terça, 11:00 e 17:00» or short «Ter 11h e 17h». */
+/**
+ * Weekly pattern, grouped: days with the same times merge, runs become ranges.
+ * Long «terça, 11:00 e 17:00» / «segunda a sábado, 18:30; sábado, 11:00»;
+ * short «Ter, 11h e 17h» / «Seg a sáb, 18h30 · sáb, 11h».
+ */
 export function weeklyPattern(weekly: WeeklySlot[], short = false): string {
-  const byDay = new Map<number, string[]>();
-  for (const s of weekly.filter((x) => x.is_active !== false).sort((a, b) => a.time.localeCompare(b.time))) {
-    const t = short ? hhmm(s.time).replace(/^0?(\d+):00$/, "$1h").replace(/^0?(\d+):(\d\d)$/, "$1h$2") : hhmm(s.time);
-    byDay.set(s.day_of_week, [...(byDay.get(s.day_of_week) ?? []), t]);
+  const fmt = (t: string) =>
+    short ? hhmm(t).replace(/^0?(\d+):00$/, "$1h").replace(/^0?(\d+):(\d\d)$/, "$1h$2") : hhmm(t);
+  const order = [1, 2, 3, 4, 5, 6, 0];
+  // time -> days
+  const byTime = new Map<string, number[]>();
+  for (const s of weekly.filter((x) => x.is_active !== false)) {
+    const t = hhmm(s.time);
+    byTime.set(t, [...new Set([...(byTime.get(t) ?? []), s.day_of_week])]);
   }
-  const order = [1, 2, 3, 4, 5, 6, 0].filter((d) => byDay.has(d));
+  // Two groupings: by time (days sharing a time) and by day (days sharing all times);
+  // the one with fewer parts wins, by time on a tie (Cantinho «Seg a sáb, 18h30 · sáb, 11h»).
+  const byTimeGroups = new Map<string, { days: number[]; times: string[] }>();
+  for (const [t, days] of [...byTime].sort((a, b) => a[0].localeCompare(b[0]))) {
+    const sorted = days.sort((a, b) => order.indexOf(a) - order.indexOf(b));
+    const key = sorted.join(",");
+    const g = byTimeGroups.get(key) ?? { days: sorted, times: [] };
+    g.times.push(t);
+    byTimeGroups.set(key, g);
+  }
+  const perDay = new Map<number, string[]>();
+  for (const [t, days] of [...byTime].sort((a, b) => a[0].localeCompare(b[0]))) for (const d of days) perDay.set(d, [...(perDay.get(d) ?? []), t]);
+  const byDayGroups = new Map<string, { days: number[]; times: string[] }>();
+  for (const d of order.filter((x) => perDay.has(x))) {
+    const key = perDay.get(d)!.join(",");
+    const g = byDayGroups.get(key) ?? { days: [], times: perDay.get(d)! };
+    g.days.push(d);
+    byDayGroups.set(key, g);
+  }
+  const groups = byDayGroups.size < byTimeGroups.size ? byDayGroups : byTimeGroups;
+  const names = short ? DAYS_SHORT.map((d) => d.toLowerCase()) : DAYS;
+  const dayLabel = (days: number[]) => {
+    const idx = days.map((d) => order.indexOf(d));
+    const run = idx.every((v, i) => i === 0 || v === idx[i - 1] + 1);
+    if (days.length > 2 && run) return `${names[days[0]]} a ${names[days[days.length - 1]]}`;
+    return days.map((d) => names[d]).join(", ");
+  };
   const join = (xs: string[]) => (xs.length > 1 ? `${xs.slice(0, -1).join(", ")} e ${xs[xs.length - 1]}` : xs[0]);
-  return order.map((d) => `${short ? DAYS_SHORT[d] : DAYS[d]}${short ? " " : ", "}${join(byDay.get(d)!)}`).join(short ? " · " : "; ");
+  const parts = [...groups.values()]
+    .sort((a, b) => b.days.length - a.days.length || order.indexOf(a.days[0]) - order.indexOf(b.days[0]))
+    .map((g) => `${dayLabel(g.days)}, ${join(g.times.map(fmt))}`);
+  const out = parts.join(short ? " · " : "; ");
+  return short && out ? out[0].toUpperCase() + out.slice(1) : out;
 }
 
 /**

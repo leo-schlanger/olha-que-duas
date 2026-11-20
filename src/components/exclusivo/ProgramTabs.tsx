@@ -40,7 +40,7 @@ export function ProgramTabs({ active }: { active?: string }) {
           aria-current={!active ? "page" : undefined}
           className={tab(!active)}
         >
-          Tudo
+          Todos
         </Link>
         {(programs ?? []).map((program) => {
           const isActive = program.slug === active;

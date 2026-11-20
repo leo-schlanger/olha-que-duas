@@ -69,7 +69,7 @@ export const ROUTE_META: Record<string, RouteMeta> = {
   },
   "/programas": {
     title: "Programas",
-    description: "Os programas do Olha que Duas: notícias, biografias, opinião e reflexão, com Alexandra Serra, Marluce Revorêdo e a redação.",
+    description: "Os programas do Olha que Duas para ler e ouvir: notícias, biografias, opinião e lendas no site, e o Top 10, a Vidioteca e o Cantinho da Pequenada na rádio, com Alexandra Serra, Marluce Revorêdo e a equipa.",
     imageAlt: "Programas Olha que Duas",
   },
 };
