@@ -75,7 +75,7 @@ const Footer = () => {
               {siteConfig.navLinks.map((link) => (
                 <a
                   key={link.href}
-                  href={link.href}
+                  href={"isRoute" in link && link.isRoute ? link.href : `/${link.href}`}
                   className="text-cream/60 hover:text-amarelo transition-colors text-sm"
                 >
                   {link.label}

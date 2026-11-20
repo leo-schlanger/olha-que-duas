@@ -1,13 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ChevronDown, Menu, Youtube, Radio } from "lucide-react";
+import { Menu, Youtube, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Sheet,
   SheetContent,
@@ -67,15 +61,8 @@ const Header = () => {
     return location.pathname === "/" && activeSection === sectionId;
   };
 
-  const primaryLinks = siteConfig.navLinks.filter(
-    (link) => !("desktop" in link && link.desktop === "more"),
-  );
-  const moreLinks = siteConfig.navLinks.filter(
-    (link) => "desktop" in link && link.desktop === "more",
-  );
-  const moreActive = moreLinks.some((link) =>
-    isLinkActive(link.href, "isRoute" in link && Boolean(link.isRoute)),
-  );
+  // No «Mais» menu (Leo, 20/11/2026): every link sits in the bar.
+  const primaryLinks = siteConfig.navLinks;
 
   return (
     <header
@@ -164,46 +151,6 @@ const Header = () => {
                 </Link>
               );
             })}
-            {moreLinks.length > 0 && (
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  className={cn(
-                    "relative inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-2 text-sm font-medium outline-none xl:px-3",
-                    moreActive
-                      ? "text-primary"
-                      : "text-foreground/70 hover:text-foreground",
-                  )}
-                >
-                  Mais
-                  <ChevronDown className="h-3.5 w-3.5" />
-                  {moreActive && (
-                    <span className="absolute inset-0 rounded-full bg-primary/10 -z-10" />
-                  )}
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  className="min-w-[12rem] rounded-2xl border-border/60 bg-background/95 p-1.5 backdrop-blur-lg"
-                >
-                  {moreLinks.map((link) => {
-                    const isRoute = "isRoute" in link && Boolean(link.isRoute);
-                    const active = isLinkActive(link.href, isRoute);
-                    return (
-                      <DropdownMenuItem key={link.href} asChild>
-                        <Link
-                          to={isRoute ? link.href : `/${link.href}`}
-                          className={cn(
-                            "cursor-pointer rounded-xl px-3 py-2",
-                            active && "bg-primary/10 text-primary",
-                          )}
-                        >
-                          {link.label}
-                        </Link>
-                      </DropdownMenuItem>
-                    );
-                  })}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
           </nav>
 
           {/* CTA Buttons - Desktop */}
@@ -286,7 +233,7 @@ const Header = () => {
                 </div>
               </SheetHeader>
               <nav className="flex flex-col p-4 gap-1">
-                {siteConfig.navLinks.map((link, index) => {
+                {primaryLinks.map((link, index) => {
                   const isRoute = "isRoute" in link && link.isRoute;
                   const accent = "accent" in link && link.accent;
                   const isActive = isLinkActive(link.href, isRoute);

@@ -24,19 +24,18 @@ export const siteConfig = {
     youtube: "https://youtube.com/@olhaqueduas-l9m?si=hKFnzKpluIODLFFk",
   },
 
-  // Links de navegação (20/11/2026: sem Loja e Viagens; «Especiais» passou a «Programas»).
-  // desktop: "more" entra no menu Mais da barra do computador. No telemóvel e
-  // no rodapé a lista continua completa, pela mesma ordem.
+  // Links de navegação (20/11/2026: sem Loja e Viagens; «Especiais» passou a
+  // «Programas»; sem o menu «Mais»: os 8 itens na barra, pedido do Leo).
   navLinks: [
     { href: "#inicio", label: "Início" },
+    { href: "#sobre", label: "Sobre" },
     { href: "#radio", label: "Rádio" },
     { href: "/programas", label: "Programas", isRoute: true, accent: true },
     { href: "/noticias", label: "Notícias", isRoute: true },
+    { href: "/servicos", label: "Serviços", isRoute: true },
     // { href: "/historias", label: "Histórias", isRoute: true }, — standby temporário
     { href: "/galeria", label: "Trabalhos", isRoute: true },
-    { href: "#sobre", label: "Sobre", desktop: "more" },
-    { href: "/servicos", label: "Serviços", isRoute: true, desktop: "more" },
-    { href: "/kids", label: "Kids", isRoute: true, desktop: "more" },
+    { href: "/kids", label: "Kids", isRoute: true },
   ],
 
   // App móvel
@@ -88,17 +87,6 @@ export const siteConfig = {
       // de música real, não anúncio.
     ],
   },
-
-  // Parceiros de viagem — linkam para /viagens
-  travelPartners: [
-    { name: "Nortravel", logo: "/partners/nortravel.jpg" },
-    { name: "MSC Cruzeiros", logo: "/partners/msc.jpg" },
-    { name: "Costa Cruzeiros", logo: "/partners/costa.jpg" },
-    { name: "Solférias", logo: "/partners/solferias.jpg" },
-    { name: "Soltour", logo: "/partners/soltour.jpg" },
-    { name: "Icárion", logo: "/partners/icarion.jpg" },
-    { name: "NewBlue", logo: "/partners/newblue.jpg" },
-  ],
 
   // Parceiros gerais
   partners: [
