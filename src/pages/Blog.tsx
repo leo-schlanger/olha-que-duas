@@ -1,3 +1,4 @@
+import { routeMeta } from "@/lib/routeMeta";
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Newspaper, Globe, TrendingUp, Clock } from 'lucide-react';
@@ -12,9 +13,7 @@ import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
 export default function Blog() {
   // SEO Meta Tags
   useMetaTags({
-    title: 'Notícias',
-    description: 'Acompanhe as principais notícias de política, empreendedorismo, comunicação e acontecimentos em Portugal, Brasil e no mundo. Olha que Duas - Informação com propósito.',
-    url: 'https://www.olhaqueduas.com/noticias',
+    ...routeMeta("/noticias"),
     jsonLd: getPageBreadcrumbJsonLd('Notícias', 'https://www.olhaqueduas.com/noticias'),
   });
 

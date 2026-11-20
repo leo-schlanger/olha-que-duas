@@ -1,3 +1,4 @@
+import { routeMeta } from "@/lib/routeMeta";
 import { Link } from "react-router-dom";
 import { useMetaTags, getPageBreadcrumbJsonLd } from "@/hooks/useMetaTags";
 import { siteConfig } from "@/config/site";
@@ -5,9 +6,7 @@ import { siteConfig } from "@/config/site";
 const PrivacyPolicy = () => {
   // SEO Meta Tags
   useMetaTags({
-    title: 'Política de Privacidade',
-    description: 'Política de Privacidade do Olha que Duas. Saiba como recolhemos, utilizamos e protegemos os seus dados pessoais em conformidade com o RGPD.',
-    url: 'https://www.olhaqueduas.com/privacidade',
+    ...routeMeta("/privacidade"),
     jsonLd: getPageBreadcrumbJsonLd('Política de Privacidade', 'https://www.olhaqueduas.com/privacidade'),
   });
 

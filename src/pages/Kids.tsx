@@ -1,3 +1,4 @@
+import { routeMeta } from "@/lib/routeMeta";
 import { Link } from 'react-router-dom';
 import {
   Sparkles,
@@ -257,12 +258,7 @@ const Kids = () => {
   const heroLogo = useSeasonalLogo(logoKids, 'kids');
   const season = useKidsSeason();
   useMetaTags({
-    title: 'Kids — Espaço Infantil de Rádio, Música e Histórias',
-    description:
-      'O espaço Kids do Olha que Duas já está no ar! Um espaço exclusivo para crianças, com música, histórias, brincadeiras e o programa "O Cantinho da Pequenada com a Leonor". Conteúdo seguro e educativo para toda a família.',
-    image: 'https://www.olhaqueduas.com/og-kids.jpg',
-    imageAlt: 'Olha que Duas Kids — Espaço infantil com música e histórias',
-    url: 'https://www.olhaqueduas.com/kids',
+    ...routeMeta("/kids"),
     type: 'website',
     tags: [
       'kids',

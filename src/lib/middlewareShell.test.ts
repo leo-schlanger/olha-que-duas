@@ -1,7 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import middleware, { withHead } from "../../middleware";
+import middleware, { config, withHead } from "../../middleware";
+import { pathToRegexp } from "path-to-regexp";
+import { ROUTE_META } from "./routeMeta";
+import { documentTitle } from "./seo";
 
 // SEO (20/11/2026): Googlebot/Bingbot get the SPA shell with the route's own head.
 const shell = readFileSync(resolve(__dirname, "../../index.html"), "utf8");
@@ -57,4 +60,27 @@ describe("search engines get the SPA shell with the route head", () => {
     const person = await get("/servicos", "Mozilla/5.0 Chrome/131");
     expect(person.res).toBeUndefined();
   });
+
+  it.each(Object.keys(ROUTE_META))("%s: robots get the same title as the page (one source)", async (path) => {
+    const { text } = await get(path, GOOGLE);
+    expect(text).toContain(`<title>${documentTitle(ROUTE_META[path].title)}</title>`);
+    expect(text).toContain(`<link rel="canonical" href="https://www.olhaqueduas.com${path}" />`);
+    expect(text).toContain('<div id="root">');
+  });
+
+  it.each(["/faq", "/newsletter", "/privacidade", "/termos", "/servicos/"])("the matcher covers %s", (p) => {
+    expect(config.matcher.some((m) => pathToRegexp(m).test(p))).toBe(true);
+  });
+
+  it("/servicos/ -> 301 /servicos", async () => {
+    const { res } = await get("/servicos/", GOOGLE);
+    expect(res?.status).toBe(301);
+    expect(res?.headers.get("Location")).toBe("https://www.olhaqueduas.com/servicos");
+  });
+
+  it("/servicos passes its imageAlt to the social preview", async () => {
+    const { text } = await get("/servicos", "facebookexternalhit/1.1");
+    expect(text).toContain(`og:image:alt" content="${ROUTE_META["/servicos"].imageAlt}"`);
+  });
 });
+

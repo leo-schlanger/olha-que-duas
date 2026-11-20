@@ -1,3 +1,4 @@
+import { routeMeta } from "@/lib/routeMeta";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useMetaTags, getPageBreadcrumbJsonLd } from "@/hooks/useMetaTags";
@@ -342,9 +343,7 @@ const FAQ = () => {
 
   // SEO Meta Tags
   useMetaTags({
-    title: 'Perguntas Frequentes (FAQ)',
-    description: 'Encontre respostas para as perguntas mais frequentes sobre a aplicação Olha que Duas. Saiba como usar a rádio, configurar lembretes, gerir a sua conta e muito mais.',
-    url: 'https://www.olhaqueduas.com/faq',
+    ...routeMeta("/faq"),
     jsonLd: getPageBreadcrumbJsonLd('FAQ', 'https://www.olhaqueduas.com/faq'),
   });
 

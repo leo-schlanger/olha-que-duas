@@ -1,3 +1,4 @@
+import { routeMeta } from "@/lib/routeMeta";
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -21,9 +22,7 @@ import logoImage from '@/assets/logo-olha-que-duas.webp';
 export default function Newsletter() {
   // SEO Meta Tags
   useMetaTags({
-    title: 'Newsletter',
-    description: 'Subscreva a newsletter do Olha que Duas e receba em primeira mão novidades exclusivas, descontos especiais e conteúdo que não partilhamos em mais lado nenhum.',
-    url: 'https://www.olhaqueduas.com/newsletter',
+    ...routeMeta("/newsletter"),
     jsonLd: getPageBreadcrumbJsonLd('Newsletter', 'https://www.olhaqueduas.com/newsletter'),
   });
   const [email, setEmail] = useState('');

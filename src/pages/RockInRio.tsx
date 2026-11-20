@@ -1,3 +1,4 @@
+import { routeMeta } from "@/lib/routeMeta";
 import { useState, useEffect } from 'react';
 import {
   Calendar, MapPin, Clock, Music,
@@ -388,11 +389,7 @@ const RockInRio = () => {
   const [festasVideoPlaying, setFestasVideoPlaying] = useState(false);
 
   useMetaTags({
-    title: 'Rock in Rio Lisboa 2026 — A Nossa Recordação',
-    description: 'A Olha que Duas foi parceira oficial do Rock in Rio Lisboa 2026. Reviva connosco os 4 dias de festival — lineup completo, palcos e a nossa galeria de fotos. 20, 21, 27 e 28 de Junho, Parque Tejo.',
-    image: 'https://www.olhaqueduas.com/og-rockinrio.jpg',
-    imageAlt: 'Olha que Duas x Rock in Rio Lisboa 2026 — Parceiro Oficial',
-    url: 'https://www.olhaqueduas.com/rockinrio',
+    ...routeMeta("/rockinrio"),
     jsonLd: [eventJsonLd, breadcrumbJsonLd, webPageJsonLd],
   });
 

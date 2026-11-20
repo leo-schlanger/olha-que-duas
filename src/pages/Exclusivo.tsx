@@ -1,3 +1,4 @@
+import { routeMeta } from "@/lib/routeMeta";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Loader2 } from "lucide-react";
@@ -25,11 +26,8 @@ export default function Exclusivo() {
   const lead = latest?.[0];
 
   useMetaTags({
-    title: EXCLUSIVO_HUB.label,
-    description: EXCLUSIVO_HUB.description,
-    url: EXCLUSIVO_HUB.url,
+    ...routeMeta("/programas"),
     image: lead?.og_image_url || HUB_IMAGE,
-    imageAlt: EXCLUSIVO_HUB.label,
     imageWidth: 1200,
     imageHeight: 630,
     jsonLd: [

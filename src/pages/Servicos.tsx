@@ -1,3 +1,4 @@
+import { routeMeta } from "@/lib/routeMeta";
 import { Link } from "react-router-dom";
 import { ArrowRight, Check, Clapperboard, Handshake, Lightbulb, Mail, Mic, Newspaper, Radio, Share2, type LucideIcon } from "lucide-react";
 import Header from "@/components/Header";
@@ -186,12 +187,7 @@ function servicesJsonLd() {
 const Servicos = () => {
   const { data: programs } = useExclusivePrograms();
   useMetaTags({
-    title: "Serviços de comunicação para negócios",
-    description:
-      "Consultoria de comunicação, gestão de redes sociais, anúncios na rádio e reels para o seu negócio. Agência com rádio própria. Peça um orçamento à medida.",
-    url: PAGE_URL,
-    image: "https://www.olhaqueduas.com/og-image.jpg",
-    imageAlt: "Olha que Duas — comunicação para negócios: redes, rádio e vídeo",
+    ...routeMeta("/servicos"),
     jsonLd: servicesJsonLd(),
   });
 

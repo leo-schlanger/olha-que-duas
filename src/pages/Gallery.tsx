@@ -1,3 +1,4 @@
+import { routeMeta } from "@/lib/routeMeta";
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Camera, ImageIcon, Loader2, AlertCircle } from 'lucide-react';
@@ -22,9 +23,7 @@ export default function Gallery() {
 
   // SEO Meta Tags
   useMetaTags({
-    title: 'Galeria',
-    description: 'Explore a nossa galeria de fotos de entrevistas, eventos e bastidores do Olha que Duas. Momentos especiais capturados em imagens.',
-    url: 'https://www.olhaqueduas.com/galeria',
+    ...routeMeta("/galeria"),
     jsonLd: getPageBreadcrumbJsonLd('Galeria', 'https://www.olhaqueduas.com/galeria'),
   });
 

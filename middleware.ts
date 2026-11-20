@@ -1,7 +1,8 @@
 import { articleHeadline, documentTitle, metaDescription } from './src/lib/seo';
 import { articleVideo, videoObjectJsonLd, type ArticleVideo } from './src/lib/articleVideo';
+import { ROUTE_META, routeMeta } from './src/lib/routeMeta';
 export const config = {
-  matcher: ['/servicos', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*', '/programas', '/programas/:path*', '/exclusivo', '/exclusivo/:path*',
+  matcher: ['/servicos', '/faq', '/newsletter', '/privacidade', '/termos', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*', '/programas', '/programas/:path*', '/exclusivo', '/exclusivo/:path*',
     // Any case (/Exclusivo/Mente-Aberta): vercel.json rules are case-sensitive.
     '/:legacy([Ee][Xx][Cc][Ll][Uu][Ss][Ii][Vv][Oo])', '/:legacy([Ee][Xx][Cc][Ll][Uu][Ss][Ii][Vv][Oo])/:path*',
     // Loja and Viagens left on 2026-11-20: any case, with or without the final slash.
@@ -234,9 +235,10 @@ export default async function middleware(request: Request): Promise<Response | u
   const ua = (request.headers.get('user-agent') || '').toLowerCase();
   const path = new URL(request.url).pathname;
   const isSocial = CRAWLERS.some((c) => ua.includes(c.toLowerCase()));
-  // Search engines outside /programas (which already gets the full text): the SPA
+  // Search engines, except on a piece (which gets the article text): the SPA
   // shell with the right head. Social previews keep the small meta page.
-  if (meta && !isSocial && SEARCH_CRAWLERS.some((c) => ua.includes(c)) && !path.startsWith('/programas')) {
+  const isPiece = /^\/programas\/[^/]+\/[^/]+$/.test(path); // keeps the article text (same as the SPA)
+  if (meta && !isSocial && SEARCH_CRAWLERS.some((c) => ua.includes(c)) && !isPiece) {
     try {
       const shell = await fetch(new URL('/', request.url).toString());
       if (shell.ok) {
@@ -263,6 +265,8 @@ async function handle(request: Request): Promise<Response | undefined> {
   // Old addresses: Loja, Viagens, /exclusivo (incl. Vinagre's program and the 8 legacy slugs).
   const target = legacyRedirect(path, url.search);
   if (target) return moved(target);
+  // One canonical form: /servicos/ -> /servicos (qa r4).
+  if (path.length > 1 && path.endsWith('/')) return moved(`${path.replace(/\/+$/, '')}${url.search}`);
 
   // // ========== HISTÓRIAS ==========
   // // Único sítio onde os motores de busca recebem HTML pré-renderizado: o
@@ -287,44 +291,10 @@ async function handle(request: Request): Promise<Response | undefined> {
 
   if (!isSocialCrawler && !isSearchCrawler) return;
 
-  // ========== KIDS ==========
-  if (path === '/kids') {
-    return html({
-      title: 'Olha que Duas Kids | Espaço Infantil de Rádio, Música e Histórias',
-      description: 'O espaço Kids do Olha que Duas já está no ar! Um espaço exclusivo para crianças, com música, histórias, brincadeiras e o programa "O Cantinho da Pequenada com a Leonor". Conteúdo seguro e educativo para toda a família.',
-      image: 'https://www.olhaqueduas.com/og-kids.jpg',
-      url: 'https://www.olhaqueduas.com/kids',
-    });
-  }
-
-  // ========== AUDITORIA GRATUITA ==========
-  if (path === '/auditoria-gratuita') {
-    return html({
-      title: 'Auditoria Gratuita de Comunicação',
-      description: 'Descubra em 15 minutos o que está a travar o crescimento da sua marca — e como resolvê-lo. Análise gratuita de presença digital, redes sociais e estratégia de comunicação. Sem compromisso.',
-      image: 'https://www.olhaqueduas.com/og-auditoria.jpg',
-      url: 'https://www.olhaqueduas.com/auditoria-gratuita',
-    });
-  }
-
-  // ========== ROCK IN RIO ==========
-  if (path === '/rockinrio') {
-    return html({
-      title: 'Rock in Rio Lisboa 2026 — Parceiro Oficial',
-      description: 'A Olha que Duas é parceira oficial do Rock in Rio Lisboa 2026. Lineup completo dia a dia: Katy Perry, Linkin Park, Rod Stewart, 21 Savage, Bárbara Bandeira, Jimmy P e +60 artistas em 4 palcos. Mapa, transportes e bilhetes. 20, 21, 27 e 28 de Junho.',
-      image: 'https://www.olhaqueduas.com/og-rockinrio.jpg',
-      url: 'https://www.olhaqueduas.com/rockinrio',
-    });
-  }
-
-  // ========== SERVIÇOS ==========
-  if (path === '/servicos') {
-    return html({
-      title: 'Serviços de comunicação para negócios',
-      description: 'Consultoria de comunicação, gestão de redes sociais, anúncios na rádio e reels para o seu negócio. Agência com rádio própria. Peça um orçamento à medida.',
-      image: 'https://www.olhaqueduas.com/og-image.jpg',
-      url: 'https://www.olhaqueduas.com/servicos',
-    });
+  // ========== FIXED ROUTES (one source with the pages: src/lib/routeMeta.ts) ==========
+  if (ROUTE_META[path] && path !== '/galeria' && path !== '/programas') {
+    const m = routeMeta(path);
+    return html({ ...m, image: m.image ?? DEFAULT_IMAGE });
   }
 
   // ========== GALERIA ==========
@@ -336,12 +306,7 @@ async function handle(request: Request): Promise<Response | undefined> {
         galleryImage = albumCoverUrl(albums[0].slug);
       }
     } catch { /* fallback to default */ }
-    return html({
-      title: 'Galeria de Fotos',
-      description: 'Explore a galeria de fotos de entrevistas, eventos e bastidores do Olha que Duas.',
-      image: galleryImage,
-      url: 'https://www.olhaqueduas.com/galeria',
-    });
+    return html({ ...routeMeta('/galeria'), image: galleryImage });
   }
 
   const galleryMatch = path.match(/^\/galeria\/([^/]+)$/);
@@ -373,18 +338,7 @@ async function handle(request: Request): Promise<Response | undefined> {
     } catch { return; }
   }
 
-  // ========== NOTÍCIAS ==========
-  if (path === '/noticias') {
-    return html({
-      title: 'Notícias',
-      description: 'Acompanhe as principais notícias de política, empreendedorismo e acontecimentos em Portugal, Brasil e no mundo.',
-      image: DEFAULT_IMAGE,
-      url: 'https://www.olhaqueduas.com/noticias',
-    });
-  }
-
   if (path === '/programas') {
-    const description = 'Os programas do Olha que Duas: notícias, biografias, opinião e reflexão, com Alexandra Serra, Marluce Revorêdo e a redação.';
     let image = 'https://www.olhaqueduas.com/exclusivo/curtas-biografias-og.jpg';
     try {
       const rows = await fetchSupabase(
@@ -394,16 +348,7 @@ async function handle(request: Request): Promise<Response | undefined> {
       const post = Array.isArray(rows) ? rows[0] : undefined;
       if (post) image = shareImage(post);
     } catch { /* fica a capa do programa */ }
-    return html({
-      title: 'Programas Olha que Duas',
-      description,
-      image,
-      imageAlt: 'Programas Olha que Duas',
-      imageWidth: 1200,
-      imageHeight: 630,
-      url: 'https://www.olhaqueduas.com/programas',
-      section: 'Programas',
-    });
+    return html({ ...routeMeta('/programas'), image, imageWidth: 1200, imageHeight: 630, section: 'Programas' });
   }
 
   const postMatch = path.match(/^\/programas\/([^/]+)\/([^/]+)$/);

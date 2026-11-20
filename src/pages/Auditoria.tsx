@@ -1,3 +1,4 @@
+import { routeMeta } from "@/lib/routeMeta";
 import { useState, useEffect } from "react";
 import {
   ArrowRight,
@@ -78,12 +79,7 @@ function FloatingNotes() {
 
 const Auditoria = () => {
   useMetaTags({
-    title: "Auditoria Gratuita de Comunicação",
-    description:
-      "Descubra em 15 minutos o que está a travar o crescimento da sua marca — e como resolvê-lo. Análise gratuita de presença digital, redes sociais e estratégia de comunicação. Sem compromisso.",
-    image: "https://www.olhaqueduas.com/og-auditoria.jpg",
-    imageAlt: "Olha que Duas — Auditoria Gratuita de Comunicação: A sua marca tem potencial, falta-lhe voz.",
-    url: PAGE_URL,
+    ...routeMeta("/auditoria-gratuita"),
     type: "website",
     jsonLd: [
       getPageBreadcrumbJsonLd("Auditoria Gratuita", PAGE_URL),
