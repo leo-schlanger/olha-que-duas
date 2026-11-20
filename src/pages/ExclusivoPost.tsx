@@ -124,14 +124,15 @@ export default function ExclusivoPost() {
   return (
     <div className="min-h-screen bg-[#f6f1e8]">
       <Header />
-      <main id="main-content" className="pt-24 md:pt-28">
+      {/* min-h: the footer starts below the fold while the list loads (CLS, qa 20/11) */}
+      <main id="main-content" className="min-h-[100svh] pt-24 md:pt-28">
         <article className="container mx-auto px-4 pb-20 sm:px-6">
           <div className="mb-8">
             <ProgramTabs active={program?.slug ?? programSlug} />
           </div>
           <div className="mx-auto max-w-3xl">
             <nav aria-label="Caminho" className="mb-5 flex flex-wrap items-center gap-2 text-sm">
-              <Link to={EXCLUSIVO_HUB.path} className="text-[#7a5b16] hover:text-[#5c4310]">Especiais</Link>
+              <Link to={EXCLUSIVO_HUB.path} className="text-[#7a5b16] hover:text-[#5c4310]">{EXCLUSIVO_HUB.label}</Link>
               <span aria-hidden className="text-[#1c0a10]/30">/</span>
               {program ? (
                 <Link to={exclusivoProgramPath(program.slug)}>
@@ -199,9 +200,12 @@ export default function ExclusivoPost() {
                 {video ? (
                   <ArticleVideo video={video} title={post.title} />
                 ) : post.cover_url && (
+                  // Covers are 1600×1000: the attributes reserve 16:10 before the image loads (CLS)
                   <img
                     src={post.cover_url}
                     alt={post.title}
+                    width={1600}
+                    height={1000}
                     className="mt-8 h-auto w-full max-w-full rounded-2xl bg-[#1c0a10] object-contain"
                   />
                 )}

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { pathToRegexp } from "path-to-regexp";
-import middleware, { config } from "../../middleware";
+import middleware, { config, legacyRedirect } from "../../middleware";
 import vercel from "../../vercel.json";
 
 // 20/11/2026: «Especiais» (/exclusivo) became «Programas» (/programas); Loja and Viagens left.
@@ -47,27 +47,32 @@ describe("middleware: /exclusivo -> /programas", () => {
   });
 });
 
-describe("vercel.json redirects", () => {
-  const redirects = vercel.redirects as Array<{ source: string; destination: string; statusCode: number }>;
-  const find = (source: string) => redirects.find((r) => r.source === source);
-
-  it.each(["/loja", "/loja/:path*", "/viagens", "/viagens/:path*"])("%s -> 301 /", (source) => {
-    expect(find(source)).toMatchObject({ destination: "/", statusCode: 301 });
+describe("one hop, any case (qa 20/11)", () => {
+  it.each([
+    ["/loja", "/"], ["/loja/", "/"], ["/LOJA", "/"], ["/Loja/x", "/"],
+    ["/viagens", "/"], ["/viagens/", "/"], ["/Viagens", "/"], ["/VIAGENS/", "/"],
+    ["/exclusivo/Mente-Aberta", "/programas/mente-aberta"],
+    ["/exclusivo/abel-dias-o-ze-nunca-bateu-na-betty", "/programas/noticias-olha-que-duas/abel-dias-o-ze-nunca-bateu-na-betty"],
+    ["/Exclusivo/Pedro-Mourinho-Fora-Do-Now/", "/programas/noticias-olha-que-duas/pedro-mourinho-fora-do-now"],
+    ["/exclusivo/olha-que-duas-e-eu", "/programas/noticias-olha-que-duas"],
+  ])("%s -> %s", async (from, to) => {
+    expect(legacyRedirect(from)).toBe(to);
+    const res = await hit(from);
+    expect(res?.status).toBe(301);
+    expect(res?.headers.get("Location")).toBe(`https://www.olhaqueduas.com${to}`);
   });
 
-  it("sends /exclusivo/* to /programas/* except files", () => {
-    const rule = redirects.find((r) => r.destination === "/programas/:path");
-    expect(rule?.statusCode).toBe(301);
-    const re = new RegExp(`^${rule!.source.replace("/exclusivo/:path", "/exclusivo/")}$`);
-    expect(re.test("/exclusivo/mente-aberta/peca")).toBe(true);
-    expect(re.test("/exclusivo/capa.jpg")).toBe(false);
+  it.each(["/loja", "/loja/", "/LOJA", "/Viagens/", "/viagens/a/b", "/Exclusivo/X"])("the matcher sends %s to the middleware", (path) => {
+    expect(config.matcher.some((m) => pathToRegexp(m).test(path))).toBe(true);
   });
 
-  it("all redirects are 301 (not Vercel's default 308)", () => {
-    expect(redirects.every((r) => r.statusCode === 301)).toBe(true);
+  it("vercel.json has no redirects left (vercel.json runs first and would add a second hop)", () => {
+    expect((vercel as { redirects?: unknown[] }).redirects ?? []).toEqual([]);
   });
 
-  it("no redirect still points to /exclusivo", () => {
-    expect(redirects.filter((r) => r.destination.startsWith("/exclusivo"))).toEqual([]);
+  it("no redirect for files or for the new addresses", () => {
+    expect(legacyRedirect("/exclusivo/capa.jpg")).toBeNull();
+    expect(legacyRedirect("/programas/mente-aberta")).toBeNull();
+    expect(legacyRedirect("/lojas-do-centro")).toBeNull();
   });
 });

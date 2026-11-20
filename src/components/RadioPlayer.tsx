@@ -138,6 +138,9 @@ const ArtCrossfade = memo(function ArtCrossfade({
   );
 });
 
+/** How long a click on «Ouvir a rádio agora» waits for the player chunk. */
+const PLAY_PENDING_MS = 30_000;
+
 /** «Hoje na rádio»: what is on now and the next three (full grid below, in a <details>). */
 function TodayOnAir({ schedule }: { schedule: DailyPeriod[] | undefined }) {
   const { current, next } = radioUpNext(schedule);
@@ -274,15 +277,20 @@ const RadioPlayer = () => {
   };
 
   // Hero button «Ouvir a rádio agora» dispatches oqd:play in the same click
-  // (user gesture), so play() is allowed. Never toggles off.
+  // (user gesture) and leaves window.__oqdPlayPending; if this chunk arrived
+  // after the click, the pending request (≤ 30 s old) starts the radio on mount.
+  // Never toggles off.
   useEffect(() => {
     const onPlay = () => {
+      window.__oqdPlayPending = undefined;
       if (!canPlay || isPlaying) return;
       play().catch((err) => {
         console.error("[RadioPlayer] play failed:", err);
         toast.error("Não foi possível iniciar a rádio. Tenta novamente.");
       });
     };
+    const pending = window.__oqdPlayPending;
+    if (pending && Date.now() - pending < PLAY_PENDING_MS) onPlay();
     window.addEventListener("oqd:play", onPlay);
     return () => window.removeEventListener("oqd:play", onPlay);
   }, [canPlay, isPlaying, play]);

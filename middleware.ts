@@ -4,10 +4,45 @@ export const config = {
   matcher: ['/servicos', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*', '/programas', '/programas/:path*', '/exclusivo', '/exclusivo/:path*',
     // Any case (/Exclusivo/Mente-Aberta): vercel.json rules are case-sensitive.
     '/:legacy([Ee][Xx][Cc][Ll][Uu][Ss][Ii][Vv][Oo])', '/:legacy([Ee][Xx][Cc][Ll][Uu][Ss][Ii][Vv][Oo])/:path*',
+    // Loja and Viagens left on 2026-11-20: any case, with or without the final slash.
+    '/:gone([Ll][Oo][Jj][Aa])', '/:gone([Ll][Oo][Jj][Aa])/:path*',
+    '/:gone([Vv][Ii][Aa][Gg][Ee][Nn][Ss])', '/:gone([Vv][Ii][Aa][Gg][Ee][Nn][Ss])/:path*',
     '/kids', '/auditoria-gratuita', '/rockinrio'],
 };
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || '';
+
+// Pieces that lived at /exclusivo/:slug before programs existed; now in Notícias.
+// All redirects live here (not in vercel.json): one hop, any case (qa 20/11).
+const LEGACY_NEWS_SLUGS = new Set([
+  'abel-dias-o-ze-nunca-bateu-na-betty',
+  'ronaldo-nao-voltara-a-ser-cr7',
+  'biografia-diogo-jota-livro-oficial-liverpool',
+  'cristina-ferreira-joao-monteiro-realizam-sonho-fabio-marques-np4game',
+  'susana-da-silva-tribunal-antonio-pedro-cerdeira-romance-comandante-melides',
+  'papa-leao-xiv-nodulo-pulmao-vai-ser-operado',
+  'pedro-mourinho-fora-do-now',
+  'david-antunes-morte-netinho',
+]);
+const SITE = 'https://www.olhaqueduas.com';
+
+function moved(location: string): Response {
+  return new Response(null, { status: 301, headers: { Location: `${SITE}${location}`, 'Cache-Control': 's-maxage=86400' } });
+}
+
+/** 301 target for an old address (/loja, /viagens, /exclusivo/...), or null. */
+export function legacyRedirect(path: string, search = ''): string | null {
+  if (/\.[a-z0-9]+$/i.test(path)) return null; // files (covers under /exclusivo/) stay
+  const lower = path.toLowerCase().replace(/\/+$/, '') || '/';
+  if (/^\/(loja|viagens)(\/|$)/.test(lower)) return '/';
+  const old = lower.match(/^\/(?:exclusivo|programas)\/olha-que-duas-e-eu(\/[^/]+)?$/);
+  if (old) return `/programas/noticias-olha-que-duas${old[1] ?? ''}`;
+  if (!/^\/exclusivo(\/|$)/.test(lower)) return null;
+  const rest = lower.slice('/exclusivo'.length);
+  const one = rest.match(/^\/([^/]+)$/);
+  if (one && LEGACY_NEWS_SLUGS.has(one[1])) return `/programas/noticias-olha-que-duas/${one[1]}`;
+  return `/programas${rest}${search}`;
+}
 const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || '';
 
 const CRAWLERS = ['facebookexternalhit', 'Facebot', 'Twitterbot', 'WhatsApp', 'LinkedInBot', 'Slackbot', 'TelegramBot', 'Discordbot'];
@@ -161,28 +196,9 @@ export default async function middleware(request: Request): Promise<Response | u
   const url = new URL(request.url);
   const path = url.pathname;
 
-  // Eduardo Vinagre left on 2026-10-24: his program's pieces now live in Notícias.
-  const oldProgram = path.match(/^\/(?:exclusivo|programas)\/olha-que-duas-e-eu(\/[^/]+)?\/?$/i);
-  if (oldProgram) {
-    return new Response(null, {
-      status: 301,
-      headers: {
-        Location: `https://www.olhaqueduas.com/programas/noticias-olha-que-duas${(oldProgram[1] ?? '').toLowerCase()}`,
-        'Cache-Control': 's-maxage=86400',
-      },
-    });
-  }
-
-  // «Especiais» became «Programas» on 2026-11-20: /exclusivo/... -> /programas/...
-  // (vercel.json does the same; this covers it if middleware runs first).
-  // Files under /exclusivo/ (covers used by the pieces) stay where they are.
-  if (/^\/exclusivo(\/|$)/i.test(path) && !/\.[a-z0-9]+$/i.test(path)) {
-    const rest = path.replace(/^\/exclusivo/i, '').toLowerCase().replace(/\/+$/, '');
-    return new Response(null, {
-      status: 301,
-      headers: { Location: `https://www.olhaqueduas.com/programas${rest}${url.search}`, 'Cache-Control': 's-maxage=86400' },
-    });
-  }
+  // Old addresses: Loja, Viagens, /exclusivo (incl. Vinagre's program and the 8 legacy slugs).
+  const target = legacyRedirect(path, url.search);
+  if (target) return moved(target);
 
   // // ========== HISTÓRIAS ==========
   // // Único sítio onde os motores de busca recebem HTML pré-renderizado: o
@@ -304,7 +320,7 @@ export default async function middleware(request: Request): Promise<Response | u
   }
 
   if (path === '/programas') {
-    const description = 'Os programas especiais do Olha que Duas: notícias, biografias, opinião e reflexão, com Alexandra Serra, Marluce Revorêdo e a redação.';
+    const description = 'Os programas do Olha que Duas: notícias, biografias, opinião e reflexão, com Alexandra Serra, Marluce Revorêdo e a redação.';
     let image = 'https://www.olhaqueduas.com/exclusivo/curtas-biografias-og.jpg';
     try {
       const rows = await fetchSupabase(

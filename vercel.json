@@ -16,33 +16,6 @@
       ]
     }
   ],
-  "redirects": [
-    {
-      "source": "/exclusivo/:slug(abel-dias-o-ze-nunca-bateu-na-betty|ronaldo-nao-voltara-a-ser-cr7|biografia-diogo-jota-livro-oficial-liverpool|cristina-ferreira-joao-monteiro-realizam-sonho-fabio-marques-np4game|susana-da-silva-tribunal-antonio-pedro-cerdeira-romance-comandante-melides|papa-leao-xiv-nodulo-pulmao-vai-ser-operado|pedro-mourinho-fora-do-now|david-antunes-morte-netinho)",
-      "destination": "/programas/noticias-olha-que-duas/:slug",
-      "statusCode": 301
-    },
-    {
-      "source": "/exclusivo/olha-que-duas-e-eu",
-      "destination": "/programas/noticias-olha-que-duas",
-      "statusCode": 301
-    },
-    {
-      "source": "/exclusivo/olha-que-duas-e-eu/:slug",
-      "destination": "/programas/noticias-olha-que-duas/:slug",
-      "statusCode": 301
-    },
-    { "source": "/exclusivo", "destination": "/programas", "statusCode": 301 },
-    {
-      "source": "/exclusivo/:path((?!.*\\.[A-Za-z0-9]+$).*)",
-      "destination": "/programas/:path",
-      "statusCode": 301
-    },
-    { "source": "/loja", "destination": "/", "statusCode": 301 },
-    { "source": "/loja/:path*", "destination": "/", "statusCode": 301 },
-    { "source": "/viagens", "destination": "/", "statusCode": 301 },
-    { "source": "/viagens/:path*", "destination": "/", "statusCode": 301 }
-  ],
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap?t=index" },
     { "source": "/sitemap-site.xml", "destination": "/api/sitemap?t=site" },

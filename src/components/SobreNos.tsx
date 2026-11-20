@@ -18,7 +18,7 @@ const people = [
     position: "50% 25%",
   },
   {
-    name: "Marluce Revoredo",
+    name: "Marluce Revorêdo",
     image: marluceImg,
     role: "Fundadora · Diretora",
     short: "Relações públicas e imagem; produtora de eventos e fashion advisor.",

@@ -10,11 +10,13 @@ const HERO_SIZES = "(min-width: 1280px) 560px, (min-width: 1024px) 45vw, (min-wi
 
 /**
  * «Ouvir a rádio agora»: scroll to the player and ask it to play in the same
- * click (user gesture, so the browser allows audio). If the player chunk is
- * not loaded yet, only the scroll happens.
+ * click (user gesture, so the browser allows audio). The request is also left
+ * pending (`window.__oqdPlayPending`, a timestamp) so a player whose lazy chunk
+ * arrives after the click still starts (qa 20/11: the event was lost at 1 s).
  */
 export function listenNow(event?: { preventDefault(): void }) {
   event?.preventDefault();
+  window.__oqdPlayPending = Date.now();
   document.getElementById("radio")?.scrollIntoView({ behavior: "smooth", block: "start" });
   window.dispatchEvent(new CustomEvent("oqd:play"));
 }

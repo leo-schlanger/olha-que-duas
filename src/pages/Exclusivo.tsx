@@ -57,6 +57,7 @@ export default function Exclusivo() {
   }, []);
 
   const recent = latest?.slice(1, 7) ?? [];
+  const loadingAny = isLoading || latestQuery.isLoading;
   const lastByProgram = new Map<string, string>();
   for (const post of latest ?? []) {
     const slug = post.program?.slug;
@@ -66,7 +67,8 @@ export default function Exclusivo() {
   return (
     <div className="min-h-screen bg-[#f6f1e8]">
       <Header />
-      <main id="main-content" className="pt-24 md:pt-28">
+      {/* min-h: the footer starts below the fold while the list loads (CLS, qa 20/11) */}
+      <main id="main-content" className="min-h-[100svh] pt-24 md:pt-28">
         <section className="container mx-auto overflow-x-clip px-4 pb-20 sm:px-6">
           <header className="pb-6">
             <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#a31f17]">Só aqui</p>
@@ -80,7 +82,7 @@ export default function Exclusivo() {
 
           <ProgramTabs />
 
-          {(isLoading || latestQuery.isLoading) && (
+          {loadingAny && (
             <div className="flex justify-center py-24 text-[#7a5b16]">
               <Loader2 className="h-6 w-6 animate-spin" />
               <span className="sr-only">A carregar os Programas</span>
@@ -93,7 +95,7 @@ export default function Exclusivo() {
             </p>
           )}
 
-          {lead && (
+          {!loadingAny && lead && (
             <div className="mt-8 border-t border-[#1c0a10]/10 pt-8 md:mt-10">
               <h2 className="sr-only">Em destaque</h2>
               <div className="grid gap-6 md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:items-center md:gap-10">
@@ -105,7 +107,7 @@ export default function Exclusivo() {
             </div>
           )}
 
-          {recent.length > 0 && (
+          {!loadingAny && recent.length > 0 && (
             <section className="mt-14 md:mt-16" aria-labelledby="exclusivo-ultimas">
               <div className="flex items-end justify-between gap-4 border-b border-[#1c0a10]/10 pb-3">
                 <h2 id="exclusivo-ultimas" className="font-display text-3xl text-[#1c0a10] md:text-4xl">
@@ -120,7 +122,8 @@ export default function Exclusivo() {
             </section>
           )}
 
-          {(programs?.length ?? 0) > 0 && (
+          {/* All at once: the programs list alone, then the pieces above it, made it jump (CLS) */}
+          {!loadingAny && (programs?.length ?? 0) > 0 && (
             <section className="mt-16 md:mt-20" aria-labelledby="exclusivo-programas">
               <h2
                 id="exclusivo-programas"

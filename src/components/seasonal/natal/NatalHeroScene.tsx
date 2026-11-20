@@ -1,4 +1,4 @@
-import { ElegantGiftShape, ElegantPineShape, NT, OrnamentShape, SnowflakeShape, StarShape } from "./art";
+import { ElegantGiftShape, ElegantPineShape, NT, SnowflakeShape } from "./art";
 import "./natal.css";
 
 // Fixed star field (percent positions): no randomness, no layout work.
@@ -25,8 +25,8 @@ const TREES: Array<{ c: string; fill?: string }> = [
 ];
 
 /**
- * Christmas night over the home Hero: stars, a big golden star, baubles hanging
- * from the top, snowflakes and a snowy hill with slender pines and gifts. Sits under the
+ * Christmas night over the home Hero: a quiet star field, two snowflakes and a
+ * snowy hill with slender pines and gifts. Sits under the
  * content (z-0) and never takes pointer events.
  */
 const NatalHeroScene = () => (
@@ -45,27 +45,6 @@ const NatalHeroScene = () => (
         }}
       />
     ))}
-
-    {/* big golden star: desktop only, by the photo's top corner (on phones the H1 now sits at the top) */}
-    <svg viewBox="0 0 24 24" className="nt-star-glow absolute hidden lg:block lg:top-[104px] lg:right-[38%] lg:w-20">
-      <StarShape />
-    </svg>
-
-    {/* baubles hanging from the top edge */}
-    <div className="absolute top-0 left-[4%] hidden sm:flex items-start gap-6 md:left-[3%]">
-      <svg viewBox="0 0 40 120" className="nt-swing w-8 md:w-10">
-        <path d="M20 0v72" stroke={NT.douradoEsc} strokeWidth={1.2} />
-        <g transform="translate(0 70)">
-          <OrnamentShape />
-        </g>
-      </svg>
-      <svg viewBox="0 0 40 120" className="nt-swing w-6 md:w-8 [animation-delay:1.6s]">
-        <path d="M20 0v40" stroke={NT.douradoEsc} strokeWidth={1.2} />
-        <g transform="translate(0 38)">
-          <OrnamentShape fill={NT.dourado} band={NT.vivo} />
-        </g>
-      </svg>
-    </div>
 
     {FLAKES.map((f, i) => (
       <svg key={i} viewBox="0 0 24 24" className={`absolute ${f.c}`} style={{ opacity: f.o }}>

@@ -53,6 +53,8 @@ describe("listenNow + oqd:play", () => {
     expect(prevent).toHaveBeenCalled();
     expect(scroll).toHaveBeenCalled();
     expect(heard).toHaveBeenCalledTimes(1);
+    expect(typeof window.__oqdPlayPending).toBe("number");
+    window.__oqdPlayPending = undefined;
     window.removeEventListener("oqd:play", heard);
     el.remove();
   });
@@ -64,6 +66,20 @@ describe("listenNow + oqd:play", () => {
     });
     expect(radio.play).toHaveBeenCalledTimes(1);
     expect(radio.stop).not.toHaveBeenCalled();
+  });
+
+  it("a click before the player chunk loaded still starts it on mount (pending request)", () => {
+    window.__oqdPlayPending = Date.now() - 3000; // chunk arrived 3 s after the click
+    renderPlayer();
+    expect(radio.play).toHaveBeenCalledTimes(1);
+    expect(window.__oqdPlayPending).toBeUndefined();
+  });
+
+  it("an old pending request (> 30 s) is ignored", () => {
+    window.__oqdPlayPending = Date.now() - 60_000;
+    renderPlayer();
+    expect(radio.play).not.toHaveBeenCalled();
+    window.__oqdPlayPending = undefined;
   });
 
   it("does not stop the radio if it is already playing", () => {

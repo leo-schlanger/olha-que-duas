@@ -82,11 +82,13 @@ export default function ExclusivoPrograma() {
   return (
     <div className="min-h-screen bg-[#f6f1e8]">
       <Header />
-      <main id="main-content" className="pt-24 md:pt-28">
+      {/* min-h: the footer starts below the fold while the list loads (CLS, qa 20/11) */}
+      <main id="main-content" className="min-h-[100svh] pt-24 md:pt-28">
         <section className="container mx-auto overflow-x-clip px-4 pb-20 sm:px-6">
           <ProgramTabs active={program?.slug ?? programSlug} />
 
-          {program && (
+          {/* Header only with the pieces: shown alone it pushed the spinner down (CLS) */}
+          {program && !loading && (
             <header
               className="mt-6 flex flex-col gap-5 rounded-2xl p-5 sm:flex-row sm:items-center sm:gap-7 sm:p-7"
               style={{ backgroundColor: theme.soft, borderLeft: `6px solid ${theme.accent}` }}
