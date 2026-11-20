@@ -125,11 +125,21 @@ html[data-season="natal"] .bg-hero-gradient {
     linear-gradient(180deg, hsl(345 72% 7%) 0%, hsl(var(--nt-noite)) 35%, hsl(348 70% 15%) 70%, hsl(var(--nt-bordo)) 100%);
 }
 
-/* Pages whose main opens with a coloured hero (main.flex-1.pt-24: Serviços,
- * Notícias, Galeria, Viagens, peças do blog…) must start right under the
- * opaque seasonal header: on phones it is 88 px, not 96, so close that 8 px band. */
+/* The seasonal header is opaque (the normal one is clear at the top):
+ * - Programas, programa and peça (main#main-content.pt-24) start with chips on
+ *   the light page: 14 px more top padding so they do not touch the header
+ *   (still needed without the lights; measured 0 px gap at md+ on 20/11).
+ * - Pages whose main opens with a coloured hero (main.flex-1.pt-24: Serviços,
+ *   Notícias, Galeria, peças do blog…) must start right under the header: on
+ *   phones it is 88 px, not 96, so close that 8 px band.
+ * Not on body (it opened a creme band above every hero). Stickies sit ≥ 6rem. */
+html[data-season="natal"] {
+  scroll-padding-top: calc(var(--seasonal-bar-h, 0px) + 14px);
+}
+html[data-season="natal"] main#main-content.pt-24 { padding-top: calc(6rem + 14px); }
 html[data-season="natal"] main.flex-1.pt-24 { padding-top: 5.5rem; }
 @media (min-width: 768px) {
+  html[data-season="natal"] main#main-content.pt-24.md\:pt-28 { padding-top: calc(7rem + 14px); }
   html[data-season="natal"] main.flex-1.pt-24.md\:pt-28 { padding-top: 7rem; }
 }
 
