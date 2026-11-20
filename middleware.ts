@@ -125,6 +125,44 @@ function shareImage(post: { cover_url?: unknown; og_image_url?: unknown }): stri
   return 'https://www.olhaqueduas.com/exclusivo/abel-dias-betty-og.jpg';
 }
 
+// Meta of each html() response, so search engines can get it on the SPA shell.
+const SHELL_META = new WeakMap<Response, Meta>();
+
+/**
+ * Search engines (20/11/2026, SEO): the SPA's own index.html with this route's
+ * title, description, canonical and OG/Twitter tags. Same page and content as
+ * people get (the JS renders it); only the head is right in the raw HTML.
+ */
+export function withHead(shell: string, meta: Meta): string {
+  const title = escapeHtml(documentTitle(meta.seoTitle || meta.title));
+  const ogTitle = escapeHtml(meta.title);
+  const description = escapeHtml(metaDescription(meta.description));
+  const url = escapeHtml(meta.url);
+  const image = escapeHtml(meta.image);
+  const alt = escapeHtml(meta.imageAlt || meta.title);
+  const tag = (attr: 'name' | 'property', key: string, value: string) => (doc: string) =>
+    doc.replace(new RegExp(`<meta\\s+${attr}="${key.replace(/[.:]/g, '\\$&')}"[\\s\\S]*?\\/?>`), `<meta ${attr}="${key}" content="${value}" />`);
+  const steps = [
+    (d: string) => d.replace(/<title>[\s\S]*?<\/title>/, `<title>${title}</title>`),
+    (d: string) => d.replace(/<link rel="canonical"[^>]*>/, `<link rel="canonical" href="${url}" />`),
+    tag('name', 'title', title),
+    tag('name', 'description', description),
+    tag('property', 'og:type', meta.type || 'website'),
+    tag('property', 'og:url', url),
+    tag('property', 'og:title', ogTitle),
+    tag('property', 'og:description', description),
+    tag('property', 'og:image', image),
+    tag('property', 'og:image:secure_url', image),
+    tag('property', 'og:image:alt', alt),
+    tag('name', 'twitter:url', url),
+    tag('name', 'twitter:title', ogTitle),
+    tag('name', 'twitter:description', description),
+    tag('name', 'twitter:image', image),
+    tag('name', 'twitter:image:alt', alt),
+  ];
+  return steps.reduce((doc, step) => step(doc), shell);
+}
+
 function html(meta: Meta): Response {
   const title = escapeHtml(meta.title);
   const docTitle = escapeHtml(documentTitle(meta.seoTitle || meta.title));
@@ -133,7 +171,7 @@ function html(meta: Meta): Response {
   const url = escapeHtml(meta.url);
   const type = meta.type || 'website';
 
-  return new Response(`<!DOCTYPE html><html lang="pt-PT"><head>
+  const res = new Response(`<!DOCTYPE html><html lang="pt-PT"><head>
     <meta charset="utf-8">
     <title>${docTitle}</title>
     <meta name="description" content="${description}">
@@ -165,6 +203,8 @@ function html(meta: Meta): Response {
   </head><body>${meta.body || ''}</body></html>`, {
     headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 's-maxage=3600' },
   });
+  SHELL_META.set(res, meta);
+  return res;
 }
 
 // Exclusivo slug that does not exist: a real 404 for crawlers instead of the
@@ -189,6 +229,30 @@ async function fetchSupabase(table: string, query: string) {
 }
 
 export default async function middleware(request: Request): Promise<Response | undefined> {
+  const res = await handle(request);
+  const meta = res ? SHELL_META.get(res) : undefined;
+  const ua = (request.headers.get('user-agent') || '').toLowerCase();
+  const path = new URL(request.url).pathname;
+  const isSocial = CRAWLERS.some((c) => ua.includes(c.toLowerCase()));
+  // Search engines outside /programas (which already gets the full text): the SPA
+  // shell with the right head. Social previews keep the small meta page.
+  if (meta && !isSocial && SEARCH_CRAWLERS.some((c) => ua.includes(c)) && !path.startsWith('/programas')) {
+    try {
+      const shell = await fetch(new URL('/', request.url).toString());
+      if (shell.ok) {
+        return new Response(withHead(await shell.text(), meta), {
+          headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'private, no-store', Vary: 'User-Agent' },
+        });
+      }
+    } catch {
+      // fall through to the plain SPA
+    }
+    return undefined;
+  }
+  return res;
+}
+
+async function handle(request: Request): Promise<Response | undefined> {
   const ua = (request.headers.get('user-agent') || '').toLowerCase();
   const isSocialCrawler = CRAWLERS.some(c => ua.includes(c.toLowerCase()));
   const isSearchCrawler = SEARCH_CRAWLERS.some(c => ua.includes(c));
@@ -221,7 +285,7 @@ export default async function middleware(request: Request): Promise<Response | u
     }
   }
 
-  if (!isSocialCrawler && !(isSearchCrawler && path.startsWith('/programas'))) return;
+  if (!isSocialCrawler && !isSearchCrawler) return;
 
   // ========== KIDS ==========
   if (path === '/kids') {

@@ -68,6 +68,7 @@ const Contacto = ({ variant = "home" }: { variant?: "home" | "servicos" }) => {
   const embedded = variant === "servicos";
   const [status, setStatus] = useState<"idle" | "sent" | "error">("idle");
   const sentRef = useRef<HTMLDivElement>(null);
+  const errorRef = useRef<HTMLParagraphElement>(null);
   const [formData, setFormData] = useState({
     nome: "",
     email: "",
@@ -102,7 +103,7 @@ const Contacto = ({ variant = "home" }: { variant?: "home" | "servicos" }) => {
     const parsed = contactFormSchema.safeParse(formData);
     if (!parsed.success) {
       setFieldErrors(getFieldErrors(parsed.error));
-      toast.error("Verifica os campos do formulário");
+      toast.error(embedded ? "Verifique os campos do formulário" : "Verifica os campos do formulário");
       return;
     }
 
@@ -139,20 +140,26 @@ const Contacto = ({ variant = "home" }: { variant?: "home" | "servicos" }) => {
 
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-      toast.success("Mensagem enviada com sucesso!", {
-        description: "Entraremos em contacto brevemente.",
-      });
+      // /servicos shows the success card in place of the form: no toast on top.
+      if (!embedded) {
+        toast.success("Mensagem enviada com sucesso!", {
+          description: "Entraremos em contacto brevemente.",
+        });
+      }
 
       setFormData({ nome: "", email: "", assunto: "", mensagem: "" });
       setStatus("sent");
     } catch (error) {
       setStatus("error");
       const isAbort = error instanceof DOMException && error.name === "AbortError";
-      toast.error("Erro ao enviar mensagem", {
-        description: isAbort
-          ? "Tempo limite excedido. Verifica a tua ligação."
-          : "Por favor tenta novamente ou envia email direto.",
-      });
+      // /servicos shows the inline alert instead (formal, with the e-mail).
+      if (!embedded) {
+        toast.error("Erro ao enviar mensagem", {
+          description: isAbort
+            ? "Tempo limite excedido. Verifica a tua ligação."
+            : "Por favor tenta novamente ou envia email direto.",
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -174,7 +181,7 @@ const Contacto = ({ variant = "home" }: { variant?: "home" | "servicos" }) => {
   };
 
   const formCard = embedded && status === "sent" ? (
-    <div ref={sentRef} tabIndex={-1} role="status" className="rounded-2xl bg-white p-6 text-[#2b1a12] shadow-xl md:p-8">
+    <div ref={sentRef} tabIndex={-1} role="status" className="scroll-mt-32 rounded-2xl bg-white p-6 text-[#2b1a12] shadow-xl md:p-8">
       <p className="font-display text-2xl font-semibold">Pedido enviado. Obrigado!</p>
       <p className="mt-2 text-base text-[#5c4f45]">Respondemos em breve com um orçamento à medida, sem compromisso.</p>
       <button type="button" onClick={() => setStatus("idle")} className="mt-4 text-base font-semibold text-vermelho-forte underline underline-offset-2">
@@ -199,7 +206,7 @@ const Contacto = ({ variant = "home" }: { variant?: "home" | "servicos" }) => {
                 name="nome"
                 value={formData.nome}
                 onChange={handleChange}
-                placeholder="O teu nome"
+                placeholder={embedded ? "O seu nome" : "O teu nome"}
                 required
                 aria-required="true"
                 aria-invalid={!!fieldErrors.nome}
@@ -223,7 +230,7 @@ const Contacto = ({ variant = "home" }: { variant?: "home" | "servicos" }) => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="o.teu@email.com"
+                placeholder={embedded ? "o.seu@email.com" : "o.teu@email.com"}
                 required
                 aria-required="true"
                 aria-invalid={!!fieldErrors.email}
@@ -251,7 +258,7 @@ const Contacto = ({ variant = "home" }: { variant?: "home" | "servicos" }) => {
               disabled={isSubmitting}
             >
               <SelectTrigger className="h-12 sm:h-10">
-                <SelectValue placeholder="Seleciona um assunto" />
+                <SelectValue placeholder={embedded ? "Selecione um assunto" : "Seleciona um assunto"} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="consultoria">Consultoria de comunicação</SelectItem>
@@ -278,7 +285,7 @@ const Contacto = ({ variant = "home" }: { variant?: "home" | "servicos" }) => {
               name="mensagem"
               value={formData.mensagem}
               onChange={handleChange}
-              placeholder="Conta-nos mais sobre o teu projeto..."
+              placeholder={embedded ? "Conte-nos mais sobre o seu negócio…" : "Conta-nos mais sobre o teu projeto..."}
               rows={4}
               required
               aria-required="true"
@@ -295,7 +302,7 @@ const Contacto = ({ variant = "home" }: { variant?: "home" | "servicos" }) => {
           </div>
 
           {status === "error" && (
-            <p role="alert" className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
+            <p ref={errorRef} tabIndex={-1} role="alert" className="rounded-lg border border-red-700 bg-white p-3 text-sm font-medium text-red-700">
               Não foi possível enviar. Tente de novo ou escreva para {siteConfig.contact.email}.
             </p>
           )}
@@ -316,7 +323,13 @@ const Contacto = ({ variant = "home" }: { variant?: "home" | "servicos" }) => {
 
   // Move focus to the success message (servicos) so screen readers hear it.
   useEffect(() => {
-    if (status === "sent") sentRef.current?.focus();
+    // preventScroll + centre: a plain focus() left the title under the fixed header (qa r3)
+    // On error the disabled button had the focus: hand it to the alert.
+    if (status === "error") errorRef.current?.focus({ preventScroll: true });
+    if (status === "sent") {
+      sentRef.current?.focus({ preventScroll: true });
+      sentRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   }, [status]);
 
   if (embedded) return formCard;

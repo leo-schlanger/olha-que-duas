@@ -406,7 +406,14 @@ const Servicos = () => {
             </p>
 
             <Link to="/rockinrio" className="mt-8 flex flex-col items-start gap-4 rounded-2xl bg-black p-5 text-white sm:flex-row sm:items-center md:p-6">
-              <img src="/rock-in-rio-branco.png" alt="Rock in Rio Lisboa" width={120} height={60} loading="lazy" className="h-12 w-auto" />
+              <img
+                src={siteConfig.rockInRio.partnerLetteringWhite}
+                alt="Rock in Rio Lisboa"
+                width={3508}
+                height={2481}
+                loading="lazy"
+                className="h-20 w-auto md:h-24"
+              />
               <span className="flex-1 text-lg font-semibold">Fomos parceiros oficiais do Rock in Rio Lisboa 2026.</span>
               <span className="text-lg font-semibold text-amarelo underline underline-offset-4">Ver como foi →</span>
             </Link>

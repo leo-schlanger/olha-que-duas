@@ -1,9 +1,11 @@
-import { afterEach, describe, expect, it } from "vitest";
-import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // /servicos (20/11/2026): card buttons pre-select the embedded form's subject.
+const toasts = vi.hoisted(() => ({ success: vi.fn(), error: vi.fn() }));
+vi.mock("sonner", () => ({ toast: toasts, Toaster: () => null }));
 globalThis.ResizeObserver ??= class {
   observe() {}
   unobserve() {}
@@ -25,6 +27,9 @@ const nativeSelect = (c: HTMLElement) => c.querySelector("#fale-connosco select,
 
 afterEach(() => {
   cleanup();
+  vi.unstubAllGlobals();
+  toasts.success.mockClear();
+  toasts.error.mockClear();
   window.history.replaceState(null, "", "/");
 });
 
@@ -66,4 +71,35 @@ describe("/servicos", () => {
       expect(container.querySelector(`#${id}`)).toBeNull();
     }
   });
+
+  const fill = () => {
+    fireEvent.change(document.getElementById("nome")!, { target: { name: "nome", value: "Ana Silva" } });
+    fireEvent.change(document.getElementById("email")!, { target: { name: "email", value: "ana@exemplo.pt" } });
+    fireEvent.change(document.getElementById("mensagem")!, { target: { name: "mensagem", value: "Quero ajuda com as redes da minha loja." } });
+    fireEvent.click(screen.getByRole("button", { name: /Enviar pedido/ }));
+  };
+
+  it("embedded form speaks formally", () => {
+    const { container } = wrap(<Contacto variant="servicos" />);
+    expect(container.querySelector('input[placeholder="O seu nome"]')).not.toBeNull();
+    expect(container.querySelector('textarea[placeholder^="Conte-nos"]')).not.toBeNull();
+    expect(container.textContent).toContain("Selecione um assunto");
+  });
+
+  it("success: the card replaces the form, no toast on top", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => new Response("{}", { status: 200 })));
+    wrap(<Contacto variant="servicos" />);
+    fill();
+    await waitFor(() => expect(screen.getByRole("status").textContent).toContain("Pedido enviado"));
+    expect(toasts.success).not.toHaveBeenCalled();
+  });
+
+  it("error: inline alert with the e-mail, no toast", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => new Response("no", { status: 500 })));
+    wrap(<Contacto variant="servicos" />);
+    fill();
+    await waitFor(() => expect(screen.getByRole("alert").textContent).toContain("Tente de novo"), { timeout: 8000 });
+    expect(screen.getByRole("alert").className).toContain("text-red-700");
+    expect(toasts.error).not.toHaveBeenCalled();
+  }, 15000);
 });
