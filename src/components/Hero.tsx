@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Play } from "lucide-react";
 import fotoJuntas from "@/assets/olha-que-duas-foto.jpg";
@@ -28,6 +29,11 @@ export function listenNow(event?: { preventDefault(): void }) {
  */
 const Hero = () => {
   const seasonalPhoto = useSeasonalHeroImage();
+  // Leaving the home cancels a click still waiting for the player chunk
+  // (otherwise coming back within 30 s would start the radio unasked).
+  useEffect(() => () => {
+    window.__oqdPlayPending = undefined;
+  }, []);
 
   return (
     <section id="inicio" className="relative overflow-hidden bg-hero-gradient">

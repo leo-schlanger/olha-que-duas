@@ -30,6 +30,7 @@ export default {
           soft: "hsl(var(--amarelo-soft))",
         },
         cream: "hsl(var(--cream))",
+        tinta: "hsl(var(--tinta))",
         charcoal: "hsl(var(--charcoal))",
         beige: {
           light: "hsl(var(--beige-light))",
@@ -78,7 +79,7 @@ export default {
         },
       },
       fontFamily: {
-        display: ['"Cormorant Garamond"', '"Cormorant Fallback"', 'serif'],
+        display: ['"Cormorant Garamond"', '"Cormorant Fallback"', '"Cormorant Fallback Noto"', '"Cormorant Fallback DejaVu"', 'serif'],
         sans: ['Inter', 'sans-serif'],
         kids: ['"Baloo 2"', 'cursive'],
       },

@@ -290,7 +290,11 @@ const RadioPlayer = () => {
       });
     };
     const pending = window.__oqdPlayPending;
-    if (pending && Date.now() - pending < PLAY_PENDING_MS) onPlay();
+    if (pending && Date.now() - pending < PLAY_PENDING_MS) {
+      onPlay();
+      // The click scrolled to the fallback; the real player is taller: scroll again (qa r2).
+      document.getElementById("radio")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
     window.addEventListener("oqd:play", onPlay);
     return () => window.removeEventListener("oqd:play", onPlay);
   }, [canPlay, isPlaying, play]);
@@ -300,7 +304,7 @@ const RadioPlayer = () => {
   };
 
   return (
-    <section id="radio" className="py-12 md:py-20 bg-beige-dark text-cream selection:bg-amarelo selection:text-charcoal">
+    <section id="radio" className="scroll-mt-24 md:scroll-mt-28 py-12 md:py-20 bg-beige-dark text-cream selection:bg-amarelo selection:text-charcoal">
       <div className="container mx-auto px-4">
         <div className="mb-8 max-w-6xl mx-auto">
           <p className="text-sm font-bold uppercase tracking-widest text-amarelo">Rádio Olha que Duas</p>

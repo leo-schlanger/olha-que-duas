@@ -1,13 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* Metric fallback for the display font while Cormorant loads (20/11/2026):
- * the H1 at 60 px measures 1685 px in Cormorant 600, 1741 in Times New Roman,
- * so Times at 97% wraps like the web font and the hero does not jump (CLS). */
+/* Metric fallbacks for the display font while Cormorant loads (20/11/2026),
+ * one family per system font (size-adjust is per face). Home H1 at 60 px, 600:
+ * Cormorant 1685 px, Times New Roman 1741 (Windows/Mac) -> 97%, Noto Serif 2142
+ * (Android) -> 78.7%, DejaVu Serif 2453 (Linux) -> 68.7%. The H1 then wraps like
+ * the web font and the hero does not jump (CLS, qa r2: 0.185 at 390 on Android). */
 @font-face {
   font-family: "Cormorant Fallback";
   src: local("Times New Roman"), local("Times"), local("Liberation Serif");
   font-weight: 400 700;
   size-adjust: 97%;
+}
+@font-face {
+  font-family: "Cormorant Fallback Noto";
+  src: local("Noto Serif"), local("NotoSerif-Regular");
+  font-weight: 400 700;
+  size-adjust: 78.7%;
+}
+@font-face {
+  font-family: "Cormorant Fallback DejaVu";
+  src: local("DejaVu Serif"), local("DejaVuSerif");
+  font-weight: 400 700;
+  size-adjust: 68.7%;
 }
 
 @tailwind base;
@@ -23,6 +37,8 @@
     --vermelho-soft: 8 65% 58%;
     /* AA red for text, links and buttons on light (20/11/2026); --vermelho stays for fills */
     --vermelho-forte: 8 72% 42%;
+    /* Dark ink for B2B surfaces (/servicos hero and contact), 7.2:1 with --amarelo (20/11/2026) */
+    --tinta: 30 22% 20%;
     /* Refined Gold/Amarelo */
     --amarelo: 45 80% 60%;
     --amarelo-soft: 45 70% 70%;

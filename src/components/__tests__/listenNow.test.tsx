@@ -22,7 +22,8 @@ globalThis.ResizeObserver ??= class {
 
 vi.mock("@/hooks/useSchedule", () => ({ useSchedule: () => ({ schedule: [], error: null }) }));
 
-import { listenNow } from "../Hero";
+import { MemoryRouter } from "react-router-dom";
+import Hero, { listenNow } from "../Hero";
 import RadioPlayer from "../RadioPlayer";
 
 const renderPlayer = () =>
@@ -70,8 +71,22 @@ describe("listenNow + oqd:play", () => {
 
   it("a click before the player chunk loaded still starts it on mount (pending request)", () => {
     window.__oqdPlayPending = Date.now() - 3000; // chunk arrived 3 s after the click
+    const scroll = vi.fn();
+    window.HTMLElement.prototype.scrollIntoView = scroll;
     renderPlayer();
     expect(radio.play).toHaveBeenCalledTimes(1);
+    expect(scroll).toHaveBeenCalled(); // scrolls again to the real player (qa r2)
+    expect(window.__oqdPlayPending).toBeUndefined();
+  });
+
+  it("leaving the home cancels a pending request", () => {
+    const { unmount } = render(
+      <MemoryRouter>
+        <Hero />
+      </MemoryRouter>,
+    );
+    window.__oqdPlayPending = Date.now();
+    unmount();
     expect(window.__oqdPlayPending).toBeUndefined();
   });
 
