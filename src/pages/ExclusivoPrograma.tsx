@@ -15,6 +15,7 @@ import { articleShareImage } from "@/lib/articleHtml";
 import { exclusivoPostPath, exclusivoProgramPath, LEGACY_PROGRAM_SLUG } from "@/lib/exclusivoPaths";
 import { EXCLUSIVO_HUB } from "@/types/exclusivo";
 import { formatVinagreDate } from "@/lib/vinagreDate";
+import { RadioBox } from "@/components/exclusivo/RadioBox";
 
 export default function ExclusivoPrograma() {
   const { programSlug = "" } = useParams();
@@ -119,6 +120,10 @@ export default function ExclusivoPrograma() {
                 )}
               </div>
             </header>
+          )}
+
+          {program && !loading && (
+            <RadioBox eventId={program.event_id} accent={theme.accent} kidsLink={program.slug === "cantinho-da-pequenada"} />
           )}
 
           {loading && (

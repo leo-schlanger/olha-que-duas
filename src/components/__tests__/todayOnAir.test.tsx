@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { render, cleanup, act } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { render } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // «Hoje na rádio»: program icon next to each name, OQD medallion when there is none.

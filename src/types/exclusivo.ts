@@ -10,6 +10,10 @@ export interface ExclusiveProgram {
   cover_url: string;
   sort_order: number;
   is_published: boolean;
+  /** Radio side (events.id), since 20/11/2026; null for written-only programs. */
+  event_id?: string | null;
+  /** Long text for radio-only programs. */
+  long_description?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -56,5 +60,7 @@ export function parseExclusiveProgram(value: unknown): ExclusiveProgram | null {
     portrait_focus: str(value, "portrait_focus") ?? "center",
     cover_url: str(value, "cover_url") ?? "",
     sort_order: typeof sort === "number" ? sort : 0,
+    event_id: str(value, "event_id"),
+    long_description: str(value, "long_description"),
   };
 }
