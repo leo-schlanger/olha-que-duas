@@ -402,13 +402,15 @@ const Servicos = () => {
             </p>
 
             <Link to="/rockinrio" className="mt-8 flex flex-col items-start gap-4 rounded-2xl bg-black p-5 text-white sm:flex-row sm:items-center md:p-6">
+              {/* Current RiR Lisboa logo, the one /rockinrio uses (partnerLogoWhite),
+                  pre-rotated upright and trimmed: public/rock-in-rio-logo-branco-h.webp */}
               <img
-                src={siteConfig.rockInRio.partnerLetteringWhite}
+                src="/rock-in-rio-logo-branco-h.webp"
                 alt="Rock in Rio Lisboa"
-                width={3508}
-                height={2481}
+                width={245}
+                height={240}
                 loading="lazy"
-                className="h-20 w-auto md:h-24"
+                className="h-24 w-auto shrink-0 md:h-28"
               />
               <span className="flex-1 text-lg font-semibold">Fomos parceiros oficiais do Rock in Rio Lisboa 2026.</span>
               <span className="text-lg font-semibold text-amarelo underline underline-offset-4">Ver como foi →</span>
