@@ -1,5 +1,22 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { EVENT_SELECT, eventKeepsProgram, type ProgramEvent } from '../src/lib/programRadio';
+
+// Same rule as src/lib/programRadio.ts (eventKeepsProgram), inlined: Vercel functions can't
+// import extension-less ESM from src/ (the import crashed the function, 20/11/2026).
+const EVENT_SELECT = 'id,is_active,schedule(day_of_week,time,is_active),schedule_dates(event_date,time,is_active)';
+interface ProgramEvent {
+  id: string;
+  is_active: boolean;
+  schedule?: { is_active?: boolean | null }[] | null;
+  schedule_dates?: { event_date: string; is_active?: boolean | null }[] | null;
+}
+function eventKeepsProgram(event: ProgramEvent | undefined): boolean {
+  if (!event?.is_active) return false;
+  const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Lisbon' }).format(new Date());
+  return (
+    (event.schedule ?? []).some((s) => s.is_active !== false) ||
+    (event.schedule_dates ?? []).some((d) => d.is_active !== false && d.event_date >= today)
+  );
+}
 
 /**
  * Sitemaps do site, lidos da base a cada pedido (cache de 15 min no edge).
