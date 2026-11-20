@@ -882,9 +882,9 @@ export default function Servicos() {
           </AnimatedGrid>
         </Section>
 
-        {/* Rádio Digital */}
+        {/* Rádio Digital (id ≠ home #radio: the seasonal CSS paints #radio/#podcast as night zones) */}
         <Section
-          id="radio"
+          id="servico-radio"
           title="Rádio Digital"
           subtitle="Veiculação na nossa rádio online 24 horas com audiência qualificada."
           icon={Radio}
@@ -898,7 +898,7 @@ export default function Servicos() {
 
         {/* Podcast */}
         <Section
-          id="podcast"
+          id="servico-podcast"
           title="Podcast"
           subtitle="Participe do nosso podcast ou crie o seu próprio com a nossa produção."
           icon={Mic}

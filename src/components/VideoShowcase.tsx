@@ -6,7 +6,7 @@ import { siteConfig } from "@/config/site";
 const highlights = [
   { icon: Mic, label: "Podcast", desc: "Entrevistas com propósito" },
   { icon: Radio, label: "Rádio 24h", desc: "Música e conteúdo sem parar" },
-  { icon: Users, label: "Comunidade", desc: "Milhares de ouvintes" },
+  { icon: Users, label: "Comunidade", desc: "Ouvintes de Portugal e do mundo" },
 ];
 
 const VideoShowcase = () => {
