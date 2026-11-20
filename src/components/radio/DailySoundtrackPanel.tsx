@@ -37,14 +37,17 @@ const FALLBACK_ICONS: Record<string, React.ReactNode> = {
  * partida nem altera o layout. Isto deixa adicionar os ícones um a um sem
  * quebrar a página.
  */
-function ProgramIcon({
+export function ProgramIcon({
   name,
   iconUrl,
   placeholder,
+  decorative = false,
 }: {
   name: string;
   iconUrl?: string;
   placeholder: React.ReactNode;
+  /** Name already written next to it: empty alt. */
+  decorative?: boolean;
 }) {
   const [errored, setErrored] = useState(false);
 
@@ -57,7 +60,9 @@ function ProgramIcon({
   return (
     <img
       src={iconUrl}
-      alt={name}
+      alt={decorative ? "" : name}
+      width={48}
+      height={48}
       className="w-full h-full object-cover"
       loading="lazy"
       decoding="async"

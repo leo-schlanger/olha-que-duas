@@ -16,7 +16,7 @@ import {
 } from "@/hooks/useDailySchedule";
 import { useClockTick } from "@/hooks/useClockTick";
 import { useRadioSync } from "@/hooks/useRadioSync";
-import DailySoundtrackPanel from "@/components/radio/DailySoundtrackPanel";
+import DailySoundtrackPanel, { ProgramIcon } from "@/components/radio/DailySoundtrackPanel";
 import RadioDebugOverlay from "@/components/radio/RadioDebugOverlay";
 import radioLogo from "@/assets/logo-olha-que-duas.webp";
 
@@ -155,6 +155,15 @@ function TodayOnAir({ schedule }: { schedule: DailyPeriod[] | undefined }) {
             key={`${slot.time}-${slot.name}-${i}`}
             className={`flex items-start gap-4 py-3 ${now ? "-mx-2 rounded-xl bg-amarelo/10 px-2" : ""}`}
           >
+            {/* Program icon (same source and frame as the full grid); OQD medallion if none */}
+            <span className="h-11 w-11 shrink-0 overflow-hidden rounded-lg border border-amarelo/30 bg-cream/5">
+              <ProgramIcon
+                name={slot.name}
+                iconUrl={slot.iconUrl}
+                decorative
+                placeholder={<img src={radioLogo} alt="" width={44} height={44} loading="lazy" className="h-full w-full object-cover" />}
+              />
+            </span>
             <span className="w-[4.5rem] shrink-0 pt-0.5 font-mono text-sm text-cream/80">
               {slot.time}
               {slot.endTime ? `–${slot.endTime}` : ""}
