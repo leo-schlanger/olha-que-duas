@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { render, cleanup } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { siteConfig } from "@/config/site";
 import { seasonalHeroImage } from "./index";
 import Hero from "@/components/Hero";
@@ -7,7 +8,7 @@ import Hero from "@/components/Hero";
 // Window comes from siteConfig.natal only (no dates duplicated here).
 const start = Date.parse(siteConfig.natal.start);
 const end = Date.parse(siteConfig.natal.end);
-const ALT = "Alexandra e Marluce - Fundadoras do Olha que Duas";
+const ALT = "Alexandra Serra e Marluce Revorêdo, as vozes do Olha que Duas";
 
 describe("seasonalHeroImage", () => {
   it("uses the Natal photo inside the window [start, end)", () => {
@@ -31,14 +32,18 @@ describe("Hero photo swap", () => {
   const renderAt = (t: number) => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(t);
-    return render(<Hero />);
+    return render(
+      <MemoryRouter>
+        <Hero />
+      </MemoryRouter>,
+    );
   };
 
   it("renders the Natal <picture> (WebP srcset + sizes) inside the window", () => {
     const { container, getByAltText } = renderAt(start + 1000);
     const source = container.querySelector('picture source[type="image/webp"]');
     expect(source?.getAttribute("srcset")).toMatch(/hero-natal-320.*320w.*hero-natal-1149.*1149w/);
-    expect(source?.getAttribute("sizes")).toContain("320px");
+    expect(source?.getAttribute("sizes")).toContain("448px");
     const img = getByAltText(ALT);
     expect(img.getAttribute("src")).toMatch(/hero-natal-800/);
     expect(img.getAttribute("fetchpriority")).toBe("high");

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, memo, type ReactNode } from "react";
 import {
-  Music, Radio, Play, Pause,
+  Music, Play, Pause,
   Volume2, VolumeX,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -16,12 +16,13 @@ import {
 } from "@/hooks/useDailySchedule";
 import { useClockTick } from "@/hooks/useClockTick";
 import { useRadioSync } from "@/hooks/useRadioSync";
-import WeatherStrip from "@/components/WeatherStrip";
 import DailySoundtrackPanel from "@/components/radio/DailySoundtrackPanel";
 import RadioDebugOverlay from "@/components/radio/RadioDebugOverlay";
 import radioLogo from "@/assets/logo-olha-que-duas.webp";
 
 import { mergeTodayPrograms } from "@/lib/mergeTodayPrograms";
+import { radioUpNext, slotMinutes } from "@/lib/radioUpNext";
+import type { DailyPeriod } from "@/hooks/useDailySchedule";
 
 // Quantidade de barras do equalizer.
 const EQUALIZER_BARS = 8;
@@ -137,6 +138,38 @@ const ArtCrossfade = memo(function ArtCrossfade({
   );
 });
 
+/** «Hoje na rádio»: what is on now and the next three (full grid below, in a <details>). */
+function TodayOnAir({ schedule }: { schedule: DailyPeriod[] | undefined }) {
+  const { current, next } = radioUpNext(schedule);
+  if (!current) return null;
+  const rows = [{ slot: current, now: true }, ...next.map((slot) => ({ slot, now: false }))];
+  return (
+    <div className="rounded-2xl border border-cream/10 bg-cream/5 p-4 md:p-5">
+      <h3 className="font-display text-xl font-semibold">Hoje na rádio</h3>
+      <ol className="mt-3 divide-y divide-cream/10">
+        {rows.map(({ slot, now }, i) => (
+          <li
+            key={`${slot.time}-${slot.name}-${i}`}
+            className={`flex items-start gap-4 py-3 ${now ? "-mx-2 rounded-xl bg-amarelo/10 px-2" : ""}`}
+          >
+            <span className="w-[4.5rem] shrink-0 pt-0.5 font-mono text-sm text-cream/80">
+              {slot.time}
+              {slot.endTime ? `–${slot.endTime}` : ""}
+            </span>
+            <span className="min-w-0">
+              {now && (
+                <span className="block text-xs font-bold uppercase tracking-wider text-amarelo">Agora</span>
+              )}
+              <span className="block break-words font-semibold text-cream">{slot.name}</span>
+              {slot.genres && <span className="block break-words text-sm text-cream/70">{slot.genres}</span>}
+            </span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
 /**
  * Player da rádio. Usa `useRadioSync` que combina:
  *  - icecast-metadata-player (ICY in-band) para timing perfeito
@@ -184,7 +217,12 @@ const RadioPlayer = () => {
     () => getPeriodBoundaries(dailySchedule),
     [dailySchedule]
   );
-  useClockTick(periodBoundaries);
+  // Re-render at period and slot changes (keeps «Hoje na rádio» current).
+  const slotBoundaries = useMemo(
+    () => (mergedSchedule ?? []).flatMap((p) => p.slots.map((s) => slotMinutes(s.time))).filter((m): m is number => m !== null),
+    [mergedSchedule],
+  );
+  useClockTick(useMemo(() => [...periodBoundaries, ...slotBoundaries], [periodBoundaries, slotBoundaries]));
   const currentPeriod = getCurrentPeriodFromSchedule(dailySchedule);
 
   const canPlay = !!radio.isLive && !!radio.streamUrl;
@@ -235,6 +273,20 @@ const RadioPlayer = () => {
     }
   };
 
+  // Hero button «Ouvir a rádio agora» dispatches oqd:play in the same click
+  // (user gesture), so play() is allowed. Never toggles off.
+  useEffect(() => {
+    const onPlay = () => {
+      if (!canPlay || isPlaying) return;
+      play().catch((err) => {
+        console.error("[RadioPlayer] play failed:", err);
+        toast.error("Não foi possível iniciar a rádio. Tenta novamente.");
+      });
+    };
+    window.addEventListener("oqd:play", onPlay);
+    return () => window.removeEventListener("oqd:play", onPlay);
+  }, [canPlay, isPlaying, play]);
+
   const handleVolumeChange = (value: number[]) => {
     setVolume(value[0]);
   };
@@ -242,17 +294,9 @@ const RadioPlayer = () => {
   return (
     <section id="radio" className="py-12 md:py-20 bg-beige-dark text-cream selection:bg-amarelo selection:text-charcoal">
       <div className="container mx-auto px-4">
-        <WeatherStrip />
-
-        {/* Header Compact */}
-        <div className="mb-10 text-left md:text-center max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amarelo/10 border border-amarelo/20 mb-4">
-            <Radio className="w-3.5 h-3.5 text-amarelo" />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-amarelo">Radio Experience</span>
-          </div>
-          <h2 className="text-3xl md:text-5xl font-display font-semibold mb-4">
-            Sintoniza a tua <span className="text-amarelo">inspiração</span>
-          </h2>
+        <div className="mb-8 max-w-6xl mx-auto">
+          <p className="text-sm font-bold uppercase tracking-widest text-amarelo">Rádio Olha que Duas</p>
+          <h2 className="mt-2 text-3xl md:text-5xl font-display font-semibold">Está a tocar agora</h2>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-6xl mx-auto items-start">
@@ -393,39 +437,33 @@ const RadioPlayer = () => {
             </Card>
           </div>
 
-          {/* Schedule Section */}
-          <div className="lg:col-span-8 flex flex-col gap-5">
-              <DailySoundtrackPanel
-              dailySchedule={mergedSchedule}
-              currentPeriod={currentPeriod}
-            />
+          {/* Today: now + next three; the full grid stays in the DOM (SEO), closed */}
+          <div className="lg:col-span-8 flex min-w-0 flex-col gap-4">
+            <TodayOnAir schedule={mergedSchedule} />
+            <details className="group rounded-2xl border border-cream/10">
+              <summary className="cursor-pointer list-none rounded-2xl px-4 py-3 font-semibold text-amarelo hover:bg-cream/5 [&::-webkit-details-marker]:hidden">
+                <span className="group-open:hidden">Ver a programação completa de hoje</span>
+                <span className="hidden group-open:inline">Fechar a programação completa</span>
+              </summary>
+              <div className="p-2 pt-0">
+                <DailySoundtrackPanel dailySchedule={mergedSchedule} currentPeriod={currentPeriod} />
+              </div>
+            </details>
           </div>
 
         </div>
 
-        {/* Destaque estratégico para Dedicatórias na Rádio */}
-        <div className="max-w-6xl mx-auto mt-8">
+        {/* App: once on the page, next to the radio */}
+        <div id="app" className="max-w-6xl mx-auto mt-6 flex flex-wrap items-center gap-4 scroll-mt-32">
+          <p className="text-base text-cream/85">Ouça também no telemóvel</p>
           <a
-            href="#dedicatorias"
-            className="group relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 sm:px-7 rounded-2xl bg-gradient-to-r from-[#3a0d12] via-vermelho/90 to-[#3a0d12] border border-amarelo/40 shadow-xl hover:border-amarelo transition-all duration-300 overflow-hidden"
+            href={siteConfig.app.androidUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Descarregar a app Olha que Duas na Google Play"
+            className="inline-block rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-amarelo/60"
           >
-            <div className="absolute -right-10 -top-10 w-36 h-36 bg-amarelo/15 rounded-full blur-2xl pointer-events-none" />
-            <div className="flex items-center gap-4 relative z-10">
-              <div className="w-12 h-12 rounded-full bg-amarelo/20 border border-amarelo/50 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                <Radio className="w-5 h-5 text-amarelo" />
-              </div>
-              <div>
-                <span className="inline-block text-[10px] font-bold uppercase tracking-widest text-amarelo mb-0.5">
-                  A sua voz na nossa rádio • O amor no tom certo
-                </span>
-                <p className="text-sm sm:text-base font-display font-bold text-cream">
-                  Quer emocionar alguém especial com uma dedicatória em áudio, poema ou música na rádio?
-                </p>
-              </div>
-            </div>
-            <span className="relative z-10 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amarelo text-charcoal font-bold text-xs sm:text-sm whitespace-nowrap group-hover:bg-amarelo-soft transition-colors shadow-md">
-              Pedir Orçamento →
-            </span>
+            <img src="/badges/google-play-pt.png" alt="Disponível no Google Play" width={119} height={46} className="h-[46px] w-auto" loading="lazy" />
           </a>
         </div>
       </div>

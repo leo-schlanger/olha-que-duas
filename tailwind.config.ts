@@ -22,6 +22,8 @@ export default {
         vermelho: {
           DEFAULT: "hsl(var(--vermelho))",
           soft: "hsl(var(--vermelho-soft))",
+          // AA on light backgrounds (buttons, links, small red labels), 20/11/2026
+          forte: "hsl(var(--vermelho-forte))",
         },
         amarelo: {
           DEFAULT: "hsl(var(--amarelo))",
@@ -76,7 +78,7 @@ export default {
         },
       },
       fontFamily: {
-        display: ['"Cormorant Garamond"', 'serif'],
+        display: ['"Cormorant Garamond"', '"Cormorant Fallback"', 'serif'],
         sans: ['Inter', 'sans-serif'],
         kids: ['"Baloo 2"', 'cursive'],
       },

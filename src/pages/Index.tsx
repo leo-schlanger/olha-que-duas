@@ -1,12 +1,9 @@
 import { lazy, Suspense, useEffect } from "react";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
-import VideoShowcase from "@/components/VideoShowcase";
+import ProgramasDestaque from "@/components/ProgramasDestaque";
 import SobreNos from "@/components/SobreNos";
-import Podcast from "@/components/Podcast";
 import DedicatoriasRadio from "@/components/DedicatoriasRadio";
-import AppDownload from "@/components/AppDownload";
-import Parceiros from "@/components/Parceiros";
 import Contacto from "@/components/Contacto";
 import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
@@ -23,7 +20,7 @@ const Index = () => {
   // restaurados (sem isto ficavam os da última página visitada).
   useMetaTags({
     description:
-      "Somos comunicadoras com propósito: podcast, rádio 24h, assessoria de imprensa e estratégia de marca em Portugal, e os Especiais Olha que Duas.",
+      "Olha que Duas: rádio online 24 horas com música, programas e histórias, de Alexandra Serra e Marluce Revorêdo. Ouça em direto, veja os Programas e peça a sua dedicatória.",
     url: "https://www.olhaqueduas.com/",
     type: "website",
   });
@@ -50,41 +47,24 @@ const Index = () => {
     <div className="min-h-screen">
       <Header />
       <main id="main-content">
-        {/* Hero - Apresentação principal */}
+        {/* Home enxuta (20/11/2026): rádio, programas, quem somos, dedicatórias, contacto */}
         <Hero />
 
-        {/* Vídeo de apresentação */}
-        <VideoShowcase />
-
-        {/* Quem somos */}
-        <SobreNos />
-
-        {/* Rádio ao vivo - Destaque principal (inclui faixa de tempo no topo) */}
+        {/* Player + «Hoje na rádio» + app (#radio, #app). Fallback ~ real height: no CLS */}
         <Suspense
           fallback={
-            <div
-              className="bg-beige-dark"
-              style={{ minHeight: "800px" }}
-              aria-hidden="true"
-            />
+            <div id="radio" className="bg-beige-dark min-h-[1200px] md:min-h-[1255px] lg:min-h-[795px]" aria-hidden="true" />
           }
         >
           <RadioPlayer />
         </Suspense>
 
-        {/* Campanha de Dedicatórias na Rádio - A sua voz na nossa rádio */}
+        <ProgramasDestaque />
+
+        <SobreNos />
+
         <DedicatoriasRadio />
 
-        {/* App móvel - Google Play (CTA logo após experiência da rádio) */}
-        <AppDownload />
-
-        {/* Podcast - Conteúdo complementar */}
-        <Podcast />
-
-        {/* Parceiros */}
-        <Parceiros />
-
-        {/* Contacto (já inclui newsletter) */}
         <Contacto />
       </main>
       <Footer />

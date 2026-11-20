@@ -46,8 +46,8 @@ const NatalHeroScene = () => (
       />
     ))}
 
-    {/* big golden star: between the lights and the photo on phones, behind the photo's corner on desktop */}
-    <svg viewBox="0 0 24 24" className="nt-star-glow absolute top-[100px] left-[calc(50%-20px)] w-10 sm:w-12 md:top-[104px] md:left-auto md:right-[8%] md:w-16 lg:right-[38%] lg:w-20">
+    {/* big golden star: desktop only, by the photo's top corner (on phones the H1 now sits at the top) */}
+    <svg viewBox="0 0 24 24" className="nt-star-glow absolute hidden lg:block lg:top-[104px] lg:right-[38%] lg:w-20">
       <StarShape />
     </svg>
 

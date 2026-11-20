@@ -25,6 +25,7 @@ html[data-season="natal"] {
   /* light zones (default page body): red, pine-green ink, snow and mint */
   --vermelho: var(--nt-vermelho);
   --vermelho-soft: var(--nt-vivo);
+  --vermelho-forte: var(--nt-vermelho);
   --amarelo: var(--nt-dourado);
   --amarelo-soft: 44 90% 76%;
   --beige-light: 40 70% 97%;
@@ -64,6 +65,7 @@ html[data-season="natal"] ::selection {
 html[data-season="natal"] :is(.hw-header, #inicio, .hw-footer, #radio, #podcast, #app, #dedicatorias, [class*="from-charcoal"], [class*="from-beige-dark"], .bg-charcoal, .bg-beige-dark) {
   --vermelho: var(--nt-dourado);
   --vermelho-soft: 44 90% 72%;
+  --vermelho-forte: var(--nt-dourado);
   --primary: var(--nt-dourado);
   --primary-foreground: var(--nt-noite);
   --ring: var(--nt-dourado);
@@ -143,17 +145,18 @@ html[data-season="natal"] main.flex-1.pt-24 { padding-top: 5.5rem; }
   html[data-season="natal"] main.flex-1.pt-24.md\:pt-28 { padding-top: 7rem; }
 }
 
-/* Snowy hill (92 px, 132 px from md) sits at the bottom of the hero: keep the
- * "24/7 No Ar" pill and the "Explorar" mouse above it (qa 13/11). */
-html[data-season="natal"] #inicio .min-h-dvh {
-  padding-bottom: 12rem;
-}
-html[data-season="natal"] #inicio .absolute.bottom-8.left-1\/2 {
-  bottom: 100px;
+/* Snowy hill (92 px, 132 px from md) sits at the bottom of the hero: the last
+ * thing in it (the photo on phones) must end above it. .hero-inner is the hook
+ * in Hero.tsx (20/11/2026 redesign). */
+html[data-season="natal"] #inicio .hero-inner {
+  padding-bottom: 7.5rem;
 }
 @media (min-width: 768px) {
-  html[data-season="natal"] #inicio .min-h-dvh { padding-bottom: 14.5rem; }
-  html[data-season="natal"] #inicio .absolute.bottom-8.left-1\/2 { bottom: 140px; }
+  html[data-season="natal"] #inicio .hero-inner { padding-bottom: 10rem; }
+}
+/* The listen card is white inside the night hero: light-zone ink and red. */
+html[data-season="natal"] #inicio .hero-listen {
+  --vermelho-forte: var(--nt-vermelho);
 }
 
 /* Dark sections: bordô and pine instead of the old browns. */
@@ -163,9 +166,7 @@ html[data-season="natal"] #radio {
 html[data-season="natal"] #podcast {
   background-image: linear-gradient(180deg, hsl(var(--nt-pinheiro-noite)) 0%, hsl(var(--nt-pinheiro)) 55%, hsl(var(--nt-pinheiro-noite)) 100%);
 }
-html[data-season="natal"] #app {
-  background-image: linear-gradient(135deg, hsl(var(--nt-bordo)) 0%, hsl(var(--nt-noite)) 55%, hsl(var(--nt-pinheiro-noite)) 100%);
-}
+/* #app is now the app line inside #radio (20/11/2026), not a section: no band. */
 /* Footer: wine, not pine (the wreath logo sits there and its branches melt into green). */
 html[data-season="natal"] .hw-footer {
   background-image: linear-gradient(180deg, hsl(var(--nt-bordo)) 0%, hsl(var(--nt-noite)) 100%);

@@ -1,184 +1,160 @@
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Card, CardContent } from "@/components/ui/card";
+import { useState } from "react";
+import { Play } from "lucide-react";
+import { siteConfig } from "@/config/site";
 import alexandraImg from "@/assets/alexandra.jpg";
 import marluceImg from "@/assets/marluce.jpg";
 import leoImg from "@/assets/leo.png";
 
-const founders = [
+// Home «Quem somos» (20/11/2026): short line per person, full bio in «Ler mais»
+// (still in the HTML), the presentation video and the partner logos.
+const people = [
   {
     name: "Alexandra Serra",
     image: alexandraImg,
-    role: "Fundadora Olha que Duas | Diretora",
+    role: "Fundadora · Diretora",
+    short: "Marketing, comunicação e redes sociais; curadora de eventos culturais.",
     description:
       "Especialista em marketing e comunicação, com sólida experiência na gestão de redes sociais, equipas e projetos de grande impacto. Atuou como colaboradora e diretora de meios de comunicação. Curadora de eventos culturais, integrando criatividade e estratégia na construção de marcas e narrativas. Alia visão empreendedora à capacidade de impulsionar negócios e desenvolver soluções inovadoras em gestão e comunicação social.",
-    initials: "AS",
-    imagePosition: "object-cover object-[50%_25%]", // Ajusta para mostrar mais o rosto
+    position: "50% 25%",
   },
   {
     name: "Marluce Revoredo",
     image: marluceImg,
-    role: "Fundadora Olha que Duas | Diretora",
+    role: "Fundadora · Diretora",
+    short: "Relações públicas e imagem; produtora de eventos e fashion advisor.",
     description:
       "Empresária de relações públicas com uma carreira marcada por parcerias com alguns dos nomes mais influentes da publicidade em Portugal. Com forte ligação aos meios de comunicação social, construiu uma reputação sólida na gestão de imagem, networking estratégico e comunicação de alto impacto. Com experiência no universo da moda como fashion advisor, destacou-se também na produção de eventos e no lançamento de novos talentos através da Marluce Produções, onde impulsiona carreiras e cria projetos que unem criatividade, visibilidade e estratégia.",
-    initials: "MR",
-    imagePosition: "object-cover",
+    position: "50% 50%",
   },
-];
-
-const team = [
   {
     name: "Leo Schlanger",
     image: leoImg,
-    role: "Diretor/CTO | Coordenador de Presença Digital",
+    role: "Diretor/CTO · Presença digital",
+    short: "Tecnologia, segurança e tudo o que põe a rádio e o site no ar.",
     description:
       "Desenvolvedor de software sénior com expertise em cibersegurança e infraestrutura. Apaixonado por automações e tecnologias Web3, é o responsável por toda a vertente tecnológica do projeto, garantindo soluções robustas, seguras e inovadoras que sustentam a presença digital do Olha que Duas.",
-    initials: "LS",
-    imagePosition: "object-cover",
+    position: "50% 50%",
   },
 ];
 
-const SobreNos = () => {
+function PresentationVideo() {
+  const [playing, setPlaying] = useState(false);
+  const { youtubeId, title } = siteConfig.video;
   return (
-    <section id="sobre" className="py-20 md:py-28 lg:py-36 bg-background relative overflow-hidden">
-      {/* Subtle background decoration */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/3 -right-32 w-64 h-64 bg-amarelo/[0.03] rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 -left-20 w-48 h-48 bg-vermelho/[0.02] rounded-full blur-3xl" />
-      </div>
-
-      <div className="container mx-auto px-4 sm:px-6 relative z-10">
-        {/* Section Header - Enhanced */}
-        <div className="max-w-2xl mx-auto text-center mb-14 md:mb-18">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/10 mb-5">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-            <span className="text-[11px] font-semibold uppercase tracking-widest text-primary">
-              Quem Somos
-            </span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-semibold text-foreground mb-5 leading-tight">
-            Somos duas, mas{" "}
-            <span className="text-gradient-brand">multiplicamos</span>
-          </h2>
-          <p className="text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto">
-            Nascido da união entre duas mulheres luso-brasileiras com trajetórias
-            distintas mas complementares.
-          </p>
-        </div>
-
-        {/* Founders - Enhanced cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto mb-16 md:mb-20">
-          {founders.map((founder) => (
-            <Card
-              key={founder.name}
-              className="group border-border/30 bg-card/80 backdrop-blur-sm hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 overflow-hidden"
-            >
-              <CardContent className="p-6 md:p-8">
-                <div className="flex flex-col items-center text-center">
-                  <div className="relative mb-5">
-                    <div className="absolute -inset-2 bg-gradient-to-br from-vermelho/20 to-amarelo/20 rounded-full blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <Avatar className="relative w-24 h-24 md:w-28 md:h-28 ring-4 ring-muted/50 group-hover:ring-primary/20 transition-all shadow-lg">
-                      <AvatarImage
-                        src={founder.image}
-                        alt={founder.name}
-                        className={founder.imagePosition}
-                      />
-                      <AvatarFallback className="text-2xl font-display bg-primary/10 text-primary">
-                        {founder.initials}
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
-                  <h3 className="text-xl md:text-2xl font-display font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-                    {founder.name}
-                  </h3>
-                  <span className="inline-flex items-center gap-1.5 text-[11px] md:text-xs text-primary font-semibold mb-4 px-3 py-1 bg-primary/5 rounded-full">
-                    {founder.role}
-                  </span>
-                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                    {founder.description}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Team */}
-        <div className="max-w-2xl mx-auto text-center mb-10 md:mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 border border-secondary/20 mb-5">
-            <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
-            <span className="text-[11px] font-semibold uppercase tracking-widest text-secondary-foreground">
-              A Nossa Equipa
-            </span>
-          </div>
-          <h3 className="text-2xl sm:text-3xl md:text-4xl font-display font-semibold text-foreground">
-            Quem nos <span className="text-gradient-brand">apoia</span>
-          </h3>
-        </div>
-
-        <div
-          className={`grid grid-cols-1 gap-6 md:gap-8 mx-auto mb-16 md:mb-20 ${
-            team.length > 1 ? "md:grid-cols-2 max-w-5xl" : "max-w-xl"
-          }`}
+    <div className="relative aspect-video overflow-hidden rounded-2xl bg-charcoal shadow-lg">
+      {playing ? (
+        <iframe
+          src={`https://www.youtube-nocookie.com/embed/${youtubeId}?rel=0&modestbranding=1&autoplay=1`}
+          title={title}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="absolute inset-0 h-full w-full"
+        />
+      ) : (
+        <button
+          type="button"
+          onClick={() => setPlaying(true)}
+          className="group absolute inset-0 h-full w-full"
+          aria-label="Ver a nossa apresentação em vídeo"
         >
-          {team.map((member) => (
-            <Card
-              key={member.name}
-              className="group border-border/30 bg-card/80 backdrop-blur-sm hover:border-secondary/20 hover:shadow-xl hover:shadow-secondary/5 transition-all duration-300"
-            >
-              <CardContent className="p-6 md:p-8">
-                <div className="flex flex-col items-center text-center">
-                  <div className="relative mb-5">
-                    <div className="absolute -inset-2 bg-gradient-to-br from-secondary/20 to-primary/20 rounded-full blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <Avatar className="relative w-24 h-24 md:w-28 md:h-28 ring-4 ring-muted/50 group-hover:ring-secondary/20 transition-all shadow-lg">
-                      <AvatarImage
-                        src={member.image}
-                        alt={member.name}
-                        className={member.imagePosition}
-                      />
-                      <AvatarFallback className="text-2xl font-display bg-secondary/10 text-secondary-foreground">
-                        {member.initials}
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
-                  <h3 className="text-xl md:text-2xl font-display font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-                    {member.name}
-                  </h3>
-                  <span className="inline-flex items-center gap-1.5 text-[11px] md:text-xs text-secondary-foreground font-semibold mb-4 px-3 py-1 bg-secondary/10 rounded-full">
-                    {member.role}
-                  </span>
-                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                    {member.description}
-                  </p>
+          <img
+            src={`https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`}
+            alt=""
+            width={480}
+            height={360}
+            loading="lazy"
+            className="h-full w-full object-cover"
+          />
+          <span className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+          <span className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-vermelho-forte text-white shadow-xl transition-transform group-hover:scale-110">
+            <Play className="ml-1 h-7 w-7" fill="currentColor" />
+          </span>
+          <span className="absolute bottom-3 left-4 text-base font-semibold text-white">Veja a nossa apresentação</span>
+        </button>
+      )}
+    </div>
+  );
+}
+
+const SobreNos = () => (
+  <section id="sobre" className="bg-background py-16 md:py-24">
+    <div className="container mx-auto px-4 sm:px-6">
+      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14">
+        <div className="min-w-0 lg:col-span-7">
+          <p className="text-sm font-bold uppercase tracking-widest text-vermelho-forte">Quem somos</p>
+          <h2 className="mt-2 font-display text-3xl font-semibold leading-tight text-foreground sm:text-4xl md:text-5xl">
+            Somos duas, mas multiplicamos
+          </h2>
+          <p className="mt-4 max-w-xl text-base text-muted-foreground md:text-lg">
+            Duas comunicadoras luso-brasileiras que juntaram a rádio, a escrita e a estratégia de marca num só
+            projeto, com quem as ajuda a pô-lo no ar.
+          </p>
+
+          <ul className="mt-8 space-y-4">
+            {people.map((p) => (
+              <li key={p.name} className="flex gap-4 rounded-2xl border border-border/50 bg-background p-4 shadow-sm md:p-5">
+                <img
+                  src={p.image}
+                  alt={p.name}
+                  width={72}
+                  height={72}
+                  loading="lazy"
+                  className="h-16 w-16 shrink-0 rounded-full object-cover md:h-[72px] md:w-[72px]"
+                  style={{ objectPosition: p.position }}
+                />
+                <div className="min-w-0">
+                  <h3 className="font-display text-xl font-semibold text-foreground">{p.name}</h3>
+                  <p className="text-sm font-bold text-vermelho-forte">{p.role}</p>
+                  <details className="group mt-1">
+                    <summary className="cursor-pointer list-none text-base text-muted-foreground [&::-webkit-details-marker]:hidden">
+                      {p.short}{" "}
+                      <span className="font-semibold text-vermelho-forte underline underline-offset-2 group-open:hidden">Ler mais</span>
+                    </summary>
+                    <p className="mt-2 text-base leading-relaxed text-muted-foreground">{p.description}</p>
+                  </details>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+              </li>
+            ))}
+          </ul>
+
+          <blockquote className="mt-8 border-l-4 border-amarelo pl-5 font-display text-xl italic leading-relaxed text-foreground md:text-2xl">
+            «Onde a força é propósito, a comunicação é ponte e o afeto é estratégia.»
+          </blockquote>
         </div>
 
-        {/* Mission Statement - Enhanced */}
-        <div className="max-w-3xl mx-auto">
-          <div className="relative bg-gradient-to-br from-beige-dark via-beige-dark to-charcoal rounded-2xl md:rounded-3xl p-8 md:p-12 text-center overflow-hidden shadow-2xl">
-            {/* Decorative elements */}
-            <div className="absolute top-0 left-0 w-32 h-32 bg-vermelho/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 right-0 w-40 h-40 bg-amarelo/10 rounded-full blur-3xl" />
-            <div className="absolute top-4 left-4 text-6xl md:text-8xl text-cream/5 font-display">"</div>
-            <div className="absolute bottom-4 right-4 text-6xl md:text-8xl text-cream/5 font-display rotate-180">"</div>
-
-            <blockquote className="relative z-10 text-xl md:text-2xl lg:text-3xl text-cream font-display italic leading-relaxed mb-6">
-              No centro de tudo, está a nossa amizade, a nossa voz e a nossa
-              vontade de fazer diferente.
-            </blockquote>
-            <div className="relative z-10 inline-flex items-center gap-3 px-5 py-2 bg-amarelo/10 rounded-full border border-amarelo/20">
-              <span className="w-2 h-2 rounded-full bg-amarelo" />
-              <span className="text-amarelo font-display font-semibold text-base md:text-lg">
-                Olha que Duas. Olha bem.
-              </span>
-            </div>
-          </div>
+        <div className="min-w-0 lg:col-span-5">
+          <PresentationVideo />
+          <h3 className="mt-8 text-sm font-bold uppercase tracking-widest text-muted-foreground">Quem caminha connosco</h3>
+          <ul className="mt-4 flex flex-wrap gap-3">
+            {siteConfig.partners.map((partner) => {
+              const logo = (
+                <img
+                  src={partner.logo}
+                  alt={partner.name}
+                  width={64}
+                  height={64}
+                  loading="lazy"
+                  className="h-16 w-16 rounded-lg object-contain"
+                />
+              );
+              const box = "block rounded-xl bg-white p-1 shadow-sm ring-1 ring-black/5";
+              return (
+                <li key={partner.name}>
+                  {partner.url && partner.url !== "#" ? (
+                    <a href={partner.url} target="_blank" rel="noopener noreferrer" title={partner.name} className={`${box} transition-transform hover:scale-105`}>
+                      {logo}
+                    </a>
+                  ) : (
+                    <span title={partner.name} className={box}>{logo}</span>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </div>
-    </section>
-  );
-};
+    </div>
+  </section>
+);
 
 export default SobreNos;

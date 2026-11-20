@@ -154,7 +154,15 @@ const Footer = () => {
         {/* Divider */}
         <div className="border-t border-cream/10 pt-8">
           {/* Legal Links */}
-          <div className="flex justify-center gap-6 mb-6">
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-6">
+            {/* Newsletter: one link here (the home form left with the 20/11 redesign) */}
+            <Link
+              to="/newsletter"
+              className="text-cream/40 hover:text-amarelo transition-colors text-sm"
+            >
+              Newsletter
+            </Link>
+            <span className="text-cream/20">•</span>
             <Link
               to="/faq"
               className="text-cream/40 hover:text-amarelo transition-colors text-sm"

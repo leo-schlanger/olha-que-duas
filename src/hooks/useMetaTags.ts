@@ -23,10 +23,10 @@ interface MetaTagsConfig {
 
 const DEFAULT_CONFIG = {
   siteName: 'Olha que Duas',
-  defaultTitle: 'Olha que Duas | Podcast, Rádio e Comunicação em Portugal',
-  defaultDescription: 'Somos comunicadoras com propósito. Podcast, Rádio 24h, Assessoria de Imprensa e Estratégia de Marca em Portugal.',
+  defaultTitle: 'Olha que Duas | Rádio online 24 horas e Programas',
+  defaultDescription: 'Olha que Duas: rádio online 24 horas com música, programas e histórias, de Alexandra Serra e Marluce Revorêdo. Ouça em direto, veja os Programas e peça a sua dedicatória.',
   defaultImage: 'https://www.olhaqueduas.com/og-image.jpg',
-  defaultImageAlt: 'Olha que Duas - Podcast e Rádio em Portugal',
+  defaultImageAlt: 'Olha que Duas, rádio online 24 horas',
   baseUrl: 'https://www.olhaqueduas.com',
   locale: 'pt_PT',
   twitterCard: 'summary_large_image' as const,

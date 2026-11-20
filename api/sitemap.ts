@@ -29,7 +29,7 @@ interface Entry {
 }
 
 const STATIC_PAGES: Entry[] = [
-  { loc: '/', freq: 'daily', priority: '1.0', image: { loc: '/og-image.jpg', title: 'Olha que Duas - Podcast e Rádio' } },
+  { loc: '/', freq: 'daily', priority: '1.0', image: { loc: '/og-image.jpg', title: 'Olha que Duas, rádio online 24 horas' } },
   { loc: '/noticias', freq: 'hourly', priority: '0.9' },
   { loc: '/programas', freq: 'daily', priority: '0.9' },
   { loc: '/auditoria-gratuita', lastmod: '2026-04-21', freq: 'monthly', priority: '0.8', image: { loc: '/og-auditoria.jpg', title: 'Auditoria Gratuita de Comunicação - Olha que Duas' } },

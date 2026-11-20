@@ -1,5 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
+/* Metric fallback for the display font while Cormorant loads (20/11/2026):
+ * the H1 at 60 px measures 1685 px in Cormorant 600, 1741 in Times New Roman,
+ * so Times at 97% wraps like the web font and the hero does not jump (CLS). */
+@font-face {
+  font-family: "Cormorant Fallback";
+  src: local("Times New Roman"), local("Times"), local("Liberation Serif");
+  font-weight: 400 700;
+  size-adjust: 97%;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,6 +21,8 @@
     /* Core Brand Colors - Softer, more sophisticated */
     --vermelho: 8 72% 50%;
     --vermelho-soft: 8 65% 58%;
+    /* AA red for text, links and buttons on light (20/11/2026); --vermelho stays for fills */
+    --vermelho-forte: 8 72% 42%;
     /* Refined Gold/Amarelo */
     --amarelo: 45 80% 60%;
     --amarelo-soft: 45 70% 70%;
@@ -46,7 +58,8 @@
     --secondary-foreground: 30 20% 35%;
 
     --muted: 36 30% 90%;
-    --muted-foreground: 32 15% 55%;
+    /* 30 15% 40%: AA on cream/white (was 32 15% 55%, ~3.2:1), 20/11/2026 */
+    --muted-foreground: 30 15% 40%;
 
     --accent: 38 35% 93%;
     --accent-foreground: 30 20% 35%;
