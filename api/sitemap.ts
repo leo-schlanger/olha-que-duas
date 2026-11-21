@@ -143,7 +143,8 @@ async function build(kind: Kind): Promise<string> {
   const today = new Date().toISOString().slice(0, 10);
 
   if (kind === 'index') {
-    const maps = ['sitemap-site.xml', 'sitemap-noticias.xml', 'sitemap-programas.xml', 'sitemap-google-news.xml'];
+    // No sitemap-noticias: aggregated news are noindex (Leo, 21/11/2026). Google News lists Programas pieces only.
+    const maps = ['sitemap-site.xml', 'sitemap-programas.xml', 'sitemap-google-news.xml'];
     return `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${maps.map((m) => `  <sitemap><loc>${SITE}/${m}</loc><lastmod>${today}</lastmod></sitemap>`).join('\n')}
@@ -177,20 +178,8 @@ ${maps.map((m) => `  <sitemap><loc>${SITE}/${m}</loc><lastmod>${today}</lastmod>
     ]);
   }
 
-  if (kind === 'noticias') {
-    const posts = await query<{ slug: string; published_at: string | null; updated_at: string | null }>(
-      'blog_posts',
-      'is_published=eq.true&order=published_at.desc&select=slug,published_at,updated_at',
-    );
-    return urlset(
-      posts.map((p) => ({
-        loc: `/noticias/${p.slug}`,
-        lastmod: day(p.updated_at) ?? day(p.published_at),
-        freq: 'monthly',
-        priority: '0.6',
-      })),
-    );
-  }
+  // Kept as an empty urlset so the old address answers cleanly (news are noindex since 21/11/2026).
+  if (kind === 'noticias') return urlset([]);
 
   if (kind === 'exclusivo') {
     const [programs, posts] = await Promise.all([

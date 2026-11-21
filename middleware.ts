@@ -111,6 +111,8 @@ interface Meta {
   jsonLd?: unknown;
   /** Reel 9:16 da peça: og:video para as redes. */
   video?: ArticleVideo | null;
+  /** Robots value; default index (aggregated news: 'noindex, follow'). */
+  robots?: string;
 }
 
 function stripScripts(value: string): string {
@@ -134,6 +136,7 @@ function shareImage(post: { cover_url?: unknown; og_image_url?: unknown }): stri
 
 // Meta of each html() response, so search engines can get it on the SPA shell.
 const SHELL_META = new WeakMap<Response, Meta>();
+const INDEX_ROBOTS = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
 
 /**
  * Search engines (20/11/2026, SEO): the SPA's own index.html with this route's
@@ -153,6 +156,8 @@ export function withHead(shell: string, meta: Meta): string {
     (d: string) => d.replace(/<title>[\s\S]*?<\/title>/, `<title>${title}</title>`),
     (d: string) => d.replace(/<link rel="canonical"[^>]*>/, `<link rel="canonical" href="${url}" />`),
     tag('name', 'title', title),
+    tag('name', 'robots', escapeHtml(meta.robots || INDEX_ROBOTS)),
+    tag('name', 'googlebot', escapeHtml(meta.robots || INDEX_ROBOTS)),
     tag('name', 'description', description),
     tag('property', 'og:type', meta.type || 'website'),
     tag('property', 'og:url', url),
@@ -183,7 +188,7 @@ function html(meta: Meta): Response {
     <title>${docTitle}</title>
     <meta name="description" content="${description}">
     <link rel="canonical" href="${url}">
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="robots" content="${escapeHtml(meta.robots || INDEX_ROBOTS)}">
     <meta property="og:title" content="${title}">
     <meta property="og:description" content="${description}">
     <meta property="og:image" content="${image}">
@@ -532,6 +537,8 @@ async function handle(request: Request): Promise<Response | undefined> {
         description,
         image,
         url: `https://www.olhaqueduas.com/noticias/${slug}`,
+        // Aggregated third-party news: out of the index, links still followed (Leo, 21/11/2026).
+        robots: 'noindex, follow',
       });
     } catch { return; }
   }

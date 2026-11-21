@@ -18,7 +18,8 @@ interface MetaTagsConfig {
   author?: string;
   section?: string;
   tags?: string[];
-  noindex?: boolean;
+  /** true = noindex, nofollow; 'follow' = noindex, follow (aggregated news, 21/11/2026). */
+  noindex?: boolean | 'follow';
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
@@ -127,11 +128,14 @@ export function useMetaTags(config: MetaTagsConfig) {
     updateLinkTag('canonical', fullUrl);
 
     // Robots
-    if (noindex) {
-      updateMetaTag('robots', 'noindex, nofollow', false);
-    } else {
-      updateMetaTag('robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1', false);
-    }
+    // index.html also has a googlebot tag: keep both in step.
+    const robots = noindex === 'follow'
+      ? 'noindex, follow'
+      : noindex
+        ? 'noindex, nofollow'
+        : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+    updateMetaTag('robots', robots, false);
+    updateMetaTag('googlebot', robots, false);
 
     // Open Graph tags
     updateMetaTag('og:type', type);
@@ -192,6 +196,7 @@ export function useMetaTags(config: MetaTagsConfig) {
       updateMetaTag('description', DEFAULT_CONFIG.defaultDescription, false);
       updateLinkTag('canonical', DEFAULT_CONFIG.baseUrl);
       updateMetaTag('robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1', false);
+      updateMetaTag('googlebot', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1', false);
       updateMetaTag('og:type', 'website');
       updateMetaTag('og:url', DEFAULT_CONFIG.baseUrl);
       updateMetaTag('og:title', DEFAULT_CONFIG.defaultTitle);
@@ -325,6 +330,8 @@ export function getBlogPostMetaConfig(post: {
     author: 'Olha que Duas',
     section: post.category,
     tags: parsedTags,
+    // Aggregated third-party news: visible to people, out of Google's index (Leo, 21/11/2026).
+    noindex: 'follow',
     jsonLd: [articleJsonLd, breadcrumbJsonLd],
   };
 }

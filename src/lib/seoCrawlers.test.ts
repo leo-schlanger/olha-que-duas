@@ -133,3 +133,44 @@ describe("piece page for crawlers", () => {
     ]);
   });
 });
+
+describe("aggregated news: noindex, follow (Leo, 21/11/2026)", () => {
+  const row = { title: "Notícia", summary: "Resumo", slug: "uma-noticia" };
+
+  it("/noticias/:slug for Googlebot: noindex, follow in robots and googlebot, own canonical", async () => {
+    const { res, text } = await crawl("/noticias/uma-noticia", [row]);
+    expect(res?.status).toBe(200);
+    expect(text).toContain('<meta name="robots" content="noindex, follow" />');
+    expect(text).toContain('<meta name="googlebot" content="noindex, follow" />');
+    expect(text).toContain('<link rel="canonical" href="https://www.olhaqueduas.com/noticias/uma-noticia" />');
+    expect(text).toContain('<div id="root">'); // people-visible page, same SPA
+  });
+
+  it("social preview page carries the same robots", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify([row]))));
+    const res = await middleware(new Request("https://www.olhaqueduas.com/noticias/uma-noticia", { headers: { "user-agent": "facebookexternalhit/1.1" } }));
+    expect(await res!.text()).toContain('<meta name="robots" content="noindex, follow">');
+  });
+
+  it.each(["/noticias", "/programas", "/servicos"])("%s stays indexable", async (path) => {
+    const { text } = await crawl(path, []);
+    expect(text).toContain('<meta name="robots" content="index, follow, max-image-preview:large');
+    expect(text).not.toContain("noindex");
+  });
+
+  it("the sitemap index no longer lists the news; sitemap-noticias is empty", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => new Response("[]")));
+    const { default: handler } = await import("../../api/sitemap");
+    const run = async (t: string) => {
+      let body = "";
+      const res = { setHeader: () => res, status: () => res, send: (b: string) => { body = b; return res; } };
+      await handler({ query: { t } } as never, res as never);
+      return body;
+    };
+    const index = await run("index");
+    expect(index).not.toContain("sitemap-noticias");
+    expect(index).toContain("sitemap-programas.xml");
+    expect(index).toContain("sitemap-google-news.xml");
+    expect(await run("noticias")).not.toContain("<url>");
+  });
+});
