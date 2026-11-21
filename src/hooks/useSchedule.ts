@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
+import { loadSupabase, isSupabaseConfigured } from '@/lib/supabase';
 
 interface ScheduleEvent {
   id: string;
@@ -146,7 +146,7 @@ export function useSchedule() {
     queryKey: ['weekly-schedule'],
     queryFn: async (): Promise<GroupedSchedule[]> => {
       if (!isSupabaseConfigured()) return fallbackSchedule;
-      const supabase = getSupabase();
+      const supabase = await loadSupabase();
       if (!supabase) return fallbackSchedule;
 
       const today = lisbonToday();

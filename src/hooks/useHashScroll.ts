@@ -23,8 +23,8 @@ export function useHashScroll() {
         }
       }, 100);
     } else {
-      // Se não tem hash, volta ao topo
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Se não tem hash, volta ao topo (já no topo: nada, evita um layout forçado no arranque)
+      if (window.scrollY > 0) window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [location]);
 }

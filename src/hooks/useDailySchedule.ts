@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
+import { loadSupabase, isSupabaseConfigured } from '@/lib/supabase';
 
 export interface DailySlot {
   time: string;
@@ -171,7 +171,7 @@ export function useDailySchedule() {
   return useQuery({
     queryKey: ['daily-schedule'],
     queryFn: async (): Promise<DailyPeriod[]> => {
-      const supabase = getSupabase();
+      const supabase = await loadSupabase();
       if (!isSupabaseConfigured() || !supabase) {
         return fallbackSchedule;
       }

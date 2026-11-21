@@ -1,9 +1,9 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-let supabaseInstance: SupabaseClient | null = null;
+let clientPromise: Promise<SupabaseClient | null> | null = null;
 
 function isValidUrl(url: string): boolean {
   try {
@@ -14,18 +14,19 @@ function isValidUrl(url: string): boolean {
   }
 }
 
-export function getSupabase(): SupabaseClient | null {
-  if (supabaseInstance) return supabaseInstance;
-
-  if (!supabaseUrl || !supabaseAnonKey || !isValidUrl(supabaseUrl)) {
-    return null;
+/**
+ * Supabase client, created on first use. supabase-js (~50 KB br) is a lazy
+ * chunk so it stays out of the first paint (perf, 21/11/2026); callers are
+ * all async query functions. Null when the env is missing.
+ */
+export function loadSupabase(): Promise<SupabaseClient | null> {
+  if (!clientPromise) {
+    clientPromise = isSupabaseConfigured()
+      ? import('@supabase/supabase-js').then(({ createClient }) => createClient(supabaseUrl, supabaseAnonKey))
+      : Promise.resolve(null);
   }
-
-  supabaseInstance = createClient(supabaseUrl, supabaseAnonKey);
-  return supabaseInstance;
+  return clientPromise;
 }
-
-export const supabase = getSupabase();
 
 export const isSupabaseConfigured = () => {
   return !!(supabaseUrl && supabaseAnonKey && isValidUrl(supabaseUrl));

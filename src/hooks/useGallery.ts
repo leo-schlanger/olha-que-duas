@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getSupabase, isSupabaseConfigured, getSupabaseUrl } from '@/lib/supabase';
+import { loadSupabase, isSupabaseConfigured, getSupabaseUrl } from '@/lib/supabase';
 import type { GalleryAlbum, GalleryAlbumWithPhotos, GalleryPhoto, GalleryVideo, GalleryAlbumsByYear } from '@/types/gallery';
 
 interface CloudinaryPhotoRef {
@@ -47,7 +47,7 @@ export function useGalleryAlbums() {
   return useQuery({
     queryKey: ['gallery-albums'],
     queryFn: async (): Promise<GalleryAlbumsByYear[]> => {
-      const supabase = getSupabase();
+      const supabase = await loadSupabase();
       if (!isSupabaseConfigured() || !supabase) {
         return [];
       }
@@ -133,7 +133,7 @@ export function useGalleryAlbum(slug: string) {
     queryKey: ['gallery-album', slug],
     staleTime: 1000 * 60 * 5, // 5 minutes
     queryFn: async (): Promise<GalleryAlbumWithPhotos | null> => {
-      const supabase = getSupabase();
+      const supabase = await loadSupabase();
       if (!isSupabaseConfigured() || !supabase) {
         return null;
       }

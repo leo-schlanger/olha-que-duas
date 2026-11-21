@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
+import { loadSupabase, isSupabaseConfigured } from '@/lib/supabase';
 
 interface SignupResult {
   success: boolean;
@@ -19,7 +19,7 @@ export function useNewsletterSignup() {
         throw new Error('Supabase não configurado');
       }
 
-      const supabase = getSupabase();
+      const supabase = await loadSupabase();
       if (!supabase) {
         throw new Error('Supabase não disponível');
       }

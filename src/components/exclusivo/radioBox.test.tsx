@@ -7,7 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const row = vi.hoisted(() => ({ value: null as unknown }));
 vi.mock("@/lib/supabase", () => ({
   isSupabaseConfigured: () => true,
-  getSupabase: () => ({
+  loadSupabase: async () => ({
     from: () => ({ select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: row.value, error: null }) }) }) }),
   }),
 }));

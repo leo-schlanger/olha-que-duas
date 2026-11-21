@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
+import { loadSupabase, isSupabaseConfigured } from '@/lib/supabase';
 import type { Episode, Story } from '@/types/story';
 
 /**
@@ -17,7 +17,7 @@ export function useStories() {
   return useQuery({
     queryKey: ['stories'],
     queryFn: async (): Promise<Story[]> => {
-      const supabase = getSupabase();
+      const supabase = await loadSupabase();
       if (!supabase) return [];
 
       const { data, error } = await supabase
@@ -40,7 +40,7 @@ export function useStory(slug: string) {
   return useQuery({
     queryKey: ['story', slug],
     queryFn: async (): Promise<{ story: Story; episodes: Episode[] } | null> => {
-      const supabase = getSupabase();
+      const supabase = await loadSupabase();
       if (!supabase) return null;
 
       const { data: story, error: storyError } = await supabase
@@ -86,7 +86,7 @@ export function useEpisode(storySlug: string, number: number) {
   return useQuery({
     queryKey: ['episode', storySlug, number],
     queryFn: async (): Promise<EpisodeView | null> => {
-      const supabase = getSupabase();
+      const supabase = await loadSupabase();
       if (!supabase) return null;
 
       const { data: story, error: storyError } = await supabase
@@ -130,7 +130,7 @@ export function useEpisode(storySlug: string, number: number) {
  * não grava não pode estragar a leitura de quem está na página.
  */
 export async function registerEpisodeView(episodeId: string): Promise<void> {
-  const supabase = getSupabase();
+  const supabase = await loadSupabase();
   if (!supabase) return;
   try {
     await supabase.rpc('increment_episode_views', { episode_uuid: episodeId });

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Radio } from "lucide-react";
-import { getSupabase, isSupabaseConfigured } from "@/lib/supabase";
+import { loadSupabase, isSupabaseConfigured } from "@/lib/supabase";
 import { formatBroadcast, nextBroadcast, weeklyPattern, type DatedSlot, type WeeklySlot } from "@/lib/radioSchedule";
 
 interface RadioEvent {
@@ -17,7 +17,7 @@ export function useProgramRadio(eventId: string | null | undefined) {
     enabled: Boolean(eventId) && isSupabaseConfigured(),
     staleTime: 5 * 60_000,
     queryFn: async (): Promise<RadioEvent | null> => {
-      const supabase = getSupabase();
+      const supabase = await loadSupabase();
       if (!supabase || !eventId) return null;
       const { data, error } = await supabase
         .from("events")

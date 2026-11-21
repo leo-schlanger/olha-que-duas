@@ -4,10 +4,11 @@ import { Play } from "lucide-react";
 import fotoJuntas from "@/assets/olha-que-duas-foto.jpg";
 import { SeasonalHeroSlot, useSeasonalHeroImage } from "@/components/seasonal";
 import { EXCLUSIVO_HUB } from "@/types/exclusivo";
+import { HERO_SIZES } from "@/lib/heroPreload";
 
 const HERO_ALT = "Alexandra Serra e Marluce Revorêdo, as vozes do Olha que Duas";
-// Rendered width of the photo box: full column on phones (max-w-md from sm), half the grid from lg.
-const HERO_SIZES = "(min-width: 1280px) 560px, (min-width: 1024px) 45vw, (min-width: 640px) 448px, calc(100vw - 2rem)";
+// Rendered width of the photo box (full column on phones, max-w-md from sm, half the grid from lg);
+// shared with the index.html preload (lib/heroPreload.ts).
 
 /**
  * «Ouvir a rádio agora»: scroll to the player and ask it to play in the same

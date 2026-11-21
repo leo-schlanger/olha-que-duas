@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getSupabase, isSupabaseConfigured } from "@/lib/supabase";
+import { loadSupabase, isSupabaseConfigured } from "@/lib/supabase";
 import { parseExclusiveProgram, type ExclusiveProgram } from "@/types/exclusivo";
 import { EVENT_SELECT, visiblePrograms, type ProgramEvent } from "@/lib/programRadio";
 import { liveFilter } from "@/hooks/useVinagrePosts";
@@ -30,7 +30,7 @@ export function useExclusivePrograms() {
   return useQuery({
     queryKey: ["exclusive-programs"],
     queryFn: async (): Promise<HubProgram[]> => {
-      const supabase = getSupabase();
+      const supabase = await loadSupabase();
       if (!supabase) return [];
       const [{ data, error }, live] = await Promise.all([
         supabase
@@ -66,7 +66,7 @@ export function useExclusiveProgram(slug: string) {
   return useQuery({
     queryKey: ["exclusive-program", slug],
     queryFn: async (): Promise<ExclusiveProgram | null> => {
-      const supabase = getSupabase();
+      const supabase = await loadSupabase();
       if (!supabase || !slug) return null;
       const { data, error } = await supabase
         .from("exclusive_programs")

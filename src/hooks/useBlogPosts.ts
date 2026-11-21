@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
+import { loadSupabase, isSupabaseConfigured } from '@/lib/supabase';
 import type { BlogPost, BlogFilters } from '@/types/blog';
 
 export function useBlogPosts(filters: BlogFilters = {}, page = 1, limit = 12) {
   return useQuery({
     queryKey: ['blog-posts', filters, page, limit],
     queryFn: async (): Promise<{ posts: BlogPost[], totalPages: number }> => {
-      const supabase = getSupabase();
+      const supabase = await loadSupabase();
       if (!isSupabaseConfigured() || !supabase) {
         return { posts: [], totalPages: 0 };
       }
@@ -84,7 +84,7 @@ export function useBlogPost(slug: string) {
   return useQuery({
     queryKey: ['blog-post', slug],
     queryFn: async (): Promise<BlogPost | null> => {
-      const supabase = getSupabase();
+      const supabase = await loadSupabase();
       if (!isSupabaseConfigured() || !supabase) {
         return null;
       }
@@ -109,7 +109,7 @@ export function useBlogCategories() {
   return useQuery({
     queryKey: ['blog-categories'],
     queryFn: async (): Promise<string[]> => {
-      const supabase = getSupabase();
+      const supabase = await loadSupabase();
       if (!isSupabaseConfigured() || !supabase) {
         return [];
       }
@@ -145,7 +145,7 @@ export function useBlogRegions() {
   return useQuery({
     queryKey: ['blog-regions'],
     queryFn: async (): Promise<string[]> => {
-      const supabase = getSupabase();
+      const supabase = await loadSupabase();
       if (!isSupabaseConfigured() || !supabase) {
         return [];
       }

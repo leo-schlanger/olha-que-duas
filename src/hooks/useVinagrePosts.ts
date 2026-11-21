@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { getSupabase, isSupabaseConfigured } from "@/lib/supabase";
+import { useQuery, type QueryClient } from "@tanstack/react-query";
+import { loadSupabase, isSupabaseConfigured } from "@/lib/supabase";
 import { parseVinagrePost, type VinagrePost } from "@/types/vinagre";
 
 export const liveFilter = () =>
@@ -12,7 +12,7 @@ export function useProgramPosts(programId: string | undefined) {
   return useQuery({
     queryKey: ["vinagre-posts", programId ?? ""],
     queryFn: async (): Promise<VinagrePost[]> => {
-      const supabase = getSupabase();
+      const supabase = await loadSupabase();
       if (!supabase || !programId) return [];
       const { data, error } = await supabase
         .from("vinagre_posts")
@@ -31,25 +31,52 @@ export function useProgramPosts(programId: string | undefined) {
   });
 }
 
+async function fetchVinagrePost(slug: string): Promise<VinagrePost | null> {
+  const supabase = await loadSupabase();
+  if (!supabase || !slug) return null;
+  const { data, error } = await supabase
+    .from("vinagre_posts")
+    .select(POST_COLUMNS)
+    .eq("slug", slug)
+    .eq("is_published", true)
+    .or(liveFilter())
+    .maybeSingle();
+  if (error) throw error;
+  return parseVinagrePost(data);
+}
+
+const postQuery = (slug: string) => ({
+  queryKey: ["vinagre-post", slug],
+  queryFn: () => fetchVinagrePost(slug),
+  staleTime: 60_000,
+});
+
 export function useVinagrePost(slug: string) {
   return useQuery({
-    queryKey: ["vinagre-post", slug],
-    queryFn: async (): Promise<VinagrePost | null> => {
-      const supabase = getSupabase();
-      if (!supabase || !slug) return null;
-      const { data, error } = await supabase
-        .from("vinagre_posts")
-        .select(POST_COLUMNS)
-        .eq("slug", slug)
-        .eq("is_published", true)
-        .or(liveFilter())
-        .maybeSingle();
-      if (error) throw error;
-      return parseVinagrePost(data);
-    },
+    ...postQuery(slug),
     enabled: isSupabaseConfigured() && slug.length > 0,
-    staleTime: 60_000,
   });
+}
+
+/** Piece URL path (/programas/<program>/<slug>) -> its slug, else null. */
+export function postSlugFromPath(pathname: string): string | null {
+  const match = /^\/programas\/[^/]+\/([^/]+)\/?$/i.exec(pathname);
+  if (!match) return null;
+  try {
+    return decodeURIComponent(match[1]);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Starts the piece query at boot when the URL is a piece, so it runs in
+ * parallel with the route chunk instead of after it (LCP is the piece text).
+ */
+export function prefetchVinagrePost(client: QueryClient, pathname: string) {
+  const slug = postSlugFromPath(pathname);
+  if (!slug || !isSupabaseConfigured()) return;
+  void client.prefetchQuery(postQuery(slug));
 }
 
 /** As peças mais recentes de todos os programas, para a capa do Exclusivo. */
@@ -57,7 +84,7 @@ export function useLatestExclusivePosts(limit = 9) {
   return useQuery({
     queryKey: ["vinagre-posts-latest", limit],
     queryFn: async (): Promise<VinagrePost[]> => {
-      const supabase = getSupabase();
+      const supabase = await loadSupabase();
       if (!supabase) return [];
       const { data, error } = await supabase
         .from("vinagre_posts")
