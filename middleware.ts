@@ -74,6 +74,7 @@ function escapeHtml(value: string): string {
 // }
 
 const SLUG_REGEX = /^[a-z0-9][a-z0-9-]*[a-z0-9]$/;
+const NEWS_SLUG_REGEX = /^[a-z0-9][a-z0-9-]*$/;
 
 const DEFAULT_IMAGE = 'https://www.olhaqueduas.com/og-image.jpg';
 
@@ -515,7 +516,8 @@ async function handle(request: Request): Promise<Response | undefined> {
   const newsMatch = path.match(/^\/noticias\/([^/]+)$/);
   if (newsMatch) {
     const slug = newsMatch[1];
-    if (!SLUG_REGEX.test(slug) || slug.length > 100) return;
+    // The news cron cuts slugs at 100 chars, so 99 of them end in '-' (21/11/2026).
+    if (!NEWS_SLUG_REGEX.test(slug) || slug.length > 100) return;
     try {
       const posts = await fetchSupabase('blog_posts', `slug=eq.${encodeURIComponent(slug)}&is_published=eq.true`);
       if (Array.isArray(posts) && posts.length === 0) return notFound(`https://www.olhaqueduas.com${path}`, '/noticias', 'Ver as Notícias');

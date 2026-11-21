@@ -79,6 +79,15 @@ describe("real 404 for crawlers on missing news and albums", () => {
   });
 });
 
+describe("news slugs cut at 100 chars by the cron (99 end in '-')", () => {
+  it("still get their own head", async () => {
+    const slug = `${"a".repeat(98)}x-`;
+    const { res, text } = await crawl(`/noticias/${slug}`, [{ title: "Notícia", summary: "Resumo", slug }]);
+    expect(res?.status).toBe(200);
+    expect(text).toContain(`<link rel="canonical" href="https://www.olhaqueduas.com/noticias/${slug}" />`);
+  });
+});
+
 describe("piece page for crawlers", () => {
   const row = {
     title: "Kina: A Mulher que se Fez Sozinha",
