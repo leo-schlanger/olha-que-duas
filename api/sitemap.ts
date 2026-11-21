@@ -51,9 +51,15 @@ const STATIC_PAGES: Entry[] = [
   { loc: '/noticias', freq: 'hourly', priority: '0.9' },
   { loc: '/programas', freq: 'daily', priority: '0.9' },
   { loc: '/auditoria-gratuita', lastmod: '2026-04-21', freq: 'monthly', priority: '0.8', image: { loc: '/og-auditoria.jpg', title: 'Auditoria Gratuita de Comunicação - Olha que Duas' } },
-  { loc: '/servicos', lastmod: '2026-04-06', freq: 'monthly', priority: '0.8' },
+  { loc: '/servicos', lastmod: '2026-11-20', freq: 'monthly', priority: '0.8' },
   { loc: '/galeria', freq: 'weekly', priority: '0.8' },
-  { loc: '/kids', lastmod: '2026-04-11', freq: 'weekly', priority: '0.7', image: { loc: '/og-kids.jpg', title: 'Olha que Duas Kids - Espaço Infantil' } },
+  { loc: '/kids', lastmod: '2026-11-20', freq: 'weekly', priority: '0.7', image: { loc: '/og-kids.jpg', title: 'Olha que Duas Kids - Espaço Infantil' } },
+  { loc: '/kids/historias', lastmod: '2026-05-27', freq: 'monthly', priority: '0.6' },
+  { loc: '/kids/jogos', lastmod: '2026-11-13', freq: 'monthly', priority: '0.6' },
+  { loc: '/kids/jogos/quiz', lastmod: '2026-11-13', freq: 'monthly', priority: '0.5' },
+  { loc: '/kids/jogos/memoria', lastmod: '2026-11-13', freq: 'monthly', priority: '0.5' },
+  { loc: '/kids/jogos/pacman', lastmod: '2026-10-27', freq: 'monthly', priority: '0.5' },
+  { loc: '/kids/jogos/snake', lastmod: '2026-10-27', freq: 'monthly', priority: '0.5' },
   { loc: '/rockinrio', lastmod: '2026-05-16', freq: 'monthly', priority: '0.6', image: { loc: '/og-rockinrio.jpg', title: 'Olha que Duas x Rock in Rio Lisboa 2026' } },
   { loc: '/newsletter', lastmod: '2026-03-24', freq: 'monthly', priority: '0.6' },
   { loc: '/faq', lastmod: '2026-04-06', freq: 'monthly', priority: '0.5' },
@@ -145,12 +151,23 @@ ${maps.map((m) => `  <sitemap><loc>${SITE}/${m}</loc><lastmod>${today}</lastmod>
   }
 
   if (kind === 'site') {
-    const albums = await query<{ slug: string; title: string; cover_url?: string | null; event_date: string | null; updated_at?: string | null }>(
-      'gallery_albums',
-      'is_published=eq.true&order=event_date.desc&select=slug,title,event_date,updated_at',
-    );
+    const [albums, news, pieces] = await Promise.all([
+      query<{ slug: string; title: string; cover_url?: string | null; event_date: string | null; updated_at?: string | null }>(
+        'gallery_albums',
+        'is_published=eq.true&order=event_date.desc&select=slug,title,event_date,updated_at',
+      ),
+      query<{ published_at: string | null }>('blog_posts', 'is_published=eq.true&order=published_at.desc.nullslast&limit=1&select=published_at').catch(() => []),
+      exclusivoPosts('&limit=1').catch(() => []),
+    ]);
+    // Hubs change when their newest item does, not every day (21/11/2026).
+    const newestAlbum = albums.map((a) => day(a.updated_at) ?? day(a.event_date) ?? '').sort().pop();
+    const hubDay: Record<string, string | undefined> = {
+      '/noticias': day(news[0]?.published_at),
+      '/programas': day(pieces[0]?.published_at),
+      '/galeria': newestAlbum || undefined,
+    };
     return urlset([
-      ...STATIC_PAGES.map((p) => ({ ...p, lastmod: p.lastmod ?? today })),
+      ...STATIC_PAGES.map((p) => ({ ...p, lastmod: p.lastmod ?? hubDay[p.loc] ?? today })),
       ...albums.map((a) => ({
         loc: `/galeria/${a.slug}`,
         lastmod: day(a.updated_at) ?? day(a.event_date),

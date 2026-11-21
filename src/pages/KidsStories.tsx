@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import { Animated } from '@/components/ui/animated';
 import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
+import { routeMeta } from '@/lib/routeMeta';
 
 const stories = [
   {
@@ -117,12 +118,7 @@ const storiesJsonLd = [
 
 export default function KidsStories() {
   useMetaTags({
-    title: 'Histórias Infantis para Crianças — Contos Narrados do Cantinho da Pequenada',
-    description:
-      'Ouve histórias infantis narradas em vídeo no espaço Kids do Olha que Duas! Contos e aventuras do Cantinho da Pequenada com a Leonor — Baby Shark, Rexy e muitas mais. Conteúdo seguro, gratuito e educativo para crianças dos 3 aos 12 anos.',
-    image: 'https://www.olhaqueduas.com/og-kids.jpg',
-    imageAlt: 'Olha que Duas Kids — Histórias Encantadas narradas para crianças',
-    url: 'https://www.olhaqueduas.com/kids/historias',
+    ...routeMeta("/kids/historias"),
     tags: [
       'histórias infantis',
       'contos para crianças',

@@ -56,7 +56,8 @@ describe("middleware: peça com vídeo", () => {
     expect(html).not.toContain("og:video");
     expect(html).not.toContain("<video");
     const ld = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)![1]);
-    expect(ld["@type"]).toBe("NewsArticle");
+    // Since 21/11/2026 always [NewsArticle, BreadcrumbList] (no VideoObject without video).
+    expect(ld.map((x: { "@type": string }) => x["@type"])).toEqual(["NewsArticle", "BreadcrumbList"]);
   });
 });
 

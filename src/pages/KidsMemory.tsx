@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { BookOpen, Mic2, Radio, RotateCcw, Star } from 'lucide-react';
 import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
+import { routeMeta } from '@/lib/routeMeta';
 import KidsGameShell from '@/components/kids/games/KidsGameShell';
 import GameOverlay from '@/components/kids/games/GameOverlay';
 import MoreGames from '@/components/kids/games/MoreGames';
@@ -112,12 +113,7 @@ const memoryJsonLd = [
 const KidsMemory = () => {
   const kidsLogo = useSeasonalLogo(logoKids, 'kids');
   useMetaTags({
-    title: 'Memória das Duas — Encontra os pares do Cantinho',
-    description:
-      'Encontra os pares da Alexandra, da Marluce, do Leo e do Micro no jogo da memória do Olha que Duas Kids.',
-    image: 'https://www.olhaqueduas.com/og-kids.jpg',
-    imageAlt: 'Memória das Duas — Olha que Duas Kids',
-    url: 'https://www.olhaqueduas.com/kids/jogos/memoria',
+    ...routeMeta("/kids/jogos/memoria"),
     tags: ['jogo da memória', 'olha que duas kids', 'cantinho da pequenada'],
     jsonLd: memoryJsonLd,
   });

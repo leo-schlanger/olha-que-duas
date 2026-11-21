@@ -62,6 +62,7 @@ function GalleryAlbumPage() {
         : `Galeria de fotos: ${album?.title}. Veja ${album?.photo_count || 0} fotos deste momento especial.`),
     image: coverImageUrl,
     url: albumUrl,
+    noindex: !isLoading && !error && !album,
     jsonLd: album ? [
       getPageBreadcrumbJsonLd(
         album.title,

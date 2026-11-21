@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { LOGO_URL } from '@/lib/pieceJsonLd';
 import { documentTitle, metaDescription } from '@/lib/seo';
 
 interface MetaTagsConfig {
@@ -274,7 +275,7 @@ export function getBlogPostMetaConfig(post: {
       name: 'Olha que Duas',
       logo: {
         '@type': 'ImageObject',
-        url: DEFAULT_CONFIG.defaultImage,
+        url: LOGO_URL,
       },
     },
     mainEntityOfPage: {

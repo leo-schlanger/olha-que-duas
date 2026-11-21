@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Sparkles, Star } from 'lucide-react';
 import { Animated } from '@/components/ui/animated';
 import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
+import { routeMeta } from '@/lib/routeMeta';
 import KidsGameShell from '@/components/kids/games/KidsGameShell';
 import { BabySharkArt, MemoryArt, QuizArt, SnakeArt } from '@/components/kids/games/GameArts';
 import logoKids from '@/assets/kids/logo-kids.webp';
@@ -102,12 +103,7 @@ const gamesJsonLd = [
 export default function KidsGames() {
   const heroLogo = useSeasonalLogo(logoKids, 'kids');
   useMetaTags({
-    title: 'Jogos do Cantinho — Quiz, Memória, Baby Shark e Cobra Arco-Íris',
-    description:
-      'Entra no Cantinho da Pequenada e joga! Quiz da rádio, Memória das estrelas, Baby Shark e Cobra Arco-Íris. Jogos seguros, sem anúncios, para crianças dos 3 aos 12 anos.',
-    image: 'https://www.olhaqueduas.com/og-kids.jpg',
-    imageAlt: 'Olha que Duas Kids — Jogos do Cantinho da Pequenada',
-    url: 'https://www.olhaqueduas.com/kids/jogos',
+    ...routeMeta("/kids/jogos"),
     tags: [
       'jogos infantis online',
       'olha que duas kids',

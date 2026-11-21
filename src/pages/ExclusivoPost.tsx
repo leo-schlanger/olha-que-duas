@@ -10,12 +10,12 @@ import { ProgramTabs } from "@/components/exclusivo/ProgramTabs";
 import { ProgramPortrait } from "@/components/exclusivo/VinagrePortrait";
 import { ArticleVideo } from "@/components/exclusivo/ArticleVideo";
 import { useLatestExclusivePosts, useProgramPosts, useVinagrePost } from "@/hooks/useVinagrePosts";
-import { getPageBreadcrumbJsonLd, useMetaTags } from "@/hooks/useMetaTags";
+import { useMetaTags } from "@/hooks/useMetaTags";
 import { articleShareImage, readingMinutes, sanitizeArticleHtml } from "@/lib/articleHtml";
 import { articleVideo, videoObjectJsonLd } from "@/lib/articleVideo";
 import { exclusivoPostPath, exclusivoProgramPath } from "@/lib/exclusivoPaths";
 import { formatVinagreDate } from "@/lib/vinagreDate";
-import { articleHeadline } from "@/lib/seo";
+import { pieceArticleJsonLd, pieceAuthor, pieceBreadcrumbJsonLd, type PieceLd } from "@/lib/pieceJsonLd";
 import { EXCLUSIVO_HUB } from "@/types/exclusivo";
 
 export default function ExclusivoPost() {
@@ -37,6 +37,21 @@ export default function ExclusivoPost() {
   // A piece can be signed by someone other than the program's author.
   const author = post?.author || program?.author || EXCLUSIVO_HUB.label;
   const video = post ? articleVideo(post) : null;
+  // Same JSON-LD as the crawler page in middleware.ts (src/lib/pieceJsonLd.ts).
+  const pieceLd: PieceLd | null = post
+    ? {
+        title: post.title,
+        seoTitle: post.seo_title,
+        description: post.seo_description || post.excerpt || post.title,
+        image: articleShareImage(post),
+        publishedAt: post.published_at,
+        updatedAt: post.updated_at,
+        section,
+        author: pieceAuthor(post.author, program?.author),
+        pageUrl,
+        programUrl: `https://www.olhaqueduas.com${exclusivoProgramPath(canonicalProgram)}`,
+      }
+    : null;
 
   useMetaTags({
     title: post?.title ?? EXCLUSIVO_HUB.label,
@@ -53,31 +68,9 @@ export default function ExclusivoPost() {
     modifiedTime: post?.updated_at ?? undefined,
     author,
     section,
-    jsonLd: post
+    jsonLd: post && pieceLd
       ? [
-          {
-            "@context": "https://schema.org",
-            "@type": "NewsArticle",
-            headline: articleHeadline(post.title, post.seo_title),
-            description: post.seo_description || post.excerpt || post.title,
-            image: [articleShareImage(post)],
-            datePublished: post.published_at ?? undefined,
-            dateModified: post.updated_at,
-            inLanguage: "pt-PT",
-            articleSection: section,
-            author: author === "Olha que Duas"
-              ? { "@type": "Organization", name: author, url: "https://www.olhaqueduas.com" }
-              : { "@type": "Person", name: author },
-            publisher: {
-              "@type": "Organization",
-              name: "Olha que Duas",
-              logo: {
-                "@type": "ImageObject",
-                url: "https://www.olhaqueduas.com/og-image.jpg",
-              },
-            },
-            mainEntityOfPage: pageUrl,
-          },
+          pieceArticleJsonLd(pieceLd),
           ...(video
             ? [
                 videoObjectJsonLd(video, {
@@ -89,13 +82,7 @@ export default function ExclusivoPost() {
                 }),
               ]
             : []),
-          getPageBreadcrumbJsonLd(post.title, pageUrl, [
-            { name: EXCLUSIVO_HUB.label, url: EXCLUSIVO_HUB.url },
-            {
-              name: section,
-              url: `https://www.olhaqueduas.com${exclusivoProgramPath(canonicalProgram)}`,
-            },
-          ]),
+          pieceBreadcrumbJsonLd(pieceLd),
         ]
       : undefined,
   });

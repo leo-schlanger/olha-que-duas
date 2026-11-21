@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Pause } from 'lucide-react';
 import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
+import { routeMeta } from '@/lib/routeMeta';
 import KidsGameShell from '@/components/kids/games/KidsGameShell';
 import GameDPad, { type DPadDir } from '@/components/kids/games/GameDPad';
 import GameOverlay from '@/components/kids/games/GameOverlay';
@@ -201,12 +202,7 @@ const jsonLd = [
 
 const KidsSnake = () => {
   useMetaTags({
-    title: 'Cobra Arco-Íris — Jogo da cobra fofo para crianças',
-    description:
-      'Apanha estrelas com a cobrinha mais colorida do Cantinho! Jogo clássico, fofo e gratuito no Olha que Duas Kids.',
-    image: 'https://www.olhaqueduas.com/og-kids.jpg',
-    imageAlt: 'Cobra Arco-Íris — Olha que Duas Kids',
-    url: 'https://www.olhaqueduas.com/kids/jogos/snake',
+    ...routeMeta("/kids/jogos/snake"),
     tags: ['cobra arco-íris', 'snake infantil', 'olha que duas kids', 'jogo da cobra'],
     jsonLd,
   });

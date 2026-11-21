@@ -31,7 +31,13 @@ export default function BlogPost() {
   const { data: post, isLoading, error } = useBlogPost(slug || '');
 
   // Atualiza meta tags para SEO e compartilhamento
-  const metaConfig = post ? getBlogPostMetaConfig(post) : {};
+  // Confirmed missing (not loading, no error): noindex instead of a soft 404 with the home head.
+  const missing = !isLoading && !error && !post;
+  const metaConfig = post
+    ? getBlogPostMetaConfig(post)
+    : missing
+      ? { title: 'Notícia não encontrada', url: `https://www.olhaqueduas.com/noticias/${slug}`, noindex: true }
+      : {};
   useMetaTags(metaConfig);
 
   // Scroll para o topo quando a página carrega

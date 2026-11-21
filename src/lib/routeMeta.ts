@@ -33,6 +33,49 @@ export const ROUTE_META: Record<string, RouteMeta> = {
     image: "https://www.olhaqueduas.com/og-kids.jpg",
     imageAlt: "Olha que Duas Kids — Espaço infantil com música e histórias",
   },
+  // Kids sub-pages (21/11/2026): also served to search engines by middleware.ts.
+  "/kids/historias": {
+    title: 'Histórias Infantis para Crianças — Contos Narrados do Cantinho da Pequenada',
+    description:
+      'Ouve histórias infantis narradas em vídeo no espaço Kids do Olha que Duas! Contos e aventuras do Cantinho da Pequenada com a Leonor — Baby Shark, Rexy e muitas mais. Conteúdo seguro, gratuito e educativo para crianças dos 3 aos 12 anos.',
+    image: 'https://www.olhaqueduas.com/og-kids.jpg',
+    imageAlt: 'Olha que Duas Kids — Histórias Encantadas narradas para crianças',
+  },
+  "/kids/jogos": {
+    title: 'Jogos do Cantinho — Quiz, Memória, Baby Shark e Cobra Arco-Íris',
+    description:
+      'Entra no Cantinho da Pequenada e joga! Quiz da rádio, Memória das estrelas, Baby Shark e Cobra Arco-Íris. Jogos seguros, sem anúncios, para crianças dos 3 aos 12 anos.',
+    image: 'https://www.olhaqueduas.com/og-kids.jpg',
+    imageAlt: 'Olha que Duas Kids — Jogos do Cantinho da Pequenada',
+  },
+  "/kids/jogos/quiz": {
+    title: 'Quiz do Cantinho — Perguntas da rádio Olha que Duas Kids',
+    description:
+      'Testa o que sabes sobre o Cantinho da Pequenada, as Duas e o Micro! Quiz educativo e gratuito do espaço Kids do Olha que Duas.',
+    image: 'https://www.olhaqueduas.com/og-kids.jpg',
+    imageAlt: 'Quiz do Cantinho — Olha que Duas Kids',
+  },
+  "/kids/jogos/memoria": {
+    title: 'Memória das Duas — Encontra os pares do Cantinho',
+    description:
+      'Encontra os pares da Alexandra, da Marluce, do Leo e do Micro no jogo da memória do Olha que Duas Kids.',
+    image: 'https://www.olhaqueduas.com/og-kids.jpg',
+    imageAlt: 'Memória das Duas — Olha que Duas Kids',
+  },
+  "/kids/jogos/pacman": {
+    title: 'Baby Shark — Jogo arcade infantil no Olha que Duas Kids',
+    description:
+      'Nada com o Baby Shark, apanha bolhas musicais e foge das águas-vivas. Jogo estilo Pacman, gratuito e seguro no espaço Kids.',
+    image: 'https://www.olhaqueduas.com/og-kids.jpg',
+    imageAlt: 'Baby Shark — Olha que Duas Kids',
+  },
+  "/kids/jogos/snake": {
+    title: 'Cobra Arco-Íris — Jogo da cobra fofo para crianças',
+    description:
+      'Apanha estrelas com a cobrinha mais colorida do Cantinho! Jogo clássico, fofo e gratuito no Olha que Duas Kids.',
+    image: 'https://www.olhaqueduas.com/og-kids.jpg',
+    imageAlt: 'Cobra Arco-Íris — Olha que Duas Kids',
+  },
   "/rockinrio": {
     title: "Rock in Rio Lisboa 2026 — A Nossa Recordação",
     description: "A Olha que Duas foi parceira oficial do Rock in Rio Lisboa 2026. Reviva connosco os 4 dias de festival — lineup completo, palcos e a nossa galeria de fotos. 20, 21, 27 e 28 de Junho, Parque Tejo.",

@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { RotateCcw, Star, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
+import { routeMeta } from '@/lib/routeMeta';
 import KidsGameShell from '@/components/kids/games/KidsGameShell';
 import MoreGames from '@/components/kids/games/MoreGames';
 import { kidsSfx } from '@/components/kids/games/gameSounds';
@@ -184,12 +185,7 @@ const quizJsonLd = [
 const KidsQuiz = () => {
   const kidsLogo = useSeasonalLogo(logoKids, 'kids');
   useMetaTags({
-    title: 'Quiz do Cantinho — Perguntas da rádio Olha que Duas Kids',
-    description:
-      'Testa o que sabes sobre o Cantinho da Pequenada, as Duas e o Micro! Quiz educativo e gratuito do espaço Kids do Olha que Duas.',
-    image: 'https://www.olhaqueduas.com/og-kids.jpg',
-    imageAlt: 'Quiz do Cantinho — Olha que Duas Kids',
-    url: 'https://www.olhaqueduas.com/kids/jogos/quiz',
+    ...routeMeta("/kids/jogos/quiz"),
     tags: ['quiz infantil', 'cantinho da pequenada', 'olha que duas kids', 'quiz rádio'],
     jsonLd: quizJsonLd,
   });

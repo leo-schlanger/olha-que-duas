@@ -1,7 +1,8 @@
-import { articleHeadline, documentTitle, metaDescription } from './src/lib/seo';
+import { documentTitle, metaDescription } from './src/lib/seo';
 import { articleVideo, videoObjectJsonLd, type ArticleVideo } from './src/lib/articleVideo';
 import { MOVED_ALBUMS, ROUTE_META, routeMeta } from './src/lib/routeMeta';
 import { EVENT_SELECT, eventKeepsProgram } from './src/lib/programRadio';
+import { pieceArticleJsonLd, pieceAuthor, pieceBreadcrumbJsonLd, type PieceLd } from './src/lib/pieceJsonLd';
 export const config = {
   matcher: ['/servicos', '/faq', '/newsletter', '/privacidade', '/termos', '/galeria', '/galeria/:path*', '/noticias', '/noticias/:path*', '/programas', '/programas/:path*', '/exclusivo', '/exclusivo/:path*',
     // Any case (/Exclusivo/Mente-Aberta): vercel.json rules are case-sensitive.
@@ -10,7 +11,7 @@ export const config = {
     '/:moved([Gg][Aa][Ll][Ee][Rr][Ii][Aa])/:path*',
     '/:gone([Ll][Oo][Jj][Aa])', '/:gone([Ll][Oo][Jj][Aa])/:path*',
     '/:gone([Vv][Ii][Aa][Gg][Ee][Nn][Ss])', '/:gone([Vv][Ii][Aa][Gg][Ee][Nn][Ss])/:path*',
-    '/kids', '/auditoria-gratuita', '/rockinrio'],
+    '/kids', '/kids/:path*', '/auditoria-gratuita', '/rockinrio'],
 };
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || '';
@@ -181,6 +182,7 @@ function html(meta: Meta): Response {
     <title>${docTitle}</title>
     <meta name="description" content="${description}">
     <link rel="canonical" href="${url}">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta property="og:title" content="${title}">
     <meta property="og:description" content="${description}">
     <meta property="og:image" content="${image}">
@@ -214,13 +216,13 @@ function html(meta: Meta): Response {
 
 // Exclusivo slug that does not exist: a real 404 for crawlers instead of the
 // SPA's 200 (soft 404).
-function notFound(url: string): Response {
+function notFound(url: string, back = '/programas', label = 'Ver os Programas'): Response {
   return new Response(`<!DOCTYPE html><html lang="pt-PT"><head>
     <meta charset="utf-8">
     <title>Página não encontrada | Olha que Duas</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="canonical" href="${escapeHtml(url)}">
-  </head><body><h1>Página não encontrada</h1><p><a href="https://www.olhaqueduas.com/programas">Ver os Programas</a></p></body></html>`, {
+  </head><body><h1>Página não encontrada</h1><p><a href="https://www.olhaqueduas.com${back}">${label}</a></p></body></html>`, {
     status: 404,
     headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 's-maxage=300' },
   });
@@ -318,7 +320,9 @@ async function handle(request: Request): Promise<Response | undefined> {
     const slug = galleryMatch[1];
     if (!SLUG_REGEX.test(slug) || slug.length > 100) return;
     try {
-      const [album] = await fetchSupabase('gallery_albums', `slug=eq.${encodeURIComponent(slug)}&is_published=eq.true`);
+      const albums = await fetchSupabase('gallery_albums', `slug=eq.${encodeURIComponent(slug)}&is_published=eq.true`);
+      if (Array.isArray(albums) && albums.length === 0) return notFound(`https://www.olhaqueduas.com${path}`, '/galeria', 'Ver a Galeria');
+      const album = Array.isArray(albums) ? albums[0] : undefined;
       if (!album) return;
 
       const image = albumCoverUrl(slug);
@@ -402,26 +406,22 @@ async function handle(request: Request): Promise<Response | undefined> {
         : video.kind === 'youtube'
           ? `<iframe src="${escapeHtml(video.embedUrl)}" title="${escapeHtml(String(post.title))}" width="360" height="640" loading="lazy" allowfullscreen></iframe>`
           : `<video src="${escapeHtml(video.src)}"${video.poster ? ` poster="${escapeHtml(video.poster)}"` : ''} controls playsinline preload="none"></video>`;
-      const article = {
-        '@context': 'https://schema.org',
-        '@type': 'NewsArticle',
-        headline: articleHeadline(String(post.title), post.seo_title),
-        description: post.seo_description || post.excerpt || post.title,
-        image: [image],
-        datePublished: post.published_at || undefined,
-        dateModified: post.updated_at || post.published_at || undefined,
-        inLanguage: 'pt-PT',
-        articleSection: section,
-        author: author === 'Olha que Duas'
-          ? { '@type': 'Organization', name: author, url: 'https://www.olhaqueduas.com' }
-          : { '@type': 'Person', name: author },
-        publisher: {
-          '@type': 'Organization',
-          name: 'Olha que Duas',
-          logo: { '@type': 'ImageObject', url: 'https://www.olhaqueduas.com/og-image.jpg' },
-        },
-        mainEntityOfPage: pageUrl,
+      const programUrl = `https://www.olhaqueduas.com/programas/${programSlug}`;
+      // Same JSON-LD as the SPA (src/lib/pieceJsonLd.ts).
+      const ld: PieceLd = {
+        title: String(post.title),
+        seoTitle: post.seo_title ? String(post.seo_title) : undefined,
+        description,
+        image,
+        publishedAt: post.published_at,
+        updatedAt: post.updated_at,
+        section,
+        author: pieceAuthor(post.author && String(post.author), program && program.author && String(program.author)),
+        pageUrl,
+        programUrl,
       };
+      const article = pieceArticleJsonLd(ld);
+      const crumbs = `<nav aria-label="Caminho"><a href="https://www.olhaqueduas.com/">Início</a> › <a href="https://www.olhaqueduas.com/programas">Programas</a> › <a href="${escapeHtml(programUrl)}">${escapeHtml(section)}</a></nav>`;
       return html({
         title: String(post.title),
         seoTitle: post.seo_title ? String(post.seo_title) : undefined,
@@ -436,10 +436,12 @@ async function handle(request: Request): Promise<Response | undefined> {
         author,
         section,
         video,
-        body: `<article><h1>${escapeHtml(String(post.title))}</h1>${videoTag}${stripScripts(String(post.content || ''))}</article>`,
-        jsonLd: video
-          ? [article, videoObjectJsonLd(video, { name: String(post.title), description, pageUrl, uploadDate: post.published_at, fallbackThumbnail: image })]
-          : article,
+        body: `${crumbs}<article><h1>${escapeHtml(String(post.title))}</h1>${videoTag}${stripScripts(String(post.content || ''))}</article>`,
+        jsonLd: [
+          article,
+          ...(video ? [videoObjectJsonLd(video, { name: String(post.title), description, pageUrl, uploadDate: post.published_at, fallbackThumbnail: image })] : []),
+          pieceBreadcrumbJsonLd(ld),
+        ],
       });
     } catch { return; }
   }
@@ -515,7 +517,9 @@ async function handle(request: Request): Promise<Response | undefined> {
     const slug = newsMatch[1];
     if (!SLUG_REGEX.test(slug) || slug.length > 100) return;
     try {
-      const [post] = await fetchSupabase('blog_posts', `slug=eq.${encodeURIComponent(slug)}&is_published=eq.true`);
+      const posts = await fetchSupabase('blog_posts', `slug=eq.${encodeURIComponent(slug)}&is_published=eq.true`);
+      if (Array.isArray(posts) && posts.length === 0) return notFound(`https://www.olhaqueduas.com${path}`, '/noticias', 'Ver as Notícias');
+      const post = Array.isArray(posts) ? posts[0] : undefined;
       if (!post) return;
 
       const description = post.meta_description || post.summary || `${post.title} - Olha que Duas`;
