@@ -3,6 +3,8 @@
 declare global {
   interface Window {
     __oqdPlayPending?: number;
+    // beforeinstallprompt caught at boot (main.tsx), before the deferred PWA prompt mounts.
+    __oqdInstallPrompt?: Event;
   }
 }
 

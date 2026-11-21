@@ -5,6 +5,7 @@ import fotoJuntas from "@/assets/olha-que-duas-foto.jpg";
 import { SeasonalHeroSlot, useSeasonalHeroImage } from "@/components/seasonal";
 import { EXCLUSIVO_HUB } from "@/types/exclusivo";
 import { HERO_SIZES } from "@/lib/heroPreload";
+import { releaseRadioAudio, startRadioInGesture } from "@/lib/radioGesture";
 
 const HERO_ALT = "Alexandra Serra e Marluce Revorêdo, as vozes do Olha que Duas";
 // Rendered width of the photo box (full column on phones, max-w-md from sm, half the grid from lg);
@@ -19,6 +20,8 @@ const HERO_ALT = "Alexandra Serra e Marluce Revorêdo, as vozes do Olha que Duas
 export function listenNow(event?: { preventDefault(): void }) {
   event?.preventDefault();
   window.__oqdPlayPending = Date.now();
+  // Player not mounted yet: start the stream inside this click (iOS needs the gesture).
+  startRadioInGesture();
   document.getElementById("radio")?.scrollIntoView({ behavior: "smooth", block: "start" });
   window.dispatchEvent(new CustomEvent("oqd:play"));
 }
@@ -34,6 +37,7 @@ const Hero = () => {
   // (otherwise coming back within 30 s would start the radio unasked).
   useEffect(() => () => {
     window.__oqdPlayPending = undefined;
+    releaseRadioAudio();
   }, []);
 
   return (

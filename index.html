@@ -67,25 +67,19 @@
   <meta name="msapplication-config" content="/browserconfig.xml" />
 
   <!-- Preconnect to external domains -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://cloud.umami.is" />
   <!-- Data API (programas, peças, grelha): crossorigin because supabase-js sends CORS requests -->
   <link rel="preconnect" href="https://jjifjbdfpvgeseqbjpkg.supabase.co" crossorigin />
   <link rel="dns-prefetch" href="https://radio.olhaqueduas.com" />
 
-  <!-- Fonts: one non-blocking stylesheet (the @import in index.css blocked the first paint; perf 21/11/2026) -->
-  <!-- The two latin files the first screen uses (H1 Cormorant, body Inter): found here instead of
-       after the Google CSS, so the swap lands before the first paint (CLS). If Google bumps the font
-       version these URLs only cost a wasted download; refresh them from the CSS (Chrome UA). -->
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="https://fonts.gstatic.com/s/cormorantgaramond/v21/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYqXtKky2F7g.woff2" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2" />
+  <!-- Baloo 2 (Kids only): one non-blocking Google stylesheet (perf 21/11/2026) -->
+  <!-- First-screen fonts (H1 Cormorant, body Inter), self-hosted latin files (@font-face in index.css) -->
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/cormorant-garamond-latin.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/inter-latin.woff2" />
   <link rel="preload" as="style"
-    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" />
+    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap" />
   <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap"
     media="print" onload="this.media='all'" />
 
   <!-- JSON-LD Structured Data: Organization -->
@@ -181,7 +175,7 @@
   </script>
 
   <!-- Umami Analytics -->
-  <script defer src="https://cloud.umami.is/script.js" data-website-id="a77e46d6-e40e-4975-8c02-767799bd63bf"></script>
+  <script async src="https://cloud.umami.is/script.js" data-website-id="a77e46d6-e40e-4975-8c02-767799bd63bf"></script>
 </head>
 
 <body>

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Radio } from "lucide-react";
 import { loadSupabase, isSupabaseConfigured } from "@/lib/supabase";
+import { startRadioInGesture } from "@/lib/radioGesture";
 import { formatBroadcast, nextBroadcast, weeklyPattern, type DatedSlot, type WeeklySlot } from "@/lib/radioSchedule";
 
 interface RadioEvent {
@@ -56,6 +57,7 @@ export function RadioBox({ eventId, accent, kidsLink = false }: { eventId?: stri
           to="/#radio"
           onClick={() => {
             window.__oqdPlayPending = Date.now();
+            startRadioInGesture();
           }}
           className="inline-flex h-12 items-center rounded-full bg-vermelho-forte px-6 text-base font-bold text-white hover:bg-vermelho-forte/90"
         >

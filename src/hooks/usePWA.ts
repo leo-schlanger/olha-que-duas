@@ -6,9 +6,12 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export function usePWA() {
-  const [isInstallable, setIsInstallable] = useState(false);
+  // An event caught at boot (main.tsx) before this hook mounted.
+  const [isInstallable, setIsInstallable] = useState(() => Boolean(window.__oqdInstallPrompt));
   const [isInstalled, setIsInstalled] = useState(false);
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(
+    () => (window.__oqdInstallPrompt as BeforeInstallPromptEvent | undefined) ?? null,
+  );
 
   useEffect(() => {
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
@@ -23,6 +26,7 @@ export function usePWA() {
     };
 
     const handleAppInstalled = () => {
+      window.__oqdInstallPrompt = undefined;
       setIsInstalled(true);
       setIsInstallable(false);
       setDeferredPrompt(null);
@@ -45,6 +49,7 @@ export function usePWA() {
       const { outcome } = await deferredPrompt.userChoice;
 
       if (outcome === 'accepted') {
+        window.__oqdInstallPrompt = undefined;
         setIsInstallable(false);
         setDeferredPrompt(null);
         return true;

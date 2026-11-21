@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import IcecastMetadataPlayer from "icecast-metadata-player";
 import { parseIcyStreamTitle } from "@/hooks/useNowPlaying";
 import type { RefObject } from "react";
+import { adoptRadioAudio, setRadioPlayerMounted } from "@/lib/radioGesture";
 
 export interface IcyMeta {
   artist: string;
@@ -142,9 +143,12 @@ export function useIcecastPlayer({
   useEffect(() => {
     if (!streamUrl) return;
 
-    const audio = new Audio();
-    audio.preload = "none";
+    // A click before this chunk mounted may already have started the stream (radioGesture.ts).
+    const adopted = adoptRadioAudio();
+    const audio = adopted ?? new Audio();
+    if (!adopted) audio.preload = "none";
     audioRef.current = audio;
+    setRadioPlayerMounted(true);
     audioElementRef.current = audio;
 
     const onPlayEvt = () => {
@@ -170,8 +174,14 @@ export function useIcecastPlayer({
     audio.addEventListener("waiting", onWaitingEvt);
     audio.addEventListener("playing", onPlayingEvt);
     audio.addEventListener("error", onErrorEvt);
+    if (adopted && !adopted.paused) {
+      setIsPlaying(true);
+      setIsBuffering(adopted.readyState < 3);
+      setState(adopted.readyState < 3 ? "loading" : "playing");
+    }
 
     return () => {
+      setRadioPlayerMounted(false);
       audio.removeEventListener("play", onPlayEvt);
       audio.removeEventListener("pause", onPauseEvt);
       audio.removeEventListener("waiting", onWaitingEvt);
@@ -242,10 +252,13 @@ export function useIcecastPlayer({
       return;
     }
 
+    const audio = audioRef.current;
+    // Already started by the click that came before the player (radioGesture.ts).
+    if (!audio.paused) return;
+
     setIsBuffering(true);
     setState("loading");
 
-    const audio = audioRef.current;
     audio.volume = isMuted ? 0 : volume / 100;
 
     // Bypass ICY se já falhou antes ou se o utilizador forçou

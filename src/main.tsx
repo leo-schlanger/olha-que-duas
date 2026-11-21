@@ -6,6 +6,12 @@ import { registerServiceWorker } from "./hooks/usePWA";
 // Register PWA Service Worker
 registerServiceWorker();
 
+// The install prompt mounts after load (perf 21/11/2026): keep the event for usePWA.
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  window.__oqdInstallPrompt = event;
+});
+
 // Diagnostic tools window.__radioDebug() / window.__radioFix(): stubs that load
 // the real code on first call (kept out of the entry chunk, perf 21/11/2026).
 type DebugWindow = Window & Record<"__radioDebug" | "__radioFix", () => Promise<unknown>>;

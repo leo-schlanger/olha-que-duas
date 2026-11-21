@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import type { HubProgram } from "@/hooks/useExclusivePrograms";
 import { exclusivoProgramPath } from "@/lib/exclusivoPaths";
 import { lisbonNow, nextBroadcast, weeklyPattern } from "@/lib/radioSchedule";
+import { startRadioInGesture } from "@/lib/radioGesture";
 
 
 export type HubFilter = "todos" | "ler" | "radio";
@@ -86,6 +87,7 @@ export function TodayOnRadio({ programs, now = new Date() }: { programs: HubProg
             to="/#radio"
             onClick={() => {
               window.__oqdPlayPending = Date.now();
+            startRadioInGesture();
             }}
             className="block rounded-xl bg-amarelo px-4 py-2 text-base font-bold text-[#1c0a10]"
           >
