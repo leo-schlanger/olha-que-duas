@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import { Animated } from '@/components/ui/animated';
 import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
+import { PUBLISHER } from '@/lib/publisher';
 
 const karaokeJsonLd = [
   // Breadcrumb
@@ -42,11 +43,7 @@ const karaokeJsonLd = [
     uploadDate: '2026-04-11',
     contentUrl: 'https://www.youtube.com/watch?v=w2neEwT1jO8',
     embedUrl: 'https://www.youtube-nocookie.com/embed/w2neEwT1jO8',
-    publisher: {
-      '@type': 'Organization',
-      name: 'Olha que Duas',
-      url: 'https://www.olhaqueduas.com',
-    },
+    publisher: PUBLISHER,
     inLanguage: 'pt-PT',
     isFamilyFriendly: true,
   },

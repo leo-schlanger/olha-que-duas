@@ -31,6 +31,7 @@ import logo from "@/assets/logo-olha-que-duas.webp";
 import { Animated } from "@/components/ui/animated";
 import { useMetaTags, getPageBreadcrumbJsonLd } from "@/hooks/useMetaTags";
 import { siteConfig } from "@/config/site";
+import { PUBLISHER } from "@/lib/publisher";
 
 const FORM_SUBMIT_TIMEOUT_MS = 10_000;
 const PAGE_URL = "https://www.olhaqueduas.com/auditoria-gratuita";
@@ -90,13 +91,7 @@ const Auditoria = () => {
         name: "Auditoria Gratuita de Comunicação",
         description:
           "Análise personalizada de 15 minutos sobre presença digital, impacto da comunicação, oportunidades de crescimento e plano de acção para a sua marca.",
-        provider: {
-          "@type": "Organization",
-          "@id": "https://www.olhaqueduas.com/#organization",
-          name: "Olha que Duas",
-          url: "https://www.olhaqueduas.com",
-          logo: "https://www.olhaqueduas.com/og-image.jpg",
-        },
+        provider: PUBLISHER,
         areaServed: { "@type": "Country", name: "Portugal" },
         serviceType: "Consultoria de Comunicação",
         offers: {

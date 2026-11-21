@@ -8,6 +8,7 @@ import BackToTop from '@/components/BackToTop';
 import { Animated } from '@/components/ui/animated';
 import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
 import { routeMeta } from '@/lib/routeMeta';
+import { PUBLISHER } from '@/lib/publisher';
 
 const stories = [
   {
@@ -70,11 +71,7 @@ const storiesJsonLd = [
     uploadDate: '2026-05-27',
     contentUrl: 'https://www.youtube.com/watch?v=4HbfRsmsvrU',
     embedUrl: 'https://www.youtube-nocookie.com/embed/4HbfRsmsvrU',
-    publisher: {
-      '@type': 'Organization',
-      name: 'Olha que Duas',
-      url: 'https://www.olhaqueduas.com',
-    },
+    publisher: PUBLISHER,
     inLanguage: 'pt-PT',
     isFamilyFriendly: true,
   },
@@ -88,11 +85,7 @@ const storiesJsonLd = [
     uploadDate: '2026-04-11',
     contentUrl: 'https://www.youtube.com/watch?v=MSs0rQRX4v8',
     embedUrl: 'https://www.youtube-nocookie.com/embed/MSs0rQRX4v8',
-    publisher: {
-      '@type': 'Organization',
-      name: 'Olha que Duas',
-      url: 'https://www.olhaqueduas.com',
-    },
+    publisher: PUBLISHER,
     inLanguage: 'pt-PT',
     isFamilyFriendly: true,
   },
@@ -106,11 +99,7 @@ const storiesJsonLd = [
     uploadDate: '2026-04-11',
     contentUrl: 'https://www.youtube.com/watch?v=OKvw2XMgCVM',
     embedUrl: 'https://www.youtube-nocookie.com/embed/OKvw2XMgCVM',
-    publisher: {
-      '@type': 'Organization',
-      name: 'Olha que Duas',
-      url: 'https://www.olhaqueduas.com',
-    },
+    publisher: PUBLISHER,
     inLanguage: 'pt-PT',
     isFamilyFriendly: true,
   },

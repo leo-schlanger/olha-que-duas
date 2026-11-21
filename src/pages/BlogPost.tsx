@@ -36,7 +36,7 @@ export default function BlogPost() {
   const metaConfig = post
     ? getBlogPostMetaConfig(post)
     : missing
-      ? { title: 'Notícia não encontrada', url: `https://www.olhaqueduas.com/noticias/${slug}`, noindex: true }
+      ? { title: 'Página não encontrada', url: `https://www.olhaqueduas.com/noticias/${slug}`, noindex: true }
       : {};
   useMetaTags(metaConfig);
 

@@ -1,10 +1,13 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
+import { execSync } from "node:child_process";
 import { resolve } from "node:path";
 import { pathToRegexp } from "path-to-regexp";
 import middleware, { config } from "../../middleware";
 import { ROUTE_META } from "./routeMeta";
-import { LOGO_URL, pieceArticleJsonLd, pieceBreadcrumbJsonLd } from "./pieceJsonLd";
+import { pieceArticleJsonLd, pieceBreadcrumbJsonLd } from "./pieceJsonLd";
+import { LOGO_URL, PUBLISHER } from "./publisher";
+import { videoObjectJsonLd } from "./articleVideo";
 
 // SEO audit 21/11/2026: route coverage for crawlers, real 404s, piece JSON-LD.
 const root = resolve(__dirname, "../..");
@@ -174,3 +177,83 @@ describe("aggregated news: noindex, follow (Leo, 21/11/2026)", () => {
     expect(await run("noticias")).not.toContain("<url>");
   });
 });
+
+describe("qa 21/11/2026: publisher logo, sitemap index, home description, no .single()", () => {
+  const tracked = execSync("git ls-files src api middleware.ts", { cwd: root, encoding: "utf8" })
+    .split("\n")
+    .filter((f) => /\.(ts|tsx)$/.test(f) && !/\.test\.tsx?$/.test(f));
+  const sources = tracked.map((f) => [f, readFileSync(resolve(root, f), "utf8")] as const);
+
+  it("every publisher/provider block is the shared PUBLISHER or an @id reference", () => {
+    const bad = sources.flatMap(([f, s]) =>
+      [...s.matchAll(/\b(publisher|provider):\s*(\S[^\n]{0,40})/g)]
+        .filter((m) => !/^(PUBLISHER\b|\{\s*["']@id["'])/.test(m[2]))
+        .map((m) => `${f}: ${m[0]}`),
+    );
+    expect(bad).toEqual([]);
+  });
+
+  it("no logo points at the share image or a missing logo.png", () => {
+    const bad = sources.flatMap(([f, s]) =>
+      [...s.matchAll(/logo["']?:\s*(\{[^}]*\}|["'][^"']*["'])/g)]
+        .filter((m) => /og-image\.jpg|\/logo\.png/.test(m[1]))
+        .map((m) => `${f}: ${m[0]}`),
+    );
+    expect(bad).toEqual([]);
+    expect(shell).not.toMatch(/"logo":\s*\{[^}]*og-image/);
+  });
+
+  it("VideoObject publisher has the square logo", () => {
+    const ld = videoObjectJsonLd(
+      { kind: "youtube", id: "dQw4w9WgXcQ", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ", watchUrl: "", thumbnail: "" } as never,
+      { name: "x", description: "y", pageUrl: "https://www.olhaqueduas.com/x", uploadDate: "2026-11-20T10:00:00Z", fallbackThumbnail: "https://x.pt/a.jpg" },
+    ) as { publisher: unknown };
+    expect(ld.publisher).toEqual(PUBLISHER);
+    expect(PUBLISHER.logo).toEqual({ "@type": "ImageObject", url: LOGO_URL, width: 512, height: 512 });
+  });
+
+  it("no .single() on slug lookups (406 in the console when missing)", () => {
+    expect(sources.filter(([, s]) => /\.single\(\)/.test(s)).map(([f]) => f)).toEqual([]);
+  });
+
+  it("home description: ≤155 characters and the same everywhere", () => {
+    const home = [...shell.matchAll(/<meta (?:name="(?:description|twitter:description)"|property="og:description")\s+content="([^"]+)"/g)].map((m) => m[1]);
+    expect(home).toHaveLength(3);
+    const index = readFileSync(resolve(root, "src/pages/Index.tsx"), "utf8");
+    for (const d of home) {
+      expect(d.length).toBeLessThanOrEqual(155);
+      expect(d).toBe(home[0]);
+      expect(index).toContain(d);
+    }
+  });
+
+  it("sitemap index: each child's lastmod is the newest inside it", async () => {
+    const rows: Record<string, unknown[]> = {
+      gallery_albums: [{ slug: "a", title: "A", event_date: "2026-06-28", updated_at: null }],
+      blog_posts: [{ published_at: "2026-11-21T00:15:00" }],
+      vinagre_posts: [
+        { slug: "p", title: "P", og_image_url: "", cover_url: "", published_at: "2026-11-19T10:00:00Z", updated_at: "2026-11-20T09:00:00Z", exclusive_programs: { slug: "prog", title: "Prog" } },
+      ],
+      exclusive_programs: [{ slug: "prog", title: "Prog", author: "X", cover_url: "", updated_at: "2026-10-01T00:00:00Z", event_id: null }],
+    };
+    vi.stubGlobal("fetch", vi.fn(async (url: string) => {
+      const table = String(url).split("/rest/v1/")[1].split("?")[0];
+      const recentOnly = String(url).includes("published_at=gte.");
+      return new Response(JSON.stringify(recentOnly ? [] : rows[table] ?? []));
+    }));
+    const { default: handler } = await import("../../api/sitemap");
+    let body = "";
+    const res = { setHeader: () => res, status: () => res, send: (b: string) => { body = b; return res; } };
+    await handler({ query: { t: "index" } } as never, res as never);
+    const site = STATIC_LASTMODS_MAX(["2026-11-21", "2026-11-20", "2026-06-28"]);
+    expect(body).toContain(`<loc>https://www.olhaqueduas.com/sitemap-site.xml</loc><lastmod>${site}</lastmod>`);
+    expect(body).toContain("<loc>https://www.olhaqueduas.com/sitemap-programas.xml</loc><lastmod>2026-11-20</lastmod>");
+    expect(body).toContain("<loc>https://www.olhaqueduas.com/sitemap-google-news.xml</loc></sitemap>"); // empty: no lastmod
+  });
+});
+
+// Newest of the hard-coded STATIC_PAGES dates and the given hub days.
+function STATIC_LASTMODS_MAX(hubs: string[]): string {
+  const src = readFileSync(resolve(root, "api/sitemap.ts"), "utf8");
+  return [...src.matchAll(/lastmod: '(\d{4}-\d{2}-\d{2})'/g)].map((m) => m[1]).concat(hubs).sort().pop()!;
+}

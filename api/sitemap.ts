@@ -139,93 +139,110 @@ function exclusivoPosts(extra = ''): Promise<ExclusivoRow[]> {
   );
 }
 
+async function siteEntries(today: string): Promise<Entry[]> {
+  const [albums, news, pieces] = await Promise.all([
+    query<{ slug: string; title: string; cover_url?: string | null; event_date: string | null; updated_at?: string | null }>(
+      'gallery_albums',
+      'is_published=eq.true&order=event_date.desc&select=slug,title,event_date,updated_at',
+    ),
+    query<{ published_at: string | null }>('blog_posts', 'is_published=eq.true&order=published_at.desc.nullslast&limit=1&select=published_at').catch(() => []),
+    exclusivoPosts('&limit=1').catch(() => []),
+  ]);
+  // Hubs change when their newest item does, not every day (21/11/2026).
+  const newestAlbum = albums.map((a) => day(a.updated_at) ?? day(a.event_date) ?? '').sort().pop();
+  const hubDay: Record<string, string | undefined> = {
+    '/noticias': day(news[0]?.published_at),
+    '/programas': day(pieces[0]?.published_at),
+    '/galeria': newestAlbum || undefined,
+  };
+  // The home shows the newest of all of them.
+  hubDay['/'] = Object.values(hubDay).filter(Boolean).sort().pop();
+  return [
+    ...STATIC_PAGES.map((p) => ({ ...p, lastmod: p.lastmod ?? hubDay[p.loc] ?? today })),
+    ...albums.map((a) => ({
+      loc: `/galeria/${a.slug}`,
+      lastmod: day(a.updated_at) ?? day(a.event_date),
+      freq: 'monthly',
+      priority: '0.6',
+    })),
+  ];
+}
+
+async function programEntries(today: string): Promise<Entry[]> {
+  const [programs, posts] = await Promise.all([
+    query<{ slug: string; title: string; author: string; cover_url: string; updated_at: string; event_id: string | null }>(
+      'exclusive_programs',
+      'is_published=eq.true&order=sort_order.asc&select=slug,title,author,cover_url,updated_at,event_id',
+    ),
+    exclusivoPosts(),
+  ]);
+  const latestByProgram = new Map<string, string>();
+  for (const p of posts) {
+    const slug = p.exclusive_programs?.slug;
+    if (slug && !latestByProgram.has(slug)) latestByProgram.set(slug, day(p.published_at) ?? today);
+  }
+  // Same rule as the site (src/lib/programRadio.ts): a live piece OR an active radio event.
+  const eventIds = programs.map((p) => p.event_id).filter((id): id is string => Boolean(id));
+  const events = eventIds.length
+    ? await query<ProgramEvent>('events', `select=${EVENT_SELECT}&id=in.(${eventIds.join(',')})`).catch(() => [])
+    : [];
+  const byId = new Map(events.map((e) => [e.id, e]));
+  return [
+    ...programs.filter((p) => latestByProgram.has(p.slug) || (p.event_id && eventKeepsProgram(byId.get(p.event_id)))).map((p) => ({
+      loc: `/programas/${p.slug}`,
+      lastmod: latestByProgram.get(p.slug) ?? day(p.updated_at),
+      freq: 'daily',
+      priority: '0.8',
+      image: p.cover_url ? { loc: p.cover_url, title: `${p.title} — ${p.author}` } : undefined,
+    })),
+    ...posts
+      .filter((p) => p.exclusive_programs)
+      .map((p) => {
+        const image = p.og_image_url || p.cover_url;
+        return {
+          loc: `/programas/${p.exclusive_programs!.slug}/${p.slug}`,
+          lastmod: day(p.updated_at) ?? day(p.published_at),
+          freq: 'weekly',
+          priority: '0.7',
+          image: image ? { loc: image, title: p.title } : undefined,
+        };
+      }),
+  ];
+}
+
+// Google News only takes articles from the last two days.
+function newsPieces(): Promise<ExclusivoRow[]> {
+  const since = new Date(Date.now() - 48 * 3600 * 1000).toISOString();
+  return exclusivoPosts(`&published_at=gte.${since}`);
+}
+
 async function build(kind: Kind): Promise<string> {
   const today = new Date().toISOString().slice(0, 10);
 
   if (kind === 'index') {
     // No sitemap-noticias: aggregated news are noindex (Leo, 21/11/2026). Google News lists Programas pieces only.
-    const maps = ['sitemap-site.xml', 'sitemap-programas.xml', 'sitemap-google-news.xml'];
+    // Each child's lastmod = the newest lastmod inside it, not «today» (qa 21/11/2026).
+    const newest = (days: (string | undefined)[]) => days.filter(Boolean).sort().pop();
+    const [site, programs, news] = await Promise.all([siteEntries(today), programEntries(today), newsPieces()]);
+    const maps: [string, string | undefined][] = [
+      ['sitemap-site.xml', newest(site.map((e) => e.lastmod))],
+      ['sitemap-programas.xml', newest(programs.map((e) => e.lastmod))],
+      ['sitemap-google-news.xml', newest(news.map((p) => day(p.published_at)))],
+    ];
     return `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${maps.map((m) => `  <sitemap><loc>${SITE}/${m}</loc><lastmod>${today}</lastmod></sitemap>`).join('\n')}
+${maps.map(([m, last]) => `  <sitemap><loc>${SITE}/${m}</loc>${last ? `<lastmod>${last}</lastmod>` : ''}</sitemap>`).join('\n')}
 </sitemapindex>`;
   }
 
-  if (kind === 'site') {
-    const [albums, news, pieces] = await Promise.all([
-      query<{ slug: string; title: string; cover_url?: string | null; event_date: string | null; updated_at?: string | null }>(
-        'gallery_albums',
-        'is_published=eq.true&order=event_date.desc&select=slug,title,event_date,updated_at',
-      ),
-      query<{ published_at: string | null }>('blog_posts', 'is_published=eq.true&order=published_at.desc.nullslast&limit=1&select=published_at').catch(() => []),
-      exclusivoPosts('&limit=1').catch(() => []),
-    ]);
-    // Hubs change when their newest item does, not every day (21/11/2026).
-    const newestAlbum = albums.map((a) => day(a.updated_at) ?? day(a.event_date) ?? '').sort().pop();
-    const hubDay: Record<string, string | undefined> = {
-      '/noticias': day(news[0]?.published_at),
-      '/programas': day(pieces[0]?.published_at),
-      '/galeria': newestAlbum || undefined,
-    };
-    return urlset([
-      ...STATIC_PAGES.map((p) => ({ ...p, lastmod: p.lastmod ?? hubDay[p.loc] ?? today })),
-      ...albums.map((a) => ({
-        loc: `/galeria/${a.slug}`,
-        lastmod: day(a.updated_at) ?? day(a.event_date),
-        freq: 'monthly',
-        priority: '0.6',
-      })),
-    ]);
-  }
+  if (kind === 'site') return urlset(await siteEntries(today));
 
   // Kept as an empty urlset so the old address answers cleanly (news are noindex since 21/11/2026).
   if (kind === 'noticias') return urlset([]);
 
-  if (kind === 'exclusivo') {
-    const [programs, posts] = await Promise.all([
-      query<{ slug: string; title: string; author: string; cover_url: string; updated_at: string; event_id: string | null }>(
-        'exclusive_programs',
-        'is_published=eq.true&order=sort_order.asc&select=slug,title,author,cover_url,updated_at,event_id',
-      ),
-      exclusivoPosts(),
-    ]);
-    const latestByProgram = new Map<string, string>();
-    for (const p of posts) {
-      const slug = p.exclusive_programs?.slug;
-      if (slug && !latestByProgram.has(slug)) latestByProgram.set(slug, day(p.published_at) ?? today);
-    }
-    // Same rule as the site (src/lib/programRadio.ts): a live piece OR an active radio event.
-    const eventIds = programs.map((p) => p.event_id).filter((id): id is string => Boolean(id));
-    const events = eventIds.length
-      ? await query<ProgramEvent>('events', `select=${EVENT_SELECT}&id=in.(${eventIds.join(',')})`).catch(() => [])
-      : [];
-    const byId = new Map(events.map((e) => [e.id, e]));
-    return urlset([
-      ...programs.filter((p) => latestByProgram.has(p.slug) || (p.event_id && eventKeepsProgram(byId.get(p.event_id)))).map((p) => ({
-        loc: `/programas/${p.slug}`,
-        lastmod: latestByProgram.get(p.slug) ?? day(p.updated_at),
-        freq: 'daily',
-        priority: '0.8',
-        image: p.cover_url ? { loc: p.cover_url, title: `${p.title} — ${p.author}` } : undefined,
-      })),
-      ...posts
-        .filter((p) => p.exclusive_programs)
-        .map((p) => {
-          const image = p.og_image_url || p.cover_url;
-          return {
-            loc: `/programas/${p.exclusive_programs!.slug}/${p.slug}`,
-            lastmod: day(p.updated_at) ?? day(p.published_at),
-            freq: 'weekly',
-            priority: '0.7',
-            image: image ? { loc: image, title: p.title } : undefined,
-          };
-        }),
-    ]);
-  }
+  if (kind === 'exclusivo') return urlset(await programEntries(today));
 
-  // Google News only takes articles from the last two days.
-  const since = new Date(Date.now() - 48 * 3600 * 1000).toISOString();
-  const recent = await exclusivoPosts(`&published_at=gte.${since}`);
+  const recent = await newsPieces();
   const items = recent
     .filter((p) => p.exclusive_programs && p.published_at)
     .map(

@@ -25,6 +25,7 @@ import { useMetaTags, getPageBreadcrumbJsonLd } from '@/hooks/useMetaTags';
 import { getCloudinaryUrl } from '@/lib/cloudinary';
 import { getYouTubeId, getYouTubeThumbnail, getYouTubeEmbedUrl, getYouTubeWatchUrl } from '@/lib/youtube';
 import { isSupabaseConfigured } from '@/lib/supabase';
+import { PUBLISHER } from '@/lib/publisher';
 
 /** Interviews moved to /programas/entrevistas (20/11/2026): in-app links and apps land there too. */
 export default function GalleryAlbum() {
@@ -54,9 +55,11 @@ function GalleryAlbumPage() {
 
   // SEO Meta Tags
   useMetaTags({
-    title: album?.title || 'Álbum',
-    description:
-      album?.description ||
+    // Same title as the crawler 404 (middleware notFound) when the album does not exist.
+    title: album?.title || (!isLoading && !error ? 'Página não encontrada' : 'Álbum'),
+    description: !album && !isLoading && !error
+      ? 'A página que procura não existe ou foi movida.'
+      : album?.description ||
       (album?.videos.length
         ? `${album.title} — vídeo e ${album.photo_count || 0} fotos, pelo Olha que Duas.`
         : `Galeria de fotos: ${album?.title}. Veja ${album?.photo_count || 0} fotos deste momento especial.`),
@@ -91,11 +94,7 @@ function GalleryAlbumPage() {
           url: getYouTubeWatchUrl(videoId),
           inLanguage: 'pt-PT',
           ...(videoId === mainVideoId && { mainEntityOfPage: albumUrl }),
-          publisher: {
-            '@type': 'Organization',
-            name: 'Olha que Duas',
-            url: 'https://www.olhaqueduas.com',
-          },
+          publisher: PUBLISHER,
           ...(album.location && {
             contentLocation: { '@type': 'Place', name: album.location },
           }),

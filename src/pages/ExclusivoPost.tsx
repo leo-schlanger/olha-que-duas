@@ -54,7 +54,7 @@ export default function ExclusivoPost() {
     : null;
 
   useMetaTags({
-    title: post?.title ?? EXCLUSIVO_HUB.label,
+    title: post?.title ?? (!isLoading && !isError ? "Página não encontrada" : EXCLUSIVO_HUB.label),
     seoTitle: post?.seo_title || undefined,
     description: post?.seo_description || post?.excerpt || post?.title || EXCLUSIVO_HUB.label,
     url: pageUrl,

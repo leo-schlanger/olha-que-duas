@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { LOGO_URL } from '@/lib/pieceJsonLd';
 import { documentTitle, metaDescription } from '@/lib/seo';
+import { PUBLISHER } from '@/lib/publisher';
 
 interface MetaTagsConfig {
   title?: string;
@@ -26,7 +26,7 @@ interface MetaTagsConfig {
 const DEFAULT_CONFIG = {
   siteName: 'Olha que Duas',
   defaultTitle: 'Olha que Duas | Rádio online 24 horas e Programas',
-  defaultDescription: 'Olha que Duas: rádio online 24 horas com música, programas e histórias, de Alexandra Serra e Marluce Revorêdo. Ouça em direto, veja os Programas e peça a sua dedicatória.',
+  defaultDescription: 'Olha que Duas: rádio online 24 horas com música, programas e histórias, de Alexandra Serra e Marluce Revorêdo. Ouça em direto e peça a sua dedicatória.',
   defaultImage: 'https://www.olhaqueduas.com/og-image.jpg',
   defaultImageAlt: 'Olha que Duas, rádio online 24 horas',
   baseUrl: 'https://www.olhaqueduas.com',
@@ -274,15 +274,7 @@ export function getBlogPostMetaConfig(post: {
       '@id': 'https://www.olhaqueduas.com/#organization',
       name: 'Olha que Duas',
     },
-    publisher: {
-      '@type': 'Organization',
-      '@id': 'https://www.olhaqueduas.com/#organization',
-      name: 'Olha que Duas',
-      logo: {
-        '@type': 'ImageObject',
-        url: LOGO_URL,
-      },
-    },
+    publisher: PUBLISHER,
     mainEntityOfPage: {
       '@type': 'WebPage',
       '@id': postUrl,
@@ -406,11 +398,7 @@ export function getGalleryAlbumMetaConfig(album: {
         name: album.location,
       },
     }),
-    publisher: {
-      '@type': 'Organization',
-      '@id': 'https://www.olhaqueduas.com/#organization',
-      name: 'Olha que Duas',
-    },
+    publisher: PUBLISHER,
   };
 
   // Breadcrumb JSON-LD

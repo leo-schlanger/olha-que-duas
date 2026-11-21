@@ -41,7 +41,7 @@ export default function ExclusivoPrograma() {
       ? program.title.includes(program.author)
         ? program.title
         : `${program.title} — ${program.author}`
-      : EXCLUSIVO_HUB.label,
+      : missing ? "Página não encontrada" : EXCLUSIVO_HUB.label,
     description: program?.description || program?.tagline || EXCLUSIVO_HUB.description,
     noindex: missing,
     url: pageUrl,

@@ -35,6 +35,7 @@ import alexandraCartoon from '@/assets/kids/alexandra-cartoon.webp';
 import marluceCartoon from '@/assets/kids/marluce-cartoon.webp';
 import leoCartoon from '@/assets/kids/leo-cartoon.webp';
 import cantinhoPoster from '@/assets/kids/cantinho-da-pequena.jpg';
+import { PUBLISHER } from "@/lib/publisher";
 
 // JSON-LD Schema for Kids Page — SEO completo e otimizado
 const kidsJsonLd = [
@@ -87,12 +88,7 @@ const kidsJsonLd = [
     serviceType: 'Programação Infantil de Rádio',
     description:
       'Espaço dedicado às crianças no Olha que Duas. Programação infantil com música, histórias, brincadeiras, jogos e convidados especiais. Conteúdo seguro, educativo e divertido para os mais pequenos.',
-    provider: {
-      '@type': 'Organization',
-      name: 'Olha que Duas',
-      url: 'https://www.olhaqueduas.com',
-      logo: 'https://www.olhaqueduas.com/logo.png',
-    },
+    provider: PUBLISHER,
     areaServed: { '@type': 'Country', name: 'Portugal' },
     availableLanguage: 'pt-PT',
     audience: {

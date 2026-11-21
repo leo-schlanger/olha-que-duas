@@ -5,15 +5,8 @@
 import { SITE_URL } from "./routeMeta";
 import { articleHeadline } from "./seo";
 
-/** Square logo (Google wants a logo, not the 1200×630 share image). */
-export const LOGO_URL = `${SITE_URL}/icon-512x512.png`;
-export const PUBLISHER = {
-  "@type": "Organization",
-  "@id": `${SITE_URL}/#organization`,
-  name: "Olha que Duas",
-  url: SITE_URL,
-  logo: { "@type": "ImageObject", url: LOGO_URL, width: 512, height: 512 },
-};
+export { LOGO_URL, PUBLISHER } from "./publisher";
+import { PUBLISHER } from "./publisher";
 
 export interface Crumb {
   name: string;

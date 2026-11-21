@@ -144,15 +144,9 @@ export function useGalleryAlbum(slug: string) {
         .select('*')
         .eq('slug', slug)
         .eq('is_published', true)
-        .single();
+        .maybeSingle(); // 0 rows = null, no 406 in the console (qa 21/11/2026)
 
-      if (albumError) {
-        if (albumError.code === 'PGRST116') {
-          return null; // Not found
-        }
-
-        throw albumError;
-      }
+      if (albumError) throw albumError;
 
       if (!album) {
         return null;

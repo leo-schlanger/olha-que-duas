@@ -94,15 +94,9 @@ export function useBlogPost(slug: string) {
         .select('*')
         .eq('slug', slug)
         .eq('is_published', true)
-        .single();
+        .maybeSingle(); // 0 rows = null, no 406 in the console (qa 21/11/2026)
 
-      if (error) {
-        if (error.code === 'PGRST116') {
-          return null; // Not found
-        }
-
-        throw error;
-      }
+      if (error) throw error;
 
       return data;
     },

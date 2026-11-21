@@ -3,6 +3,7 @@
  * ou MP4 https. Partilhado pelo SPA (ExclusivoPost) e pelo middleware dos crawlers.
  */
 import { getYouTubeEmbedUrl, getYouTubeId, getYouTubeThumbnail, getYouTubeWatchUrl } from "./youtube";
+import { PUBLISHER } from './publisher';
 
 export interface ArticleVideo {
   kind: "youtube" | "mp4";
@@ -76,10 +77,6 @@ export function videoObjectJsonLd(
     ...(video.durationSeconds ? { duration: isoDuration(video.durationSeconds) } : {}),
     inLanguage: "pt-PT",
     url: meta.pageUrl,
-    publisher: {
-      "@type": "Organization",
-      name: "Olha que Duas",
-      logo: { "@type": "ImageObject", url: "https://www.olhaqueduas.com/og-image.jpg" },
-    },
+    publisher: PUBLISHER,
   };
 }

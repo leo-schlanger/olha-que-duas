@@ -20,7 +20,7 @@ const Index = () => {
   // restaurados (sem isto ficavam os da última página visitada).
   useMetaTags({
     description:
-      "Olha que Duas: rádio online 24 horas com música, programas e histórias, de Alexandra Serra e Marluce Revorêdo. Ouça em direto, veja os Programas e peça a sua dedicatória.",
+      "Olha que Duas: rádio online 24 horas com música, programas e histórias, de Alexandra Serra e Marluce Revorêdo. Ouça em direto e peça a sua dedicatória.",
     url: "https://www.olhaqueduas.com/",
     type: "website",
   });
