@@ -516,8 +516,8 @@ async function handle(request: Request): Promise<Response | undefined> {
   const newsMatch = path.match(/^\/noticias\/([^/]+)$/);
   if (newsMatch) {
     const slug = newsMatch[1];
-    // The news cron cuts slugs at 100 chars, so 99 of them end in '-' (21/11/2026).
-    if (!NEWS_SLUG_REGEX.test(slug) || slug.length > 100) return;
+    // News slugs: 96 end in '-' (cut by the cron) and 3 are 106-107 chars long (21/11/2026).
+    if (!NEWS_SLUG_REGEX.test(slug) || slug.length > 140) return;
     try {
       const posts = await fetchSupabase('blog_posts', `slug=eq.${encodeURIComponent(slug)}&is_published=eq.true`);
       if (Array.isArray(posts) && posts.length === 0) return notFound(`https://www.olhaqueduas.com${path}`, '/noticias', 'Ver as Notícias');
